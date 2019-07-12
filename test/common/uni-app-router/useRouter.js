@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import Router from './src/index.js';
+import Router from 'uni-simple-router';
 Vue.use(Router);
 const router = new Router({
 	routes: [{

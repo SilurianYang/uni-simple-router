@@ -1,6 +1,5 @@
 {
 	"pages": [
-		//pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
 			"path": "pages/tabbar/tabbar-1/tabbar-1",
 			"style": {
