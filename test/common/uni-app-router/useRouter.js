@@ -16,7 +16,14 @@ const router = new Router({
 		},
 		{
 			path: "/pages/tabbar/tabbar-4/tabbar-4",
-			name: 'tabbar-4'
+			name: 'tabbar-4',
+			other:{
+				H5Name:''
+			},
+			beforeEnter:(to,from,next)=>{
+				to.other.H5Name=to.query.name
+				next();
+			}
 		},
 		{
 			path: "/pages/tabbar/tabbar-5/tabbar-5",
@@ -51,9 +58,9 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
 	next();
 })
-router.afterEach((to, from) => {
-	console.log(from)
-	console.log(to)
-})
+// router.afterEach((to, from) => {
+// 	console.log(from)
+// 	console.log(to)
+// })
 
 export default router

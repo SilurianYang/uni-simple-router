@@ -12,7 +12,7 @@
 			}
 		},
 		onLoad() {
-
+				console.log(this.$Route)
 		},
 		methods: {
 
