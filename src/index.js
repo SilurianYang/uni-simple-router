@@ -66,13 +66,19 @@ class Router {
       delta
     });
   }
+  /**
+   * 2019年7月17日18:27:36 修复在嵌套组件中无法访问$Route的bug
+   * 
+   * @param {Object} Vim
+   */
   getQuery(Vim) {
+	 Vim=util.queryMp(Vim);
     return util.resolveRule(
       this,
       {
-        path: "/" + Vim.$mp.page.route
+        path: "/" + Vim.page.route
       },
-      Vim.$mp.query
+      Vim.query
     );
   }
   beforeEach(fn) {

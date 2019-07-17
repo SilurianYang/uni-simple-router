@@ -1,4 +1,4 @@
-import { resolveRule, normalizeParams, parseQuery } from "../helpers/util.js";
+import { resolveRule, normalizeParams, parseQuery,queryMp } from "../helpers/util.js";
 
 import { route } from "../helpers/config.js";
 
@@ -31,12 +31,13 @@ export const isNext = function(router, Intercept, rule, fnType) {
 };
 
 export const resolveParams = async function(router, rule, fnType, navigateFun) {
+	router.lastVim=queryMp(router.lastVim);
   const _from = resolveRule(
     router,
     {
-      path: "/" + router.lastVim.$mp.page.route
+      path: "/" + router.lastVim.page.route
     },
-    router.lastVim.$mp.query
+    router.lastVim.query
   );
   const _to = normalizeParams(JSON.parse(JSON.stringify(rule)), router.routers);
   const ags = {

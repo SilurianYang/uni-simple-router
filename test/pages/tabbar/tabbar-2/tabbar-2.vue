@@ -12,7 +12,7 @@
 			}
 		},
 		onLoad() {
-			console.log(this.$mp.query)
+			console.log(this)
 		},
 		methods: {
 
