@@ -1,6 +1,7 @@
 <template>
 	<view class="content">
 		<button type="primary" @click="gotoPage">去路由页面1</button>
+		<button type="primary" @click="gotoPage1">去tab5被拦截到路由4</button>
 		<button type="primary" @click="gotoTab">跳转到tab4页面</button>
 		<Child></Child>
 		<Child1></Child1>
@@ -21,11 +22,9 @@
 			};
 		},
 		onLoad() {
-			console.log(this.$Route)
-			//console.log(this)
+			//console.log(this.$Route)
 		},
 		created() {
-			//console.log(this)
 		},
 		methods: {
 			gotoPage() {
@@ -34,6 +33,14 @@
 					params: {
 						name: '我是你爸爸',
 						ages: 21
+					}
+				})
+			},
+			gotoPage1(){
+				this.$Router.push({
+					name: 'tabbar-5',
+					params: {
+						name: '我只想去tab5',
 					}
 				})
 			},
