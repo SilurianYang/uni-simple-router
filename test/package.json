@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
+  "dependencies": {
+    "uni-simple-router": "^1.0.4"
+  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "uni-simple-router": "^1.0.1"
-  }
+  "author": "hhyang <1606726660@qq.com>",
+  "license": "ISC"
 }
