@@ -4,6 +4,9 @@ export const isH5 = function() {
   return typeof window !== "undefined" && typeof document !== "undefined";
 };
 export const queryMp=function(Vim){
+	if(Object.keys(Vim).length<6){
+		return Vim;
+	}
 	if(Vim.$mp&&Vim.$mp.page){
 		return Vim.$mp;
 	}
