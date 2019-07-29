@@ -37,13 +37,20 @@ export const parseQuery = function(routerName, query, Encode = false) {
       query: obj
     };
   } else {
-    const sdata = [];
+    const encodeArr = [];
     for (let attr in query) {
-      sdata.push(`${attr}=${filter(query[attr])}`);
+		let encodeStr='';
+		if(query[attr].constructor==Object){
+			encodeStr=parseQuery(routerName,query[attr],Encode).query;
+			encodeArr.push(encodeStr);
+		}else{
+			encodeStr=filter(query[attr]);
+			encodeArr.push(`${attr}=${ encodeStr }`);
+		}
     }
     return {
       url: routerName,
-      query: sdata.join("&")
+      query: encodeArr.join("&")
     };
   }
 };
