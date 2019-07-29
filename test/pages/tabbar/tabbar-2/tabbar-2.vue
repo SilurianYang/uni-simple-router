@@ -1,6 +1,7 @@
 <template>
 	<view class="content">
-		<button type="primary">去路由页面2</button>
+		<button type="primary" @click="gotoPage">去路由页面5</button>
+		<button type="primary" @click="gotoPage1">去路由页面5 官方路由</button>
 	</view>
 </template>
 
@@ -12,10 +13,33 @@
 			}
 		},
 		onLoad() {
-			console.log(this)
 		},
 		methods: {
-
+			gotoPage(){
+				this.$Router.push({
+					name:'router5',
+					params:{
+						type:true,
+						info:{
+							name:'hhyang',
+							ages:21,
+							info:{
+								name1:'hhyang',
+								ages1:21
+							},
+							info2:{
+								name2:'hhyang',
+								ages2:21
+							}
+						}
+					}
+				})
+			},
+			gotoPage1(){
+				uni.navigateTo({
+					url:'/pages/router/router5/router5'
+				})
+			}
 		}
 	}
 </script>
