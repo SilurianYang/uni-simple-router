@@ -1,28 +1,33 @@
 {
-  "_from": "uni-simple-router",
-  "_id": "uni-simple-router@1.0.3",
+  "_args": [
+    [
+      "uni-simple-router@1.0.4",
+      "E:\\GIT\\uni-simple-router\\test"
+    ]
+  ],
+  "_from": "uni-simple-router@1.0.4",
+  "_id": "uni-simple-router@1.0.4",
   "_inBundle": false,
-  "_integrity": "sha512-mbhzpojK5ICMIuvRNSyIVsRLxQv4fiqVkZZ+VR9djFeIlKk7YQliRiRE8anyMkmByhIA4Ryyw30OXBQbyuZWWQ==",
+  "_integrity": "sha512-PFggLbQkZe8/IMKA8z+W95Xdb2T7LYy5moSwjh94inTPh+7SP3ln/TQMbxN4ChDLJOp+4qT0wzkOZWgTf15bsQ==",
   "_location": "/uni-simple-router",
   "_phantomChildren": {},
   "_requested": {
-    "type": "tag",
+    "type": "version",
     "registry": true,
-    "raw": "uni-simple-router",
+    "raw": "uni-simple-router@1.0.4",
     "name": "uni-simple-router",
     "escapedName": "uni-simple-router",
-    "rawSpec": "",
+    "rawSpec": "1.0.4",
     "saveSpec": null,
-    "fetchSpec": "latest"
+    "fetchSpec": "1.0.4"
   },
   "_requiredBy": [
-    "#USER",
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/uni-simple-router/-/uni-simple-router-1.0.3.tgz",
+  "_resolved": "https://registry.npmjs.org/uni-simple-router/-/uni-simple-router-1.0.4.tgz",
   "_shasum": "c43419af275c0fe45973b717b79cf234a4221821",
-  "_spec": "uni-simple-router",
-  "_where": "E:\\Git\\NPM_PACKAGE\\uni-simple-router\\test",
+  "_spec": "1.0.4",
+  "_where": "E:\\GIT\\uni-simple-router\\test",
   "author": {
     "name": "hhyang",
     "email": "1606726660@qq.com"
@@ -54,5 +59,5 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "version": "1.0.4"
+  "version": "1.0.5"
 }

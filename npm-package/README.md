@@ -62,7 +62,7 @@ this.$Router.push({path:'/pages/router/router1'})
 // 命名的路由
 this.$Router.push({ name: 'router1', params: { userId: '123' }})
 
-// 带查询参数，变成 /register?plan=private
+// 带查询参数，变成 /router1?plan=private
 this.$Router.push({ path: 'router1', query: { plan: 'private' }})
 
 ```
@@ -188,6 +188,8 @@ this.$Router.push({ name: 'router1', params: { userId: '123' }})
 
 ##### 在组件中使用 $Route 来获取当前路由表中的配置及参数。因为路由传值方面官方目前仅提供了query的方式进行传参，所以到目前为止uni-simple-router也仅支持query的获取方式。为了兼容H5手动刷新后参数丢失的问题。其次在 \$Route 对象中 依然保留了 params 选项后续会补上。
 
+##### 数据传参时尽量不要传递深度对象，虽然中间有做一层操作。始终不能百分百还原。在深度对象传递的过程中，深度对象将会抹平成一个大对象。而且在参数传递的过程中传递的数据将会变成字符串
+
 ##### 例子
 
 ```javaScript
@@ -204,6 +206,30 @@ this.$Router.push({ path: '/pages/router/router1/router1', query: { userId: '123
 
 // 获取方式
 this.$Route.query.userId;
+
+
+// 对象传参 包括深度对象
+this.$Router.push({
+  name:'router5',
+  params:{
+    type:true,
+    info:{
+      name:'hhyang',
+      ages:21,
+      info:{
+        name1:'hhyang',
+        ages1:21
+      },
+      info2:{
+        name2:'hhyang',
+        ages2:21
+      }
+    }
+  }
+})
+//输出  {"type":"true","name":"hhyang","ages":"21","name1":"hhyang","ages1":"21","name2":"hhyang","ages2":"21"}
+
+
 ```
 
 ---
