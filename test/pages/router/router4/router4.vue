@@ -13,6 +13,7 @@
 			}
 		},
 		onLoad() {
+			console.log(this.$Route)
 			this.msg=JSON.stringify(this.$Route.query)
 		},
 		methods: {

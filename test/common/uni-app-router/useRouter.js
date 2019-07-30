@@ -46,7 +46,12 @@ const router = new Router({
 			}
 		}, {
 			path: "/pages/router/router4/router4",
-			name: 'router4'
+			name: 'router4',
+			beforeEnter:(to,from,next)=>{
+				// console.log(to)
+				// console.log(from)
+				next({name: 'tabbar-5'});
+			}
 		},
 		 {
 			path: "/pages/router/router5/router5",
@@ -62,11 +67,19 @@ router.beforeEach((to, from, next) => {
 			laspageMsg:JSON.stringify(to.query)
 		}});
 	}else{
-		next();
+		if(to.name=='tabbar-1'){
+			next('/pages/tabbar/tabbar-5/tabbar-5');
+		}else{
+			next();
+		}
+		console.log(to);
+		console.log(from)
+		
 	}
 })
 router.afterEach((to, from) => {
-	//console.log(from)
+	//console.log(to);
+	// console.log(from)
 })
 
 export default router

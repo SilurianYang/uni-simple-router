@@ -1,0 +1,1 @@
+<view><view class="_h1">路由4</view><view class="_p">{{msg}}</view></view>

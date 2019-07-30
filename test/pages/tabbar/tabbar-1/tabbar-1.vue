@@ -22,19 +22,12 @@
 			};
 		},
 		onLoad() {
-			//console.log(this.$Route)
 		},
 		created() {
 		},
 		methods: {
 			gotoPage() {
-				this.$Router.push({
-					name: 'router1',
-					params: {
-						name: '我是你爸爸',
-						ages: 21
-					}
-				})
+				this.$Router.push('/pages/router/router1/router1')
 			},
 			gotoPage1(){
 				this.$Router.push({

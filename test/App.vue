@@ -1,8 +1,17 @@
 <script>
 export default {
 	onLaunch: function() {
-		console.log('App Launch');
-
+		
+		// this.$Router.push({
+		// 	name:'router4',
+		// 	params:{
+		// 		name:'hhyang',
+		// 		ages:21
+		// 	}
+		// })
+		
+		//console.log(this.$Route)
+		
 		setTimeout(() => {
 			uni.setTabBarBadge({
 				index: 1,
@@ -14,7 +23,7 @@ export default {
 		}, 1000);
 	},
 	onShow: function() {
-		console.log('App Show');
+		
 	},
 	onHide: function() {
 		console.log('App Hide');

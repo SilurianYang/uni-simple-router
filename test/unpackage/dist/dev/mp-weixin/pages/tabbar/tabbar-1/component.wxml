@@ -1,0 +1,1 @@
+<view>这是tabbar-1的子组件</view>
