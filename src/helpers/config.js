@@ -8,7 +8,9 @@ export const methods = {
 export const lifeCycle = {
   beforeHooks: [],
   afterHooks: [],
-  routerHooks: []
+  routerHooks: [],
+  routerbeforeHooks:[],		//内部跳转前生命周期
+  routerAfterHooks:[],	//内部跳转后生命周期
 };
 
 export const route = function(object = {}) {

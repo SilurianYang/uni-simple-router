@@ -4,13 +4,19 @@ export const isH5 = function() {
   return typeof window !== "undefined" && typeof document !== "undefined";
 };
 export const queryMp=function(Vim){
-	if(Object.keys(Vim).length<6){
-		return Vim;
+	if(Vim.constructor.name=='Vue'){
+		Vim.$options.page='';
+		Vim.$options.ONLAUNCH=true;
+		return Vim.$options
+	}else{
+		if(Object.keys(Vim).length<6){
+			return Vim;
+		}
+		if(Vim.$mp&&Vim.$mp.page){
+			return Vim.$mp;
+		}
+		return queryMp(Vim.$parent);
 	}
-	if(Vim.$mp&&Vim.$mp.page){
-		return Vim.$mp;
-	}
-	return queryMp(Vim.$parent);
 }
 
 export const filter = function(str) {
@@ -57,6 +63,9 @@ export const parseQuery = function(routerName, query, Encode = false) {
 export const exactRule = function(cloneRule, routes, ruleKey, getRule = false) {
   const params = {};
   let i = 0;
+  if(Reflect.get(cloneRule,'ONLAUNCH')===undefined){
+	  cloneRule['ONLAUNCH']=false;
+  }
   while (true) {
     const item = routes["routes"][i];
     if (item == null) {
@@ -65,15 +74,15 @@ export const exactRule = function(cloneRule, routes, ruleKey, getRule = false) {
           `路由表中未查找到 '${ruleKey}' 为 '${cloneRule[ruleKey]}' `
         );
       }
-      break;
+	  return {...{path:'',name:''},ONLAUNCH:cloneRule['ONLAUNCH']}
     }
     if (item[ruleKey] != null && item[ruleKey] === cloneRule[ruleKey]) {
       if (!getRule) {
         params.url = item["path"];
         params.rule = item;
-        return params;
+        return {...params,ONLAUNCH:cloneRule['ONLAUNCH']};
       }
-      return item;
+      return {...item,ONLAUNCH:cloneRule['ONLAUNCH']};
     }
     i++;
   }
