@@ -118,7 +118,7 @@ var _default =
 
   },
   onLoad: function onLoad() {var _this = this;
-    console.log(this.$Route);
+    //console.log(this.$Route);
     setTimeout(function () {
       _this.$Router.push({ name: 'router2' });
     }, 3000);

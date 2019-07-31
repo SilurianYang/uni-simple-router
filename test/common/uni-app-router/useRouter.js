@@ -17,11 +17,11 @@ const router = new Router({
 		{
 			path: "/pages/tabbar/tabbar-4/tabbar-4",
 			name: 'tabbar-4',
-			other:{
-				H5Name:''
+			other: {
+				H5Name: ''
 			},
-			beforeEnter:(to,from,next)=>{
-				to.other.H5Name=to.query.name
+			beforeEnter: (to, from, next) => {
+				to.other.H5Name = to.query.name
 				next();
 			}
 		},
@@ -35,25 +35,22 @@ const router = new Router({
 		}, {
 			path: "/pages/router/router2/router2",
 			name: 'router2',
-			beforeEnter:(to,from,next)=>{
-				next({name:'router3',params:{msg:'我是从router2路由拦截过来的'}});
+			beforeEnter: (to, from, next) => {
+				next({
+					name: 'router3',
+					params: {
+						msg: '我是从router2路由拦截过来的'
+					}
+				});
 			}
 		}, {
 			path: "/pages/router/router3/router3",
-			name: 'router3',
-			beforeEnter:(to,from,next)=>{
-				next();
-			}
+			name: 'router3'
 		}, {
 			path: "/pages/router/router4/router4",
-			name: 'router4',
-			beforeEnter:(to,from,next)=>{
-				// console.log(to)
-				// console.log(from)
-				next({name: 'tabbar-5'});
-			}
+			name: 'router4'
 		},
-		 {
+		{
 			path: "/pages/router/router5/router5",
 			name: 'router5'
 		}
@@ -61,25 +58,32 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-	if(to.name=='tabbar-5'){
-		next({name:'router4',params:{
-			msg:'我拦截了tab5并重定向到了路由4页面上',
-			laspageMsg:JSON.stringify(to.query)
-		}});
-	}else{
-		if(to.name=='tabbar-1'){
-			next('/pages/tabbar/tabbar-5/tabbar-5');
-		}else{
+	if (to.name == 'tabbar-5') {
+		next({
+			name: 'router4',
+			params: {
+				msg: '我拦截了tab5并重定向到了路由4页面上',
+			},
+			NAVTYPE: 'push'
+		});
+		//next();
+	} else {
+		if (to.name == 'tabbar-1') {
+			next({
+				path: '/pages/tabbar/tabbar-3/tabbar-3',
+				NAVTYPE: 'pushTab'
+			});
+		} else {
 			next();
 		}
-		console.log(to);
-		console.log(from)
-		
 	}
-})
-router.afterEach((to, from) => {
-	//console.log(to);
+	// console.log(to);
 	// console.log(from)
 })
+router.afterEach((to, from) => {
+	// console.log(to);
+	// console.log(from)
+})
+// console.log(router)
 
 export default router

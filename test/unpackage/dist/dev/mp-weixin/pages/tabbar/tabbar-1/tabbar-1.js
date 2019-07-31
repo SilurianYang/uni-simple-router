@@ -137,7 +137,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
       this.$Router.push('/pages/router/router1/router1');
     },
     gotoPage1: function gotoPage1() {
-      this.$Router.push({
+      this.$Router.pushTab({
         name: 'tabbar-5',
         params: {
           name: '我只想去tab5' } });

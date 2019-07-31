@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-	<button type="primary">去路由页面5</button>
+	<button type="primary">tab5</button>
 	</view>
 </template>
 

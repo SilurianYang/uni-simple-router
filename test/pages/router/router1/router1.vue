@@ -13,7 +13,7 @@
 			}
 		},
 		onLoad() {
-			console.log(this.$Route);
+			//console.log(this.$Route);
 			setTimeout(()=>{
 				this.$Router.push({name:'router2'})
 			},3000)

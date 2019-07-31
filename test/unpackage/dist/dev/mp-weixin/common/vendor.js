@@ -7641,22 +7641,19 @@ var router = new _uniSimpleRouter.default({
     path: "/pages/router/router2/router2",
     name: 'router2',
     beforeEnter: function beforeEnter(to, from, next) {
-      next({ name: 'router3', params: { msg: '我是从router2路由拦截过来的' } });
+      next({
+        name: 'router3',
+        params: {
+          msg: '我是从router2路由拦截过来的' } });
+
+
     } },
   {
     path: "/pages/router/router3/router3",
-    name: 'router3',
-    beforeEnter: function beforeEnter(to, from, next) {
-      next();
-    } },
+    name: 'router3' },
   {
     path: "/pages/router/router4/router4",
-    name: 'router4',
-    beforeEnter: function beforeEnter(to, from, next) {
-      // console.log(to)
-      // console.log(from)
-      next({ name: 'tabbar-5' });
-    } },
+    name: 'router4' },
 
   {
     path: "/pages/router/router5/router5",
@@ -7667,26 +7664,33 @@ var router = new _uniSimpleRouter.default({
 
 router.beforeEach(function (to, from, next) {
   if (to.name == 'tabbar-5') {
-    next({ name: 'router4', params: {
-        msg: '我拦截了tab5并重定向到了路由4页面上',
-        laspageMsg: JSON.stringify(to.query) } });
+    next({
+      name: 'router4',
+      params: {
+        msg: '我拦截了tab5并重定向到了路由4页面上' },
 
+      NAVTYPE: 'push' });
+
+    //next();
   } else {
     if (to.name == 'tabbar-1') {
-      next('/pages/tabbar/tabbar-5/tabbar-5');
+      next({
+        path: '/pages/tabbar/tabbar-3/tabbar-3',
+        NAVTYPE: 'pushTab' });
+
     } else {
       next();
     }
-    console.log(to);
-    console.log(from);
-
   }
+  // console.log(to);
+  // console.log(from)
 });
 router.afterEach(function (to, from) {
-  //console.log(to);
+  // console.log(to);
   // console.log(from)
-});var _default =
-
+});
+// console.log(router)
+var _default =
 router;exports.default = _default;
 
 /***/ }),
@@ -7727,16 +7731,19 @@ Router = /*#__PURE__*/function () {
         _this.RELOADING = false;
       });
     });
-  }
-  /**动态的导航到一个新 URL 保留浏览历史
-     * navigateTo
-     * @param {Object} rule
-     */_createClass(Router, [{ key: "push", value: function push(
+  }_createClass(Router, [{ key: "_pushTo", value: function _pushTo(_ref)
+    {var toRule = _ref.toRule,ags = _ref.ags;
+      uni[this.methods[ags.rule.NAVTYPE]]({
+        url: "".concat(toRule.url, "?").concat(toRule.query) });
+
+    }
+    /**动态的导航到一个新 URL 保留浏览历史
+       * navigateTo
+       * @param {Object} rule
+       */ }, { key: "push", value: function push(
     rule) {
       lifeMothods.resolveParams(this, rule, "push", function (customRule) {
-        uni[this.methods["push"]]({
-          url: "".concat(customRule.url, "?").concat(customRule.query) });
-
+        this._pushTo(customRule);
       });
     }
     /**动态的导航到一个新 URL 关闭当前页面，跳转到的某个页面。
@@ -7745,9 +7752,7 @@ Router = /*#__PURE__*/function () {
        */ }, { key: "replace", value: function replace(
     rule) {
       lifeMothods.resolveParams(this, rule, "replace", function (customRule) {
-        uni[this.methods["replace"]]({
-          url: "".concat(customRule.url, "?").concat(customRule.query) });
-
+        this._pushTo(customRule);
       });
     }
     /**动态的导航到一个新 URL 关闭所有页面，打开到应用内的某个页面
@@ -7756,9 +7761,7 @@ Router = /*#__PURE__*/function () {
        */ }, { key: "replaceAll", value: function replaceAll(
     rule) {
       lifeMothods.resolveParams(this, rule, "replaceAll", function (customRule) {
-        uni[this.methods["replaceAll"]]({
-          url: "".concat(customRule.url, "?").concat(customRule.query) });
-
+        this._pushTo(customRule);
       });
     }
     /**动态的导航到一个新 url 关闭所有页面，打开到应用内的某个tab
@@ -7802,17 +7805,28 @@ Router = /*#__PURE__*/function () {
     } }]);return Router;}();
 
 Router.$root = null;
+Router.onLaunched = false;
 Router.install = function (Vue) {
   Vue.mixin({
+    onLaunch: function onLaunch() {
+      Router.onLaunched = true;
+    },
     onLoad: function onLoad() {
-      if (!Router.$root.RELOADING) {
+      if (Router.onLaunched) {
+        Router.onLaunched = false;
+
         var navtoInfo = Router.$root.getQuery(this);
+
         Router.$root.lastVim = this;
 
         lifeMothods.resolveParams(Router.$root, { path: navtoInfo.path, query: navtoInfo.query }, "Router", function (customRule) {
-          console.log(customRule);
+          if (customRule.ags.rule.NAVTYPE == 'Router') {
+            return true;
+          }
+          this._pushTo(customRule);
         });
       }
+
     } });
 
   Object.defineProperty(Vue.prototype, "$Router", {
@@ -8012,7 +8026,14 @@ var route = function route() {var object = arguments.length > 0 && arguments[0] 
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });exports.resolveRouterHooks = exports.resolveBeforeHooks = exports.resolveAfterHooks = exports.resolveParams = exports.isNext = exports.executeHook = exports.registerHook = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 16));var _util = __webpack_require__(/*! ../helpers/util.js */ 13);
 
+
+
+
+
+
 var _config = __webpack_require__(/*! ../helpers/config.js */ 14);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};var ownKeys = Object.keys(source);if (typeof Object.getOwnPropertySymbols === 'function') {ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {return Object.getOwnPropertyDescriptor(source, sym).enumerable;}));}ownKeys.forEach(function (key) {_defineProperty(target, key, source[key]);});}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}
+
+
 
 var registerHook = function registerHook(list, fn) {
   list.push(fn);
@@ -8037,11 +8058,18 @@ var isNext = function isNext(router, Intercept, rule, fnType) {
               Intercept === true || Intercept === undefined)) {_context.next = 4;break;}return _context.abrupt("return",
               resolve({
                 toRule: rule,
-                ags: { rule: { NAVTYPE: fnType } } }));case 4:
+                ags: {
+                  rule: {
+                    NAVTYPE: fnType } } }));case 4:
+
+
 
 
               if (Intercept.constructor === String) {
-                Intercept = { path: Intercept, NAVTYPE: fnType };
+                Intercept = {
+                  path: Intercept,
+                  NAVTYPE: fnType };
+
               } else {
                 if (Reflect.get(Intercept, 'NAVTYPE') === undefined) {
                   Intercept.NAVTYPE = fnType;
@@ -8057,8 +8085,7 @@ var resolveParams = /*#__PURE__*/function () {var _ref2 = _asyncToGenerator( /*#
 
             router.lastVim = (0, _util.queryMp)(router.lastVim);
             _from = (0, _util.resolveRule)(
-            router,
-            {
+            router, {
               path: "/" + router.lastVim.page.route || false,
               ONLAUNCH: router.lastVim.ONLAUNCH || false },
 
@@ -8075,17 +8102,18 @@ var resolveParams = /*#__PURE__*/function () {var _ref2 = _asyncToGenerator( /*#
                 query: (0, _util.parseQuery)("query", _to.query, true).query }),
 
               rule: rule,
-              fnType: fnType };_context2.next = 7;return (
+              fnType: fnType };_context2.prev = 5;_context2.next = 8;return (
 
-              resolveBeforeHooks(ags));case 7:beforeResult = _context2.sent;if (!(
-            navigateFun == null)) {_context2.next = 10;break;}return _context2.abrupt("return",
+
+
+              resolveBeforeHooks(ags));case 8:beforeResult = _context2.sent;if (!(
+            navigateFun == null)) {_context2.next = 11;break;}return _context2.abrupt("return",
             {
               toRule: _to,
-              ags: ags });case 10:_context2.next = 12;return (
+              ags: ags });case 11:_context2.next = 13;return (
 
 
-              isNext(router, beforeResult, _to, fnType));case 12:fromatRule = _context2.sent;
-            console.log(fromatRule);
+              isNext(router, beforeResult, _to, fnType));case 13:fromatRule = _context2.sent;
 
             fnType = fromatRule.ags.rule.NAVTYPE;
 
@@ -8093,30 +8121,29 @@ var resolveParams = /*#__PURE__*/function () {var _ref2 = _asyncToGenerator( /*#
             beforeEnter) {_context2.next = 20;break;}_context2.next = 19;return (
               resolveRouterHooks(
               ags,
+              fnType,
               beforeEnter,
               fromatRule.toRule));case 19:fromatRule = _context2.sent;case 20:
 
 
-
-            navigateFun.call(router, fromatRule.toRule);
+            navigateFun.call(router, fromatRule);
 
             resolveAfterHooks(
             router, _objectSpread({},
-
             (0, _config.route)(),
             fromatRule.toRule.rule, {
               ONLAUNCH: fromatRule.toRule.ONLAUNCH,
               query: (0, _util.parseQuery)("query", fromatRule.toRule.query, true).query }),
 
-            ags.fromRule);
+            ags.fromRule);_context2.next = 26;break;case 24:_context2.prev = 24;_context2.t0 = _context2["catch"](5);case 26:
 
-
+            ;
             router.lifeCycle["routerAfterHooks"][0].call(router); //触发内部跳转后的生命周期
-          case 23:case "end":return _context2.stop();}}}, _callee2, this);}));return function resolveParams(_x3, _x4, _x5, _x6) {return _ref2.apply(this, arguments);};}();
+          case 28:case "end":return _context2.stop();}}}, _callee2, this, [[5, 24]]);}));return function resolveParams(_x3, _x4, _x5, _x6) {return _ref2.apply(this, arguments);};}();
 
 /**
-                                                                                                                                                                             * 触发全局afterHooks 生命钩子
-                                                                                                                                                                             */exports.resolveParams = resolveParams;
+                                                                                                                                                                                        * 触发全局afterHooks 生命钩子
+                                                                                                                                                                                        */exports.resolveParams = resolveParams;
 var resolveAfterHooks = function resolveAfterHooks(router, toRule, fromRule) {
   return new Promise( /*#__PURE__*/function () {var _ref3 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3(resolve, rejcet) {return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:if (
               router.lifeCycle["afterHooks"][0]) {_context3.next = 2;break;}return _context3.abrupt("return",
@@ -8150,11 +8177,13 @@ var resolveRouterHooks = function resolveRouterHooks()
 
 
 
-{var _ref6 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},router = _ref6.router,fromRule = _ref6.fromRule,fnType = _ref6.fnType;var hookFun = arguments.length > 1 ? arguments[1] : undefined;var rule = arguments.length > 2 ? arguments[2] : undefined;
+
+
+
+{var _ref6 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},router = _ref6.router,fromRule = _ref6.fromRule;var fnType = arguments.length > 1 ? arguments[1] : undefined;var hookFun = arguments.length > 2 ? arguments[2] : undefined;var rule = arguments.length > 3 ? arguments[3] : undefined;
   return new Promise( /*#__PURE__*/function () {var _ref7 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee6(resolve, reject) {var Intercept, fromatRule, beforeEnter;return _regenerator.default.wrap(function _callee6$(_context6) {while (1) {switch (_context6.prev = _context6.next) {case 0:_context6.next = 2;return (
                 new Promise( /*#__PURE__*/function () {var _ref8 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee5(resolve) {return _regenerator.default.wrap(function _callee5$(_context5) {while (1) {switch (_context5.prev = _context5.next) {case 0:_context5.next = 2;return (
                               hookFun(_objectSpread({},
-
                               (0, _config.route)(),
                               rule.rule, {
                                 ONLAUNCH: rule.ONLAUNCH,
@@ -8165,12 +8194,15 @@ var resolveRouterHooks = function resolveRouterHooks()
 
 
                 isNext(router, Intercept, rule, fnType));case 5:fromatRule = _context6.sent;if (!(
+
               Object.keys(fromatRule.ags).length > 0)) {_context6.next = 14;break;}
-              beforeEnter = Reflect.get(fromatRule.ags.toRule, "beforeEnter");if (!
+              beforeEnter = Reflect.get(fromatRule.ags.toRule || {}, "beforeEnter");if (!
+
               beforeEnter) {_context6.next = 14;break;}_context6.t0 =
               resolve;_context6.next = 12;return (
                 resolveRouterHooks(
                 fromatRule.ags,
+                fnType,
                 beforeEnter,
                 fromatRule.toRule));case 12:_context6.t1 = _context6.sent;return _context6.abrupt("return", (0, _context6.t0)(_context6.t1));case 14:
 
