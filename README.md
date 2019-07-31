@@ -17,6 +17,8 @@
 1. #### [路由独享守卫](#anchor6)
 1. #### [路由元信息](#anchor7)
 1. #### [完整的导航解析流程](#anchor8)
+1. #### [首次触发生命钩子注意事项](#anchor10) ^1.1.0+^
+1. #### [NAVTYPE取值类型](#NAVTYPE) ^1.1.0+^
 1. #### [注意事项](#anchor9)
 
 ## <div id="anchor0">安装</div>
@@ -24,7 +26,6 @@
 #### NPM
 
 ```javaScript
-
 npm install uni-simple-router
 ```
 
@@ -43,6 +44,7 @@ Vue.use(Router)
 
 废弃所有 [uni-app 路由与页面跳转 Api](https://uniapp.dcloud.io/api/router?id=relaunch),拥抱编程式导航。
 
+<div id="push"></div>
 ### **router.push(location, onComplete?, onAbort?) 等同于 [uni.navigateTo()](https://uniapp.dcloud.io/api/router?id=navigateto)**
 
 ##### 注意：在 Vue 实例内部，你可以通过 \$Router 访问路由实例。因此你可以调用 this.\$Router.push。
@@ -93,9 +95,9 @@ this.$Router.replaceAll(...)
 
 ---
 
-### <div id="pushTab"> router.pushTab(location, onComplete?, onAbort?) 等同于  [uni.switchTab()](https://uniapp.dcloud.io/api/router?id=switchtab)</div>
+### router.pushTab(location, onComplete?, onAbort?) 等同于  [uni.switchTab()](https://uniapp.dcloud.io/api/router?id=switchtab)
 
-跟 router.push 很像，打开指定的 tab 菜单。
+<div id="pushTab">跟 router.push 很像，打开指定的 tab 菜单。</div>
 
 ##### 注意：router.pushTab 在传递参数的时候 H5 暂时不支持，需要开发者自行处理下，这是官方的一个 bug,后续会修复。不过可以使用此一个变通的方法获取到,临时解决！
 
@@ -263,7 +265,28 @@ router.beforeEach((to, from, next) => {
   - **next(false):** 中断当前的导航。如果浏览器的 URL 改变了 (可能是用户手动或者浏览器后退按钮)，那么 URL 地址会重置到 from 路由对应的地址。
   - **next('/') 或者 next({ path: '/' }):** 跳转到一个不同的地址。当前的导航被中断，然后进行一个新的导航。你可以向 next 传递任意位置对象
 
-##### 确保要调用 next 方法，否则钩子就不会被 resolved。
+##### 确保要调用 next 方法，否则钩子就不会被 resolved，同时在使用 next() 时，如果想导航到新的地址，这时就需要在 next() 传递一个NAVTYPE指定类型跳转。
+
+
+#### 例子
+
+```javaScript
+
+router.beforeEach((to, from, next) => {
+	if (to.name == 'tabbar-5') {
+		next({
+			name: 'router4',
+			params: {
+				msg: '我拦截了tab5并重定向到了路由4页面上',
+			},
+			NAVTYPE: 'push'
+		});
+	} else{
+    next();
+  }
+})
+```
+##### 很显然这是一个全局的生命钩子函数，当发现跳转的路由名称为 'tabbar-5' 时，中间进行拦截并重定向到名为 'router4' 的路由下,而显然易见的是 'tabbar-5' 是通过 [pushTab](#pushTab) Api进行跳转的，而 'router4' 则是一个普通的页面，应该使用 [push](#push) 方法进行跳转。所有这时的我们需要提供一个 [NAVTYPE](#NAVTYPE) 来指定 此次跳转需要使用什么方法。如果地址为同一类型时无需传递此参数。
 
 ---
 
@@ -359,13 +382,29 @@ router.beforeEach((to, from, next) => {
 1. 调用全局的 afterEach 钩子。
 1. 触发 DOM 更新。
 
+----------
+
+## <div id="anchor10">首次触发生命钩子注意事项 ^1.1.0+^ </div>
+1. 首次启动依次触发全局钩子、组件独享钩子。
+1. 在app.vue 中跳转时会获得 ONLAUNCH: true 的标识，回显在每个钩子的同to、from 下。同时你也可以通过 this.\$Route 获取到。
+1. 在next() 中拦截跳转时必须明确的给出标识[NAVTYPE](#NAVTYPE),否则无法跳转。在页面同类型时可以忽视。
+
+----------
+
+## <div id="NAVTYPE">NAVTYPE取值类型 ^1.1.0+^ </div>
+##### 1. push ====> 跳转到普通页面，新开保留历史记录
+##### 2. replace ====>  动态的导航到一个新 URL 关闭当前页面，跳转到的某个页面。
+##### 3. replaceAll ====> 动态的导航到一个新 URL 关闭所有页面，打开到应用内的某个页面
+##### 4. pushTab ====> 动态的导航到一个新 url 关闭所有页面，打开到应用内的某个tab
+
+----------
 
 ## <div id="anchor9">注意事项</div>
 
 1. 内置对象名称差异 **\$Router** 非 \$router，**$Route** 非 \$route
 1. [pushTab](#pushTab) api在跳转到tab时，H5端使用 **\$Route** 无法访问到传递的参数，可以使用一种变通的方式 [相关测试案例](https://github.com/SilurianYang/uni-simple-router/tree/master/test)
-1. 各端在首次启动时暂时无法触发钩子，下版加上。
 1. APP、小程序、H5测试通过，其他端未测试。
+1. 暂时无法在其他js文件中跳转，**1.2.0** 版本将会加上,完全是抽出个人时间来完成。所以大家理解下。
 
 
 --------
