@@ -394,10 +394,13 @@ router.beforeEach((to, from, next) => {
 ## <div id="NAVTYPE">NAVTYPE取值类型 <sup>1.1.0+</sup> </div>
 ##### 1. push 
 > 跳转到普通页面，新开保留历史记录
+
 ##### 2. replace 
 > 动态的导航到一个新 URL 关闭当前页面，跳转到的某个页面。
+
 ##### 3. replaceAll 
 > 动态的导航到一个新 URL 关闭所有页面，打开到应用内的某个页面
+
 ##### 4. pushTab 
 > 动态的导航到一个新 url 关闭所有页面，打开到应用内的某个tab
 
