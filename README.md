@@ -44,8 +44,7 @@ Vue.use(Router)
 
 废弃所有 [uni-app 路由与页面跳转 Api](https://uniapp.dcloud.io/api/router?id=relaunch),拥抱编程式导航。
 
-<div id="push"></div>
-### **router.push(location, onComplete?, onAbort?) 等同于 [uni.navigateTo()](https://uniapp.dcloud.io/api/router?id=navigateto)**
+### router.push(location, onComplete?, onAbort?) 等同于 [uni.navigateTo()](https://uniapp.dcloud.io/api/router?id=navigateto) <div id="push"></div>
 
 ##### 注意：在 Vue 实例内部，你可以通过 \$Router 访问路由实例。因此你可以调用 this.\$Router.push。
 
@@ -71,9 +70,9 @@ this.$Router.push({ path: 'router1', query: { plan: 'private' }})
 
 ##### 注意：如果提供了 path，params 会被忽略，上述例子中的 query 并不属于这种情况。所以字符串时必须是绝对的路径，name 时传递的参数必须为 params，相反 path 必须对应 query。
 
----
+------
 
-### **router.replace(location, onComplete?, onAbort?) 等同于 [uni.redirectTo()](https://uniapp.dcloud.io/api/router?id=redirectto)**
+### router.replace(location, onComplete?, onAbort?) 等同于 [uni.redirectTo()](https://uniapp.dcloud.io/api/router?id=redirectto)
 
 跟 router.push 很像，唯一的不同就是，它不会向 history 添加新记录，而是跟它的方法名一样 —— 替换掉当前的 history 记录。
 
@@ -82,9 +81,9 @@ this.$Router.push({ path: 'router1', query: { plan: 'private' }})
 this.$Router.replace(...)
 ```
 
----
+------
 
-### **router.replaceAll(location, onComplete?, onAbort?) 等同于 [uni.reLaunch()](https://uniapp.dcloud.io/api/router?id=redirectto)**
+### router.replaceAll(location, onComplete?, onAbort?) 等同于 [uni.reLaunch()](https://uniapp.dcloud.io/api/router?id=redirectto)
 
 跟 router.replace 很像，唯一的不同就是，它不会向 history 添加新记录，而是将所有的页面都关掉，打开一个新的页面。
 
