@@ -53,6 +53,10 @@ const router = new Router({
 		{
 			path: "/pages/router/router5/router5",
 			name: 'router5'
+		},
+		{
+			path: "/pages/router/router6/router6",
+			name: 'router6'
 		}
 	]
 });

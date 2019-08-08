@@ -6,7 +6,7 @@
     "versionCode" : "100",
     "transformPx" : false,
     "app-plus" : {
-		"usingComponents": true,
+        "usingComponents" : true,
         /* 5+App特有相关 */
         "modules" : {},
         /* 模块配置 */
@@ -51,8 +51,9 @@
         /* 小程序特有相关 */
         "appid" : "",
         "setting" : {
-            "urlCheck" : true
+            "urlCheck" : true,
+            "minified" : true
         },
-        "usingComponents": true
+        "usingComponents" : true
     }
 }
