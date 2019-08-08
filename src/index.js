@@ -7,28 +7,34 @@ import {
 
 import * as lifeMothods from "./lifeCycle/hooks.js";
 
+import patch from "./patch/h5-patch.js";
+const H5path = new patch(util.isH5());
+
 class Router {
 	constructor(arg) {
 		if (arg && arg.constructor !== Object) {
 			return console.error(`Routing configuration must be an Object`);
 		}
 		Router.$root = this;
-		this.RELOADING=false;
+		this.RELOADING = false;
 		this.routers = arg;
 		this.methods = methods;
 		this.lifeCycle = lifeCycle;
 		this.lastVim = null;
-		
-		lifeMothods.registerHook(this.lifeCycle.routerbeforeHooks, function(){
-			this.RELOADING=true;
+
+		lifeMothods.registerHook(this.lifeCycle.routerbeforeHooks, function() {
+			this.RELOADING = true;
 		});
-		lifeMothods.registerHook(this.lifeCycle.routerAfterHooks, function(){
-			setTimeout(()=>{
-				this.RELOADING=false;
+		lifeMothods.registerHook(this.lifeCycle.routerAfterHooks, function() {
+			setTimeout(() => {
+				this.RELOADING = false;
 			})
 		});
 	}
-	_pushTo({toRule,ags}){
+	_pushTo({
+		toRule,
+		ags
+	}) {
 		uni[this.methods[ags.rule.NAVTYPE]]({
 			url: `${toRule.url}?${toRule.query}`
 		});
@@ -75,9 +81,11 @@ class Router {
 				"返回层级参数必须是一个Number类型且必须大于1：" + delta
 			);
 		}
-		uni.navigateBack({
-			delta
-		});
+		H5path.on('historyBack',-delta ,()=> {
+			uni.navigateBack({
+				delta
+			});
+		})
 	}
 	/**
 	 * 
@@ -101,28 +109,31 @@ class Router {
 	}
 }
 Router.$root = null;
-Router.onLaunched=false;
+Router.onLaunched = false;
 Router.install = function(Vue) {
 	Vue.mixin({
-		onLaunch:function(){
-			Router.onLaunched=true;
+		onLaunch: function() {
+			Router.onLaunched = true;
 		},
-		onLoad:function(){
-			if(Router.onLaunched){
-				Router.onLaunched=false;
-				
-				const navtoInfo= Router.$root.getQuery(this);
-				
+		onLoad: function() {
+			if (Router.onLaunched) {
+				Router.onLaunched = false;
+
+				const navtoInfo = Router.$root.getQuery(this);
+
 				Router.$root.lastVim = this;
-				
-				lifeMothods.resolveParams(Router.$root,{path:navtoInfo.path,query:navtoInfo.query} , "Router",function(customRule){
-					if(customRule.ags.rule.NAVTYPE=='Router'){
+
+				lifeMothods.resolveParams(Router.$root, {
+					path: navtoInfo.path,
+					query: navtoInfo.query
+				}, "Router", function(customRule) {
+					if (customRule.ags.rule.NAVTYPE == 'Router') {
 						return true;
 					}
 					this._pushTo(customRule);
 				});
 			}
-			
+
 		},
 	})
 	Object.defineProperty(Vue.prototype, "$Router", {
