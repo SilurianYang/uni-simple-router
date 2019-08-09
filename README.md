@@ -409,7 +409,7 @@ router.beforeEach((to, from, next) => {
 
 1. 内置对象名称差异 **\$Router** 非 \$router，**$Route** 非 \$route
 1. [pushTab](#pushTab) api在跳转到tab时，H5端使用 **\$Route** 无法访问到传递的参数，可以使用一种变通的方式 [相关测试案例](https://github.com/SilurianYang/uni-simple-router/tree/master/test)
-1. APP、小程序、H5测试通过，其他端未测试。
+1. APP、微信小程序、百度小程序、H5测试通过，其他端未测试。
 1. 暂时无法在其他js文件中跳转，**1.2.0** 版本将会加上,完全是抽出个人时间来完成。所以大家理解下。
 
 

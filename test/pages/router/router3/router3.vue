@@ -15,6 +15,7 @@
 			}
 		},
 		onLoad() {
+			console.log('路由3')
 			this.msg=this.$Route.query.msg;
 			setTimeout(()=>{
 					this.$Router.back(2)

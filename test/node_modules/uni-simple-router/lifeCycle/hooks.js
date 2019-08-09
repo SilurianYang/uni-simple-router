@@ -9,6 +9,10 @@ import {
 	route
 } from "../helpers/config.js";
 
+import {
+	queryInfo
+} from "../patch/applets-patch.js";
+
 export const registerHook = function(list, fn) {
 	list.push(fn);
 	return () => {
@@ -58,13 +62,11 @@ export const resolveParams = async function(router, rule, fnType, navigateFun) {
 	router.lifeCycle["routerbeforeHooks"][0].call(router) //触发内部跳转前的生命周期
 
 	router.lastVim = queryMp(router.lastVim);
-	const _from = resolveRule(
-		router, {
-			path: "/" + router.lastVim.page.route || '',
-			ONLAUNCH: router.lastVim.ONLAUNCH || false,
-		},
-		router.lastVim.query || {}
-	);
+	
+	const routeInfo= queryInfo(router.lastVim);
+	
+	const _from = resolveRule(router,routeInfo.route,routeInfo.query);
+	
 	const _to = normalizeParams(JSON.parse(JSON.stringify(rule)), router.routers);
 	const ags = {
 		router,

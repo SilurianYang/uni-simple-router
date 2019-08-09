@@ -15,7 +15,7 @@
 			}
 		},
 		onLoad() {
-			console.log(this.$Route)
+			console.log('路由4')
 			this.msg=JSON.stringify(this.$Route.query)
 			setTimeout(()=> {
 					this.$Router.back()

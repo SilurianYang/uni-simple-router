@@ -55,5 +55,8 @@
             "minified" : true
         },
         "usingComponents" : true
+    },
+    "mp-baidu" : {
+        "usingComponents" : true
     }
 }

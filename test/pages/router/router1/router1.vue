@@ -14,6 +14,7 @@
 		},
 		onLoad() {
 			//console.log(this.$Route);
+			console.log('路由1')
 			setTimeout(()=>{
 				this.$Router.push({name:'router2'})
 			},3000)

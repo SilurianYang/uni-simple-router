@@ -22,6 +22,7 @@
 			};
 		},
 		onLoad() {
+			//console.log(this)
 		},
 		created() {
 		},

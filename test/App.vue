@@ -1,7 +1,6 @@
 <script>
 export default {
 	onLaunch: function() {
-		
 		// this.$Router.push({
 		// 	name:'router4',
 		// 	params:{
@@ -11,6 +10,8 @@ export default {
 		// })
 		
 		//console.log(this.$Route)
+		
+
 		
 		setTimeout(() => {
 			uni.setTabBarBadge({
