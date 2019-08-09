@@ -7,8 +7,12 @@ import {
 
 import * as lifeMothods from "./lifeCycle/hooks.js";
 
-import patch from "./patch/h5-patch.js";
-const H5path = new patch(util.isH5());
+import H5 from "./patch/h5-patch.js";
+const H5PATCH = new H5(util.isH5());
+
+import {
+	queryInfo
+} from "./patch/applets-patch.js";
 
 class Router {
 	constructor(arg) {
@@ -81,7 +85,7 @@ class Router {
 				"返回层级参数必须是一个Number类型且必须大于1：" + delta
 			);
 		}
-		H5path.on('historyBack',-delta ,()=> {
+		H5PATCH.on('historyBack',-delta ,()=> {
 			uni.navigateBack({
 				delta
 			});
@@ -93,13 +97,10 @@ class Router {
 	 */
 	getQuery(Vim) {
 		Vim = util.queryMp(Vim);
-		return util.resolveRule(
-			this, {
-				path: "/" + Vim.page.route || '',
-				ONLAUNCH: Vim.ONLAUNCH || false,
-			},
-			Vim.query || {}
-		);
+		
+		const routeInfo= queryInfo(Vim);
+		
+		return util.resolveRule(this, routeInfo.route,routeInfo.query);
 	}
 	beforeEach(fn) {
 		return lifeMothods.registerHook(this.lifeCycle.beforeHooks, fn);
@@ -118,11 +119,11 @@ Router.install = function(Vue) {
 		onLoad: function() {
 			if (Router.onLaunched) {
 				Router.onLaunched = false;
-
+				
 				const navtoInfo = Router.$root.getQuery(this);
-
+				
 				Router.$root.lastVim = this;
-
+				
 				lifeMothods.resolveParams(Router.$root, {
 					path: navtoInfo.path,
 					query: navtoInfo.query
