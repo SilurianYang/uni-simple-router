@@ -5,7 +5,7 @@ export const queryInfo=function(Vim){
 				path: "/" + Vim.page.route || '',
 				ONLAUNCH: Vim.ONLAUNCH || false,
 			},
-			query:Vim.query || {}
+			query:JSON.parse(Vim.query.query|| '{}')
 		}
 		// #endif
 		
@@ -15,7 +15,7 @@ export const queryInfo=function(Vim){
 					path: "/" + Vim.page.pageinstance.route || '',
 					ONLAUNCH: Vim.ONLAUNCH || false,
 				},
-				query:Vim.query || {}
+				query:JSON.parse(Vim.query.query|| '{}') 
 			}
 		// #endif
 		
