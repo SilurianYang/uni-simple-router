@@ -52,7 +52,12 @@ const router = new Router({
 		},
 		{
 			path: "/pages/router/router5/router5",
-			name: 'router5'
+			name: 'router5',
+			beforeEnter:(to, from, next) =>{
+				console.log(to)
+				console.log(from)
+				next();
+			}
 		},
 		{
 			path: "/pages/router/router6/router6",
@@ -62,6 +67,8 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
+	console.log(to);
+	console.log(from)
 	if (to.name == 'tabbar-5') {
 		next({
 			name: 'router4',
@@ -81,12 +88,11 @@ router.beforeEach((to, from, next) => {
 			next();
 		}
 	}
-	// console.log(to);
-	// console.log(from)
+	
 })
 router.afterEach((to, from) => {
-	// console.log(to);
-	// console.log(from)
+	console.log(to);
+	console.log(from)
 })
 // console.log(router)
 

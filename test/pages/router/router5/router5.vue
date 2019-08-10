@@ -14,7 +14,7 @@
 		},
 		onLoad(){
 			this.value=JSON.stringify(this.$Route.query)
-			console.log(JSON.stringify(this.$Route.query))
+			console.log(this.$Route.query)
 		}
 	}
 </script>

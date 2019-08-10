@@ -16,10 +16,11 @@
 		},
 		onLoad() {
 			console.log('路由4')
+			console.log(this.$Route)
 			this.msg=JSON.stringify(this.$Route.query)
-			setTimeout(()=> {
-					this.$Router.back()
-			}, 3000);
+			// setTimeout(()=> {
+			// 		this.$Router.back()
+			// }, 3000);
 		},
 		methods: {
 			gotoPage(){
