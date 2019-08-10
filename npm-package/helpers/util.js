@@ -40,23 +40,12 @@ export const parseQuery = function(routerName, query, Encode = false) {
     }
     return {
       url: routerName,
-      query: obj
+      query: JSON.parse(obj.query)
     };
   } else {
-    const encodeArr = [];
-    for (let attr in query) {
-		let encodeStr='';
-		if(query[attr].constructor==Object){
-			encodeStr=parseQuery(routerName,query[attr],Encode).query;
-			encodeArr.push(encodeStr);
-		}else{
-			encodeStr=filter(query[attr]);
-			encodeArr.push(`${attr}=${ encodeStr }`);
-		}
-    }
     return {
       url: routerName,
-      query: encodeArr.join("&")
+      query: `query=${JSON.stringify(query)}`
     };
   }
 };
