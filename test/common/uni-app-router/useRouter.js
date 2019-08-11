@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'uni-simple-router';
+
 Vue.use(Router);
+
 const router = new Router({
 	routes: [{
 			path: "/pages/tabbar/tabbar-1/tabbar-1",
