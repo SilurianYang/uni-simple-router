@@ -38,6 +38,7 @@ class Router {
 			}else{
 				this.depEvent.splice(index,1)
 			}
+			this.lastVim=Router.lastVim;
 		});
 	}
 	_pushTo({
@@ -129,6 +130,8 @@ class Router {
 Router.$root = null;
 Router.onLaunched = false;
 Router.showId = 0;
+Router.lastVim=null;	//静态属性缓存上个操作的page对象
+Router.doRouter=false;		//用户主动触发router事件
 
 Router.install = function(Vue) {
 	Vue.mixin({
@@ -139,9 +142,15 @@ Router.install = function(Vue) {
 			
 			Event.one('show',(res)=>{
 				if (Router.onLaunched &&!res.status) {
+					if(this.constructor===Vue){
+						return false;
+					}
+					if(Router.$root.lastVim==null){
+						Router.$root.lastVim = this;
+					}
 					Router.$root.depEvent.push(res.showId);
 					const navtoInfo = Router.$root.getQuery(this);
-					Router.$root.lastVim = this;
+					
 					lifeMothods.resolveParams(Router.$root, {
 						path: navtoInfo.path,
 						query: navtoInfo.query
@@ -158,8 +167,12 @@ Router.install = function(Vue) {
 				}
 				
 			})
-			
 			if(Router.showId>0){
+				if(Router.doRouter){
+					Router.doRouter=false;
+					Router.$root.lastVim=this;
+				}
+				Router.lastVim=this;
 				if(Router.$root.loadded===false){
 					Event.notify('show',{status:false,showId:Router.showId})
 				}else{
@@ -171,6 +184,7 @@ Router.install = function(Vue) {
 	})
 	Object.defineProperty(Vue.prototype, "$Router", {
 		get: function() {
+			Router.doRouter=this;
 			Router.$root.lastVim = this;
 			return Router.$root;
 		}
