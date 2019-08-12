@@ -56,8 +56,8 @@ const router = new Router({
 			path: "/pages/router/router5/router5",
 			name: 'router5',
 			beforeEnter:(to, from, next) =>{
-				console.log(to)
-				console.log(from)
+				// console.log(to)
+				// console.log(from)
 				next();
 			}
 		},
@@ -89,12 +89,13 @@ router.beforeEach((to, from, next) => {
 		} else {
 			next();
 		}
+		// next();
 	}
 	
 })
 router.afterEach((to, from) => {
-	console.log(to);
-	console.log(from)
+	// console.log(to);
+	// console.log(from)
 })
 // console.log(router)
 

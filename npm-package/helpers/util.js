@@ -19,18 +19,6 @@ export const queryMp=function(Vim){
 	}
 }
 
-export const filter = function(str) {
-  str += "";
-  str = str.replace(/%/g, "%25");
-  str = str.replace(/\+/g, "%2B");
-  str = str.replace(/ /g, "%20");
-  str = str.replace(/\//g, "%2F");
-  str = str.replace(/\?/g, "%3F");
-  str = str.replace(/&/g, "%26");
-  str = str.replace(/\=/g, "%3D");
-  str = str.replace(/#/g, "%23");
-  return str;
-};
 export const parseQuery = function(routerName, query, Encode = false) {
   if (Encode) {
     let reg = /([^=&\s]+)[=\s]*([^&\s]*)/g;

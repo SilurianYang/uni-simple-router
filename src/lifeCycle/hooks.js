@@ -58,8 +58,9 @@ export const isNext = function(router, Intercept, rule, fnType) {
 };
 
 export const resolveParams = async function(router, rule, fnType, navigateFun) {
-
-	router.lifeCycle["routerbeforeHooks"][0].call(router) //触发内部跳转前的生命周期
+	if(navigateFun!=null){
+		router.lifeCycle["routerbeforeHooks"][0].call(router) //触发内部跳转前的生命周期
+	}
 
 	router.lastVim = queryMp(router.lastVim);
 	
@@ -80,7 +81,8 @@ export const resolveParams = async function(router, rule, fnType, navigateFun) {
 		rule,
 		fnType
 	};
-
+	let fromatRule={};
+	let navFunCallback=false;
 	try {
 		const beforeResult = await resolveBeforeHooks(ags);
 		if (navigateFun == null) {
@@ -89,7 +91,7 @@ export const resolveParams = async function(router, rule, fnType, navigateFun) {
 				ags
 			};
 		}
-		let fromatRule = await isNext(router, beforeResult, _to, fnType);
+		 fromatRule= await isNext(router, beforeResult, _to, fnType);
 
 		fnType = fromatRule.ags.rule.NAVTYPE;
 
@@ -102,7 +104,7 @@ export const resolveParams = async function(router, rule, fnType, navigateFun) {
 				fromatRule.toRule
 			);
 		}
-		navigateFun.call(router, fromatRule);
+		navFunCallback=await navigateFun.call(router, fromatRule);
 
 		resolveAfterHooks(
 			router, {
@@ -114,8 +116,9 @@ export const resolveParams = async function(router, rule, fnType, navigateFun) {
 			ags.fromRule
 		);
 	} catch (e) {};
-	router.lifeCycle["routerAfterHooks"][0].call(router) //触发内部跳转后的生命周期
-
+	if(navigateFun!=null){
+		router.lifeCycle["routerAfterHooks"][0].call(router,fromatRule,navFunCallback) //触发内部跳转后的生命周期
+	}
 };
 /**
  * 触发全局afterHooks 生命钩子
