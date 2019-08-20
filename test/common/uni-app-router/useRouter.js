@@ -81,15 +81,15 @@ router.beforeEach((to, from, next) => {
 		});
 		//next();
 	} else {
-		if (to.name == 'tabbar-1') {
-			next({
-				path: '/pages/tabbar/tabbar-3/tabbar-3',
-				NAVTYPE: 'pushTab'
-			});
-		} else {
-			next();
-		}
-		// next();
+		// if (to.name == 'tabbar-1') {
+		// 	next({
+		// 		path: '/pages/tabbar/tabbar-3/tabbar-3',
+		// 		NAVTYPE: 'pushTab'
+		// 	});
+		// } else {
+		// 	next();
+		// }
+		next();
 	}
 	
 })

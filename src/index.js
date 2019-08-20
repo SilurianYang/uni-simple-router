@@ -38,7 +38,8 @@ class Router {
 			}else{
 				this.depEvent.splice(index,1)
 			}
-			this.lastVim=Router.lastVim;
+			this.lastVim=BUILTIN.currentVim;
+			
 		});
 	}
 	_pushTo({
@@ -130,8 +131,27 @@ class Router {
 Router.$root = null;
 Router.onLaunched = false;
 Router.showId = 0;
-Router.lastVim=null;	//静态属性缓存上个操作的page对象
+Router.lastVim={};
+Router.depShowCount=[];
 Router.doRouter=false;		//用户主动触发router事件
+
+const BUILTIN={};	//代理属性缓存上个操作的page对象
+
+Object.defineProperty(BUILTIN,'currentVim',{
+	configurable:true,
+	enumerable:false,
+	set:function(val){
+		BUILTIN._currentVim=val;
+		if(Router.showId===Router.depShowCount[Router.depShowCount.length-1]){
+			Router.$root.lastVim=val;
+			Router.depShowCount.pop();
+		}
+	},
+	get:function(){
+		return BUILTIN._currentVim;
+	},
+	
+})
 
 Router.install = function(Vue) {
 	Vue.mixin({
@@ -139,8 +159,8 @@ Router.install = function(Vue) {
 			Router.onLaunched = true;
 		},
 		onShow: function() {
-			
 			Event.one('show',(res)=>{
+				
 				if (Router.onLaunched &&!res.status) {
 					if(this.constructor===Vue){
 						return false;
@@ -164,6 +184,8 @@ Router.install = function(Vue) {
 							}
 						})
 					});
+				}else{
+					Router.depShowCount.push(res.showId)
 				}
 				
 			})
@@ -172,7 +194,7 @@ Router.install = function(Vue) {
 					Router.doRouter=false;
 					Router.$root.lastVim=this;
 				}
-				Router.lastVim=this;
+				BUILTIN.currentVim=this;
 				if(Router.$root.loadded===false){
 					Event.notify('show',{status:false,showId:Router.showId})
 				}else{
