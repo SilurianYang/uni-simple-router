@@ -3,20 +3,33 @@
 		<button type="primary" @click="gotoPage">去路由页面1</button>
 		<button type="primary" @click="gotoPage1">去tab5被拦截到路由4</button>
 		<button type="primary" @click="gotoTab">跳转到tab4页面</button>
-		
-		<navigator url="/pages/router/router1/router1" hover-class="navigator-hover">
-		                    <button type="default">跳转到新页面</button>
-		</navigator>
-		
-		<router-link to="{name: 'tabbar-5',params: {name: '我只想去tab5的router-link'}}"></router-link>
-		
-		<router-link to="/pages/tabbar/tabbar-5/tabbar-5" navType="push" :append="true">
-			<button type="warn">点我试试</button>
-		</router-link>
-		
-		
 		<Child></Child>
 		<Child1></Child1>
+		
+		
+		
+		<h3 style="margin: 40px 0 10px 0; text-align: left;">路由组件：</h3>
+		<router-link to="{name: tabbar-4,params: {name: '我只想去tab5的router-link'}}" navType="pushTab">
+			<button type="primary">使用name对象跳转</button>
+		</router-link>
+		<router-link to="{path: '/pages/tabbar/tabbar-4/tabbar-4',query: {name: '我只想去tab5的router-link'}}" navType="pushTab">
+			<button type="primary">使用path对象跳转</button>
+		</router-link>
+		<router-link to="{path: '/tabbar-4/tabbar-4,query': {name: '我只想去tab5的router-link'}}" navType="pushTab" :level="2" :append="true">
+			<button type="primary">使用path对象继承父路径跳转</button>
+		</router-link>
+		
+		<router-link to="/pages/tabbar/tabbar-4/tabbar-4" navType="pushTab">
+			<button type="warn">通过路由path直接跳转</button>
+		</router-link>
+		<router-link to="/tabbar-4/tabbar-4" navType="pushTab" :level="2" :append="true">
+			<button type="warn">通过路由path继承父路径跳转</button>
+		</router-link>
+		
+		<router-link to="/tabbar-4/tabbar-4" navType="pushTab" :level="2" :append="true" :stopNavto="true">
+			<button type="default">阻止组件事件,不会跳转</button>
+		</router-link>
+		
 	</view>
 </template>
 

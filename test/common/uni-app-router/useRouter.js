@@ -69,8 +69,8 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-	console.log(to);
-	console.log(from)
+	// console.log(to);
+	// console.log(from)
 	if (to.name == 'tabbar-5') {
 		next({
 			name: 'router4',
