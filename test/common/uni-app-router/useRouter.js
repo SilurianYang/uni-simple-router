@@ -4,6 +4,7 @@ import Router from 'uni-simple-router';
 Vue.use(Router);
 
 const router = new Router({
+    loading:false,
 	routes: [{
 			path: "/pages/tabbar/tabbar-1/tabbar-1",
 			name: 'tabbar-1'
@@ -59,6 +60,7 @@ const router = new Router({
 				// console.log(to)
 				// console.log(from)
 				next();
+				//next();
 			}
 		},
 		{
@@ -69,29 +71,31 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-	// console.log(to);
-	// console.log(from)
-	if (to.name == 'tabbar-5') {
-		next({
-			name: 'router4',
-			params: {
-				msg: '我拦截了tab5并重定向到了路由4页面上',
-			},
-			NAVTYPE: 'push'
-		});
-		//next();
-	} else {
+	// if (to.name == 'tabbar-5') {
+	// 	next({
+	// 		name: 'router4',
+	// 		params: {
+	// 			msg: '我拦截了tab5并重定向到了路由4页面上',
+	// 		},
+	// 		NAVTYPE: 'push'
+	// 	});
+	//  }
+	// } else {
 		// if (to.name == 'tabbar-1') {
-		// 	next({
-		// 		path: '/pages/tabbar/tabbar-3/tabbar-3',
-		// 		NAVTYPE: 'pushTab'
-		// 	});
+		// 	setTimeout(function() {
+		// 		next();
+		// 	}, 5000);
 		// } else {
 		// 	next();
 		// }
+		
 		next();
-	}
-	
+		
+			// setTimeout(function() {
+			// 	next();
+			// }, 2000);
+
+
 })
 router.afterEach((to, from) => {
 	// console.log(to);

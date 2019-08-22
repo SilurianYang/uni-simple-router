@@ -29,9 +29,14 @@ class Router {
 		this.lifeCycle = lifeCycle;
 		this.lastVim = null;
 		this.depEvent=[];
-
-		lifeMothods.registerHook(this.lifeCycle.routerbeforeHooks, function() {});
+		
+		H5PATCH.setLoadingStatus(arg.loading)
+		
+		lifeMothods.registerHook(this.lifeCycle.routerbeforeHooks, function() {
+			H5PATCH.on('toogle')
+		});
 		lifeMothods.registerHook(this.lifeCycle.routerAfterHooks, async function(customRule, res) {
+			H5PATCH.on('toogle','stopLodding')
 			const index=this.depEvent.indexOf(res.showId);
 			if(index==-1){
 				Event.notify('show',res);
