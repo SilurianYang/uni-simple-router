@@ -9,8 +9,8 @@ import * as lifeMothods from "./lifeCycle/hooks.js";
 
 import event from './helpers/event.js'
 const Event=new event();
-
-import H5 from "./patch/h5-patch.js";
+ 
+import H5 from "./patch/h5-patch.js";   			
 const H5PATCH = new H5(util.isH5());
 
 import {
@@ -164,6 +164,13 @@ Router.install = function(Vue) {
 			Router.onLaunched = true;
 		},
 		onShow: function() {
+			
+			// #ifdef H5
+				if(H5PATCH.previewImagePatch(this)){
+					return true;
+				}
+			// #endif
+			
 			Event.one('show',(res)=>{
 				
 				if (Router.onLaunched &&!res.status) {

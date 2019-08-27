@@ -23,6 +23,17 @@ class Patch {
 		history.go(num);
 	}
 	/**
+	 * H5端调用uni.previewImage 出现的 'url' of undefined 
+	 */
+	previewImagePatch(Vim){
+		try{
+			if(Vim.route=='/preview-image'){
+				return true
+			}
+		}catch(e){}
+		return false;
+	}
+	/**
 	 * 把加载动画添加到dom下面,为什么一定要先添加，后移除。保证动画的连续性
 	 */
 	appendHTML(resolve) {
