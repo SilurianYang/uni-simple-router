@@ -9,15 +9,17 @@
 ### 大纲
 
 1. #### [安装](#anchor0)
+1. #### [组件式的导航](#anchor11) <sup>1.2.2+</sup>
 1. #### [编程式的导航](#anchor1)
 1. #### [命名式路由](#anchor2)
-1. #### [路由传参](#anchor3)
+1. #### [路由传参](#anchor3)  <sup>1.2.2+</sup>
 1. #### [全局前置守卫](#anchor4)
 1. #### [全局后置钩子](#anchor5)
 1. #### [路由独享守卫](#anchor6)
 1. #### [路由元信息](#anchor7)
+1. #### [H5路由跳转进度条](#anchor12) <sup>1.2.2+</sup>
 1. #### [完整的导航解析流程](#anchor8)
-1. #### [首次触发生命钩子注意事项](#anchor10) <sup>1.1.0+</sup>
+1. #### [首次触发生命钩子注意事项](#anchor10) <sup>1.2.2+</sup>
 1. #### [NAVTYPE取值类型](#NAVTYPE) <sup>1.1.0+</sup>
 1. #### [注意事项](#anchor9)
 
@@ -39,6 +41,59 @@ Vue.use(Router)
 ```
 
 ---
+
+## <div id="anchor11">组件式的导航 <sup>1.2.2+</sup> </div>
+
+这是一个很难抉择的问题？加还是不加这是一个问题！为了让开发者更快捷，最后还是封装上了 **router-link** 组件。为了能满足多端这里必须批评下 **微信小程序**，它要搞特殊。没得办法的！所以没法帮你们注册组件。它那玩意只能在 **main.js** 中才能注册组件！！！！ 不多说了，直接上代码。
+##### 注册组件：
+```javaScript
+// main.js
+
+import routerLink from './node_modules/uni-simple-router/component/router-link.vue'
+Vue.component('router-link',routerLink)
+
+```
+
+##### 使用组件：
+```javaScript
+// xxxx.vue
+
+<router-link to="{name: tabbar-4,params: {name: '我只想去tab5的router-link'}}" navType="pushTab">
+  <button type="primary">使用name对象跳转</button>
+</router-link>
+
+<router-link to="{path: '/pages/tabbar/tabbar-4/tabbar-4',query: {name: '我只想去tab5的router-link'}}" navType="pushTab">
+  <button type="primary">使用path对象跳转</button>
+</router-link>
+
+<router-link to="{path: '/tabbar-4/tabbar-4,query': {name: '我只想去tab5的router-link'}}" navType="pushTab" :level="2" :append="true">
+  <button type="primary">使用path对象继承父路径跳转</button>
+</router-link>
+
+<router-link to="/pages/tabbar/tabbar-4/tabbar-4" navType="pushTab">
+  <button type="warn">通过路由path直接跳转</button>
+</router-link>
+
+<router-link to="/tabbar-4/tabbar-4" navType="pushTab" :level="2" :append="true">
+  <button type="warn">通过路由path继承父路径跳转</button>
+</router-link>
+
+<router-link to="/tabbar-4/tabbar-4" navType="pushTab" :level="2" :append="true" :stopNavto="true">
+  <button type="default">阻止组件事件,不会跳转</button>
+</router-link>
+```
+
+### prop：
+
+参数  | 类型  | 必填  | 默认值  | 描述  
+--- | ----  | ----  | ----  |   ----
+to  | String  | **是**  | | 需要跳转的路径。可以是字符串对象，也可以是一个绝对路径，也可以是一个相对路径  
+stopNavto |   Boolean | 否  | false | 默认绑定事件为点击事件，不阻止。
+navType |   String  | 否  | push  | 需要跳转的 [NAVTYPE类型](#NAVTYPE)
+level | Number  | 否  | 1 |  相对于当前页面路径，以 **/** 从后往前裁切的层级。append 为true时生效
+append  | Boolean | 否  | false | 是否相对于当前页面路径跳转。根据 level 层级截取的路径 拼接 to 。 **只针对使用path跳转的情况**
+
+
 
 ## <div id="anchor1">编程式的导航</div>
 
@@ -189,7 +244,9 @@ this.$Router.push({ name: 'router1', params: { userId: '123' }})
 
 ##### 在组件中使用 $Route 来获取当前路由表中的配置及参数。因为路由传值方面官方目前仅提供了query的方式进行传参，所以到目前为止uni-simple-router也仅支持query的获取方式。为了兼容H5手动刷新后参数丢失的问题。其次在 \$Route 对象中 依然保留了 params 选项后续会补上。
 
-##### 数据传参时尽量不要传递深度对象，虽然中间有做一层操作。始终不能百分百还原。在深度对象传递的过程中，深度对象将会抹平成一个大对象。而且在参数传递的过程中传递的数据将会变成字符串
+##### ~~数据传参时尽量不要传递深度对象，虽然中间有做一层操作。始终不能百分百还原。在深度对象传递的过程中，深度对象将会抹平成一个大对象。而且在参数传递的过程中传递的数据将会变成字符串~~
+
+##### 深度对象可传递 <sup>1.2.2+</sup>
 
 ##### 例子
 
@@ -207,29 +264,6 @@ this.$Router.push({ path: '/pages/router/router1/router1', query: { userId: '123
 
 // 获取方式
 this.$Route.query.userId;
-
-
-// 对象传参 包括深度对象
-this.$Router.push({
-  name:'router5',
-  params:{
-    type:true,
-    info:{
-      name:'hhyang',
-      ages:21,
-      info:{
-        name1:'hhyang',
-        ages1:21
-      },
-      info2:{
-        name2:'hhyang',
-        ages2:21
-      }
-    }
-  }
-})
-//输出  {"type":"true","name":"hhyang","ages":"21","name1":"hhyang","ages1":"21","name2":"hhyang","ages2":"21"}
-
 
 ```
 
@@ -372,6 +406,31 @@ router.beforeEach((to, from, next) => {
 ```
 ----------
 
+## <div id="anchor12">H5路由跳转进度条 <sup>1.2.2+</sup></div>
+``` javaScript
+
+import Vue from 'vue'
+import Router from 'uni-simple-router';
+
+Vue.use(Router);
+
+const router = new Router({
+    loading:false,  //默认为开启状态，可不传递。
+    routes: [{
+      path: "/pages/tabbar/tabbar-1/tabbar-1",
+      name: 'tabbar-1'
+    },
+    {
+      path: "/pages/tabbar/tabbar-2/tabbar-2",
+      name: 'tabbar-2'
+    },
+    ]
+});
+
+```
+------
+
+
 ## <div id="anchor8">完整的导航解析流程</div>
 
 1. 导航被触发。
@@ -383,7 +442,7 @@ router.beforeEach((to, from, next) => {
 
 ----------
 
-## <div id="anchor10">首次触发生命钩子注意事项 <sup>1.1.0+</sup> </div>
+## <div id="anchor10">首次触发生命钩子注意事项 <sup>1.2.2+</sup> </div>
 1. 首次启动依次触发全局钩子、组件独享钩子。
 1. 在app.vue 中跳转时会获得 ONLAUNCH: true 的标识，回显在每个钩子的同to、from 下。同时你也可以通过 this.\$Route 获取到。
 1. 在next() 中拦截跳转时必须明确的给出标识[NAVTYPE](#NAVTYPE),否则无法跳转。在页面同类型时可以忽视。
@@ -410,7 +469,6 @@ router.beforeEach((to, from, next) => {
 1. 内置对象名称差异 **\$Router** 非 \$router，**$Route** 非 \$route
 1. [pushTab](#pushTab) api在跳转到tab时，H5端使用 **\$Route** 无法访问到传递的参数，可以使用一种变通的方式 [相关测试案例](https://github.com/SilurianYang/uni-simple-router/tree/master/test)
 1. APP、微信小程序、百度小程序、H5测试通过，其他端未测试。
-1. 暂时无法在其他js文件中跳转，**1.2.0** 版本将会加上,完全是抽出个人时间来完成。所以大家理解下。
 
 
 --------

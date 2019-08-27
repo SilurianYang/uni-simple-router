@@ -52,7 +52,8 @@
         "appid" : "",
         "setting" : {
             "urlCheck" : true,
-            "minified" : true
+            "minified" : true,
+			"checkSiteMap":false
         },
         "usingComponents" : true
     },
