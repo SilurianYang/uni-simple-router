@@ -8,9 +8,11 @@
 		                    <button type="default">跳转到新页面</button>
 		</navigator>
 		
-		<router-link to="{name: 'tabbar-5',params: {name: '我只想去tab5的router-link'}}"></router-link>
+		<router-link class="best-list-item" to="{name: 'router5',params: {name: 'http://192.168.1.160:8082/#/pages/tabbar/tabbar-5/tabbar-5'}}">
+			<button type="primary">router-link</button>
+		</router-link>
 		
-		<router-link to="/pages/tabbar/tabbar-5/tabbar-5" navType="push" :append="true">
+		<router-link to="{path:'/pages/router/router5/router5',query:{name:'hhyang'}}" navType="push">
 			<button type="warn">点我试试</button>
 		</router-link>
 		
@@ -40,7 +42,7 @@
 		},
 		methods: {
 			gotoPage() {
-				this.$Router.push('/pages/router/router1/router1')
+				this.$Router.push({name: 'router5',params: {name: 'http://192.168.1.160:8082/#/pages/tabbar/tabbar-5/tabbar-5'}})
 			},
 			gotoPage1(){
 				this.$Router.pushTab({
