@@ -33,7 +33,7 @@ class Router {
 		H5PATCH.setLoadingStatus(arg.loading)
 		
 		lifeMothods.registerHook(this.lifeCycle.routerbeforeHooks, function() {
-			H5PATCH.on('toogle')
+			H5PATCH.on('toogle','startLodding')
 		});
 		lifeMothods.registerHook(this.lifeCycle.routerAfterHooks, async function(customRule, res) {
 			H5PATCH.on('toogle','stopLodding')
@@ -52,11 +52,20 @@ class Router {
 		ags
 	}) {
 		return new Promise(resolve => {
+			//这里是为兼容APP,非APP端是在切换动画完成后响应(https://github.com/SilurianYang/uni-simple-router/issues/16)
+			// #ifdef APP-PLUS
+				this.loadded=true;
+			// #endif
+			
+			let url=`${toRule.url}?${toRule.query}`;
+			if(toRule.query==='query={}'){
+				url=toRule.url;
+			}
 			uni[this.methods[ags.rule.NAVTYPE]]({
-				url: `${toRule.url}?${toRule.query}`,
+				url,
 				complete: () => {
 					this.loadded=true;
-					resolve({status:true,showId:Router.showId});
+					resolve({status:true,showId:Router.showId,complete:true});
 				}
 			});
 		})
@@ -172,7 +181,6 @@ Router.install = function(Vue) {
 			// #endif
 			
 			Event.one('show',(res)=>{
-				
 				if (Router.onLaunched &&!res.status) {
 					if(this.constructor===Vue){
 						return false;
