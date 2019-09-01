@@ -9,8 +9,15 @@ export default {
 		// 	}
 		// })
 		
-		//console.log(this.$Route)
+		// console.log(this.$Route)
 		
+		
+		this.$Router.pushTab({
+			name: 'tabbar-5',
+			params: {
+				name: '我只想去tabbar-5',
+			}
+		})
 
 		
 		setTimeout(() => {
