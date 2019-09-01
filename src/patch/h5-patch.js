@@ -5,6 +5,7 @@ class Patch {
 	constructor(h5) {
 		this.H5 = h5;
 		this.isLoading = true;
+		this.loadingCount=0;	//在APP.vue中进行跳转时，DOMContentLoaded过慢。使用索引来判断
 		this.appended=new Promise(resolve=>{
 			this.appendHTML(resolve);
 		})
@@ -43,7 +44,7 @@ class Patch {
 			body.appendChild(html.style);
 			body.appendChild(html.DOM);
 			body.appendChild(html.script);
-			this.toogle();
+			this.toogle('startLodding',true);
 			resolve();
 		})
 		// #endif
@@ -51,7 +52,12 @@ class Patch {
 	/**
 	 * 页面是否加载完毕触发对应事件
 	 */
-	async toogle(toogle = 'startLodding') {
+	async toogle(toogle,DOMContentLoaded=false) {
+		if(DOMContentLoaded&&this.loadingCount!==0){
+			this.loadingCount++;
+			return false;
+		}
+		this.loadingCount++;
 		if(this.isLoading){
 			await this.appended;
 			window[toogle]();
