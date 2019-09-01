@@ -68,6 +68,7 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
+		console.log(to.name)
 		next();
 })
 router.afterEach((to, from) => {

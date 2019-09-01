@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.js",
   "dependencies": {
-    "uni-simple-router": "^1.2.3"
+    "uni-simple-router": "^1.2.4"
   },
   "devDependencies": {},
   "scripts": {
