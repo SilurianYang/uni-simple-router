@@ -49,12 +49,11 @@
     /* 快应用特有相关 */
     "mp-weixin" : {
         /* 小程序特有相关 */
-        "appid" : "wx857b3a454bf68899",
+        "appid" : "",
         "setting" : {
             "urlCheck" : true,
             "minified" : true,
-            "checkSiteMap" : false,
-            "postcss" : true
+			"checkSiteMap":false
         },
         "usingComponents" : true
     },

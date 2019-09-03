@@ -13,6 +13,8 @@ import {
 	queryInfo
 } from "../patch/applets-patch.js";
 
+import {warn} from "../helpers/warn.js";
+
 export const registerHook = function(list, fn) {
 	list.push(fn);
 	return () => {
@@ -59,7 +61,10 @@ export const isNext = function(router, Intercept, rule, fnType) {
 
 export const resolveParams = async function(router, rule, fnType, navigateFun) {
 	if(navigateFun!=null){
-		router.lifeCycle["routerbeforeHooks"][0].call(router) //触发内部跳转前的生命周期
+		const isComponent=await router.lifeCycle["routerbeforeHooks"][0].call(router,fnType) //触发内部跳转前的生命周期,并验证当前是否为组件
+		if(!isComponent){
+			return warn('Vue模板未编译完成，不支持跳转。请检查 $Router API 代码')
+		}
 	}
 
 	router.lastVim = queryMp(router.lastVim);

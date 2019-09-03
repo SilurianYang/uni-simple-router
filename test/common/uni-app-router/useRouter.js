@@ -1,10 +1,10 @@
+
 import Vue from 'vue'
 import Router from 'uni-simple-router';
 
 Vue.use(Router);
 
 const router = new Router({
-	// loading:false,
 	routes: [{
 			path: "/pages/tabbar/tabbar-1/tabbar-1",
 			name: 'tabbar-1'
@@ -57,6 +57,8 @@ const router = new Router({
 			path: "/pages/router/router5/router5",
 			name: 'router5',
 			beforeEnter:(to, from, next) =>{
+				// console.log(to)
+				// console.log(from)
 				next();
 			}
 		},
@@ -68,10 +70,14 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-		console.log(to.name)
+		// console.log(to)
+		// console.log(from)
 		next();
 })
 router.afterEach((to, from) => {
+	// console.log(to);
+	// console.log(from)
 })
+// console.log(router)
 
 export default router

@@ -1,4 +1,7 @@
 <script>
+	
+	import {interVal} from '@/common/test.js'
+	
 export default {
 	onLaunch: function() {
 		// this.$Router.push({
@@ -9,16 +12,13 @@ export default {
 		// 	}
 		// })
 		
-		// console.log(this.$Route)
+		//console.log(this.$Route)
 		
 		
-		// this.$Router.pushTab({
-		// 	name: 'tabbar-5',
-		// 	params: {
-		// 		name: '我只想去tabbar-5',
-		// 	}
-		// })
-
+		setTimeout(()=>{
+			interVal();
+		},5000)
+		//console.log(this)
 		
 		setTimeout(() => {
 			uni.setTabBarBadge({
@@ -34,7 +34,6 @@ export default {
 		
 	},
 	onHide: function() {
-		console.log('App Hide');
 	}
 };
 </script>

@@ -8,9 +8,9 @@ import {
 import * as lifeMothods from "./lifeCycle/hooks.js";
 
 import event from './helpers/event.js'
-const Event=new event();
- 
-import H5 from "./patch/h5-patch.js";   			
+const Event = new event();
+
+import H5 from "./patch/h5-patch.js";
 const H5PATCH = new H5(util.isH5());
 
 import {
@@ -28,23 +28,32 @@ class Router {
 		this.methods = methods;
 		this.lifeCycle = lifeCycle;
 		this.lastVim = null;
-		this.depEvent=[];
-		
+		this.HooksFinish = true; //内部生命周期是否走完
+		this.depEvent = [];
+
 		H5PATCH.setLoadingStatus(arg.loading)
-		
-		lifeMothods.registerHook(this.lifeCycle.routerbeforeHooks, function() {
-			H5PATCH.on('toogle','startLodding')
+
+		lifeMothods.registerHook(this.lifeCycle.routerbeforeHooks,  function(fnType) {
+			return new Promise(async resolve => {
+				await Router.onLaunched;
+				await Router.onshowed;
+				if (fnType !== 'Router' && Reflect.get(this.lastVim, '_uid') == null) { //验证当前是开发者直接通过api进行跳转的情况，比如vue还没有编译模板完成的情况
+					return resolve(false)
+				}
+				H5PATCH.on('toogle', 'startLodding');
+				return resolve(true);
+			})
 		});
 		lifeMothods.registerHook(this.lifeCycle.routerAfterHooks, async function(customRule, res) {
-			H5PATCH.on('toogle','stopLodding')
-			const index=this.depEvent.indexOf(res.showId);
-			if(index==-1){
-				Event.notify('show',res);
-			}else{
-				this.depEvent.splice(index,1)
+			H5PATCH.on('toogle', 'stopLodding')
+			const index = this.depEvent.indexOf(res.showId);
+			if (index == -1) {
+				Event.notify('show', res);
+			} else {
+				this.depEvent.splice(index, 1)
 			}
-			this.lastVim=BUILTIN.currentVim;
-			
+			this.lastVim = BUILTIN.currentVim;
+			this.HooksFinish = true;
 		});
 	}
 	_pushTo({
@@ -54,18 +63,22 @@ class Router {
 		return new Promise(resolve => {
 			//这里是为兼容APP,非APP端是在切换动画完成后响应(https://github.com/SilurianYang/uni-simple-router/issues/16)
 			// #ifdef APP-PLUS
-				this.loadded=true;
+			this.loadded = true;
 			// #endif
-			
-			let url=`${toRule.url}?${toRule.query}`;
-			if(toRule.query==='query={}'){
-				url=toRule.url;
+
+			let url = `${toRule.url}?${toRule.query}`;
+			if (toRule.query === 'query={}') {
+				url = toRule.url;
 			}
 			uni[this.methods[ags.rule.NAVTYPE]]({
 				url,
 				complete: () => {
-					this.loadded=true;
-					resolve({status:true,showId:Router.showId,complete:true});
+					this.loadded = true;
+					resolve({
+						status: true,
+						showId: Router.showId,
+						complete: true
+					});
 				}
 			});
 		})
@@ -142,91 +155,115 @@ class Router {
 		return lifeMothods.registerHook(this.lifeCycle.afterHooks, fn);
 	}
 }
+
+const BUILTIN = {}; //代理属性缓存上个操作的page对象
+const depPromise=[];	
+
 Router.$root = null;
-Router.onLaunched = false;
+Router.onLaunched = new Promise((resolve) => {depPromise.push(resolve)});
+Router.onshowed = new Promise((resolve) => {depPromise.push(resolve)});
 Router.showId = 0;
-Router.lastVim={};
-Router.depShowCount=[];
-Router.doRouter=false;		//用户主动触发router事件
+Router.lastVim = {};
+Router.depShowCount = [0];
+Router.doRouter = false; //用户主动触发router事件
 
-const BUILTIN={};	//代理属性缓存上个操作的page对象
-
-Object.defineProperty(BUILTIN,'currentVim',{
-	configurable:true,
-	enumerable:false,
-	set:function(val){
-		BUILTIN._currentVim=val;
-		if(Router.showId===Router.depShowCount[Router.depShowCount.length-1]){
-			Router.$root.lastVim=val;
+Object.defineProperty(BUILTIN, 'currentVim', {
+	configurable: true,
+	enumerable: false,
+	set: function(val) {
+		BUILTIN._currentVim = val;
+		if (Router.showId === Router.depShowCount[Router.depShowCount.length - 1]) {
+			Router.$root.lastVim = val;
 			Router.depShowCount.pop();
 		}
 	},
-	get:function(){
+	get: function() {
 		return BUILTIN._currentVim;
 	},
-	
+
 })
 
 Router.install = function(Vue) {
 	Vue.mixin({
 		onLaunch: function() {
-			Router.onLaunched = true;
+			Router.onLaunched = depPromise[0]();
+		},
+		onLoad: function() {
+			BUILTIN.currentVim = this;
 		},
 		onShow: function() {
-			
 			// #ifdef H5
-				if(H5PATCH.previewImagePatch(this)){
-					return true;
-				}
+			if (H5PATCH.previewImagePatch(this)) {
+				return true;
+			}
 			// #endif
-			
-			Event.one('show',(res)=>{
-				if (Router.onLaunched &&!res.status) {
-					if(this.constructor===Vue){
+
+			Event.one('show', async (res) => {
+				await Router.onLaunched;
+				if (!res.status) {
+					if (this.constructor === Vue) {
 						return false;
 					}
-					if(Router.$root.lastVim==null){
+					Router.$root.HooksFinish = false;
+					if (Router.$root.lastVim == null) {
 						Router.$root.lastVim = this;
 					}
 					Router.$root.depEvent.push(res.showId);
 					const navtoInfo = Router.$root.getQuery(this);
-					
+
+
+					if (res.showId == 1) {
+						Router.onshowed =depPromise[1]();
+					}
+
 					lifeMothods.resolveParams(Router.$root, {
 						path: navtoInfo.path,
 						query: navtoInfo.query
 					}, "Router", function(customRule) {
 						return new Promise(async resolve => {
 							if (customRule.ags.rule.NAVTYPE !== 'Router') {
-								const result =await this._pushTo(customRule);
-								resolve({status:result.status,showId:result.showId});
+								const result = await this._pushTo(customRule);
+								resolve({
+									status: result.status,
+									showId: result.showId
+								});
 							} else {
-								resolve({status:false,showId:res.showId});
+								resolve({
+									status: false,
+									showId: res.showId
+								});
 							}
 						})
 					});
-				}else{
+				} else {
 					Router.depShowCount.push(res.showId)
 				}
-				
+
 			})
-			if(Router.showId>0){
-				if(Router.doRouter){
-					Router.doRouter=false;
-					Router.$root.lastVim=this;
+			
+			if (Router.showId > 0) {
+				if (Router.doRouter) {
+					Router.doRouter = false;
+					Router.$root.lastVim = this;
 				}
-				BUILTIN.currentVim=this;
-				if(Router.$root.loadded===false){
-					Event.notify('show',{status:false,showId:Router.showId})
-				}else{
-					Router.$root.loadded=false;
+				BUILTIN.currentVim = this;
+				if (Router.$root.loadded === false && Router.$root.HooksFinish === true) {
+					Event.notify('show', {
+						status: false,
+						showId: Router.showId
+					})
+				} else {
+					Router.$root.loadded = false;
 				}
 			}
+			
 			Router.showId++
+			
 		},
 	})
 	Object.defineProperty(Vue.prototype, "$Router", {
 		get: function() {
-			Router.doRouter=this;
+			Router.doRouter = this;
 			Router.$root.lastVim = this;
 			return Router.$root;
 		}
