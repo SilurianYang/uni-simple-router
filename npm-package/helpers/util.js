@@ -1,4 +1,5 @@
 import { route } from "./config.js";
+import {warn} from "./warn.js";
 
 export const isH5 = function() {
   return typeof window !== "undefined" && typeof document !== "undefined";
@@ -21,45 +22,35 @@ export const queryMp=function(Vim){
 
 export const parseQuery = function(routerName, query, Encode = false) {
   if (Encode) {
-    let reg = /([^=&\s]+)[=\s]*([^&\s]*)/g;
-    let obj = {};
-    while (reg.exec(query)) {
-      obj[RegExp.$1] = RegExp.$2;
-    }
     return {
       url: routerName,
-      query: JSON.parse(obj.query)
+      query: JSON.parse(decodeURIComponent(query.replace(/^query=/,'')))
     };
   } else {
     return {
       url: routerName,
-      query: `query=${JSON.stringify(query)}`
+      query: `query=${encodeURIComponent(JSON.stringify(query))}`
     };
   }
 };
 export const exactRule = function(cloneRule, routes, ruleKey, getRule = false) {
   const params = {};
   let i = 0;
-  if(Reflect.get(cloneRule,'ONLAUNCH')===undefined){
-	  cloneRule['ONLAUNCH']=false;
-  }
   while (true) {
     const item = routes["routes"][i];
     if (item == null) {
       if (!getRule) {
-        console.error(
-          `路由表中未查找到 '${ruleKey}' 为 '${cloneRule[ruleKey]}' `
-        );
+		  warn(`路由表中未查找到 '${ruleKey}' 为 '${cloneRule[ruleKey]}'`)
       }
-	  return {...{path:'',name:''},ONLAUNCH:cloneRule['ONLAUNCH']}
+	  return {path:'',name:''}
     }
     if (item[ruleKey] != null && item[ruleKey] === cloneRule[ruleKey]) {
       if (!getRule) {
         params.url = item["path"];
         params.rule = item;
-        return {...params,ONLAUNCH:cloneRule['ONLAUNCH']};
+        return params;
       }
-      return {...item,ONLAUNCH:cloneRule['ONLAUNCH']};
+      return item;
     }
     i++;
   }
@@ -83,8 +74,8 @@ export const normalizeParams = function(cloneRule, routes) {
   return params;
 };
 
-export const recordJump = function(Router, rule) {
-  Router.cache = rule;
+export const encodeURI = function(rule) {
+	return encodeURIComponent(rule);
 };
 
 export const resolveRule = function(router, rule, query={}) {

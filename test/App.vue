@@ -7,17 +7,17 @@ export default {
 		// this.$Router.push({
 		// 	name:'router4',
 		// 	params:{
-		// 		name:'hhyang',
+		// 		name:'hhyang ** % &&*7',
 		// 		ages:21
 		// 	}
 		// })
 		
-		//console.log(this.$Route)
+		console.log(this.$Route)
 		
 		
-		setTimeout(()=>{
-			interVal();
-		},5000)
+		// setTimeout(()=>{
+		// 	interVal();
+		// },5000)
 		//console.log(this)
 		
 		setTimeout(() => {

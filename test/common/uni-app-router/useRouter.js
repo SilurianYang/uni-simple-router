@@ -39,12 +39,13 @@ const router = new Router({
 			path: "/pages/router/router2/router2",
 			name: 'router2',
 			beforeEnter: (to, from, next) => {
-				next({
-					name: 'router3',
-					params: {
-						msg: '我是从router2路由拦截过来的'
-					}
-				});
+				next()
+				// next({
+				// 	name: 'router3',
+				// 	params: {
+				// 		msg: '我是从router2路由拦截过来的'
+				// 	}
+				// });
 			}
 		}, {
 			path: "/pages/router/router3/router3",
@@ -57,8 +58,6 @@ const router = new Router({
 			path: "/pages/router/router5/router5",
 			name: 'router5',
 			beforeEnter:(to, from, next) =>{
-				// console.log(to)
-				// console.log(from)
 				next();
 			}
 		},
@@ -71,7 +70,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
 		// console.log(to)
-		// console.log(from)
+		console.log(from.name)
 		next();
 })
 router.afterEach((to, from) => {

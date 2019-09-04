@@ -48,7 +48,11 @@
 				this.$Router.pushTab({
 					name: 'tabbar-5',
 					params: {
-						name: '我只想去tab5',
+						name: '我只想去tab5 /% *& ！',
+						key:{
+							ages:" sdasd79&)) ^&^^",
+							name:'德玛测试'
+						}
 					}
 				})
 			},

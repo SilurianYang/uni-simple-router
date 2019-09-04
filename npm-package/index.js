@@ -62,10 +62,11 @@ class Router {
 	}) {
 		return new Promise(resolve => {
 			//这里是为兼容APP,非APP端是在切换动画完成后响应(https://github.com/SilurianYang/uni-simple-router/issues/16)
+			
 			// #ifdef APP-PLUS
 			this.loadded = true;
 			// #endif
-
+			
 			let url = `${toRule.url}?${toRule.query}`;
 			if (toRule.query === 'query={}') {
 				url = toRule.url;

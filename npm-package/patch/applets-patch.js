@@ -1,15 +1,18 @@
 export const queryInfo=function(Vim){
-		let query='{}';
-		if(Vim.ONLAUNCH==null){		//非APP.vue 跳转
-			query=JSON.parse(Vim.query.query|| '{}')
-		}else{
-			query={};
+		let query={};
+		
+		if(Vim.ONLAUNCH==null){
+			try{
+				query=JSON.parse(decodeURIComponent(Vim.query.query|| encodeURIComponent('{}')))
+			}catch(e){
+				query=JSON.parse(Vim.query.query)
+			}
 		}
+		
 		// #ifndef MP-BAIDU
 		return {
 			route:{
 				path: "/" + Vim.page.route || '',
-				ONLAUNCH: Vim.ONLAUNCH || false,
 			},
 			query
 		}
@@ -19,7 +22,6 @@ export const queryInfo=function(Vim){
 			return {
 				route:{
 					path: "/" + Vim.page.pageinstance.route || '',
-					ONLAUNCH: Vim.ONLAUNCH || false,
 				},
 				query
 			}

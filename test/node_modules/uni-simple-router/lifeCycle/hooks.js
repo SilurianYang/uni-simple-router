@@ -80,7 +80,6 @@ export const resolveParams = async function(router, rule, fnType, navigateFun) {
 		toRule: {
 			..._to.rule,
 			...route(),
-			ONLAUNCH: _to.ONLAUNCH,
 			query: parseQuery("query", _to.query, true).query
 		},
 		rule,
@@ -115,7 +114,6 @@ export const resolveParams = async function(router, rule, fnType, navigateFun) {
 			router, {
 				...route(),
 				...fromatRule.toRule.rule,
-				ONLAUNCH: fromatRule.toRule.ONLAUNCH,
 				query: parseQuery("query", fromatRule.toRule.query, true).query
 			},
 			ags.fromRule
@@ -170,7 +168,6 @@ export const resolveRouterHooks = function({
 			await hookFun({
 					...route(),
 					...rule.rule,
-					ONLAUNCH: rule.ONLAUNCH,
 					query: parseQuery("query", rule.query, true).query
 				},
 				fromRule,

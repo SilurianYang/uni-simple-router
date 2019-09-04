@@ -13,6 +13,7 @@
 			}
 		},
 		onLoad() {
+	
 		},
 		methods: {
 			gotoPage(){
