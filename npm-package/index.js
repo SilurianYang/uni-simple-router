@@ -17,6 +17,8 @@ import {
 	queryInfo
 } from "./patch/applets-patch.js";
 
+import {completeVim} from "./patch/app-patch.js"; 
+
 class Router {
 	constructor(arg) {
 		if (arg && arg.constructor !== Object) {
@@ -247,7 +249,8 @@ Router.install = function(Vue) {
 					Router.doRouter = false;
 					Router.$root.lastVim = this;
 				}
-				BUILTIN.currentVim = this;
+				// APP 有原生webview 层时会触发onLaunch(https://github.com/SilurianYang/uni-simple-router/issues/18)
+				completeVim(this,BUILTIN);
 				if (Router.$root.loadded === false && Router.$root.HooksFinish === true) {
 					Event.notify('show', {
 						status: false,
