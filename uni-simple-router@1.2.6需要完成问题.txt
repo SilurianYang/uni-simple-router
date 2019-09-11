@@ -1,0 +1,6 @@
+1. 内置uniapp H5端白名单路由
+	已知 api  
+		1.  uni.chooseLocation         新开路由  #/choose-location
+		2.  uni.previewImage	新开路由  #/preview-image
+
+	
