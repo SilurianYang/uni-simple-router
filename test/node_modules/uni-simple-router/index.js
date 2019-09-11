@@ -70,7 +70,8 @@ class Router {
 			// #endif
 			
 			let url = `${toRule.url}?${toRule.query}`;
-			if (toRule.query === 'query={}') {
+			
+			if (toRule.query === 'query=%7B%7D') {
 				url = toRule.url;
 			}
 			uni[this.methods[ags.rule.NAVTYPE]]({
