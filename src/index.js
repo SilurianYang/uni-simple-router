@@ -195,9 +195,6 @@ Router.install = function(Vue) {
 			BUILTIN.currentVim = this;
 		},
 		onShow: function() {
-			// 修复使用vue-cli创建的项目会将vue.mixin作用到app.vue
-			// 导致在执行app的onShow时不存在路由信息的问题
-			if(this.$mp.app){return;}
 
 			// #ifdef H5
 			if (H5PATCH.previewImagePatch(this)) {
@@ -207,7 +204,10 @@ Router.install = function(Vue) {
 
 			Event.one('show', async (res) => {
 				await Router.onLaunched;
-				if (!res.status) {
+				// 使用vue-cli创建的项目会将vue.mixin作用到app.vue
+				// 导致在执行app.vue的onShow时
+				// 因为app.vue不存在路由信息而报错
+				if (!this.$mp.app && !res.status) {
 					if (this.constructor === Vue) {
 						return false;
 					}
