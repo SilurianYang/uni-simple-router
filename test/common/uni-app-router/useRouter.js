@@ -1,11 +1,16 @@
-
 import Vue from 'vue'
 import Router from 'uni-simple-router';
 
 Vue.use(Router);
 
 const router = new Router({
-	routes: [{
+	//loading:false,
+	routes: [
+		{
+			path: "//choose-location",
+			name: 'choose-location'
+		},
+		{
 			path: "/pages/tabbar/tabbar-1/tabbar-1",
 			name: 'tabbar-1'
 		},
@@ -39,13 +44,12 @@ const router = new Router({
 			path: "/pages/router/router2/router2",
 			name: 'router2',
 			beforeEnter: (to, from, next) => {
-				next()
-				// next({
-				// 	name: 'router3',
-				// 	params: {
-				// 		msg: '我是从router2路由拦截过来的'
-				// 	}
-				// });
+				next({
+					name: 'router3',
+					params: {
+						msg: '我是从router2路由拦截过来的'
+					}
+				});
 			}
 		}, {
 			path: "/pages/router/router3/router3",
@@ -68,15 +72,12 @@ const router = new Router({
 	]
 });
 
-// router.beforeEach((to, from, next) => {
-// 		// console.log(to)
-// 		console.log(from.name)
-// 		next();
-// })
-// router.afterEach((to, from) => {
-// 	//console.log(to);
-// 	// console.log(from)
-// })
-// console.log(router)
+router.beforeEach((to, from, next) => {
+		console.log(from)
+		console.log(to)
+		next();
+})
+router.afterEach((to, from) => {
+})
 
 export default router
