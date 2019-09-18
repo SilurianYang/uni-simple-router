@@ -53,11 +53,17 @@
         "setting" : {
             "urlCheck" : true,
             "minified" : true,
-			"checkSiteMap":false
+            "checkSiteMap" : false
         },
         "usingComponents" : true
     },
     "mp-baidu" : {
         "usingComponents" : true
+    },
+    "h5" : {
+        "router" : {
+            "mode" : "history",
+            "base" : "/h5"
+        }
     }
 }

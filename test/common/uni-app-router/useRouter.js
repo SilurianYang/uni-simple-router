@@ -4,8 +4,12 @@ import Router from 'uni-simple-router';
 Vue.use(Router);
 
 const router = new Router({
-	//loading:false,
+	loading:false,
 	routes: [
+		{
+			path:'/pages/test/404',
+			webPath:'404'
+		},
 		{
 			path: "//choose-location",
 			name: 'choose-location'
@@ -73,8 +77,8 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-		console.log(from)
-		console.log(to)
+		// console.log(from)
+		// console.log(to)
 		next();
 })
 router.afterEach((to, from) => {

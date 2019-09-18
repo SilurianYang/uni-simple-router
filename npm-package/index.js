@@ -17,7 +17,9 @@ import {
 	queryInfo
 } from "./patch/applets-patch.js";
 
-import {completeVim} from "./patch/app-patch.js"; 
+import {
+	completeVim
+} from "./patch/app-patch.js";
 
 class Router {
 	constructor(arg) {
@@ -35,7 +37,7 @@ class Router {
 
 		H5PATCH.setLoadingStatus(arg.loading)
 
-		lifeMothods.registerHook(this.lifeCycle.routerbeforeHooks,  function(fnType) {
+		lifeMothods.registerHook(this.lifeCycle.routerbeforeHooks, function(fnType) {
 			return new Promise(async resolve => {
 				await Router.onLaunched;
 				await Router.onshowed;
@@ -50,7 +52,9 @@ class Router {
 			H5PATCH.on('toogle', 'stopLodding')
 			const index = this.depEvent.indexOf(res.showId);
 			if (index == -1) {
-				Event.notify('show', res);
+				// #ifdef H5
+					Event.notify('show', res);
+				// #endif
 			} else {
 				this.depEvent.splice(index, 1)
 			}
@@ -64,11 +68,10 @@ class Router {
 	}) {
 		return new Promise(resolve => {
 			//这里是为兼容APP,非APP端是在切换动画完成后响应(https://github.com/SilurianYang/uni-simple-router/issues/16)
-			
 			// #ifdef APP-PLUS
 			this.loadded = true;
 			// #endif
-			
+
 			let url = `${toRule.url}?${toRule.query}`;
 			
 			if (toRule.query === 'query=%7B%7D') {
@@ -161,11 +164,15 @@ class Router {
 }
 
 const BUILTIN = {}; //代理属性缓存上个操作的page对象
-const depPromise=[];	
+const depPromise = [];
 
 Router.$root = null;
-Router.onLaunched = new Promise((resolve) => {depPromise.push(resolve)});
-Router.onshowed = new Promise((resolve) => {depPromise.push(resolve)});
+Router.onLaunched = new Promise((resolve) => {
+	depPromise.push(resolve)
+});
+Router.onshowed = new Promise((resolve) => {
+	depPromise.push(resolve)
+});
 Router.showId = 0;
 Router.lastVim = {};
 Router.depShowCount = [0];
@@ -195,13 +202,17 @@ Router.install = function(Vue) {
 		onLoad: function() {
 			BUILTIN.currentVim = this;
 		},
-		onShow: function() {
-			// #ifdef H5
-			if (H5PATCH.previewImagePatch(this)) {
-				return true;
+		// #ifdef H5
+		beforeCreate: function() {
+			if(this.$options.router){
+				H5PATCH.registerHook(Router.$root,this.$options.router);
+				Router.onshowed = depPromise[1]();
 			}
-			// #endif
+		},
+		// #endif
 
+		// #ifndef H5
+		onShow: function() {
 			Event.one('show', async (res) => {
 				await Router.onLaunched;
 				if (!res.status) {
@@ -217,7 +228,7 @@ Router.install = function(Vue) {
 
 
 					if (res.showId == 1) {
-						Router.onshowed =depPromise[1]();
+						Router.onshowed = depPromise[1]();
 					}
 
 					lifeMothods.resolveParams(Router.$root, {
@@ -244,14 +255,14 @@ Router.install = function(Vue) {
 				}
 
 			})
-			
+
 			if (Router.showId > 0) {
 				if (Router.doRouter) {
 					Router.doRouter = false;
 					Router.$root.lastVim = this;
 				}
 				// APP 有原生webview 层时会触发onLaunch(https://github.com/SilurianYang/uni-simple-router/issues/18)
-				completeVim(this,BUILTIN);
+				completeVim(this, BUILTIN);
 				if (Router.$root.loadded === false && Router.$root.HooksFinish === true) {
 					Event.notify('show', {
 						status: false,
@@ -261,10 +272,11 @@ Router.install = function(Vue) {
 					Router.$root.loadded = false;
 				}
 			}
-			
+
 			Router.showId++
-			
+
 		},
+		// #endif
 	})
 	Object.defineProperty(Vue.prototype, "$Router", {
 		get: function() {

@@ -45,7 +45,11 @@
         ,{
             "path" : "pages/router/router6/router6",
             "style" : {}
-        }
+        },
+		{
+		    "path" : "pages/test/404",
+		    "style" : {}
+		}
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
