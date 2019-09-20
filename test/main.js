@@ -1,8 +1,5 @@
 import Vue from 'vue'
 
-	Vue.use=function(...arg){
-		console.log(arg)
-	}
 import App from './App'
 
 Vue.config.productionTip = false

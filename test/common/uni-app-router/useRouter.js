@@ -6,16 +6,13 @@ Vue.use(Router);
 const router = new Router({
 	h5:{
 		loading:false,
-		hinderTab:false
+		hinderTab:false,
+		vueRouter:true
 	},
 	routes: [
 		{
 			path:'/pages/test/404',
-			webPath:'/404'
-		},
-		{
-			path: "//choose-location",
-			name: 'choose-location'
+			aliasPath:'/404'
 		},
 		{
 			path: "/pages/tabbar/tabbar-1/tabbar-1",
@@ -32,13 +29,6 @@ const router = new Router({
 		{
 			path: "/pages/tabbar/tabbar-4/tabbar-4",
 			name: 'tabbar-4',
-			other: {
-				H5Name: ''
-			},
-			beforeEnter: (to, from, next) => {
-				to.other.H5Name = to.query.name
-				next();
-			}
 		},
 		{
 			path: "/pages/tabbar/tabbar-5/tabbar-5",

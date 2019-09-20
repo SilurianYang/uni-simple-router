@@ -12,7 +12,8 @@ import event from './helpers/event.js'
 const Event = new event();
 
 import H5 from "./patch/h5-patch.js";
-const H5PATCH = new H5(util.isH5());
+const isH5=util.isH5();
+const H5PATCH = new H5(isH5);
 
 import {
 	queryInfo
@@ -41,6 +42,7 @@ class Router {
 		H5PATCH.setLoadingStatus(this.CONFIG.h5)
 
 		lifeMothods.registerHook(this.lifeCycle.routerbeforeHooks, function(fnType) {
+			console.log(5555)
 			return new Promise(async resolve => {
 				await Router.onLaunched;
 				await Router.onshowed;
@@ -52,12 +54,11 @@ class Router {
 			})
 		});
 		lifeMothods.registerHook(this.lifeCycle.routerAfterHooks, async function(customRule, res) {
+			console.log(66666)
 			H5PATCH.on('toogle', 'stopLodding')
 			const index = this.depEvent.indexOf(res.showId);
-			if (index == -1) {
-				// #ifndef H5
-					Event.notify('show', res);
-				// #endif
+			if (index == -1&&!isH5) {
+				Event.notify('show', res);
 			} else {
 				this.depEvent.splice(index, 1)
 			}
