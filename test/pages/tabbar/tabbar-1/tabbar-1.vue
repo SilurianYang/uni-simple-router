@@ -42,13 +42,13 @@
 		},
 		methods: {
 			gotoPage() {
-				this.$Router.push({name: 'router5',params: {name: 'http://192.168.1.160:8082/#/pages/tabbar/tabbar-5/tabbar-5'}})
+				this.$Router.push({name: 'router5'})
 			},
 			gotoPage1(){
-				this.$Router.pushTab({
-					name: 'tabbar-5',
+				this.$Router.push({
+					name: 'router5',
 					params: {
-						name: '我只想去tab5 /% *& ！',
+						name: '我只想去router5 /% *& ！',
 						key:{
 							ages:" sdasd79&)) ^&^^",
 							name:'德玛测试'

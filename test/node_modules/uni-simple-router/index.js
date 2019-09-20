@@ -1,8 +1,9 @@
 import * as util from "./helpers/util.js";
+import {warn} from './helpers/warn.js' 
 import {
 	methods,
 	route,
-	lifeCycle
+	lifeCycle,
 } from "./helpers/config.js";
 
 import * as lifeMothods from "./lifeCycle/hooks.js";
@@ -21,21 +22,23 @@ import {
 	completeVim
 } from "./patch/app-patch.js";
 
+
 class Router {
 	constructor(arg) {
-		if (arg && arg.constructor !== Object) {
-			return console.error(`Routing configuration must be an Object`);
-		}
 		Router.$root = this;
+		
+		this.CONFIG=util.formatConfig(arg);
+		console.log(this.CONFIG)
+		
 		this.loadded = false;
-		this.routers = arg;
+		//this.routers = arg;
 		this.methods = methods;
 		this.lifeCycle = lifeCycle;
 		this.lastVim = null;
 		this.HooksFinish = true; //内部生命周期是否走完
 		this.depEvent = [];
 
-		H5PATCH.setLoadingStatus(arg.loading)
+		H5PATCH.setLoadingStatus(this.CONFIG.h5)
 
 		lifeMothods.registerHook(this.lifeCycle.routerbeforeHooks, function(fnType) {
 			return new Promise(async resolve => {
@@ -52,7 +55,7 @@ class Router {
 			H5PATCH.on('toogle', 'stopLodding')
 			const index = this.depEvent.indexOf(res.showId);
 			if (index == -1) {
-				// #ifdef H5
+				// #ifndef H5
 					Event.notify('show', res);
 				// #endif
 			} else {

@@ -1,4 +1,8 @@
 import Vue from 'vue'
+
+	Vue.use=function(...arg){
+		console.log(arg)
+	}
 import App from './App'
 
 Vue.config.productionTip = false
@@ -9,9 +13,9 @@ import router from './common/uni-app-router/useRouter.js'
 import routerLink from './node_modules/uni-simple-router/component/router-link.vue'
 Vue.component('router-link',routerLink)
 
-
 const app = new Vue({
     ...App,
 	router
 })
 app.$mount()
+

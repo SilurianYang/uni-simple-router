@@ -134,11 +134,22 @@ class Patch {
 					path:'/404',
 					name:'404',
 					component: {
-						render:(fun)=>{
-							console.log(fun)
-							console.log(84848)
-							return import('@/pages/test/404.vue')
-						}
+						                    render: (createElement)=> {
+						                        return createElement('Page', {
+						                            props: (0,
+						                            Object.assign)({},
+						                            __uniConfig.globalStyle, {})
+						                        },
+						                        [createElement('pages-test-404', {
+						                            slot: 'page'
+						                        })]);
+						
+						                    }
+						// render:(fun)=>{
+						// 	console.log(fun)
+						// 	console.log(84848)
+						// 	return import('@/pages/test/404.vue')
+						// }
 					},
 					// beforeEnter:function(to,from,next){
 					// 	setTimeout(function() {
@@ -154,18 +165,15 @@ class Patch {
 		});
 		const router = createRouter();
 		vueRouter.matcher = router.matcher;
-		console.log(router)
+		// console.log(router)
 		
 		
 		
-		// vueRouter.beforeHooks = this.defineProperty(vueRouter, 'beforeHooks');
-		// vueRouter.afterHooks = this.defineProperty(vueRouter, 'afterHooks');
+		vueRouter.beforeHooks = this.defineProperty(vueRouter, 'beforeHooks');
+		vueRouter.afterHooks = this.defineProperty(vueRouter, 'afterHooks');
 		
 
 		
-		vueRouter.beforeEach(()=>{
-			console.log(65545)
-		})
 		
 		vueRouter.addRoutes([
 			{

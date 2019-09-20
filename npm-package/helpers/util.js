@@ -1,9 +1,32 @@
-import { route } from "./config.js";
+import { route,baseConfig } from "./config.js";
 import {warn} from "./warn.js";
 
 export const isH5 = function() {
   return typeof window !== "undefined" && typeof document !== "undefined";
 };
+/**
+ * 格式化基础配置信息 通过new Router传递过来的参数
+ */
+export const formatConfig=function(userConfig){
+	 if(!userConfig.routes||userConfig.routes.constructor!==Array){
+		 return warn(`路由参数 'routes' 必须传递 \r\n\r\n${JSON.stringify(userConfig)}`);
+	 }
+	  if(userConfig.h5!=null&&userConfig.h5.constructor!==Object){
+		 return warn(`h5参数传递错误，应该是一个 'Object' 类型 示例：\r\n\r\n${JSON.stringify(baseConfig.h5)}`);
+	  }
+	  const config=Object.create(null);
+	  for(let key in baseConfig){
+		  if(userConfig[key]){
+			  config[key]={...baseConfig[key],...userConfig[key]}
+		  }else{
+			  config[key]=baseConfig[key]
+		  }
+	  }
+	 return config;
+}
+/**递归查找当前page路径对应的vue组件
+ * @param {Object} Vim
+ */
 export const queryMp=function(Vim){
 	if(Vim.constructor.name=='Vue'){
 		Vim.$options.page='';
@@ -37,7 +60,7 @@ export const exactRule = function(cloneRule, routes, ruleKey, getRule = false) {
   const params = {};
   let i = 0;
   while (true) {
-    const item = routes["routes"][i];
+    const item = routes[i];
     if (item == null) {
       if (!getRule) {
 		  warn(`路由表中未查找到 '${ruleKey}' 为 '${cloneRule[ruleKey]}'`)
@@ -84,7 +107,7 @@ export const resolveRule = function(router, rule, query={}) {
       {
         ...rule
       },
-      router.routers,
+      router.CONFIG.routes,
       "path",
       router
     )

@@ -4,11 +4,14 @@ import Router from 'uni-simple-router';
 Vue.use(Router);
 
 const router = new Router({
-	loading:false,
+	h5:{
+		loading:false,
+		hinderTab:false
+	},
 	routes: [
 		{
 			path:'/pages/test/404',
-			webPath:'404'
+			webPath:'/404'
 		},
 		{
 			path: "//choose-location",
@@ -47,14 +50,6 @@ const router = new Router({
 		}, {
 			path: "/pages/router/router2/router2",
 			name: 'router2',
-			beforeEnter: (to, from, next) => {
-				next({
-					name: 'router3',
-					params: {
-						msg: '我是从router2路由拦截过来的'
-					}
-				});
-			}
 		}, {
 			path: "/pages/router/router3/router3",
 			name: 'router3'
@@ -65,9 +60,6 @@ const router = new Router({
 		{
 			path: "/pages/router/router5/router5",
 			name: 'router5',
-			beforeEnter:(to, from, next) =>{
-				next();
-			}
 		},
 		{
 			path: "/pages/router/router6/router6",

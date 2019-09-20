@@ -1,3 +1,11 @@
+import {warn} from './warn.js' 
+export const baseConfig={
+	h5:{
+		loading:true,
+		hinderTab:true
+	},
+	routes:[]
+}
 export const methods = {
   push: "navigateTo",
   replace: "redirectTo",

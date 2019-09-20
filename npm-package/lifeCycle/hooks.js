@@ -73,7 +73,7 @@ export const resolveParams = async function(router, rule, fnType, navigateFun) {
 	
 	const _from = resolveRule(router,routeInfo.route,routeInfo.query);
 	
-	const _to = normalizeParams(JSON.parse(JSON.stringify(rule)), router.routers);
+	const _to = normalizeParams(JSON.parse(JSON.stringify(rule)), router.CONFIG.routers);
 	const ags = {
 		router,
 		fromRule: _from,

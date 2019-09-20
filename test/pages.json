@@ -48,7 +48,10 @@
         },
 		{
 		    "path" : "pages/test/404",
-		    "style" : {}
+		    "style" : {
+				"navigationBarTitleText":"牛逼",
+				"navigationBarBackgroundColor":"#F0AD4E"
+			}
 		}
     ],
 	"globalStyle": {
