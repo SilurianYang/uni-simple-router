@@ -467,8 +467,9 @@ const router = new Router({
 ## <div id="anchor9">注意事项</div>
 
 1. 内置对象名称差异 **\$Router** 非 \$router，**$Route** 非 \$route
-1. [pushTab](#pushTab) api在跳转到tab时，H5端使用 **\$Route** 无法访问到传递的参数，可以使用一种变通的方式 [相关测试案例](https://github.com/SilurianYang/uni-simple-router/tree/master/test)
-1. APP、微信小程序、百度小程序、H5测试通过，其他端未测试。
+2. [pushTab](#pushTab) api在跳转到tab时，H5端使用 **\$Route** 无法访问到传递的参数，可以使用一种变通的方式 [相关测试案例](https://github.com/SilurianYang/uni-simple-router/tree/master/test)
+3. APP、微信小程序、百度小程序、H5测试通过，其他端未测试。
+4. 如使用vue-cli创建的uni-app项目,需要在`vue.config.js`文件的`transpileDependencies`配置项中加上`uni-simple-router`,详见[vue-cli3.x文档](https://cli.vuejs.org/zh/config/#transpiledependencies)
 
 
 --------
