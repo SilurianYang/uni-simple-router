@@ -12,7 +12,8 @@ Vue.component('router-link',routerLink)
 
 const app = new Vue({
     ...App,
-	router
 })
+
 app.$mount()
+
 

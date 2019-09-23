@@ -1,5 +1,8 @@
 
 import warn from '../helpers/warn.js'
+import {
+	builtIn,
+} from './base.js'
 /**
  * vueAfter 生命周期
  * @param {Object} to
@@ -19,28 +22,42 @@ export const beforeHooks = function(to, from, next) {
 	console.log(from)
 	this.vueLifeHooks.beforeHooks[0](to, from, (res) => {
 		if(res!==null){
-			warn(`uni-app 内部强制触发跳转`)
+			warn(`uni-app 内部强制触发跳转拦截`)
 		}
 		next(res);
 	})
 }
 
-function diffRouter(){
+export const diffRouter=function (Router,vueRouter,useAll){
+	const newRouterMap = [];
 	
-}
-
-function registerHook(Router, vueRouter) {
-	const constantRouterMap = [];
 	vueRouter.options.routes.forEach(((item, index) => {
-		if (item.meta && item.meta.isTabBar) {
-			constantRouterMap.push(item)
+		if(useUniConfig){
+				const path=item.path==='/'?item.alias:item.path;
+				const vueRoute= Router.vueRoutes[path];
+				const selfRoute=Router.selfRoutes[path];
+				if(selfRoute==null){
+					warn(`读取 ‘pages.json’ 中页面配置错误。实例化时传递的路由表中未找到路径为：${path}`)
+				}
 		}
+			if (item.meta && item.meta.isTabBar) {
+				constantRouterMap.push(item)
+			}
+		debugger
 	}))
-
+}
+/** 注册自定义的路由到vue-router中 前提是必须使用vueRouter开发模式
+ * @param {Object} Router
+ * @param {Object} vueRouter
+ * @param {Boolean} vueRouterDev
+ */
+export const registerRouter=function (Router, vueRouter,vueRouterDev) {
+	if(vueRouterDev){
+		//diffRouter(Router,vueRouter);
+	}
 	const createRouter = () => new vueRouter.constructor({
-		mode: vueRouter.mode,
-		base: './',
-		routes: [...constantRouterMap,
+		...Router.CONFIG.h5,
+		routes: [
 			{
 				path: '/404',
 				name: '404',

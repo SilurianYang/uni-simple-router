@@ -7,12 +7,27 @@ const router = new Router({
 	h5:{
 		loading:false,
 		hinderTab:false,
-		vueRouter:true
+		vueRouter:true,
 	},
 	routes: [
 		{
 			path:'/pages/test/404',
-			aliasPath:'/404'
+			aliasPath:'/404',
+			component:()=>{import('@/pages/test/404.vue')},
+			children:[
+				{
+					aliasPath:'404/:id',
+					component:()=>{import('@/pages/test/test.vue')},
+					children:[{
+						aliasPath:'888',
+						component:()=>{import('@/pages/test/test.vue')},
+					}]
+				},
+				{
+					aliasPath:'4041',
+					component:()=>{import('@/pages/test/test.vue')},
+				}
+			]
 		},
 		{
 			path: "/pages/tabbar/tabbar-1/tabbar-1",

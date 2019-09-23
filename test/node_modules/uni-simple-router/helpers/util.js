@@ -1,4 +1,5 @@
 import { route,baseConfig } from "./config.js";
+import { builtIn } from "../vueRouter/base.js";
 import {warn} from "./warn.js";
 
 export const isH5 = function() {
@@ -17,7 +18,13 @@ export const formatConfig=function(userConfig){
 	  const config=Object.create(null);
 	  for(let key in baseConfig){
 		  if(userConfig[key]){
-			  config[key]={...baseConfig[key],...userConfig[key]}
+			  if(userConfig[key].constructor===Object){
+				  config[key]={...baseConfig[key],...userConfig[key]}
+			  }else{
+				  if(key=='routes'){
+					  config[key]=[...baseConfig[key],...userConfig[key],...builtIn]
+				  }
+			  }
 		  }else{
 			  config[key]=baseConfig[key]
 		  }
