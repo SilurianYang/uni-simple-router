@@ -1,4 +1,32 @@
-import {warn} from '../helpers/warn.js'
+import {warn,err} from '../helpers/warn.js'
+
+const pagesConfigReg=/\({[^)]+\)/;
+
+
+/**
+ * 解析验证当前的 component 选项是否配置正确
+ * @param {Function|Object} component 
+ * @param {Object} item 
+ */
+export const resolveRender=function(component,item){
+	if(item.components!=null){
+		delete item.components;
+		warn(`路由表配置中 ‘components’ 无效，自动清理掉：\r\n\r\n ${JSON.stringify(item)}`)
+	}
+	if(component==null){
+		err(`路由表中 ‘component’ 选项不能为空：\r\n\r\n ${JSON.stringify(item)}`)
+	}
+	if(component.constructor===Function){
+		item.component={render:component}
+	}else if(component.constructor===Object){
+			if(component.render==null||component.render.constructor!==Function){
+				err(`路由表配置中 ‘render’ 函数缺失或类型不正确：\r\n\r\n ${JSON.stringify(item)}`)
+			}
+	}else{
+		err(`路由表配置中 ‘component’ 选项仅支持 Function、Object 类型。并确保 Object 类型时传递了 ‘render’ 函数  ：\r\n\r\n ${JSON.stringify(item)}`)
+	}
+}
+
 /**
  * 格式化原始路由表
  * @param {Object} routes  路由表
@@ -9,32 +37,64 @@ export const fromatRoutes = function(routes,userRoute) {
 	for(let i=0;i<routes.length;i++){
 		const item=routes[i];
 		objRoutes[item.path]=item
-		if(item.children&&item.children.constructor===Array){
-			//reslovePath(objRoutes,item.children,item.aliasPath||item.path);
+		if(userRoute){
+			if(item.children&&item.children.constructor===Array){
+				resloveChildrenPath(objRoutes,item.children);
+			}
+			resolveRender(item.component,item);
 		}
 	}
 	return objRoutes;
 }
-
+/**
+ * 递归解析 H5配置中有存在嵌套对象的情况,优先以path为key存储。没有则找aliasPath作为key
+ * @param {Object} objRoutes 
+ * @param {Array} children 
+ */
 export const resloveChildrenPath=function(objRoutes,children){
 	for(let i=0;i<children.length;i++){
 		const item=children[i];
 		if(item.aliasPath==null){
-			return warn(`子路由下 ‘aliasPath’ 不能为空：\r\n\r\n ${JSON.stringify(item)}`)
+			return err(`子路由下 ‘aliasPath’ 不能为空：\r\n\r\n ${JSON.stringify(item)}`)
 		}
 		if(item.aliasPath.substring(0,1)==='/'){
-			warn(`子路由不应该以绝对路径开头：\r\n\r\n ${JSON.stringify(item)}`)
+			err(`子路由不应该以绝对路径开头：\r\n\r\n ${JSON.stringify(item)}`)
 		}
+		resolveRender(item.component,item);
 		if(item.path!=null){	
-			objRoutes[item.path]=item;
+			objRoutes[item.path]={...item,...{_routerPath:true}};
 		}else{
-			objRoutes[item.aliasPath]=item;
+			objRoutes[item.aliasPath]={...item,...{_routerPath:false}};
+		}
+		if(item.children&&item.children.constructor===Array){
+			resloveChildrenPath(objRoutes,item.children);
 		}
 	}
-	if(children){
+}
 
-	}
-	if(aliasPath){
+export const diffRouter=function (Router,vueRouter,useUniConfig){
+	const newRouterMap = [];
+	
+	vueRouter.options.routes.forEach(((item, index) => {
+		debugger
+		if(useUniConfig){	//使用pages.json的样式配置
+				const path=item.path==='/'?item.alias:item.path;
+				const vueRoute= Router.vueRoutes[path]||Router.vueRoutes[item.path];
+				const selfRoute=Router.selfRoutes[path];
+				if(selfRoute==null){
+					return err(`读取 ‘pages.json’ 中页面配置错误。实例化时传递的路由表中未找到路径为：${path} \r\n\r\n 可以尝试把 ‘useUniConfig’ 设置为 ‘false’。或者配置正确的路径`)
+				}
+					//selfRoute.component.render().then(res=>{console.log(res)})
+					console.log(vueRoute.component.render.toString())
+				// for(let key in vueRoute){
+				// 	selfRoute[key].
+				// }
 
-	}
+				//selfRoute.
+		}
+			// if (item.meta && item.meta.isTabBar) {
+			// 	constantRouterMap.push(item)
+			// }
+		debugger
+	}))
 }

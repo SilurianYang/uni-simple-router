@@ -36,7 +36,9 @@ function defineProperty(vueRouter, key, hookFun) {
 	})
 }
 /**
- * 初始化
+ * 拦截并注册vueRouter中的生命钩子，路由表解析
+ * @param {Object} Router 
+ * @param {vueRouter} vueRouter 
  */
 export default function init(Router, vueRouter) {
 	console.log(Router)

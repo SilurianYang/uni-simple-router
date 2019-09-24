@@ -1,6 +1,6 @@
 import { route,baseConfig } from "./config.js";
 import { builtIn } from "../vueRouter/base.js";
-import {warn} from "./warn.js";
+import {err} from "./warn.js";
 
 export const isH5 = function() {
   return typeof window !== "undefined" && typeof document !== "undefined";
@@ -10,10 +10,10 @@ export const isH5 = function() {
  */
 export const formatConfig=function(userConfig){
 	 if(!userConfig.routes||userConfig.routes.constructor!==Array){
-		 return warn(`路由参数 'routes' 必须传递 \r\n\r\n${JSON.stringify(userConfig)}`);
+		 return err(`路由参数 'routes' 必须传递 \r\n\r\n${JSON.stringify(userConfig)}`);
 	 }
 	  if(userConfig.h5!=null&&userConfig.h5.constructor!==Object){
-		 return warn(`h5参数传递错误，应该是一个 'Object' 类型 示例：\r\n\r\n${JSON.stringify(baseConfig.h5)}`);
+		 return err(`h5参数传递错误，应该是一个 'Object' 类型 示例：\r\n\r\n${JSON.stringify(baseConfig.h5)}`);
 	  }
 	  const config=Object.create(null);
 	  for(let key in baseConfig){
@@ -70,7 +70,7 @@ export const exactRule = function(cloneRule, routes, ruleKey, getRule = false) {
     const item = routes[i];
     if (item == null) {
       if (!getRule) {
-		  warn(`路由表中未查找到 '${ruleKey}' 为 '${cloneRule[ruleKey]}'`)
+		  err(`路由表中未查找到 '${ruleKey}' 为 '${cloneRule[ruleKey]}'`)
       }
 	  return {path:'',name:''}
     }

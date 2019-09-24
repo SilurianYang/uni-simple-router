@@ -3,12 +3,26 @@
 		{
 			"path": "pages/tabbar/tabbar-1/tabbar-1",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText": "uni-app",
+				"navigationBarTextStyle":"black",
+				"navigationBarShadow":{
+					"colorType":"red"
+				},
+				"backgroundTextStyle":"light",
+				"enablePullDownRefresh":true,
+				"onReachBottomDistance":100,
+				"h5":{
+						"titleNView":{
+							"titleColor":"#f00"
+						}
+				}
 			}
 		},
 		{
 			"path": "pages/tabbar/tabbar-2/tabbar-2",
-			"style": {}
+			"style": {
+				"navigationBarTitleText": "uni-app"
+			}
 		},
 		{
 			"path": "pages/tabbar/tabbar-3/tabbar-3",

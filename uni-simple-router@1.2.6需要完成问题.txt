@@ -4,4 +4,9 @@
 		2.  uni.previewImage	新开路由  #/preview-image
 
 2.	routerLink组件在app中无法触发点击事件
-	
+
+3. 在其他文件中跳转貌似会有 vue未编译完成的警告
+
+4. h5路由加载条可以样式配置
+
+5. 传递参数改为深度对象开关控制

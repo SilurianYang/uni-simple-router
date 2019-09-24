@@ -39,7 +39,7 @@ class Router {
 		this.HooksFinish = true; //内部生命周期是否走完
 		this.depEvent = [];
 
-		H5PATCH.setLoadingStatus(this.CONFIG.h5)
+		H5PATCH.setLoadingStatus(this.CONFIG.h5.loading)
 
 		lifeMothods.registerHook(this.lifeCycle.routerbeforeHooks, function(fnType) {
 			console.log(5555)

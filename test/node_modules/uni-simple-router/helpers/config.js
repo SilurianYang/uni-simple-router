@@ -1,4 +1,3 @@
-import {warn} from './warn.js' 
 export const baseConfig={
 	h5:{
 		loading:true,		//是否显示加载动画
