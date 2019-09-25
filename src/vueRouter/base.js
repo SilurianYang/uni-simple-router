@@ -14,7 +14,7 @@ export const builtIn = [{
 		render: () => {}
 	}
 }]; //uni-app内置路由
-export const lifeHooks = { //vueRouter的原始生命周期
+export const vuelifeHooks = { //vueRouter的原始生命周期
 	beforeHooks: [],
 	afterHooks: [],
 };

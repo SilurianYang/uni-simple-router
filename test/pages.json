@@ -19,6 +19,13 @@
 			}
 		},
 		{
+		    "path" : "pages/test/404",
+		    "style" : {
+				"navigationBarTitleText":"牛逼",
+				"navigationBarBackgroundColor":"#F0AD4E"
+			}
+		},
+		{
 			"path": "pages/tabbar/tabbar-2/tabbar-2",
 			"style": {
 				"navigationBarTitleText": "uni-app"
@@ -59,14 +66,7 @@
         ,{
             "path" : "pages/router/router6/router6",
             "style" : {}
-        },
-		{
-		    "path" : "pages/test/404",
-		    "style" : {
-				"navigationBarTitleText":"牛逼",
-				"navigationBarBackgroundColor":"#F0AD4E"
-			}
-		}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

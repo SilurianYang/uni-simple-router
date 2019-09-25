@@ -8,11 +8,13 @@ const router = new Router({
 		loading:false,
 		hinderTab:false,
 		vueRouter:true,
+		useUniConfig:true
 	},
 	routes: [
 		{
 			path:'/pages/test/404',
 			aliasPath:'/404',
+			name:'404',
 			component:()=>import('@/pages/test/404.vue'),
 			children:[
 				{
@@ -30,6 +32,7 @@ const router = new Router({
 			]
 		},
 		{
+			aliasPath:'/',
 			path: "/pages/tabbar/tabbar-1/tabbar-1",
 			component:()=>import('@/pages/test/404.vue'),
 			name: 'tabbar-1'
