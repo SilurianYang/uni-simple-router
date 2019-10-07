@@ -1,6 +1,5 @@
 import Vue from 'vue'
-import Router from 'uni-simple-router';
-
+import Router,{appmount} from 'uni-simple-router';
 Vue.use(Router);
 
 const router = new Router({
@@ -35,27 +34,46 @@ const router = new Router({
 			aliasPath:'/',
 			path: "/pages/tabbar/tabbar-1/tabbar-1",
 			component:()=>import('@/pages/test/404.vue'),
-			name: 'tabbar-1'
+			name: 'tabbar-1',
+			routeMeta:{
+				name:'tabbar-1'
+			},
 		},
 		{
+			aliasPath:'/tabbar2',
 			component:()=>import('@/pages/test/404.vue'),
 			path: "/pages/tabbar/tabbar-2/tabbar-2",
-			name: 'tabbar-2'
+			name: 'tabbar-2',
+			routeMeta:{
+				name:'tabbar-2'
+			},
 		},
 		{
+			aliasPath:'/tabbar3',
 			component:()=>import('@/pages/test/404.vue'),
 			path: "/pages/tabbar/tabbar-3/tabbar-3",
-			name: 'tabbar-3'
+			name: 'tabbar-3',
+			routeMeta:{
+				name:'tabbar-3'
+			},
 		},
 		{
+			aliasPath:'/tabbar4',
 			component:()=>import('@/pages/test/404.vue'),
 			path: "/pages/tabbar/tabbar-4/tabbar-4",
 			name: 'tabbar-4',
+			routeMeta:{
+				name:'tabbar-4'
+			},
 		},
 		{
+			aliasPath:'/tabbar5',
 			component:()=>import('@/pages/test/404.vue'),
 			path: "/pages/tabbar/tabbar-5/tabbar-5",
-			name: 'tabbar-5'
+			name: 'tabbar-5',
+			routeMeta:{
+				name:'tabbar-5'
+			},
 		},
 		{
 			component:()=>import('@/pages/test/404.vue'),

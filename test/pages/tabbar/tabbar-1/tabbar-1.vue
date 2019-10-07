@@ -36,7 +36,12 @@
 			};
 		},
 		onLoad() {
-			//console.log(this)
+			console.log(this.query)
+		},
+		computed:{
+			query(){
+				return this.$Route.query
+			}
 		},
 		created() {
 		},

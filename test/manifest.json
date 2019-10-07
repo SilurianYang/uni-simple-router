@@ -63,7 +63,7 @@
     "h5" : {
         "router" : {
             "mode" : "hash",
-            "base" : "/h5"
+            "base" : ""
         },
         "template" : "index.html"
     }

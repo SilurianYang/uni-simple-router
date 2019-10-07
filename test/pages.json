@@ -3,7 +3,7 @@
 		{
 			"path": "pages/tabbar/tabbar-1/tabbar-1",
 			"style": {
-				"navigationBarTitleText": "uni-app",
+				"navigationBarTitleText": "这是tabbar1",
 				"navigationBarTextStyle":"black",
 				"navigationBarShadow":{
 					"colorType":"red"
