@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import Router,{appmount} from 'uni-simple-router';
+import Router,{RouterMount} from 'uni-simple-router';
 Vue.use(Router);
 
 const router = new Router({
@@ -7,7 +7,7 @@ const router = new Router({
 		loading:false,
 		hinderTab:false,
 		vueRouter:true,
-		useUniConfig:true
+		useUniConfig:true,
 	},
 	routes: [
 		{
@@ -38,6 +38,10 @@ const router = new Router({
 			routeMeta:{
 				name:'tabbar-1'
 			},
+			beforeEnter: (to, from, next) => {
+				console.log('beforeEnter')
+				next();
+			  }
 		},
 		{
 			aliasPath:'/tabbar2',
@@ -47,6 +51,10 @@ const router = new Router({
 			routeMeta:{
 				name:'tabbar-2'
 			},
+			beforeEnter: (to, from, next) => {
+				console.log('beforeEnter')
+				next();
+			  }
 		},
 		{
 			aliasPath:'/tabbar3',
@@ -106,11 +114,16 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-		// console.log(from)
-		// console.log(to)
+		console.log(to)
+		console.log(from)
 		next();
+		// next({
+		// 	name:'tabbar-3',
+		// 	NAVTYPE:'pushTab'
+		// });
 })
 router.afterEach((to, from) => {
+	console.log('afterEach')
 })
 
-export default router
+export default RouterMount;
