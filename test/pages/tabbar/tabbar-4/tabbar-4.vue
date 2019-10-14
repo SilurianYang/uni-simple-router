@@ -12,7 +12,7 @@
 			}
 		},
 		onLoad() {
-				console.log(this.$Route)
+			console.log('tab4')
 		},
 		methods: {
 

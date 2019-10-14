@@ -13,7 +13,9 @@ export default {
 			active: false
 		};
 	},
-	onLoad() {},
+	onLoad() {
+		console.log('tab3')
+	},
 	onHide() {
 		
 	},

@@ -37,6 +37,10 @@
 		},
 		onLoad() {
 			console.log(this.query)
+			console.log('tab1')
+		},
+		onShow(){
+			console.log('onshowTab1')
 		},
 		computed:{
 			query(){

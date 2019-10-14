@@ -13,7 +13,7 @@
 			}
 		},
 		onLoad() {
-	
+			console.log('tab2')
 		},
 		methods: {
 			gotoPage(){

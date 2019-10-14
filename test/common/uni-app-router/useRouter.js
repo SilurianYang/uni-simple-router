@@ -35,9 +35,6 @@ const router = new Router({
 			path: "/pages/tabbar/tabbar-1/tabbar-1",
 			component:()=>import('@/pages/test/404.vue'),
 			name: 'tabbar-1',
-			routeMeta:{
-				name:'tabbar-1'
-			},
 			beforeEnter: (to, from, next) => {
 				console.log('beforeEnter')
 				next();
@@ -48,12 +45,14 @@ const router = new Router({
 			component:()=>import('@/pages/test/404.vue'),
 			path: "/pages/tabbar/tabbar-2/tabbar-2",
 			name: 'tabbar-2',
-			routeMeta:{
-				name:'tabbar-2'
-			},
 			beforeEnter: (to, from, next) => {
 				console.log('beforeEnter')
-				next();
+				next({
+					name:'router5',
+					NAVTYPE:'push',
+					params:{name:666}
+				});
+				//next();
 			  }
 		},
 		{
@@ -61,27 +60,18 @@ const router = new Router({
 			component:()=>import('@/pages/test/404.vue'),
 			path: "/pages/tabbar/tabbar-3/tabbar-3",
 			name: 'tabbar-3',
-			routeMeta:{
-				name:'tabbar-3'
-			},
 		},
 		{
 			aliasPath:'/tabbar4',
 			component:()=>import('@/pages/test/404.vue'),
 			path: "/pages/tabbar/tabbar-4/tabbar-4",
 			name: 'tabbar-4',
-			routeMeta:{
-				name:'tabbar-4'
-			},
 		},
 		{
 			aliasPath:'/tabbar5',
 			component:()=>import('@/pages/test/404.vue'),
 			path: "/pages/tabbar/tabbar-5/tabbar-5",
 			name: 'tabbar-5',
-			routeMeta:{
-				name:'tabbar-5'
-			},
 		},
 		{
 			component:()=>import('@/pages/test/404.vue'),
@@ -101,6 +91,7 @@ const router = new Router({
 			name: 'router4'
 		},
 		{
+			aliasPath:'/router5',
 			component:()=>import('@/pages/test/404.vue'),
 			path: "/pages/router/router5/router5",
 			name: 'router5',
@@ -116,11 +107,16 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
 		console.log(to)
 		console.log(from)
-		next();
-		// next({
-		// 	name:'tabbar-3',
-		// 	NAVTYPE:'pushTab'
-		// });
+
+		if(to.name=='router5'){
+			next({
+				name:'tabbar-3',
+				NAVTYPE:'pushTab',
+				params:{name:'我是name3'}
+			});
+		}else{
+			next();
+		}
 })
 router.afterEach((to, from) => {
 	console.log('afterEach')

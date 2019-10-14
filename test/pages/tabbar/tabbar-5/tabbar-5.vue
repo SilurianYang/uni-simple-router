@@ -14,7 +14,7 @@
 			}
 		},
 		onLoad() {
-			console.log(this.$Route)
+			console.log('tab5')
 		},
 		methods: {
 			previewImage() {
