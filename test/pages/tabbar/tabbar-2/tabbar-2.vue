@@ -15,6 +15,9 @@
 		onLoad() {
 			console.log('tab2')
 		},
+		onShow(){
+			console.log(this.$Route)
+		},
 		methods: {
 			gotoPage(){
 				this.$Router.push({

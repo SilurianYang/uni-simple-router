@@ -13,7 +13,17 @@
 			};
 		},
 		onLoad(){
+			console.log(this.$Route)
 			this.value=JSON.stringify(this.$Route.query)
+		},
+		onShow(){
+			console.log('show')
+		},
+		onHide(){
+			console.log(`onHide`)
+		},
+		onUnload(){
+			console.log('onUnload')
 		}
 	}
 </script>
