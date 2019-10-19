@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import Router,{RouterMount} from 'uni-simple-router';
+import Router from 'uni-simple-router';
 Vue.use(Router);
 
 const router = new Router({
@@ -109,4 +109,4 @@ router.afterEach((to, from) => {
 	console.log('afterEach')
 })
 
-export default RouterMount;
+export default router;

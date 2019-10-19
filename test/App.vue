@@ -4,15 +4,16 @@
 	
 export default {
 	onLaunch: function() {
+		console.log(66666)
 		// this.$Router.push({
-		// 	name:'router4',
+		// 	name:'router5',
 		// 	params:{
 		// 		name:'hhyang ** % &&*7',
 		// 		ages:21
 		// 	}
 		// })
 		
-		 console.log(this.$Route)
+		 //console.log(this.$Route)
 		
 		
 		// setTimeout(()=>{
