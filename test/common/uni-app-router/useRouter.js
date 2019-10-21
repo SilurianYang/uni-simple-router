@@ -36,8 +36,10 @@ const router = new Router({
 			name: 'tabbar-1',
 			beforeEnter: (to, from, next) => {
 				console.log('beforeEnter')
+				console.log(to)
+				console.log(from)
 				next();
-			  }
+			  },
 		},
 		{
 			//aliasPath:'/tabbar2',
@@ -89,6 +91,9 @@ const router = new Router({
 			path: "/pages/router/router5/router5",
 			name: 'router5',
 			beforeEnter: (to, from, next) => {
+				console.log(`router5------beforeEnter`)
+				console.log(to)
+				console.log(from)
 				next();
 			}
 		},
@@ -99,11 +104,16 @@ const router = new Router({
 		}
 	]
 });
-
+let count=0;
 router.beforeEach((to, from, next) => {
 		console.log(to)
 		console.log(from)
-		next();
+		if(count==0){
+			next({name:'router5',NAVTYPE:'push'});
+		}else{
+			next();
+		}
+		count++
 })
 router.afterEach((to, from) => {
 	console.log('afterEach')

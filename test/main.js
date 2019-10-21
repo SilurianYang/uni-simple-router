@@ -14,6 +14,7 @@ const app = new Vue({
     ...App,
     router
 })
-console.log(app)
-app.$mount()
+setTimeout(() => {
+    app.$mount('#app')
+}, 5000);
 
