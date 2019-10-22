@@ -4,7 +4,6 @@
 	
 export default {
 	onLaunch: function() {
-		console.log(66666)
 		// this.$Router.push({
 		// 	name:'router5',
 		// 	params:{
