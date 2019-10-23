@@ -1,7 +1,7 @@
 <template>
   <div>
-        <h1>配置项useUniConfig:false</h1>
-        <h3>我是tabbar2</h3>
+      <h1>vueRouterDev:true</h1>
+      <h3>router1下的子组件children1</h3>
   </div>
 </template>
 
@@ -11,9 +11,6 @@ export default {
     return {
 
     }
-  },
-  created(){
-      console.log(666666)
   },
   methods: {
 

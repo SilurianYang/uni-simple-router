@@ -1,8 +1,7 @@
 <template>
   <div>
         <h1>配置项useUniConfig:false</h1>
-        <h3>我是tabbar1</h3>
-        <button @click="$Router.push({name:'tabbar-2'})">去tabbar2页面</button>
+        <h3>我是router2</h3>
   </div>
 </template>
 

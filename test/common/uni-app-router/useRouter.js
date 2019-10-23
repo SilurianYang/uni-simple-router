@@ -1,12 +1,14 @@
 import Vue from 'vue'
 import Router,{RouterMount} from 'uni-simple-router';
+import {vueDevRoutes} from './vueRouterDev_true/devTrue.js'
 Vue.use(Router);
 
-const router = new Router({
+
+const routesConfig={
 	h5:{
 		loading:false,
-		vueRouterDev:false,
-		useUniConfig:false,
+		vueRouterDev:true,
+		useUniConfig:true,
 	},
 	encodeURI:false,
 	routes: [
@@ -17,15 +19,15 @@ const router = new Router({
 			component:()=>import('@/pages/test/404.vue'),
 			children:[
 				{
-					aliasPath:'404/:id',
+					path:'404/:id',
 					component:()=>import('@/pages/test/test.vue'),
 					children:[{
-						aliasPath:'888',
+						path:'888',
 						component:()=>import('@/pages/test/test.vue'),
 					}]
 				},
 				{
-					aliasPath:'4041',
+					path:'4041',
 					component:()=>import('@/pages/test/test.vue'),
 				}
 			]
@@ -33,7 +35,7 @@ const router = new Router({
 		{
 			aliasPath:'/',
 			path: "/pages/tabbar/tabbar-1/tabbar-1",
-			component:()=>import('@/pages/component/tabbar1.vue'),
+			component:()=>import('@/pages/component/router1.vue'),
 			components:{},
 			name: 'tabbar-1',
 			beforeEnter: (to, from, next) => {
@@ -45,7 +47,7 @@ const router = new Router({
 		},
 		{
 			aliasPath:'/tabbar2',
-			component:()=>import('@/pages/component/tabbar2.vue'),
+			component:()=>import('@/pages/component/router2.vue'),
 			path: "/pages/tabbar/tabbar-2/tabbar-2",
 			name: 'tabbar-2',
 			beforeEnter: (to, from, next) => {
@@ -55,13 +57,13 @@ const router = new Router({
 		},
 		{
 			aliasPath:'/tabbar3',
-			component:()=>import('@/pages/test/404.vue'),
+			component:()=>import('@/pages/component/router3.vue'),
 			path: "/pages/tabbar/tabbar-3/tabbar-3",
 			name: 'tabbar-3',
 		},
 		{
 			aliasPath:'/tabbar4',
-			component:()=>import('@/pages/test/404.vue'),
+			component:()=>import('@/pages/component/router4.vue'),
 			path: "/pages/tabbar/tabbar-4/tabbar-4",
 			name: 'tabbar-4',
 		},
@@ -106,7 +108,12 @@ const router = new Router({
 			name: 'router6'
 		}
 	]
-});
+}
+if(routesConfig.h5.vueRouterDev){
+	routesConfig.routes=vueDevRoutes;
+}
+
+const router = new Router(routesConfig);
 let count=0;
 router.beforeEach((to, from, next) => {
 		console.log(to)
