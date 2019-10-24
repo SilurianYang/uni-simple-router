@@ -3,17 +3,25 @@ export const vueDevRoutes = [
         path:'/',
         name:'router1',
         component:()=>import('@/common/uni-app-router/vueRouterDev_true/router/router1.vue'),
+        beforeEnter:(to,from,next)=>{
+            console.log(to);
+            console.log(from)
+            next();
+        },
         children:[
             {
                 path:'route1/children1',
+                name:'children1',
                 component:()=>import('@/common/uni-app-router/vueRouterDev_true/router/router1/children1.vue'),
             },
             {
                 path:'route1/children2',
+                name:'children2',
                 component:()=>import('@/common/uni-app-router/vueRouterDev_true/router/router1/children2.vue'),
             },
             {
                 path:'route1/:id',
+                name:'children3',
                 component:()=>import('@/common/uni-app-router/vueRouterDev_true/router/router1/children3.vue'),
             }
         ]
