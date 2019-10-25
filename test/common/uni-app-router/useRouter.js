@@ -1,98 +1,110 @@
 import Vue from 'vue'
-import Router,{RouterMount} from 'uni-simple-router';
-import {vueDevRoutes} from './vueRouterDev_true/devTrue.js'
+import Router, {
+	RouterMount
+} from 'uni-simple-router';
+import {
+	vueDevRoutes
+} from './vueRouterDev_true/devTrue.js'
 Vue.use(Router);
 
 
-const routesConfig={
-	h5:{
-		loading:false,
-		vueRouterDev:true,
-		useUniConfig:true,
+const routesConfig = {
+	h5: {
+		loading: true,
+		vueRouterDev: false,
+		useUniConfig: true,
+		resetStyle: () => {
+			return {
+				style: `
+				#router-loadding .loadding {
+					background-color: #f00 !important;
+					box-shadow: 0 0 15px #f00 !important;
+				}
+				`
+			}
+		}
 	},
-	encodeURI:false,
-	routes: [
-		{
-			path:'/pages/test/404',
-			aliasPath:'/404',
-			name:'404',
-			component:()=>import('@/pages/test/404.vue'),
-			children:[
-				{
-					path:'404/:id',
-					component:()=>import('@/pages/test/test.vue'),
-					children:[{
-						path:'888',
-						component:()=>import('@/pages/test/test.vue'),
+	encodeURI: false,
+	routes: [{
+			path: '/pages/test/404',
+			aliasPath: '/404',
+			name: '404',
+			component: () => import('@/pages/test/404.vue'),
+			children: [{
+					path: '404/:id',
+					component: () => import('@/pages/test/test.vue'),
+					children: [{
+						path: '888',
+						component: () => import('@/pages/test/test.vue'),
 					}]
 				},
 				{
-					path:'4041',
-					component:()=>import('@/pages/test/test.vue'),
+					path: '4041',
+					component: () => import('@/pages/test/test.vue'),
 				}
 			]
 		},
 		{
-			aliasPath:'/',
+			aliasPath: '/',
 			path: "/pages/tabbar/tabbar-1/tabbar-1",
-			component:()=>import('@/pages/component/router1.vue'),
-			components:{},
+			component: () => import('@/pages/component/router1.vue'),
+			components: {},
 			name: 'tabbar-1',
 			beforeEnter: (to, from, next) => {
 				console.log('beforeEnter')
 				console.log(to)
 				console.log(from)
 				next();
-			  },
+			},
 		},
 		{
-			aliasPath:'/tabbar2',
-			component:()=>import('@/pages/component/router2.vue'),
+			aliasPath: '/tabbar2',
+			component: () => import('@/pages/component/router2.vue'),
 			path: "/pages/tabbar/tabbar-2/tabbar-2",
 			name: 'tabbar-2',
 			beforeEnter: (to, from, next) => {
 				console.log('beforeEnter------tabbar2')
 				next();
-			  }
+			}
 		},
 		{
-			aliasPath:'/tabbar3',
-			component:()=>import('@/pages/component/router3.vue'),
+			aliasPath: '/tabbar3',
+			component: () => import('@/pages/component/router3.vue'),
 			path: "/pages/tabbar/tabbar-3/tabbar-3",
 			name: 'tabbar-3',
 		},
 		{
-			aliasPath:'/tabbar4',
-			component:()=>import('@/pages/component/router4.vue'),
+			aliasPath: '/tabbar4',
+			component: () => import('@/pages/component/router4.vue'),
 			path: "/pages/tabbar/tabbar-4/tabbar-4",
 			name: 'tabbar-4',
 		},
 		{
-			aliasPath:'/tabbar5',
-			component:()=>import('@/pages/test/404.vue'),
+			aliasPath: '/tabbar5',
+			component: () => import('@/pages/test/404.vue'),
 			path: "/pages/tabbar/tabbar-5/tabbar-5",
 			name: 'tabbar-5',
 		},
 		{
-			component:()=>import('@/pages/test/404.vue'),
+			component: () => import('@/pages/test/404.vue'),
 			path: "/pages/router/router1/router1",
 			name: 'router1'
 		}, {
-			component:()=>import('@/pages/test/404.vue'),
+			component: () => import('@/pages/test/404.vue'),
 			path: "/pages/router/router2/router2",
 			name: 'router2',
 		}, {
-			component:()=>import('@/pages/test/404.vue'),
+			component: () => import('@/pages/test/404.vue'),
 			path: "/pages/router/router3/router3",
 			name: 'router3'
 		}, {
-			component:()=>import('@/pages/test/404.vue'),
+			component: () => import('@/pages/test/404.vue'),
 			path: "/pages/router/router4/router4",
 			name: 'router4'
 		},
 		{
-			aliasPath:'/router5',
-			component:()=>import('@/pages/test/404.vue'),
+			aliasPath: '/router5',
+			component: () => import('@/pages/test/404.vue'),
 			path: "/pages/router/router5/router5",
 			name: 'router5',
 			beforeEnter: (to, from, next) => {
@@ -103,43 +115,21 @@ const routesConfig={
 			}
 		},
 		{
-			component:()=>import('@/pages/test/404.vue'),
+			component: () => import('@/pages/test/404.vue'),
 			path: "/pages/router/router6/router6",
 			name: 'router6'
 		}
 	]
 }
-if(routesConfig.h5.vueRouterDev){
-	routesConfig.routes=vueDevRoutes;
+if (routesConfig.h5.vueRouterDev) {
+	routesConfig.routes = vueDevRoutes;
 }
 
 const router = new Router(routesConfig);
-let count=0;
 router.beforeEach((to, from, next) => {
-		console.log(to)
-		console.log(from)
-
-		// if(count==0){
-		// 	next({
-		// 		name:'router5',
-		// 		params:{
-		// 			name:'hhyang'
-		// 		},
-		// 		NAVTYPE:'push'
-		// 	})
-		// 	// next({
-		// 	// 	path:'/router5',
-		// 	// 	query:{
-		// 	// 		name:'hhyang'
-		// 	// 	},
-		// 	// 	NAVTYPE:'push'
-		// 	// })
-		// }else{
-		// 	next()
-		// }
-
-		next();
-		count++
+	console.log(to)
+	console.log(from)
+	next();
 })
 router.afterEach((to, from) => {
 	console.log('afterEach')
