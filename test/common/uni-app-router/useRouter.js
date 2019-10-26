@@ -25,37 +25,40 @@ const routesConfig = {
 		}
 	},
 	encodeURI: false,
-	routes: [{
-			path: '/pages/test/404',
-			aliasPath: '/404',
-			name: '404',
-			component: () => import('@/pages/test/404.vue'),
-			children: [{
-					path: '404/:id',
-					component: () => import('@/pages/test/test.vue'),
-					children: [{
-						path: '888',
-						component: () => import('@/pages/test/test.vue'),
-					}]
-				},
-				{
-					path: '4041',
-					component: () => import('@/pages/test/test.vue'),
-				}
-			]
-		},
+	routes: [
 		{
 			aliasPath: '/',
 			path: "/pages/tabbar/tabbar-1/tabbar-1",
 			component: () => import('@/pages/component/router1.vue'),
-			components: {},
 			name: 'tabbar-1',
 			beforeEnter: (to, from, next) => {
-				console.log('beforeEnter')
-				console.log(to)
-				console.log(from)
+				console.log('beforeEnter---tabbar-1')
 				next();
 			},
+		},
+	]
+}
+if (routesConfig.h5.vueRouterDev) {
+	routesConfig.routes = vueDevRoutes;
+}
+
+const router = new Router(routesConfig);
+
+const whitelist = {
+	'/pages/tabbar/tabbar-1/tabbar-1': 'tabbar-1',
+	'/pages/tabbar/tabbar-2/tabbar-2': 'tabbar-2',
+	'/pages/tabbar/tabbar-3/tabbar-3': 'tabbar-3',
+	'/pages/tabbar/tabbar-4/tabbar-4': 'tabbar-4',
+	'/pages/tabbar/tabbar-5/tabbar-5': 'tabbar-5'
+}
+
+
+const addRoutes=function(){
+	router.addRoutes([
+		{
+			aliasPath: '/router5',
+			path: "/pages/router/router5/router5",
+			name: 'router5',
 		},
 		{
 			aliasPath: '/tabbar2',
@@ -80,12 +83,6 @@ const routesConfig = {
 			name: 'tabbar-4',
 		},
 		{
-			aliasPath: '/tabbar5',
-			component: () => import('@/pages/test/404.vue'),
-			path: "/pages/tabbar/tabbar-5/tabbar-5",
-			name: 'tabbar-5',
-		},
-		{
 			component: () => import('@/pages/test/404.vue'),
 			path: "/pages/router/router1/router1",
 			name: 'router1'
@@ -103,33 +100,48 @@ const routesConfig = {
 			name: 'router4'
 		},
 		{
-			aliasPath: '/router5',
-			component: () => import('@/pages/test/404.vue'),
-			path: "/pages/router/router5/router5",
-			name: 'router5',
-			beforeEnter: (to, from, next) => {
-				console.log(`router5------beforeEnter`)
-				console.log(to)
-				console.log(from)
-				next();
-			}
+			aliasPath: '/tabbar5',
+			path: "/pages/tabbar/tabbar-5/tabbar-5",
+			name: 'tabbar-5',
 		},
 		{
+			path: '/pages/test/404',
+			aliasPath: '/404',
+			name: '404',
 			component: () => import('@/pages/test/404.vue'),
-			path: "/pages/router/router6/router6",
-			name: 'router6'
+		},
+		{
+			path: '*',
+			name: 'moddle',
+			redirect: to => {
+				console.log(to)
+				const name = whitelist[to.path];
+				if (name) {
+					return {
+						name
+					};
+				}
+				return {
+					name: '404'
+				}
+			}
 		}
-	]
+		 ])
 }
-if (routesConfig.h5.vueRouterDev) {
-	routesConfig.routes = vueDevRoutes;
-}
-
-const router = new Router(routesConfig);
-router.beforeEach((to, from, next) => {
+let count=0
+router.beforeEach(async (to, from, next) => {
 	console.log(to)
 	console.log(from)
-	next();
+	if(count==0){
+		await addRoutes();	
+			next({
+				path:to.aliasPath||to.path,
+				NAVTYPE: 'replace'
+		});
+	}else{
+		next();
+	}
+	count++;
 })
 router.afterEach((to, from) => {
 	console.log('afterEach')

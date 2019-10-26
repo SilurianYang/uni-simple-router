@@ -14,7 +14,7 @@ export default {
     }
   },
   created(){
-    console.log(this.$Route)
+    console.log(this.$route)
   },
   methods: {
 
