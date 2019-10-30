@@ -175,6 +175,7 @@ export const pathToRute = function (path, routes) {
  * @param {Router} Router  //router当前实例对象
  */
 export const getRouterNextInfo = function (to, from, Router) {
+	debugger
 	let [toRoute, fromRoute] = [to, from];
 	const H5 = Router.CONFIG.h5;
 	if (H5.vueNext === false && H5.vueRouterDev === false) { //不采用vue-router中的to和from,需要格式化成Router中$Route获取的一样一样的
@@ -189,11 +190,17 @@ export const getRouterNextInfo = function (to, from, Router) {
 			fromPath = pathToRute(from.path, Router.selfRoutes).PATHKEY;
 		}
 
+		const isEmptyTo=Object.keys(to.query).length!=0?copyObject(to.query):copyObject(to.params);
+		const isEmptyFrom=Object.keys(from.query).length!=0?copyObject(from.query):copyObject(from.params);
+
+		delete isEmptyTo['__id__']		//删除uni-app下的内置属性
+		delete isEmptyFrom['__id__']
+
 		const toQuery = queryInfo({
-			query: to.query
+			query: isEmptyTo
 		}).query;
 		const fromQuery = queryInfo({
-			query: from.query
+			query: isEmptyFrom
 		}).query;
 
 		toRoute = resolveRule(Router, toPath, toQuery, Object.keys(toPath)[0]);

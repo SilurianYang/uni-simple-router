@@ -61,14 +61,14 @@ class Router {
 		this.HooksFinish = true; //内部生命周期是否走完
 		this.depEvent = [];
 
-		if(appPlatform()){
+		if(appPlatform()==='H5'){
 			H5PATCH.setLoadingStatus(this.CONFIG.h5)
 		}
 		
 		lifeMothods.registerHook(this.lifeCycle.routerbeforeHooks, function (fnType) {
 			return new Promise(async resolve => {
 				this.CONFIG.routerBeforeEach();	//触发暴露给开发者的生命钩子
-				if(appPlatform()){
+				if(appPlatform()==='H5'){
 					H5PATCH.on('toogle', 'startLodding');
 					return resolve(true);
 				}
@@ -82,7 +82,7 @@ class Router {
 		});
 		lifeMothods.registerHook(this.lifeCycle.routerAfterHooks, function (res) {
 			this.CONFIG.routerAfterEach();	//触发暴露给开发者的生命钩子
-			if(appPlatform()){
+			if(appPlatform()==='H5'){
 				H5PATCH.on('toogle', 'stopLodding');
 				return false;
 			}

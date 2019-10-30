@@ -47,6 +47,6 @@ export const queryInfo = function (Vim) {
  * 截止 1.3.5 版本 不做任何操作
  * @param {element} el dom节点 
  */
-export const appletsMount=function(el){
-
+export const appletsMount=function(Vim,el){
+	Vim.$mount();
 }
