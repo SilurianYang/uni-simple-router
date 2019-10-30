@@ -2,7 +2,8 @@ import {
 	resolveRule,
 	normalizeParams,
 	parseQuery,
-	queryMp
+	queryMp,
+	appPlatform
 } from "../helpers/util.js";
 
 import {
@@ -13,24 +14,27 @@ import {
 	queryInfo
 } from "../patch/applets-patch.js";
 
-import {err} from "../helpers/warn.js";
+import {
+	err
+} from "../helpers/warn.js";
 
-export const registerHook = function(list, fn) {
+const platform = appPlatform(true);
+
+export const registerHook = function (list, fn) {
 	list.push(fn);
 	return () => {
 		const i = list.indexOf(fn);
 		if (i > -1) list.splice(i, 1);
 	};
 };
-export const executeHook = function(list, ...args) {
+export const executeHook = function (list, ...args) {
 	for (let i = 0; i < list.length; i++) {
 		list[i](args);
 	}
 };
 
-export const isNext = function(router, Intercept, rule, fnType) {
+export const isNext = function (router, Intercept, rule, fnType) {
 	return new Promise(async (resolve, reject) => {
-
 		if (Intercept === false || Intercept === 0) {
 			return reject("路由终止");
 		}
@@ -55,25 +59,60 @@ export const isNext = function(router, Intercept, rule, fnType) {
 				Intercept.NAVTYPE = fnType;
 			}
 		}
-		return resolve(resolveParams(router, Intercept, fnType));
+		const nextRule=await resolveParams(router, Intercept, fnType);
+		return resolve(nextRule);
 	});
 };
 
-export const resolveParams = async function(router, rule, fnType, navigateFun) {
-	if(navigateFun!=null){
-		const isComponent=await router.lifeCycle["routerbeforeHooks"][0].call(router,fnType) //触发内部跳转前的生命周期,并验证当前是否为组件
-		if(!isComponent){
+export const resolveHooks=function({
+	ags,
+	_to,
+	navigateFun,
+	router,
+	fnType,
+}){
+	return new Promise(async resolve=>{
+		let fromatRule={};
+		const beforeResult = await resolveBeforeHooks(ags);
+		if (navigateFun == null) {
+			return resolve({
+				toRule: _to,
+				beforeResult,
+				ags
+			});
+		}
+		fromatRule = await isNext(router, beforeResult, _to, fnType);
+	
+		fnType = fromatRule.ags.rule.NAVTYPE;
+	
+		const beforeEnter = Reflect.get(fromatRule.toRule.rule, "beforeEnter");
+		if (beforeEnter) {
+			fromatRule = await resolveRouterHooks(
+				ags,
+				fnType,
+				beforeEnter,
+				fromatRule.toRule,
+				navigateFun
+			);
+		}
+		resolve(fromatRule);
+	})
+
+}
+
+export const resolveParams = async function (router, rule, fnType, navigateFun) {
+	if (navigateFun != null) {
+		const isComponent = await router.lifeCycle["routerbeforeHooks"][0].call(router, fnType) //触发内部跳转前的生命周期,并验证当前是否为组件
+		if (!isComponent) {
 			return err('Vue模板未编译完成，不支持跳转。请检查 $Router API 代码')
 		}
 	}
-
 	router.lastVim = queryMp(router.lastVim);
-	
-	const routeInfo= queryInfo(router.lastVim);
-	
-	const _from = resolveRule(router,routeInfo.route,routeInfo.query);
-	
-	const _to = normalizeParams(JSON.parse(JSON.stringify(rule)), router.CONFIG.routers);
+
+	const routeInfo = queryInfo(router.lastVim);
+	const _from = resolveRule(router, routeInfo.route, routeInfo.query);
+
+	const _to = normalizeParams(JSON.parse(JSON.stringify(rule)), router.CONFIG.routes);
 	const ags = {
 		router,
 		fromRule: _from,
@@ -85,30 +124,19 @@ export const resolveParams = async function(router, rule, fnType, navigateFun) {
 		rule,
 		fnType
 	};
-	let fromatRule={};
-	let navFunCallback=false;
+	let navFunCallback = false;
 	try {
-		const beforeResult = await resolveBeforeHooks(ags);
-		if (navigateFun == null) {
-			return {
-				toRule: _to,
-				ags
-			};
+		const fromatRule= await resolveHooks({
+			_to,
+			ags,
+			router,
+			navigateFun,
+			fnType
+		});
+		if(navigateFun==null){
+			return fromatRule;
 		}
-		 fromatRule= await isNext(router, beforeResult, _to, fnType);
-
-		fnType = fromatRule.ags.rule.NAVTYPE;
-
-		const beforeEnter = Reflect.get(fromatRule.toRule.rule, "beforeEnter");
-		if (beforeEnter) {
-			fromatRule = await resolveRouterHooks(
-				ags,
-				fnType,
-				beforeEnter,
-				fromatRule.toRule
-			);
-		}
-		navFunCallback=await navigateFun.call(router, fromatRule);
+		navFunCallback = await navigateFun.call(router, fromatRule);
 
 		resolveAfterHooks(
 			router, {
@@ -119,14 +147,19 @@ export const resolveParams = async function(router, rule, fnType, navigateFun) {
 			ags.fromRule
 		);
 	} catch (e) {};
-	if(navigateFun!=null){
-		router.lifeCycle["routerAfterHooks"][0].call(router,fromatRule,navFunCallback) //触发内部跳转后的生命周期
+
+	if (navigateFun != null) {
+		router.lifeCycle["routerAfterHooks"][0].call(router, navFunCallback) //触发内部跳转后的生命周期
 	}
+
 };
 /**
  * 触发全局afterHooks 生命钩子
  */
-export const resolveAfterHooks = function(router, toRule, fromRule) {
+export const resolveAfterHooks = function (router, toRule, fromRule) {
+	if (platform == 'H5') {
+		return Promise.resolve();
+	}
 	return new Promise(async (resolve, rejcet) => {
 		if (!router.lifeCycle["afterHooks"][0]) {
 			return resolve();
@@ -138,13 +171,16 @@ export const resolveAfterHooks = function(router, toRule, fromRule) {
 /**
  * 触发全局beforeHooks 生命钩子
  */
-export const resolveBeforeHooks = function({
+export const resolveBeforeHooks = function ({
 	router,
 	fromRule,
 	toRule,
 	rule,
 	fnType
 } = {}) {
+	if (platform == 'H5') {
+		return Promise.resolve();
+	}
 	return new Promise(async (resolve, reject) => {
 		if (!router.lifeCycle["beforeHooks"][0]) {
 			return resolve();
@@ -155,13 +191,14 @@ export const resolveBeforeHooks = function({
 /**
  * 触发路由独享的守卫 beforeEnter 生命钩子
  */
-export const resolveRouterHooks = function({
+export const resolveRouterHooks = function ({
 		router,
 		fromRule
 	} = {},
 	fnType,
 	hookFun,
-	rule
+	rule,
+	navigateFun
 ) {
 	return new Promise(async (resolve, reject) => {
 		const Intercept = await new Promise(async resolve => {
@@ -174,18 +211,23 @@ export const resolveRouterHooks = function({
 				resolve
 			);
 		});
-		const fromatRule = await isNext(router, Intercept, rule, fnType);
-
-		if (Object.keys(fromatRule.ags).length > 0) {
-			const beforeEnter = Reflect.get(fromatRule.ags.toRule || {}, "beforeEnter");
-
+		let fromatRule = await isNext(router, Intercept, rule, fnType);
+		const nextAgs=fromatRule.ags;
+		const {beforeResult}=fromatRule;
+		if(beforeResult){		//如果全局前置守卫有返回数据 直接执行全局守卫
+			const {NAVTYPE}=beforeResult;
+			delete beforeResult.NAVTYPE;
+			fromatRule = await isNext(router, beforeResult, rule, NAVTYPE);
+		}else if (Object.keys(nextAgs).length > 0) {		
+			const beforeEnter = Reflect.get(nextAgs.toRule || {}, "beforeEnter");
 			if (beforeEnter) {
 				return resolve(
 					await resolveRouterHooks(
-						fromatRule.ags,
+						nextAgs,
 						fnType,
 						beforeEnter,
-						fromatRule.toRule
+						fromatRule.toRule,
+						navigateFun
 					)
 				);
 			}

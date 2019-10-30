@@ -1,20 +1,18 @@
 // #ifdef H5
 import {
-	html
+	DOM
 } from '../component/h5-dom.js';
 
-import init from '../vueRouter/init.js'
+import {init} from '../vueRouter/init.js'
 // #endif
+
+import {warn} from '../helpers/warn.js'
+
 class Patch {
 	constructor(H5) {
 		this.H5 = H5;
 		this.isLoading = true;
 		this.loadingCount = 0; //在APP.vue中进行跳转时，DOMContentLoaded过慢。使用索引来判断
-		if(H5){
-			this.appended = new Promise(resolve => {
-				this.appendHTML(resolve);
-			})
-		}
 	}
 	on(fun, args, callback) {
 		if (this.H5) {
@@ -26,9 +24,10 @@ class Patch {
 	 * 把vueRouter的生命周期代理过来
 	 * @param {Object} Router
 	 * @param {Object} vueRouter
+	 * @param {VueComponent} vueVim
 	 */
-	registerHook(Router, vueRouter) {
-		init(Router,vueRouter);
+	registerHook(Router, vueRouter,vueVim) {
+		init(Router,vueRouter,vueVim);
 	}
 	/**
 	 * H5 专属 history.back API
@@ -38,53 +37,54 @@ class Patch {
 		history.go(num);
 	}
 	/**
-	 * H5端调用uni.previewImage 出现的 'url' of undefined 
-	 */
-	previewImagePatch(Vim) {
-		try {
-			if (Vim.route == '/preview-image') {
-				return true
-			}
-		} catch (e) {}
-		return false;
-	}
-	/**
 	 * 把加载动画添加到dom下面,为什么一定要先添加，后移除。保证动画的连续性
 	 */
-	appendHTML(resolve) {
-		// #ifdef H5
+	appendHTML({
+		style,
+		html,
+		script
+	}) {
 		window.addEventListener('DOMContentLoaded', () => {
 			const body = document.querySelector('body');
-			body.appendChild(html.style);
-			body.appendChild(html.DOM);
-			body.appendChild(html.script);
+			body.appendChild(style);
+			body.appendChild(html);
+			body.appendChild(script);
 			this.toogle('startLodding', true);
-			resolve();
 		})
-		// #endif
 	}
 	/**
 	 * 页面是否加载完毕触发对应事件
 	 */
-	async toogle(toogle, DOMContentLoaded = false) {
+	toogle(toogle, DOMContentLoaded = false) {
 		if (DOMContentLoaded && this.loadingCount !== 0) {
 			this.loadingCount++;
 			return false;
 		}
-		this.loadingCount++;
-		if (this.isLoading) {
-			await this.appended;
-			window[toogle]();
+		try {
+			this.loadingCount++;
+			if (this.isLoading) {
+				window[toogle]();
+			}
+		} catch (error) {
+				warn(`你使用了 addRoutes API 提现进行了生命周期 并触发了startLodding`)
 		}
 	}
-	async setLoadingStatus(show = true) {
-		this.isLoading = show;
-		if (!show) {
-			await this.appended;
-			this.toogle('stopLodding');
-			document.querySelector('#HHYANG_style').remove();
-			document.querySelector('#router-loadding').remove();
-			document.querySelector('#HHYANG_script').remove();
+	async setLoadingStatus({
+		loading,
+		replaceStyle,
+		resetStyle
+	}) {
+		this.isLoading = loading;
+		if (loading) {		//确认需要加载样式 开始插入节点
+			const userStyle=resetStyle();
+			for(let key in userStyle){
+				let html =userStyle[key];
+				if(key==='style'&&!replaceStyle){	//开发者设置为追加style
+					html=DOM[key].innerHTML+html;
+				}
+				DOM[key].innerHTML=html;
+			}
+			this.appendHTML(DOM);
 		}
 	}
 
