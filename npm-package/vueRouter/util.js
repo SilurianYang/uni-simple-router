@@ -175,7 +175,6 @@ export const pathToRute = function (path, routes) {
  * @param {Router} Router  //router当前实例对象
  */
 export const getRouterNextInfo = function (to, from, Router) {
-	debugger
 	let [toRoute, fromRoute] = [to, from];
 	const H5 = Router.CONFIG.h5;
 	if (H5.vueNext === false && H5.vueRouterDev === false) { //不采用vue-router中的to和from,需要格式化成Router中$Route获取的一样一样的

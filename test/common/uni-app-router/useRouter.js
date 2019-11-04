@@ -24,9 +24,21 @@ const routesConfig = {
 			}
 		}
 	},
-	encodeURI: false,
+	encodeURI: true,
 	debugger:true,
 	routes: [
+		{
+			path:'/pages/router/router5/router5',
+			name:'router5'
+		},
+		{
+			path:'/pages/tabbar/tabbar-5/tabbar-5',
+			name:'tabbar-5'
+		},
+		{
+			path:'/pages/router/router6/router6',
+			name:'router6'
+		},
 		{
 			aliasPath: '/',
 			path: "/pages/tabbar/tabbar-1/tabbar-1",
@@ -37,11 +49,6 @@ const routesConfig = {
 				next();
 			},
 		},
-			{
-				aliasPath: '/router5',
-				path: "/pages/router/router5/router5",
-				name: 'router5',
-			},
 			{
 				aliasPath: '/tabbar2',
 				component: () => import('@/pages/component/router2.vue'),
@@ -81,16 +88,7 @@ const routesConfig = {
 				path: "/pages/router/router4/router4",
 				name: 'router4'
 			},
-			{
-				aliasPath: '/router6',
-				path: "/pages/router/router6/router6",
-				name: 'tabbar6',
-			},
-			{
-				aliasPath: '/tabbar5',
-				path: "/pages/tabbar/tabbar-5/tabbar-5",
-				name: 'tabbar-5',
-			},
+
 			{
 				path: '/pages/test/404',
 				aliasPath: '/404',

@@ -5,12 +5,10 @@ import {
 	resolveRule,
 	appPlatform,
 	formatURLQuery,
-	timeout
+	parseQuery
 } from "./helpers/util.js";
 import {
 	getRouterNextInfo,
-	diffRouter,
-	fromatRoutes
 } from './vueRouter/util.js'
 import * as compile from './helpers/compile.js'
 import {
@@ -127,6 +125,16 @@ class Router {
 	_H5PushTo(replace,rule){
 		if(this.$route==null){
 			return err(`h5端路由为就绪，请检查调用代码`);
+		}
+		let type='';
+		const ruleQuery=(type='query',rule.query||(type='params',rule.params))||{};
+		if(type!=''){
+			const {query}=parseQuery(type, ruleQuery, false);
+			if(this.CONFIG.encodeURI){
+				rule[type]={
+					query:query.replace(/^query\=/,'')
+				}
+			}
 		}
 		this.$route[replace](rule);
 	}

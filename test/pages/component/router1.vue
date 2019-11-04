@@ -16,6 +16,9 @@ export default {
   created(){
       console.log(666666)
   },
+  onLoad(){
+	console.log('onLoad')  
+  },
   methods: {
 
   },

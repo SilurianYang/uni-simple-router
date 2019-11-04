@@ -47,17 +47,9 @@
 		methods: {
 			gotoPage() {
 				this.$Router.push({
-					name: 'router5',
-					params: {
-						name: 'mynameishhyang',
-						ages:22,
-						info:{
-							number:6666,
-							ip:7777,
-							kk:{
-								lll:9999
-							}
-						}
+					path: '/pages/router/router5/router5',
+					query: {
+						userId: '123'
 					}
 				})
 			},
