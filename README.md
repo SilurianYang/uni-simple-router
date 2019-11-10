@@ -21,13 +21,13 @@
 * 通配小程序端、APP端、H5端。
 
 
-开始使用 [查看文档](http://hhyang.cn/router)，或 [使用示例](https://github.com/SilurianYang/uni-simple-router/tree/master/examples)（请参见下面的示例）。
+开始使用 [查看文档](http://hhyang.cn)，或 [使用示例](https://github.com/SilurianYang/uni-simple-router/tree/master/examples)（请参见下面的示例）。
 
 ## 问题
 在提交问题的之前，请确保阅读 [“问题报告清单”](https://github.com/SilurianYang/uni-simple-router/issues/new?assignees=&labels=&template=bug_report.md&title=) 。不符合准则的问题可能会立即被解决。
 
 ## 贡献
-提出拉取请求之前，请务必先阅读 [查看文档](http://hhyang.cn/router)（请参见下面的示例）。。
+提出拉取请求之前，请务必先阅读 [查看文档](http://hhyang.cn)（请参见下面的示例）。。
 
 ## 变更日志
 [发行说明](https://github.com/SilurianYang/uni-simple-router/releases) 中记录了每个发行版的详细信息更改。
