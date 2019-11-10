@@ -1,0 +1,1 @@
+<view>这是tabbar-1的子组件里的子组件<button type="primary" data-event-opts="{{[['tap',[['gotoPage',['$event']]]]]}}" bindtap="__e">子组件的子按钮</button></view>

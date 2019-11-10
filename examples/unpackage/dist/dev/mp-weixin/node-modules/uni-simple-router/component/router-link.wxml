@@ -1,0 +1,1 @@
+<view data-event-opts="{{[['tap',[['gotoPage']]]]}}" bindtap="__e"><slot></slot></view>

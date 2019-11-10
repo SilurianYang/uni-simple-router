@@ -1,0 +1,15 @@
+{
+  "navigationBarTitleText": "这是tabbar1",
+  "navigationBarTextStyle": "black",
+  "navigationBarShadow": {
+    "colorType": "red"
+  },
+  "backgroundTextStyle": "light",
+  "enablePullDownRefresh": true,
+  "onReachBottomDistance": 100,
+  "usingComponents": {
+    "router-link": "/node-modules/uni-simple-router/component/router-link",
+    "child": "/pages/tabbar/tabbar-1/component",
+    "child1": "/pages/tabbar/tabbar-1/child"
+  }
+}
