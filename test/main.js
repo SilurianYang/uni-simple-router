@@ -13,6 +13,11 @@ Vue.component('router-link', routerLink)
 const app = new Vue({
     ...App,
 })
-RouterMount(app,'#app');
+// #ifdef H5
+	RouterMount(app,'#app');
+// #endif
 
+// #ifndef H5
+	app.$mount();
+// #endif
 
