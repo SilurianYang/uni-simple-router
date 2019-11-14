@@ -1,24 +1,24 @@
 type IArgs = {
-  h5: {
-    loading: boolean;
-    hinderTab: boolean;
-    vueRouterDev: boolean;
-    useUniConfig: boolean;
-    keepUniIntercept: boolean;
-    vueNext: boolean;
-    replaceStyle: boolean;
-    resetStyle: () => any;
-    mode: string;
-    base: string;
-    linkActiveClass: string;
-    linkExactActiveClass: string;
-    scrollBehavior: (to: any, from: any, savedPostion: any) => any;
-    fallback: boolean;
+  h5?: {
+    loading?: boolean;
+    hinderTab?: boolean;
+    vueRouterDev?: boolean;
+    useUniConfig?: boolean;
+    keepUniIntercept?: boolean;
+    vueNext?: boolean;
+    replaceStyle?: boolean;
+    resetStyle?: () => any;
+    mode?: string;
+    base?: string;
+    linkActiveClass?: string;
+    linkExactActiveClass?: string;
+    scrollBehavior?: (to: any, from: any, savedPostion: any) => any;
+    fallback?: boolean;
   };
-  debugger: false;
-  encodeURI: true;
-  routerBeforeEach: () => any;
-  routerAfterEach: () => any;
+  debugger?: boolean;
+  encodeURI?: boolean;
+  routerBeforeEach?: () => any;
+  routerAfterEach?: () => any;
   routes: any[];
   [key: string]: any;
   [key: number]: any;
