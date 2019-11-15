@@ -203,11 +203,12 @@ class Router {
 			);
 		}
 		compile.H5(() => {
-			H5PATCH.on('historyBack', -delta, () => {
-				uni.navigateBack({
-					delta
-				});
-			})
+			H5PATCH.on('historyBack', -delta)
+		})
+		compile.notH5(()=>{
+			uni.navigateBack({
+				delta
+			});
 		})
 	}
 	// TODO 目前来不及做啊 有很多事情 版本也很久没更新了

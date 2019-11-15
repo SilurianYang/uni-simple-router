@@ -13,3 +13,8 @@ export const applets = function (fn) {
     fn();
     // #endif
 }
+export const notH5=function(fn){
+	// #ifndef H5
+		fn()
+	// #endif
+}
