@@ -1,1 +1,0 @@
-<view><view class="_h1">路由1</view><view class="_p">3秒后跳转到路由2页面</view></view>

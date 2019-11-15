@@ -1,1 +1,0 @@
-<view class="content data-v-392f1af0"><button type="primary" class="data-v-392f1af0">去路由页面3</button><button type="primary" data-event-opts="{{[['tap',[['chooseLocation']]]]}}" bindtap="__e" class="data-v-392f1af0">获取坐标</button><button type="primary" data-event-opts="{{[['tap',[['getLocation']]]]}}" bindtap="__e" class="data-v-392f1af0">查看位置</button></view>

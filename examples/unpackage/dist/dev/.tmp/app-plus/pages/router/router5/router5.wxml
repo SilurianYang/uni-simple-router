@@ -1,1 +1,0 @@
-<view><view class="_p">这是一个检测参数的页面</view><textarea placeholder value="{{value}}"></textarea></view>
