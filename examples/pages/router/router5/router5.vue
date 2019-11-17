@@ -13,6 +13,7 @@
 			};
 		},
 		onLoad(){
+			console.log(this.$Route)
 			this.value=JSON.stringify(this.$Route.query)
 		},
 		onShow(){

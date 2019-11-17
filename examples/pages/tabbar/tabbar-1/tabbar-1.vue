@@ -47,9 +47,18 @@
 		created() {},
 		methods: {
 			gotoPage() {
+				//this.$Router.push('/router5')
+				
+				// this.$Router.push({
+				// 	path: '/pages/router/router5/router5',
+				// 	query: {
+				// 		userId: '123'
+				// 	}
+				// })
+				
 				this.$Router.push({
-					path: '/pages/router/router5/router5',
-					query: {
+					name: 'router5',
+					params: {
 						userId: '123'
 					}
 				})

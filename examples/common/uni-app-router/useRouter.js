@@ -10,6 +10,7 @@ Vue.use(Router);
 
 const routesConfig = {
 	h5: {
+		paramsToQuery:false,
 		loading: true,
 		vueRouterDev: false,
 		useUniConfig: true,
@@ -28,6 +29,7 @@ const routesConfig = {
 	debugger:true,
 	routes: [
 		{
+			aliasPath:'/router5',
 			path:'/pages/router/router5/router5',
 			name:'router5'
 		},
@@ -119,6 +121,8 @@ if (routesConfig.h5.vueRouterDev) {
 
 const router = new Router(routesConfig);
 
+console.log(router)
+
 const whitelist = {
 	'/pages/tabbar/tabbar-1/tabbar-1': 'tabbar-1',
 	'/pages/tabbar/tabbar-2/tabbar-2': 'tabbar-2',
@@ -129,7 +133,7 @@ const whitelist = {
 router.beforeEach(async (to, from, next) => {
 	console.log(to)
 	console.log(from)
-		next();
+	next();
 })
 router.afterEach((to, from) => {
 	console.log('afterEach')
