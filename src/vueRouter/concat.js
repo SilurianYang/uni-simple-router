@@ -5,7 +5,9 @@ import {
 import {
 	diffRouter,
 	vueDevRouteProxy,
-	getRouterNextInfo
+	getRouterNextInfo,
+	formatUserRule,
+	nameToRute
 } from './util.js'
 import {
 	parseQuery,
@@ -53,19 +55,19 @@ export const forMatNext = function(to, Intercept, next, {
 		Intercept.query = Intercept.params || Intercept.query;
 		delete Intercept.name;
 		delete Intercept.params;
-		if (name != null) {
-			for (let key in selfRoutes) {
-				const item = selfRoutes[key];
-				if (item.name == name) {
-					Intercept.path = item.aliasPath || item.path;
-					break
-				}
-			}
-		} else {
-			Intercept.path = Reflect.get(Intercept, 'path');
-		}
 		if (Intercept.query == null) {
 			Intercept.query = {};
+		}
+		if (name != null) {
+			const {aliasPath,path}=nameToRute(name,selfRoutes);
+			Intercept.path = aliasPath||path;
+		} else {	//当设置别名时可以是别名跳转也可以path跳转
+			Intercept.path = Reflect.get(Intercept, 'path');
+			const rute=formatUserRule(Intercept.path,selfRoutes,CONFIG);
+			if(rute==null){
+				return false;
+			}
+			Intercept.path=rute;
 		}
 		if (CONFIG.encodeURI) { //如果设置的编码传递则进行编码后传递
 			const query = encodeURIComponent(JSON.stringify(Intercept.query));
@@ -75,6 +77,8 @@ export const forMatNext = function(to, Intercept, next, {
 				Intercept.query.query = formatQuery;
 			}
 		}
+	}else if(Intercept!=null&&Intercept.constructor===String){
+		Intercept=formatUserRule(Intercept,selfRoutes,CONFIG);
 	}
 	next(Intercept);
 	return Intercept;

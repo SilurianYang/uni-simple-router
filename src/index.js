@@ -9,6 +9,7 @@ import {
 } from "./helpers/util.js";
 import {
 	getRouterNextInfo,
+	formatUserRule
 } from './vueRouter/util.js'
 import * as compile from './helpers/compile.js'
 import {
@@ -126,16 +127,7 @@ class Router {
 		if(this.$route==null){
 			return err(`h5端路由为就绪，请检查调用代码`);
 		}
-		let type='';
-		const ruleQuery=(type='query',rule.query||(type='params',rule.params))||{};
-		if(type!=''){
-			const {query}=parseQuery(type, ruleQuery, false);
-			if(this.CONFIG.encodeURI){
-				rule[type]={
-					query:query.replace(/^query\=/,'')
-				}
-			}
-		}
+		rule=formatUserRule(rule,this.selfRoutes,this.CONFIG);
 		this.$route[replace](rule);
 	}
 	/**动态的导航到一个新 URL 保留浏览历史
