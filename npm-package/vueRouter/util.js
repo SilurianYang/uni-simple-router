@@ -9,7 +9,8 @@ import {
 
 import {
 	resolveRule,
-	copyObject
+	copyObject,
+	parseQuery
 } from '../helpers/util.js'
 
 import {
@@ -155,7 +156,7 @@ export const pathToRute = function (path, routes) {
 			PATHKEY = 'aliasPath'
 			break
 		}
-		if (item.path == path) { //路径相同
+		if (`/${item._PAGEPATH}` == path) { //路径相同
 			PATHKEY = 'path'
 			break
 		}
@@ -167,6 +168,58 @@ export const pathToRute = function (path, routes) {
 		rute
 	}
 }
+/**
+ * 通过一个路径name 在路由表中查找指定路由表 并返回
+ * @param {String} name //实例化路由时传递的路径表中所匹配的对应路由name
+ * @param {Object} routes 	//当前对象的所有路由表
+ */
+export const nameToRute=function(name,routes){
+	for (let key in routes) {
+		const item = routes[key];
+		if (item.name == name) {
+			return item;
+		}
+	}
+	err(`路由表中没有找到 name为:'${name}' 的路由`)
+}
+/**
+ * 根据用户传入的路由规则 格式化成正确的路由规则
+ * @param {Object} rule 用户需要跳转的路由规则
+ * @param {Object} selfRoutes	simple-router下的所有routes对象 
+ * @param {Object} CONFIG	当前路由下的所有配置信息 
+ */
+export const formatUserRule=function(rule,selfRoutes,CONFIG){
+	let type='';
+	const ruleQuery=(type='query',rule.query||(type='params',rule.params))||(type='',{});
+	let rute={};		//默认在router中的配置
+	if(type!='params'){
+		const route=pathToRute(rule.path||rule,selfRoutes);
+		if(Object.keys(route.PATHKEY)[0]==''){
+			err(`'${route.PATHKEY['']}' 路径在路由表中未找到`);
+			return null;
+		}
+		rute=route.rute;
+		rule.path&&(rule.path=rute.path);
+	}
+	if(type!=''){	//当然是对象啦 这个主要是首页_H5PushTo调用时的
+		if(type=='params'&&CONFIG.h5.paramsToQuery){	//如果是name规则并且设置了转query,那么就转path跳转了
+			const {aliasPath,path}=nameToRute(rule.name,selfRoutes);
+			delete rule.name;
+			rule.path=aliasPath||path;
+			type='query';
+		}
+		const {query}=parseQuery(type, ruleQuery, false);
+		if(CONFIG.encodeURI){
+			rule[type]={
+				query:query.replace(/^query\=/,'')
+			}
+		}
+	}else{	//纯字符串,那就只有是path啦
+		rule=rute.path;
+	}
+	return rule;
+}
+
 /**
  * 根据是否获取非vue-Router next管道参数，来进行格式化
  * 
