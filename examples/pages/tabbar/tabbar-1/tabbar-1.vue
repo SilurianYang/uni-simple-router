@@ -36,7 +36,6 @@
 			};
 		},
 		onLoad() {
-			console.log(this)
 			console.log('tab1')
 		},
 		computed: {

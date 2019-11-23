@@ -10,7 +10,7 @@ Vue.use(Router);
 
 const routesConfig = {
 	h5: {
-		paramsToQuery:false,
+		paramsToQuery:true,
 		loading: true,
 		vueRouterDev: false,
 		useUniConfig: true,
@@ -25,7 +25,7 @@ const routesConfig = {
 			}
 		}
 	},
-	encodeURI: true,
+	encodeURI: false,
 	debugger:true,
 	routes: [
 		{
