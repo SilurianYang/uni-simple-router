@@ -7,7 +7,9 @@ import {
 	vueDevRouteProxy,
 	getRouterNextInfo,
 	formatUserRule,
-	nameToRute
+	nameToRute,
+	encodeURLQuery,
+	strPathToObjPath
 } from './util.js'
 import {
 	parseQuery,
@@ -80,7 +82,7 @@ export const forMatNext = function(to, Intercept, next, {
 	}else if(Intercept!=null&&Intercept.constructor===String){
 		Intercept=formatUserRule(Intercept,selfRoutes,CONFIG);
 	}
-	next(Intercept);
+	next(strPathToObjPath(Intercept));		//统一格式化为对象的方式传递
 	return Intercept;
 }
 
@@ -144,18 +146,19 @@ export const afterHooks = async function(to, from, next, Router) {
 export const beforeHooks = function(to, from, next, Router) {
 	return new Promise(async resolve => {
 		await Router.lifeCycle["routerbeforeHooks"][0].call(Router) //触发Router内置前置生命周期
-		if (!lifeCycle['beforeHooks'][0]) {
-			next();
-			beforeEachCount++;
-			resolveLaunch();
-			return resolve();
-		}
 		const H5 = Router.CONFIG.h5;
 		vuelifeHooks.beforeHooks[0](to, from, async (Intercept) => {
 			if (Intercept != null && H5.keepUniIntercept === true && H5.vueRouterDev === false) {
 				next(Intercept);
 				warn(`uni-app 内部强制触发跳转拦截`);
 				beforeEachCount++;
+				return resolve();
+			}
+			//顺序问题 没有触发uni-app里面的方法 修复[#44](https://github.com/SilurianYang/uni-simple-router/issues/44)
+			if (!lifeCycle['beforeHooks'][0]) {
+				next();
+				beforeEachCount++;
+				resolveLaunch();
 				return resolve();
 			}
 			const res = await new Promise(async resolve => {
@@ -205,6 +208,7 @@ export const appMount = function(Router) {
 /**
  * 通过自动调用router api来完成触发生命周期
  * 修复 history 模式下报错的问题  https://github.com/SilurianYang/uni-simple-router/issues/38
+ * 修复 history 模式下刷新页面参数丢失的问题 https://github.com/SilurianYang/uni-simple-router/issues/45
  * 
  * @param {Object} Router	//当前simple-router 对象
  * @param {Object} vueRouter vue-router对象
@@ -217,22 +221,24 @@ export const triggerLifeCycle = function(Router, vueRouter) {
 			query,
 			path
 		} = currRoute;
-		let URLQuery = '';
-		if (CONFIG.encodeURI === true && CONFIG.h5.vueRouterDev === false) {
-			URLQuery = `?query=${encodeURIComponent(query.query||'{}')}`
-		} else {
-			URLQuery = `?${parseQuery('',query,false).query}`
-		}
-		URLQuery = formatURLQuery(URLQuery);
+		
+		let URLQuery=encodeURLQuery(CONFIG,query,'hash');
+
 		vueRouter.replace(`${path}${URLQuery}`);
 	} else {
 		let {
 			toRoute,
 			fromRoute
 		} = getRouterNextInfo(currRoute, currRoute, Router);
+		let URLQuery=toRoute.query;
+		if(CONFIG.encodeURI){
+			URLQuery=encodeURLQuery(CONFIG,{
+				query:JSON.stringify(toRoute.query)
+			},'history');
+		}
 		vueRouter.replace({
 			path: toRoute.aliasPath || toRoute.path,
-			query: toRoute.query
+			query: URLQuery
 		});
 
 	}

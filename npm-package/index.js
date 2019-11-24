@@ -9,7 +9,8 @@ import {
 } from "./helpers/util.js";
 import {
 	getRouterNextInfo,
-	formatUserRule
+	formatUserRule,
+	strPathToObjPath
 } from './vueRouter/util.js'
 import * as compile from './helpers/compile.js'
 import {
@@ -128,7 +129,7 @@ class Router {
 			return err(`h5端路由为就绪，请检查调用代码`);
 		}
 		rule=formatUserRule(rule,this.selfRoutes,this.CONFIG);
-		this.$route[replace](rule);
+		this.$route[replace](strPathToObjPath(rule));
 	}
 	/**动态的导航到一个新 URL 保留浏览历史
 	 * navigateTo

@@ -17,6 +17,13 @@ import {
 export const isH5 = function () {
 	return typeof window !== "undefined" && typeof document !== "undefined";
 };
+/** 
+ * 判断当前变量是否为Object
+ * @param {Object} strObj
+ */
+export const isObject=function(strObj){
+	return strObj.toString()==='[object Object]'&&strObj.constructor===Object;
+}
 /**
  * 获取当前运行平台
  * @param {Boolean} applets 默认false  true时所有小程序平台统一返回 APPLETS
@@ -277,6 +284,7 @@ export const formatURLQuery = function (URLQuery) {
 		case `?query=%7B%7D`:
 		case `?`:
 		case `?[object Object]`:
+		case `?query={}`:
 			URLQuery = '';
 			break;
 	}
@@ -288,6 +296,13 @@ export const formatURLQuery = function (URLQuery) {
  */
 export const copyObject = function (object) {
 	return JSON.parse(JSON.stringify(object))
+}
+/**
+ * 把一个字符串对象转json再转字符串
+ * @param {Object} strObj 字符串对象
+ */
+export const strObjToJsonToStr=function(strObj){
+	return JSON.stringify(JSON.parse(strObj))
 }
 /**
  * 延迟函数 返回一个promise来进行延迟
