@@ -8,7 +8,7 @@
 			<button type="default">跳转到新页面</button>
 		</navigator>
 
-		<router-link class="best-list-item" to="{name: 'router5',params: {name: 'http://192.168.1.160:8082/#/pages/tabbar/tabbar-5/tabbar-5'}}">
+		<router-link class="best-list-item" to="{name: 'router5',params: {name: '/tabbar-5'}}">
 			<button type="primary">router-link</button>
 		</router-link>
 
@@ -46,7 +46,7 @@
 		created() {},
 		methods: {
 			gotoPage() {
-				//this.$Router.push('/router5')
+				// this.$Router.push('/router5')
 				
 				// this.$Router.push({
 				// 	path: '/pages/router/router5/router5',

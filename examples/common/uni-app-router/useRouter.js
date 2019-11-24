@@ -123,6 +123,7 @@ const router = new Router(routesConfig);
 
 console.log(router)
 
+
 const whitelist = {
 	'/pages/tabbar/tabbar-1/tabbar-1': 'tabbar-1',
 	'/pages/tabbar/tabbar-2/tabbar-2': 'tabbar-2',
