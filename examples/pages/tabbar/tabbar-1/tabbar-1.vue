@@ -36,7 +36,7 @@
 			};
 		},
 		onLoad() {
-			console.log('tab1')
+			//alert('tab1')
 		},
 		computed: {
 			query() {

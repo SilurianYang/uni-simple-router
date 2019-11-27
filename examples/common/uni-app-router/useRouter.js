@@ -132,8 +132,6 @@ const whitelist = {
 	'/pages/tabbar/tabbar-5/tabbar-5': 'tabbar-5'
 }
 router.beforeEach(async (to, from, next) => {
-	console.log(to)
-	console.log(from)
 	next();
 })
 router.afterEach((to, from) => {

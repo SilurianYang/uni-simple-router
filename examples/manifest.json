@@ -62,7 +62,7 @@
     },
     "h5" : {
         "router" : {
-            "mode" : "history",
+            "mode" : "hash",
             "base" : ""
         },
         "template" : "index.html"

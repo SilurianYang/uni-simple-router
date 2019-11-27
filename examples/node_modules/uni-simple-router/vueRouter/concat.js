@@ -266,7 +266,6 @@ export const registerRouter = function(Router, vueRouter, vueRouterDev) {
 	Global.vueRouter = vueRouter; //把当前vueRouter缓存到全局对象中
 	Global.RouterReadyPromise(); //router已经准备就绪 调用promise.resolve();
 	Router.H5RouterReady = true; //并挂载到Router对象下
-
 	//注册完成所有的钩子及相关参数，手动触发Router的生命周期
 	setTimeout(() => {
 		triggerLifeCycle(Router, vueRouter);
