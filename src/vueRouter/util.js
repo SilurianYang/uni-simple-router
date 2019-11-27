@@ -20,8 +20,8 @@ import {
 	queryInfo,
 } from "../patch/applets-patch.js";
 
-const pagesConfigReg = /props:\s*\(.*\)\s*(\([\s\S]*\))\s*}/;
-const defRoutersReg = /props:[^{]+{([^}]+)/;
+const pagesConfigReg = /props:\s*\(.*\)\s*(\([\s\S]*\))\s*},/;
+const defRoutersReg = /props:\s*{([\s\S]+)}\s*},/;
 
 /**
  * 解析验证当前的 component 选项是否配置正确 只有vueRouterDev:false 才会调用此方法
@@ -138,7 +138,7 @@ export const getFuntionConfig = function(FunStr) {
 			err(`读取uni-app页面构建方法配置错误 \r\n\r\n ${error}`)
 		}
 	} else {
-		matchText = eval(`Object.assign${matchText[1]}`)
+			matchText = eval(`Object.assign${matchText[1]}`)
 	}
 	return {
 		config: matchText,
