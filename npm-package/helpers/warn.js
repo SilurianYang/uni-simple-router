@@ -23,6 +23,10 @@ export const err = function (err) {
 export const warn = function (err) {
 	isLog('warn', err);
 }
+
 export const log = function (err) {
 	isLog('log', err);
+}
+export const warnLock=function(err){
+	console.warn(err)
 }

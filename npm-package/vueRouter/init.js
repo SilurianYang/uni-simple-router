@@ -13,32 +13,68 @@ import {
 } from './util.js'
 
 import {
-	err
+	err,
+	warn
 } from '../helpers/warn.js'
 
 /**
  * 在uni-app没有注入生命周期时先直接代理相关生命周期数组
- * @param {Object} vueRouter
+ * @param {Object} Router
  * @param {Object} key
  */
-function defineProperty(Router, key, hookFun) {
-		const vueOldHooks = vuelifeHooks[key];
-		return new Proxy([], {
-			get: (target, prop) => {
-				return prop in target ? target[prop] : undefined
-			},
-			set: (target, prop, value) => {
-				if (typeof value == 'function') {
-					vueOldHooks.splice(0, 1, value);
-					target[prop] = (to, from, next) => {
-						hookFun(to, from, next, Router)
-					};
-				} else {
-					target[prop] = value;
-				}
-				return true
+const defineProperty = function(Router, key, hookFun) {
+	const vueOldHooks = vuelifeHooks[key];
+	return new Proxy([], {
+		get: (target, prop) => {
+			return prop in target ? target[prop] : undefined
+		},
+		set: (target, prop, value) => {
+			if (typeof value == 'function') {
+				vueOldHooks.splice(0, 1, value);
+				target[prop] = (to, from, next) => {
+					hookFun(to, from, next, Router)
+				};
+			} else {
+				target[prop] = value;
 			}
-		})
+			return true
+		}
+	})
+}
+/**
+ * 重写掉H5端 uni-app原始存在的bug
+ * 
+ * @param {Object} Router
+ */
+const rewriteUniFun = function(Router) {
+	uni.reLaunch = function({
+		url
+	}) {
+		if(url==='/'){
+			 warn(`H5端 uni.reLaunch('/')时 默认被重写了! 你可以使用 this.$Router.replaceAll() 或者 uni.reLaunch('/'?xxx)`)
+			 return Router.back();
+		}
+		const path=url.match(/^[^?]+|(\/)/)[0];
+		try{
+			const query = {};
+			url.replace(/([^?&]+)=([^?&]+)/g, function(s, v, k) {
+				query[v] = decodeURIComponent(k);
+				return k + '=' + v;
+			});
+			Router.replaceAll({
+				path,
+				query
+			})
+		}catch(e){
+			err(`${url}解析失败了....  试试 this.$Router.replaceAll() 吧`);
+		}
+	}
+	uni.navigateBack = function(delta = 1) {
+		if (delta.constructor === Object) { //这种可能就只是uni-app自带的返回按钮,还有种可能就是开发者另类传递的
+			delta = 1;
+		}
+		Router.back(delta)
+	}
 }
 /**
  * 拦截并注册vueRouter中的生命钩子，路由表解析
@@ -46,14 +82,17 @@ function defineProperty(Router, key, hookFun) {
  * @param {vueRouter} vueRouter 
  * @param {VueComponent} vueVim
  */
-export const init = function (Router, vueRouter, vueVim) {
+export const init = function(Router, vueRouter, vueVim) {
 	const CONFIG = Router.CONFIG.h5;
 	vueRouter.afterHooks = defineProperty(Router, 'afterHooks', afterHooks);
-	vueRouter.beforeHooks =defineProperty(Router, 'beforeHooks', beforeHooks);
+	vueRouter.beforeHooks = defineProperty(Router, 'beforeHooks', beforeHooks);
 	const objVueRoutes = fromatRoutes(vueRouter.options.routes, false, {}); //返回一个格式化好的routes 键值对的形式
 	const objSelfRoutes = fromatRoutes(Router.CONFIG.routes, true, CONFIG);
 	Router.vueRoutes = objVueRoutes; //挂载vue-routes到当前的路由下
-	Router.selfRoutes = {...Router.selfRoutes||{},...objSelfRoutes}; //挂载self-routes到当前路由下
-	Router.$route=vueRouter;		//挂载vue-router到$route
+	Router.selfRoutes = { ...Router.selfRoutes || {},
+		...objSelfRoutes
+	}; //挂载self-routes到当前路由下
+	Router.$route = vueRouter; //挂载vue-router到$route
+	rewriteUniFun(Router); //重新掉uniapp上的一些有异常的方法
 	registerRouter(Router, vueRouter, CONFIG.vueRouterDev);
 }

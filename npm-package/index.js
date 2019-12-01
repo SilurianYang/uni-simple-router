@@ -124,12 +124,19 @@ class Router {
 			});
 		})
 	}
-	_H5PushTo(replace,rule){
+	/**
+	 * @param {Object} replace vue-router的跳转方式
+	 * @param {Object} rule	需要跳转到的路由匹配规则
+	 * @param {Object} type	对应的官方跳转模式
+	 */
+	_H5PushTo(replace,rule,type){
 		if(this.$route==null){
 			return err(`h5端路由为就绪，请检查调用代码`);
 		}
 		rule=formatUserRule(rule,this.selfRoutes,this.CONFIG);
-		this.$route[replace](strPathToObjPath(rule));
+		const objPath=strPathToObjPath(rule);
+		objPath.type=type
+		this.$route[replace](objPath);
 	}
 	/**动态的导航到一个新 URL 保留浏览历史
 	 * navigateTo
@@ -137,7 +144,7 @@ class Router {
 	 */
 	push(rule) {
 		if(appPlatform() === 'H5'){
-			return this._H5PushTo('push',rule);
+			return this._H5PushTo('push',rule,'navigateTo');
 		}
 		lifeMothods.resolveParams(this, rule, "push", function (customRule) {
 			return new Promise(async resolve => {
@@ -151,7 +158,7 @@ class Router {
 	 */
 	replace(rule) {
 		if(appPlatform() === 'H5'){
-			return this._H5PushTo('replace',rule);
+			return this._H5PushTo('replace',rule,'redirectTo');
 		}
 		lifeMothods.resolveParams(this, rule, "replace", function (customRule) {
 			return new Promise(async resolve => {
@@ -165,7 +172,7 @@ class Router {
 	 */
 	replaceAll(rule) {
 		if(appPlatform() === 'H5'){
-			return this._H5PushTo('replace',rule);
+			return this._H5PushTo('replace',rule,'reLaunch');
 		}
 		lifeMothods.resolveParams(this, rule, "replaceAll", function (customRule) {
 			return new Promise(async resolve => {
@@ -178,7 +185,7 @@ class Router {
 	 */
 	pushTab(rule) {
 		if(appPlatform() === 'H5'){
-			return this._H5PushTo('replace',rule);
+			return this._H5PushTo('replace',rule,'switchTab');
 		}
 		lifeMothods.resolveParams(this, rule, "pushTab", function (customRule) {
 			return new Promise(async resolve => {

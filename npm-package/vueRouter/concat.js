@@ -238,7 +238,8 @@ export const triggerLifeCycle = function(Router, vueRouter) {
 		}
 		vueRouter.replace({
 			path: toRoute.aliasPath || toRoute.path,
-			query: URLQuery
+			query: URLQuery,
+			type:'redirectTo'
 		});
 
 	}
