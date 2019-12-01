@@ -11,6 +11,15 @@
 				
 			}
 		},
+		onLoad() {
+			console.log('onload')
+		},
+		onUnload() {
+			console.log('onUnload')
+		},
+		beforeDestroy() {
+			console.log('beforeDestroy')
+		},
 		methods: {
 			
 		}

@@ -2,6 +2,8 @@
 	<view>
 			<p>这是一个检测参数的页面</p>
 			<textarea :value="value" placeholder="" />
+			
+			<button type="primary" @click="gotoPage">去下一个页面</button>
 	</view>
 </template>
 
@@ -13,8 +15,8 @@
 			};
 		},
 		onLoad(){
-			console.log(this.$Route)
 			this.value=JSON.stringify(this.$Route.query)
+			console.log(this.$Router)
 		},
 		onShow(){
 			console.log('show')
@@ -24,6 +26,16 @@
 		},
 		onUnload(){
 			console.log('onUnload')
+		},
+		methods:{
+			gotoPage(){
+				this.$Router.push({
+					name:'router2'
+				})
+				// uni.navigateTo({
+				// 	url:'/pages/router/router2/router2'
+				// })
+			}
 		}
 	}
 </script>

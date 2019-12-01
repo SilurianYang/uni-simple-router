@@ -36,7 +36,10 @@
 			};
 		},
 		onLoad() {
-			//alert('tab1')
+			console.log('tabbar1---tab1')
+		},
+		onShow(){
+			console.log('tabbar1---onshow')
 		},
 		computed: {
 			query() {
@@ -48,19 +51,18 @@
 			gotoPage() {
 				// this.$Router.push('/router5')
 				
-				// this.$Router.push({
-				// 	path: '/pages/router/router5/router5',
-				// 	query: {
-				// 		userId: '123'
-				// 	}
-				// })
-				
 				this.$Router.push({
-					name: 'router5',
-					params: {
+					path: '/pages/router/router5/router5',
+					query: {
 						userId: '123'
 					}
 				})
+				// uni.navigateTo({
+				// 	url:'/router5'
+				// })
+				// this.$Router.push({
+				// 	name: 'router5',
+				// })
 			},
 			gotoPage1() {
 				this.$Router.push({
