@@ -50,8 +50,10 @@ export const forMatNext = function(to, Intercept, next, {
 		delete Intercept.NAVTYPE
 		if (navType == 'push') {
 			Intercept.replace = false;
+			Intercept.type='navigateTo';
 		} else {
 			Intercept.replace = true; //uni-app导航api所谓的NAVTYPE取值在h5都是replace:true
+			Intercept.type='reLaunch';
 		}
 		const name = Reflect.get(Intercept, 'name'); //统一格式化path
 		Intercept.query = Intercept.params || Intercept.query;
@@ -82,7 +84,14 @@ export const forMatNext = function(to, Intercept, next, {
 	}else if(Intercept!=null&&Intercept.constructor===String){
 		Intercept=formatUserRule(Intercept,selfRoutes,CONFIG);
 	}
-	next(strPathToObjPath(Intercept));		//统一格式化为对象的方式传递
+	const objPath=strPathToObjPath(Intercept);
+	if(objPath!=null){		
+		const type=Reflect.get(objPath, 'type');
+		if(type==null){	//当next()是一个路径时 
+			objPath.type='navigateTo';
+		}
+	}
+	next(objPath);		//统一格式化为对象的方式传递
 	return Intercept;
 }
 
