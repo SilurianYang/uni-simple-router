@@ -137,7 +137,6 @@ export const resolveParams = async function (router, rule, fnType, navigateFun) 
 			return fromatRule;
 		}
 		navFunCallback = await navigateFun.call(router, fromatRule);
-
 		resolveAfterHooks(
 			router, {
 				...route(),

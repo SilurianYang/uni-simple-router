@@ -80,14 +80,19 @@ class Router {
 				return resolve(true);
 			})
 		});
-		lifeMothods.registerHook(this.lifeCycle.routerAfterHooks, function (res) {
-			this.CONFIG.routerAfterEach();	//触发暴露给开发者的生命钩子
+		lifeMothods.registerHook(this.lifeCycle.routerAfterHooks, function (res={}) {
+			
+			if(res.H5Intercept!==true){
+				this.CONFIG.routerAfterEach();	//触发暴露给开发者的生命钩子
+			}
+			
 			if(appPlatform()==='H5'){
 				H5PATCH.on('toogle', 'stopLodding');
 				return false;
 			}
+			
 			const index = this.depEvent.indexOf(res.showId);
-			if (index == -1 && !isH5) {
+			if (index == -1) {
 				Event.notify('show', res);
 			} else {
 				this.depEvent.splice(index, 1)

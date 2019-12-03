@@ -37,10 +37,8 @@ const beforeEachLaunch = new Promise(resolve => resolveLaunch = resolve);
  * @param {Funtion} next	//路由连接管道
  * @param {Router} Router	//路由对象
  */
-export const forMatNext = function(to, Intercept, next, {
-	selfRoutes,
-	CONFIG
-}) {
+export const forMatNext = function(to, Intercept, next,Router) {
+	const {CONFIG,selfRoutes}=Router;
 	if (CONFIG.h5.vueRouterDev) { //完全使用vue-router开发的时候 vueRouterDev:true 不用做啥直接略过
 		next(Intercept);
 		return Intercept;
@@ -84,12 +82,17 @@ export const forMatNext = function(to, Intercept, next, {
 	}else if(Intercept!=null&&Intercept.constructor===String){
 		Intercept=formatUserRule(Intercept,selfRoutes,CONFIG);
 	}
-	const objPath=strPathToObjPath(Intercept);
-	if(objPath!=null){		
-		const type=Reflect.get(objPath, 'type');
-		if(type==null){	//当next()是一个路径时 
-			objPath.type='navigateTo';
+	let objPath=Intercept;
+	if(Intercept!=null&&Intercept.constructor!==Boolean){
+		objPath=strPathToObjPath(Intercept);
+		if(objPath!=null){		
+			const type=Reflect.get(objPath, 'type');
+			if(type==null){	//当next()是一个路径时 
+				objPath.type='navigateTo';
+			}
 		}
+	}else if(Intercept===false){
+		Router.lifeCycle["routerAfterHooks"][0].call(Router,{H5Intercept:true})
 	}
 	next(objPath);		//统一格式化为对象的方式传递
 	return Intercept;
