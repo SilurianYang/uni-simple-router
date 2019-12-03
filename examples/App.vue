@@ -9,7 +9,7 @@ export default {
     // 	}
     // })
 
-    //console.log(this.$Route)
+    console.log(this.$Route)
 
     setTimeout(() => {
       uni.setTabBarBadge({

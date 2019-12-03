@@ -25,6 +25,12 @@ const routesConfig = {
 			}
 		}
 	},
+	routerBeforeEach:()=>{
+		console.log('routerBeforeEach')
+	},
+	routerAfterEach:()=>{
+		console.log('routerAfterEach')
+	},
 	encodeURI: false,
 	debugger: true,
 	routes: [{
@@ -125,9 +131,18 @@ const whitelist = {
 router.beforeEach(async (to, from, next) => {
 	console.log(to)
 	console.log(from)
-	next();
+	if(to.name=='router2'){
+		next(false);
+	}else{
+		next();
+	}
 })
 router.afterEach((to, from) => {
+	setTimeout(function() {
+		uni.setNavigationBarTitle({
+		    title: to.name
+		});
+	}, 50);
 	console.log('afterEach')
 })
 
