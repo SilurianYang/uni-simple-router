@@ -25,12 +25,6 @@ const routesConfig = {
 			}
 		}
 	},
-	routerBeforeEach:()=>{
-		console.log('routerBeforeEach')
-	},
-	routerAfterEach:()=>{
-		console.log('routerAfterEach')
-	},
 	encodeURI: false,
 	debugger: true,
 	routes: [{
@@ -118,8 +112,6 @@ if (routesConfig.h5.vueRouterDev) {
 
 const router = new Router(routesConfig);
 
-console.log(router)
-
 
 const whitelist = {
 	'/pages/tabbar/tabbar-1/tabbar-1': 'tabbar-1',
@@ -129,21 +121,20 @@ const whitelist = {
 	'/pages/tabbar/tabbar-5/tabbar-5': 'tabbar-5'
 }
 router.beforeEach(async (to, from, next) => {
-	console.log(to)
-	console.log(from)
-	if(to.name=='router2'){
-		next(false);
-	}else{
-		next();
-	}
+	// console.log(to)
+	// console.log(from)
+	next();
 })
 router.afterEach((to, from) => {
-	setTimeout(function() {
-		uni.setNavigationBarTitle({
-		    title: to.name
-		});
-	}, 50);
-	console.log('afterEach')
+	// setTimeout(function() {
+	// 	uni.setNavigationBarTitle({
+	// 	    title: to.name
+	// 	});
+	// }, 50);
+	// setTimeout(()=>{
+	// 	console.log(__uniConfig)
+	// },1000)
+	// console.log('afterEach')
 })
 
 // setTimeout(() => {

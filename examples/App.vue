@@ -1,28 +1,13 @@
 <script>
 export default {
-  onLaunch: function() {
-    // this.$Router.push({
-    // 	name:'router5',
-    // 	params:{
-    // 		name:'hhyang ** % &&*7',
-    // 		ages:21
-    // 	}
-    // })
-
-    console.log(this.$Route)
-
-    setTimeout(() => {
-      uni.setTabBarBadge({
-        index: 1,
-        text: "31"
-      });
-      uni.showTabBarRedDot({
-        index: 3
-      });
-    }, 1000);
+  onLaunch: function(...args) {
+	 // debugger
+	 //delete  __uniConfig.tabBar
+	 console.log(args)
   },
-  onShow: function() {},
-  onHide: function() {}
+  onShow: function(...args) {
+	  console.log(args)
+  },
 };
 </script>
 

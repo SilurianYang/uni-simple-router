@@ -36,10 +36,12 @@
 			};
 		},
 		onLoad() {
-			console.log('tabbar1---tab1')
+			debugger
+			//console.log(this)
+			//console.log('tabbar1---tab1')
 		},
 		onShow(){
-			console.log('tabbar1---onshow')
+			//console.log('tabbar1---onshow')
 		},
 		computed: {
 			query() {
