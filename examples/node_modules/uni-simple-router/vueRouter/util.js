@@ -197,7 +197,7 @@ export const formatUserRule = function(rule, selfRoutes, CONFIG) {
 	let type = '';
 	const ruleQuery = (type = 'query', rule.query || (type = 'params', rule.params)) || (type = '', {});
 	let rute = {}; //默认在router中的配置
-	if(type==''&&rule.name!=null){	//那就是可能没有穿扔个值咯
+	if(type==''&&rule.name!=null){	//那就是可能没有穿任何值咯
 		type='params';
 	}
 	if (type != 'params') {
