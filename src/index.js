@@ -20,7 +20,8 @@ import {
 } from "./helpers/config.js";
 
 import {
-	warn, err
+	warn,
+	err
 } from './helpers/warn.js'
 
 import * as lifeMothods from "./lifeCycle/hooks.js";
@@ -41,13 +42,16 @@ import {
 	appMount
 } from "./patch/app-patch.js";
 
+import initMixins from './helpers/mixins'
+
+
 // #ifdef H5
 import H5 from "./patch/h5-patch.js";
 const H5PATCH = new H5(isH5());
 // #endif
 
 
-Global.H5RouterReady=new Promise(resolve=>Global.RouterReadyPromise=resolve);	
+Global.H5RouterReady = new Promise(resolve => Global.RouterReadyPromise = resolve);
 
 class Router {
 	constructor(arg) {
@@ -61,17 +65,23 @@ class Router {
 		this.HooksFinish = true; //内部生命周期是否走完
 		this.depEvent = [];
 
-		if(appPlatform()==='H5'){
+		if (appPlatform() === 'H5') {
 			H5PATCH.setLoadingStatus(this.CONFIG.h5)
 		}
-		
-		lifeMothods.registerHook(this.lifeCycle.routerbeforeHooks, function (fnType) {
+
+		lifeMothods.registerHook(this.lifeCycle.routerbeforeHooks, function(fnType) {
 			return new Promise(async resolve => {
-				this.CONFIG.routerBeforeEach();	//触发暴露给开发者的生命钩子
-				if(appPlatform()==='H5'){
+				this.CONFIG.routerBeforeEach(); //触发暴露给开发者的生命钩子
+				
+				if (appPlatform() === 'H5') {		//h5端到此为止
 					H5PATCH.on('toogle', 'startLodding');
 					return resolve(true);
 				}
+				
+				if(appPlatform()==='APP'){		//app端到此为止
+					return resolve(true);
+				}
+				
 				await Router.onLaunched;
 				await Router.onshowed;
 				if (fnType !== 'Router' && Reflect.get(this.lastVim, '_uid') == null) { //验证当前是开发者直接通过api进行跳转的情况，比如vue还没有编译模板完成的情况
@@ -80,17 +90,17 @@ class Router {
 				return resolve(true);
 			})
 		});
-		lifeMothods.registerHook(this.lifeCycle.routerAfterHooks, function (res={}) {
-			
-			if(res.H5Intercept!==true){
-				this.CONFIG.routerAfterEach();	//触发暴露给开发者的生命钩子
+		lifeMothods.registerHook(this.lifeCycle.routerAfterHooks, function(res = {}) {
+
+			if (res.H5Intercept !== true) {
+				this.CONFIG.routerAfterEach(); //触发暴露给开发者的生命钩子
 			}
-			
-			if(appPlatform()==='H5'){
+
+			if (appPlatform() === 'H5') {
 				H5PATCH.on('toogle', 'stopLodding');
 				return false;
 			}
-			
+
 			const index = this.depEvent.indexOf(res.showId);
 			if (index == -1) {
 				Event.notify('show', res);
@@ -134,13 +144,13 @@ class Router {
 	 * @param {Object} rule	需要跳转到的路由匹配规则
 	 * @param {Object} type	对应的官方跳转模式
 	 */
-	_H5PushTo(replace,rule,type){
-		if(this.$route==null){
+	_H5PushTo(replace, rule, type) {
+		if (this.$route == null) {
 			return err(`h5端路由为就绪，请检查调用代码`);
 		}
-		rule=formatUserRule(rule,this.selfRoutes,this.CONFIG);
-		const objPath=strPathToObjPath(rule);
-		objPath.type=type
+		rule = formatUserRule(rule, this.selfRoutes, this.CONFIG);
+		const objPath = strPathToObjPath(rule);
+		objPath.type = type
 		this.$route[replace](objPath);
 	}
 	/**动态的导航到一个新 URL 保留浏览历史
@@ -148,10 +158,10 @@ class Router {
 	 * @param {Object} rule
 	 */
 	push(rule) {
-		if(appPlatform() === 'H5'){
-			return this._H5PushTo('push',rule,'navigateTo');
+		if (appPlatform() === 'H5') {
+			return this._H5PushTo('push', rule, 'navigateTo');
 		}
-		lifeMothods.resolveParams(this, rule, "push", function (customRule) {
+		lifeMothods.resolveParams(this, rule, "push", function(customRule) {
 			return new Promise(async resolve => {
 				resolve(await this._pushTo(customRule));
 			})
@@ -162,10 +172,10 @@ class Router {
 	 * @param {Object} rule
 	 */
 	replace(rule) {
-		if(appPlatform() === 'H5'){
-			return this._H5PushTo('replace',rule,'redirectTo');
+		if (appPlatform() === 'H5') {
+			return this._H5PushTo('replace', rule, 'redirectTo');
 		}
-		lifeMothods.resolveParams(this, rule, "replace", function (customRule) {
+		lifeMothods.resolveParams(this, rule, "replace", function(customRule) {
 			return new Promise(async resolve => {
 				resolve(await this._pushTo(customRule));
 			})
@@ -176,10 +186,10 @@ class Router {
 	 * @param {Object} rule
 	 */
 	replaceAll(rule) {
-		if(appPlatform() === 'H5'){
-			return this._H5PushTo('replace',rule,'reLaunch');
+		if (appPlatform() === 'H5') {
+			return this._H5PushTo('replace', rule, 'reLaunch');
 		}
-		lifeMothods.resolveParams(this, rule, "replaceAll", function (customRule) {
+		lifeMothods.resolveParams(this, rule, "replaceAll", function(customRule) {
 			return new Promise(async resolve => {
 				resolve(await this._pushTo(customRule));
 			})
@@ -189,10 +199,10 @@ class Router {
 	 * @param {Object} rule
 	 */
 	pushTab(rule) {
-		if(appPlatform() === 'H5'){
-			return this._H5PushTo('replace',rule,'switchTab');
+		if (appPlatform() === 'H5') {
+			return this._H5PushTo('replace', rule, 'switchTab');
 		}
-		lifeMothods.resolveParams(this, rule, "pushTab", function (customRule) {
+		lifeMothods.resolveParams(this, rule, "pushTab", function(customRule) {
 			return new Promise(async resolve => {
 				resolve(await this._pushTo(customRule));
 			})
@@ -210,7 +220,7 @@ class Router {
 		compile.H5(() => {
 			H5PATCH.on('historyBack', -delta)
 		})
-		compile.notH5(()=>{
+		compile.notH5(() => {
 			uni.navigateBack({
 				delta
 			});
@@ -282,112 +292,32 @@ Router.doRouter = false; //用户主动触发router事件
 Object.defineProperty(BUILTIN, 'currentVim', {
 	configurable: true,
 	enumerable: false,
-	set: function (val) {
+	set: function(val) {
 		BUILTIN._currentVim = val;
 		if (Router.showId === Router.depShowCount[Router.depShowCount.length - 1]) {
 			Router.$root.lastVim = val;
 			Router.depShowCount.pop();
 		}
 	},
-	get: function () {
+	get: function() {
 		return BUILTIN._currentVim;
 	},
 
 })
 
-Router.install = function (Vue) {
-	Vue.mixin({
-		onLaunch: function () {
-			Router.onLaunched = depPromise[0]();
-		},
-		onLoad: function () {
-			BUILTIN.currentVim = this;
-		},
-		// #ifdef H5
-		beforeCreate: function () {
-			if (this.$options.router) {
-				H5PATCH.registerHook(Router.$root, this.$options.router, this);
-				Router.onshowed = depPromise[1]();
-			}
-		},
-		// #endif
-
-		// #ifndef H5
-		onShow: function () {
-			Event.one('show', async (res) => {
-				await Router.onLaunched;
-				if (!res.status) {
-					if (this.constructor === Vue) {
-						return false;
-					}
-					Router.$root.HooksFinish = false;
-					if (Router.$root.lastVim == null) {
-						Router.$root.lastVim = this;
-					}
-					Router.$root.depEvent.push(res.showId);
-					const navtoInfo = Router.$root.getQuery(this);
-
-
-					if (res.showId == 1) {
-						Router.onshowed = depPromise[1]();
-					}
-
-					lifeMothods.resolveParams(Router.$root, {
-						path: navtoInfo.path,
-						query: navtoInfo.query
-					}, "Router", function (customRule) {
-						return new Promise(async resolve => {
-							if (customRule.ags.rule.NAVTYPE !== 'Router') {
-								const result = await this._pushTo(customRule);
-								resolve({
-									status: result.status,
-									showId: result.showId
-								});
-							} else {
-								resolve({
-									status: false,
-									showId: res.showId
-								});
-							}
-						})
-					});
-				} else {
-					Router.depShowCount.push(res.showId)
-				}
-
-			})
-
-			if (Router.showId > 0) {
-				if (Router.doRouter) {
-					Router.doRouter = false;
-					Router.$root.lastVim = this;
-				}
-				// APP 有原生webview 层时会触发onLaunch(https://github.com/SilurianYang/uni-simple-router/issues/18)
-				completeVim(this, BUILTIN);
-				if (Router.$root.loadded === false && Router.$root.HooksFinish === true) {
-					Event.notify('show', {
-						status: false,
-						showId: Router.showId
-					})
-				} else {
-					Router.$root.loadded = false;
-				}
-			}
-
-			Router.showId++
-
-		},
-		// #endif
-	})
+Router.install = function(Vue) {
+	
+	initMixins(Vue,Router,depPromise);
+	
 	Object.defineProperty(Vue.prototype, "$Router", {
-		get: function () {
+		get: function() {
 			Router.doRouter = this;
 			Router.$root.lastVim = this;
 			return Router.$root;
 		}
 	});
 	Object.defineProperty(Vue.prototype, "$Route", {
-		get: function () {
+		get: function() {
 			return Router.$root.getQuery(this);
 		}
 	});
@@ -398,7 +328,7 @@ export default Router;
  * @param {VueComponent } Vim vue实例对象
  * @param {dom} el	dom节点选择器 
  */
-export const RouterMount = function (Vim, el) {
+export const RouterMount = function(Vim, el) {
 	switch (appPlatform(true)) {
 		case 'APP':
 			appMount(Vim, el);

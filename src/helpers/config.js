@@ -1,3 +1,4 @@
+
 export const baseConfig = {
 	h5: {
 		paramsToQuery: false, //h5端上通过params传参时规则是vue-router 刷新会丢失 开启此开关将变成?连接的方式
@@ -16,12 +17,16 @@ export const baseConfig = {
 		scrollBehavior: (to, from, savedPostion) => savedPostion,
 		fallback: true,
 	},
+	APP:{
+		resetStyle:()=>JSON.parse('{}')	//自定义加载样式函数 可返回一个包涵 html、style、id 的对象来重置Router内置的加载动画页面
+	},
 	debugger: false, //是否处于开发阶段 设置为true则打印日志
 	encodeURI: true, //是否对url传递的参数进行编码
 	routerBeforeEach: () => {}, //router 前置路由函数 每次触发跳转前先会触发此函数
 	routerAfterEach: () => {}, //router 后置路由函数 每次触发跳转后会触发此函数
 	routes: [],
 }
+
 export const methods = {
 	push: "navigateTo",
 	replace: "redirectTo",
@@ -43,6 +48,20 @@ export const Global = { //缓存一些必要的对象，作为全局可以访问
 	addedRoutes: [], //用于缓存用户动态添加的路由
 	RouterReadyPromise: () => {},
 	H5RouterReady: null //当前router是否就绪
+}
+
+export const uniAppHook = {
+	onLaunch: {
+		fun: [],
+		args: {}
+	},
+	onShow: {
+		fun: [],
+		args: {}
+	},
+	waitHooks:{},	//一些需要等待的Hooks,就是在页面没有进来之前一些提前触发的生命钩子
+	needHooks:['onLoad','onReady','onShow','created','beforeCreate','onHide','onUnload','onResize'],
+	pageReady:false,
 }
 
 export const route = function(object = {}) {
