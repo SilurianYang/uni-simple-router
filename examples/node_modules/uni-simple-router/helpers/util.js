@@ -237,7 +237,6 @@ export const exactRule = function (cloneRule, routes, ruleKey, getRule = false) 
 };
 
 export const normalizeParams = function (cloneRule, routes) {
-	debugger
 	let params = {};
 	if (cloneRule.constructor === String) {
 		let rule = {};
@@ -260,7 +259,6 @@ export const encodeURI = function (rule) {
 };
 
 export const resolveRule = function (router, rule, query = {}, ruleKey = 'path') {
-	debugger
 	let ruleInfo = route(
 		exactRule({
 				...rule

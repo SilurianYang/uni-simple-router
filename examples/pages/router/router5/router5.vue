@@ -15,8 +15,9 @@
 			};
 		},
 		onLoad(){
-			this.value=JSON.stringify(this.$Route.query)
-			console.log(this.$Router)
+			console.log('onLoad')
+			// this.value=JSON.stringify(this.$Route.query)
+			// console.log(this.$Router)
 		},
 		onShow(){
 			console.log('show')

@@ -69,6 +69,9 @@ export const pathOrNameToRoute=function(type,routes){
 		if(item.path===`/${type}`){
 			return copyObject(item);
 		}
+		if(item.path===type){
+			return copyObject(item);
+		}
 		if(item.name==type){
 			return copyObject(item);
 		}

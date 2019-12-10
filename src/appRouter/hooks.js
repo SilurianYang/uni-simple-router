@@ -2,7 +2,28 @@ import {uniAppHook} from '../helpers/config'
 import {callAppHook,getPages,getPageVmOrMp,ruleToUniNavInfo,formatTo,formatFrom} from './util'
 import {noop,parseQuery} from '../helpers/util'
 import {warn} from '../helpers/warn'
-import {resolveParams} from "../lifeCycle/hooks.js";
+import {uniPushTo} from "./uniNav";
+
+/**
+ * 执行所有 拦截下来的生命周期 app.vue 及 index 下的生命周期
+ * @param {Boolean} callHome // 是否触发首页的生命周期
+ */
+const callwaitHooks= function(callHome){
+	return new Promise(async resolve=>{
+		const {onLaunch,onShow,waitHooks}=uniAppHook;
+		await onLaunch.fun[onLaunch.fun.length-1](onLaunch.args);	//确保只执行最后一个 并且强化异步操作
+		onShow.fun[onShow.fun.length-1](onShow.args);	//onshow 不保证异步 直接确保执行最后一个
+		if(callHome){	//触发首页生命周期
+			try{
+				for(let key in waitHooks){
+					callAppHook.call(waitHooks[key])
+				}
+			}catch(e){};
+		}
+		resolve();
+	})
+}
+
 /**
  * 主要是对app.vue下onLaunch和onShow生命周期进行劫持
  * 
@@ -51,7 +72,15 @@ export const triggerLifeCycle = function(Router) {
 		return warn('打扰了,当前一个页面也没有 这不是官方的bug是什么??');
 	}
 	let {query,page}=getPageVmOrMp(topPage,false);
-	transitionTo.call(Router,{path:page.route,query},'static');	
+	transitionTo.call(Router,{path:page.route,query},'push',async function(finalRoute,fnType){
+		if(`/${page.route}`==finalRoute.route.path){		//在首页不动的情况下
+			await callwaitHooks(true);
+		}else{	//需要跳转
+			await callwaitHooks(false);	//只触发app.vue中的生命周期
+			await uniPushTo(finalRoute,fnType);
+		}
+		plus.nativeObj.View.getViewById('router-loadding').close();
+	});	
 }
 /**
  * 核心方法 处理一系列的跳转配置
@@ -63,17 +92,21 @@ export const triggerLifeCycle = function(Router) {
  * 
  */
 export const transitionTo =async function(rule, fnType, navCB){
-	await this.lifeCycle["routerbeforeHooks"][0].call(this, fnType) //触发内部跳转前的生命周期
+	await this.lifeCycle["routerbeforeHooks"][0].call(this) //触发内部跳转前的生命周期
 	const finalRoute=ruleToUniNavInfo(rule,this.CONFIG.routes);		//获得到最终的 route 对象
 	const _from=formatFrom(this.CONFIG.routes);	//先根据跳转类型获取 from 数据
 	const _to=formatTo(finalRoute);	//再根据跳转类型获取 to 数据
 	const beforeResult= await beforeHooks.call(this,_from,_to);		//执行 beforeEach 生命周期
 	try{
-	  await isNext(beforeResult,fnType,navCB);	//验证当前是否继续  可能需要递归  那么 我们把参数传递过去
+	  await isNext.call(this,beforeResult,fnType,navCB);	//验证当前是否继续  可能需要递归  那么 我们把参数传递过去
+	 const enterResult =await beforeEnterHooks.call(this,finalRoute,_from,_to);	//接着执行 beforeEnter 生命周期
+	 await isNext.call(this,enterResult,fnType,navCB);	//再次验证  如果生命钩子多的话应该写成递归或者循环
 	}catch(e){
 		return false;
 	}
-	console.log(11111)
+	navCB&&navCB.call(this,finalRoute,fnType);	//执行当前回调生命周期
+	afterEachHooks.call(this,_from,_to)
+	await this.lifeCycle["routerAfterHooks"][0].call(this) //触发内部跳转前的生命周期
 }
 /**
  * 触发全局beforeHooks 生命钩子
@@ -83,22 +116,43 @@ export const transitionTo =async function(rule, fnType, navCB){
  * this 为当前 Router 对象
  */
 const beforeHooks = function(_from,_to){
-	return new Promise(async (resolve, reject)=>{
-		if (!this.lifeCycle["beforeHooks"][0]) {
+	return new Promise(async resolve=>{
+		const beforeHooks=this.lifeCycle["beforeHooks"][0];
+		if (beforeHooks==null) {
 			return resolve();
 		}
-		await this.lifeCycle["beforeHooks"][0](_to, _from, resolve);
+		await beforeHooks.call(this,_to, _from, resolve);
 	})
 }
 /**
- * 触发全局 beforeEnter 生命钩子
+ * 触发全局afterEachHooks 生命钩子
  * @param {Object} _from // from  参数
  * @param {Object} _to  // to 参数
  * 
  * this 为当前 Router 对象
  */
-const beforeEnterHooks =function(_from,_to){
-	
+const afterEachHooks=function(_from,_to){
+	const afterHooks=this.lifeCycle["afterHooks"][0];
+	if(afterHooks!=null&&afterHooks.constructor===Function){
+		afterHooks.call(this,_to,_from);
+	}
+}
+/**
+ * 触发全局 beforeEnter 生命钩子
+ * @param {Object} finalRoute 	// 当前格式化后的路由参数
+ * @param {Object} _from // from  参数
+ * @param {Object} _to  // to 参数
+ * 
+ * this 为当前 Router 对象
+ */
+const beforeEnterHooks =function(finalRoute,_from,_to){
+	return new Promise(async resolve =>{
+		const beforeEnter=finalRoute.route.beforeEnter;
+		if(beforeEnter==null||beforeEnter.constructor!==Function){	//当前这个beforeEnter不存在 或者类型错误
+			return resolve();
+		}
+		await beforeEnter.call(this,_to, _from, resolve);
+	})
 }
 /**
  * 验证当前 next() 管道函数是否支持下一步
@@ -106,6 +160,9 @@ const beforeEnterHooks =function(_from,_to){
  * @param {Object} Intercept 拦截到的新路由规则
  * @param {Object} fnType 跳转页面的类型方法 原始的
  * @param {Object} navCB 回调函数 原始的
+ * 
+ * this 为当前 Router 对象
+ * 
  */
 const isNext =function(Intercept,fnType, navCB){
 	return new Promise((resolve,reject)=>{
@@ -117,11 +174,11 @@ const isNext =function(Intercept,fnType, navCB){
 		}
 		if(Intercept.constructor === String){		//说明 开发者直接传的path 并且没有指定 NAVTYPE 那么采用原来的navType
 			reject(1);
-			return transitionTo(Intercept,fnType,navCB);
+			return transitionTo.call(this,Intercept,fnType,navCB);
 		}
 		if(Intercept.constructor === Object){	//有一系列的配置 包括页面切换动画什么的
 			reject(1);
-			return transitionTo(Intercept,Intercept.NAVTYPE||fnType,navCB);
+			return transitionTo.call(this,Intercept,Intercept.NAVTYPE||fnType,navCB);
 		}
 	})
 }

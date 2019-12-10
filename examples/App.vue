@@ -1,12 +1,10 @@
 <script>
 export default {
-  onLaunch: function(...args) {
-	 // debugger
-	 //delete  __uniConfig.tabBar
-	 console.log(args)
+  onLaunch: function() {
+	  console.log('onLaunch')
   },
-  onShow: function(...args) {
-	  console.log(args)
+  onShow: function() {
+	   console.log('onLaunch---onShow')
   },
 };
 </script>

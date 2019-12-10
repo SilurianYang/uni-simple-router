@@ -123,9 +123,15 @@ const whitelist = {
 router.beforeEach(async (to, from, next) => {
 	console.log(to)
 	console.log(from)
-	next();
+	if(to.name=='tabbar-1'){
+		next('/pages/router/router5/router5');
+	}else{
+		next();
+	}
 })
 router.afterEach((to, from) => {
+	console.log(to)
+	console.log(from)
 	// setTimeout(function() {
 	// 	uni.setNavigationBarTitle({
 	// 	    title: to.name

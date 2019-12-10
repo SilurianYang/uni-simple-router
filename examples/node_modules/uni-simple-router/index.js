@@ -98,7 +98,10 @@ class Router {
 
 			if (appPlatform() === 'H5') {
 				H5PATCH.on('toogle', 'stopLodding');
-				return false;
+				return true;
+			}
+			if(appPlatform()==='APP'){		//app端到此为止
+				return true;
 			}
 
 			const index = this.depEvent.indexOf(res.showId);
