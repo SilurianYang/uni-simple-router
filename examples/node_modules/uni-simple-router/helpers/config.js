@@ -51,14 +51,10 @@ export const Global = { //缓存一些必要的对象，作为全局可以访问
 }
 
 export const uniAppHook = {
-	onLaunch: {	//这两个是app.vue
-		fun: [],
-		args: {}
-	},
-	onShow: {	//这两个是app.vue
-		fun: [],
-		args: {}
-	},
+	indexVue:{},	//首页 组件对象
+	appVue:{},	//同getApp()获取到的对象一毛一样的  其实就是app.vue组件
+	onLaunch: {	fun: [],args: {},isHijack:false }, //这两个是app.vue
+	onShow: { fun: [],args: {},isHijack:false },
 	waitHooks:{},	//首页等待中的生命钩子 一些需要等待的Hooks,就是在页面没有进来之前一些提前触发的生命钩子
 	needHooks:['onLoad','onReady','onShow','created','beforeCreate','onHide','onUnload','onResize'],	//首页需要拦截的生命钩子
 	pageReady:false,

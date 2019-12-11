@@ -120,9 +120,10 @@ const whitelist = {
 	'/pages/tabbar/tabbar-4/tabbar-4': 'tabbar-4',
 	'/pages/tabbar/tabbar-5/tabbar-5': 'tabbar-5'
 }
-router.beforeEach(async (to, from, next) => {
+router.beforeEach((to, from, next) => {
 	console.log(to)
 	console.log(from)
+	//next();
 	if(to.name=='tabbar-1'){
 		next('/pages/router/router5/router5');
 	}else{

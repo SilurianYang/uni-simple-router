@@ -44,6 +44,9 @@
 		onShow(){
 			console.log('tabbar1---onshow')
 		},
+		onUnload() {
+			console.log('tabbar1---onUnload')
+		},
 		computed: {
 			query() {
 				return this.$Route.query
@@ -52,20 +55,27 @@
 		created() {},
 		methods: {
 			gotoPage() {
-				// this.$Router.push('/router5')
+				 //this.$Router.push('/router5')
 				
-				this.$Router.push({
-					path: '/pages/router/router5/router5',
-					query: {
-						userId: '123'
-					}
-				})
+				// this.$Router.push({
+				// 	path: '/pages/router/router5/router5',
+				// 	query: {
+				// 		userId: '123'
+				// 	}
+				// })
+				
+				//this.$Router.push('/pages/router/router5/router5');
+				
 				// uni.navigateTo({
 				// 	url:'/router5'
 				// })
-				// this.$Router.push({
-				// 	name: 'router5',
-				// })
+				
+				this.$Router.push({
+					name: 'router5',
+					params:{
+						userId: '123'
+					}
+				})
 			},
 			gotoPage1() {
 				this.$Router.push({
