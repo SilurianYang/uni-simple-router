@@ -17,5 +17,8 @@
 
 6. 当首次触发全局钩子时并跳转到其他页面时 需要还原所有已经拦截的生命周期
 
+7.首次进入页面在 beforeEach 拦截到其他页面 应该 是立马变过去 
+8.路由配置及跳转 应该可以传递 animationType animationDuration
+
 
 
