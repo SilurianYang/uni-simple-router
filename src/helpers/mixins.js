@@ -1,26 +1,13 @@
 import {uniAppHook} from './config'
-
 import {init} from '../vueRouter/init'
-
 import {appInit} from '../appRouter/init'
-
 import {appPlatform} from "../helpers/util";
-
 import {getPages} from '../appRouter/util'
-
 import {proxyIndexHook} from '../appRouter/hooks'
-
 import {resolveParams} from "../lifeCycle/hooks";
-
-
-
+import {completeVim} from "../patch/app-patch.js";
 import event from '../helpers/event.js'
 const Event = new event();
-import {
-	completeVim,
-	
-} from "../patch/app-patch.js";
-
 const BUILTIN = {}; //代理属性缓存上个操作的page对象
 
 

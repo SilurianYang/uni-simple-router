@@ -5,23 +5,52 @@ import {warn} from '../helpers/warn'
 import {uniPushTo} from "./uniNav";
 
 /**
- * 执行所有 拦截下来的生命周期 app.vue 及 index 下的生命周期
+ * 还原并执行所有 拦截下来的生命周期 app.vue 及 index 下的生命周期 
  * @param {Boolean} callHome // 是否触发首页的生命周期
  */
 const callwaitHooks= function(callHome){
 	return new Promise(async resolve=>{
-		const {onLaunch,onShow,waitHooks}=uniAppHook;
+		const variation=[];	//存储一下在uni-app上的变异生命钩子  奇葩的要死
+		const {appVue,indexVue,onLaunch,onShow,waitHooks}=uniAppHook;
+		const app=appVue.$options;
 		await onLaunch.fun[onLaunch.fun.length-1](onLaunch.args);	//确保只执行最后一个 并且强化异步操作
 		onShow.fun[onShow.fun.length-1](onShow.args);	//onshow 不保证异步 直接确保执行最后一个
 		if(callHome){	//触发首页生命周期
-			try{
-				for(let key in waitHooks){
-					callAppHook.call(waitHooks[key])
-				}
-			}catch(e){};
+			for(let key in waitHooks){
+				callAppHook.call(waitHooks[key].fun)
+			}
 		}
-		resolve();
+		if(onLaunch.isHijack){	//还原 onLaunch生命钩子
+			app.onLaunch.splice(app.onLaunch.length-1,1,onLaunch.fun[0]);
+		}
+		if(onShow.isHijack){	//继续还原 onShow
+			app.onShow.splice(app.onShow.length-1,1,onShow.fun[0]);
+		}
+		
+		for(let key in waitHooks){	//还原 首页下的生命钩子
+			const item=waitHooks[key];
+			if(item.isHijack){	
+				if(key!='onReady'){
+					const indeHooks=indexVue[key];
+					indeHooks.splice(indeHooks.length-1,1,item.fun[0]);
+				}else{
+					variation.push({key,fun:item.fun[0]});
+				}
+			}
+		}
+		resolve(variation);
 	})
+}
+/**
+ * 还原剩下的奇葩生命钩子
+ * @param {Object} variation 当前uni-app中的一些变异方法  奇葩生命钩子
+ */
+const callVariationHooks=function(variation){
+	for (let i = 0; i < variation.length; i++) {
+		const {key,fun}=variation[i];
+		const indeHooks=uniAppHook.indexVue[key];
+		indeHooks.splice(indeHooks.length-1,1,fun);
+	}
 }
 
 /**
@@ -34,17 +63,22 @@ export const proxyLaunchHook=function(){
 		onLaunch,
 		onShow
 	}=this.$options;
-	uniAppHook.onLaunch.fun=[onLaunch[onLaunch.length-1]];
-	uniAppHook.onShow.fun=[onShow[onShow.length-1]]
-	onLaunch.splice(onLaunch.length-1,1,(...arg)=>{
-		uniAppHook.onLaunch.args=arg;
-	})		//替换uni-app自带的生命周期
-	onShow.splice(onShow.length-1,1,(...arg)=>{
-		uniAppHook.onShow.args=arg;
-		if(uniAppHook.pageReady){		//因为还有app切前台后台的操作
-			callAppHook.call(uniAppHook.onShow.fun,arg)
-		}
-	})	//替换替换 都替换
+	uniAppHook.appVue=this;		//缓存 当前app.vue组件对象
+	if(onLaunch.length>1){	//确保有写 onLaunch 可能有其他混入 那也办法
+		uniAppHook.onLaunch.isHijack=true;
+		uniAppHook.onLaunch.fun=onLaunch.splice(onLaunch.length-1,1,arg=>{
+			uniAppHook.onLaunch.args=arg;
+		})		//替换uni-app自带的生命周期
+	}
+	if(onShow.length>0){
+		uniAppHook.onShow.isHijack=true;
+		uniAppHook.onShow.fun=onShow.splice(onShow.length-1,1,arg=>{
+			uniAppHook.onShow.args=arg;
+			if(uniAppHook.pageReady){		//因为还有app切前台后台的操作
+				callAppHook.call(uniAppHook.onShow.fun,arg)
+			}
+		})	//替换替换 都替换
+	}
 }
 /**
  * 把指定页面的生命钩子函数保存并替换
@@ -52,11 +86,14 @@ export const proxyLaunchHook=function(){
  */
 export const proxyIndexHook=function(Router){
 	const {needHooks,waitHooks}=uniAppHook;
+	uniAppHook.indexVue=this;
 	for(let i=0;i<needHooks.length;i++){
 		const key=needHooks[i];
-		if(this[key]!=null){
+		if(this[key]!=null){	//只劫持开发者声明的生命周期
 			const {length}=this[key];
-			waitHooks[key]=this[key].splice(length-1,1,noop);	//把实际的页面生命钩子函数缓存起来,替换原有的生命钩子
+			const whObject= waitHooks[key]={};
+			whObject.fun=this[key].splice(length-1,1,noop);	//把实际的页面生命钩子函数缓存起来,替换原有的生命钩子
+			whObject.isHijack=true;
 		}
 	}
 	triggerLifeCycle(Router);	//接着 主动我们触发导航守卫
@@ -73,13 +110,15 @@ export const triggerLifeCycle = function(Router) {
 	}
 	let {query,page}=getPageVmOrMp(topPage,false);
 	transitionTo.call(Router,{path:page.route,query},'push',async function(finalRoute,fnType){
+		let variation=[];
 		if(`/${page.route}`==finalRoute.route.path){		//在首页不动的情况下
 			await callwaitHooks(true);
 		}else{	//需要跳转
-			await callwaitHooks(false);	//只触发app.vue中的生命周期
+			variation=await callwaitHooks(false);	//只触发app.vue中的生命周期
 			await uniPushTo(finalRoute,fnType);
 		}
 		plus.nativeObj.View.getViewById('router-loadding').close();
+		callVariationHooks(variation);
 	});	
 }
 /**

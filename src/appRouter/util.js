@@ -42,7 +42,8 @@ export const getPageVmOrMp=function(page,vim=true){
  */
 export const formatTo=function(finalRoute){
 	const route=copyObject(finalRoute.route);
-	route.query=finalRoute.rule.query;
+	const rule=finalRoute.rule;
+	route.query=rule['query']||rule['params']||{};
 	return route;
 }
 /**

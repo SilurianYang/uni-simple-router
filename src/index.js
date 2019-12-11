@@ -1,52 +1,20 @@
-import {
-	isH5,
-	formatConfig,
-	queryMp,
-	resolveRule,
-	appPlatform,
-	formatURLQuery,
-	parseQuery
-} from "./helpers/util.js";
-import {
-	getRouterNextInfo,
-	formatUserRule,
-	strPathToObjPath
-} from './vueRouter/util.js'
-import * as compile from './helpers/compile.js'
-import {
-	methods,
-	lifeCycle,
-	Global
-} from "./helpers/config.js";
-
-import {
-	warn,
-	err
-} from './helpers/warn.js'
-
-import * as lifeMothods from "./lifeCycle/hooks.js";
-import {
-	vueMount
-} from './vueRouter/base.js'
-
-import event from './helpers/event.js'
+import {isH5,formatConfig,queryMp,resolveRule,appPlatform,formatURLQuery,parseQuery} from "./helpers/util";
+import {getRouterNextInfo,formatUserRule,strPathToObjPath} from './vueRouter/util'
+import * as compile from './helpers/compile'
+import {methods,lifeCycle,Global} from "./helpers/config";
+import {warn,err} from './helpers/warn'
+import * as lifeMothods from "./lifeCycle/hooks";
+import {transitionTo} from './appRouter/hooks'
+import {uniPushTo} from './appRouter/uniNav'
+import {vueMount} from './vueRouter/base'
+import {queryInfo,appletsMount} from "./patch/applets-patch";
+import {completeVim,appMount} from "./patch/app-patch";
+import initMixins from './helpers/mixins'
+import event from './helpers/event'
 const Event = new event();
 
-import {
-	queryInfo,
-	appletsMount,
-} from "./patch/applets-patch.js";
-
-import {
-	completeVim,
-	appMount
-} from "./patch/app-patch.js";
-
-import initMixins from './helpers/mixins'
-
-
 // #ifdef H5
-import H5 from "./patch/h5-patch.js";
+import H5 from "./patch/h5-patch";
 const H5PATCH = new H5(isH5());
 // #endif
 
@@ -164,6 +132,9 @@ class Router {
 		if (appPlatform() === 'H5') {
 			return this._H5PushTo('push', rule, 'navigateTo');
 		}
+		if(appPlatform() === 'APP'){
+			return transitionTo.call(this,rule,'push', uniPushTo);
+		}
 		lifeMothods.resolveParams(this, rule, "push", function(customRule) {
 			return new Promise(async resolve => {
 				resolve(await this._pushTo(customRule));
@@ -177,6 +148,9 @@ class Router {
 	replace(rule) {
 		if (appPlatform() === 'H5') {
 			return this._H5PushTo('replace', rule, 'redirectTo');
+		}
+		if(appPlatform() === 'APP'){
+			return transitionTo.call(this,rule,'replace', uniPushTo);
 		}
 		lifeMothods.resolveParams(this, rule, "replace", function(customRule) {
 			return new Promise(async resolve => {
@@ -192,6 +166,9 @@ class Router {
 		if (appPlatform() === 'H5') {
 			return this._H5PushTo('replace', rule, 'reLaunch');
 		}
+		if(appPlatform() === 'APP'){
+			return transitionTo.call(this,rule,'replaceAll', uniPushTo);
+		}
 		lifeMothods.resolveParams(this, rule, "replaceAll", function(customRule) {
 			return new Promise(async resolve => {
 				resolve(await this._pushTo(customRule));
@@ -204,6 +181,9 @@ class Router {
 	pushTab(rule) {
 		if (appPlatform() === 'H5') {
 			return this._H5PushTo('replace', rule, 'switchTab');
+		}
+		if(appPlatform() === 'APP'){
+			return transitionTo.call(this,rule,'pushTab', uniPushTo);
 		}
 		lifeMothods.resolveParams(this, rule, "pushTab", function(customRule) {
 			return new Promise(async resolve => {
