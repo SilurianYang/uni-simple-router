@@ -11,7 +11,7 @@ import {uniPushTo} from "./uniNav";
 const callwaitHooks= function(callHome){
 	return new Promise(async resolve=>{
 		const variation=[];	//存储一下在uni-app上的变异生命钩子  奇葩的要死
-		const {appVue,indexVue,onLaunch,onShow,waitHooks}=uniAppHook;
+		const {appVue,indexVue,onLaunch,onShow,waitHooks,variationFuns}=uniAppHook;
 		const app=appVue.$options;
 		await onLaunch.fun[onLaunch.fun.length-1](onLaunch.args);	//确保只执行最后一个 并且强化异步操作
 		onShow.fun[onShow.fun.length-1](onShow.args);	//onshow 不保证异步 直接确保执行最后一个
@@ -30,11 +30,11 @@ const callwaitHooks= function(callHome){
 		for(let key in waitHooks){	//还原 首页下的生命钩子
 			const item=waitHooks[key];
 			if(item.isHijack){	
-				if(key!='onReady'){
+				if(variationFuns.includes(key)){	//变异方法
+					variation.push({key,fun:item.fun[0]});
+				}else{
 					const indeHooks=indexVue[key];
 					indeHooks.splice(indeHooks.length-1,1,item.fun[0]);
-				}else{
-					variation.push({key,fun:item.fun[0]});
 				}
 			}
 		}
@@ -119,6 +119,7 @@ export const triggerLifeCycle = function(Router) {
 		}
 		plus.nativeObj.View.getViewById('router-loadding').close();
 		callVariationHooks(variation);
+		uniAppHook.pageReady=true;		//标致着路由已经就绪 可能准备起飞
 	});	
 }
 /**

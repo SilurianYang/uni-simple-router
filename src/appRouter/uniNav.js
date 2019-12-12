@@ -1,5 +1,6 @@
 
-import {methods} from '../helpers/config'
+import {methods,baseConfig} from '../helpers/config'
+import {noop} from '../helpers/util'
 import {err} from '../helpers/warn'
 
 let stop=null;
@@ -10,17 +11,19 @@ let stop=null;
  */
 export const uniPushTo = function(finalRoute,NAVTYPE) {
 	return new Promise(resolve=>{
+		const APP=baseConfig.APP;
 		stop=setTimeout(()=> {
 			resolve();
-		}, 1000);
+			resolve=noop;	//执行完了就没了 确保不会被下一次执行
+		}, APP.switchPageOutTime);
 		const url=finalRoute.uniRoute.url;
 		uni[methods[NAVTYPE]]({
 			url,
-			animationType:'none',
-			animationDuration:0,
+			...finalRoute.route.animation,
 			complete:()=>{
 				clearTimeout(stop);
 				resolve();
+				resolve=noop;	//执行完了就没了 确保不会被下一次执行
 			}
 		});
 	})

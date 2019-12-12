@@ -90,16 +90,19 @@ export const ruleToUniNavInfo=function(rule,routes){
 	if(rule==null){
 		return err(`当前跳转规则为空,请检查跳转代码`);
 	}
-	let [navType,route,query]=['path',null,{}];
+	let [navType,route,query,animation]=['path',null,{},{}];
 	if(rule.constructor===String){		//是字符串类型 那当前就是路径啦
 		route=pathOrNameToRoute(rule,routes);	//直接把 rule 当 path 传递 完事
 	}else if(rule.constructor===Object){		//对象类型 可以是 path 或者 name
 		route=pathOrNameToRoute(rule['path']||(navType='name',rule['name']),routes);	//两则必有其一 报错自己处理
 		query=rule['query']||rule['params']||{};
+		animation=rule.animation||{};
 	}else{
 		return err(`传的什么乱七八糟的类型?路由跳转规则只认字符串 'path' , 对象 'path' , 对象 'name' `);
 	}
 	route=mergeRoute(route);	//合并一下对象,主要是合并 query:{} 及 params:{}
+	animation={...Global.Router.CONFIG.APP.animation,...route.animation||{},...animation};	//合并多种方式声明的动画效果
+	route.animation=animation;	//这才是最终的页面切换效果
 	//路径处理完后   开始格式化参数
 	let uniRoute=parseQuery(route.path,query);	//uni-app 需要的跳转规则
 	return {
