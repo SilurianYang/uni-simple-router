@@ -71,10 +71,10 @@
 				// })
 				
 				this.$Router.push({
-					name: 'router5',
+					name: 'router6',
 					params:{
 						userId: '123'
-					}
+					},
 				})
 			},
 			gotoPage1() {

@@ -10,6 +10,8 @@ import RouterMount from './common/uni-app-router/useRouter.js'
 import routerLink from './node_modules/uni-simple-router/component/router-link.vue'
 Vue.component('router-link', routerLink)
 
+console.log(1111)
+
 const app = new Vue({
     ...App,
 })

@@ -30,7 +30,11 @@ const routesConfig = {
 	routes: [{
 			aliasPath: '/router5',
 			path: '/pages/router/router5/router5',
-			name: 'router5'
+			name: 'router5',
+		},
+		{
+			path: '/pages/login/login',
+			name: 'login'
 		},
 		{
 			path: '/pages/tabbar/tabbar-5/tabbar-5',
@@ -120,14 +124,35 @@ const whitelist = {
 	'/pages/tabbar/tabbar-4/tabbar-4': 'tabbar-4',
 	'/pages/tabbar/tabbar-5/tabbar-5': 'tabbar-5'
 }
+
+let count =0;
+
 router.beforeEach((to, from, next) => {
 	console.log(to)
 	console.log(from)
 	//next();
-	if(to.name=='tabbar-1'){
-		next('/pages/router/router5/router5');
+	count++
+	if(count==1){
+		next({
+			path:'/pages/login/login',
+			NAVTYPE:'replaceAll',
+			query:{
+				userOut:true
+			}
+		});
 	}else{
-		next();
+		if(to.name=='router6'){
+			next({
+				name:'router5',
+				NAVTYPE:'push',
+				animation:{
+					animationType:'slide-in-top',
+					animationDuration:1000
+				}
+			});
+		}else{
+			next();
+		}
 	}
 })
 router.afterEach((to, from) => {
