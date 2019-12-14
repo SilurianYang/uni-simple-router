@@ -2,7 +2,7 @@ import {uniAppHook} from '../helpers/config'
 import {callAppHook,getPages,getPageVmOrMp,ruleToUniNavInfo,formatTo,formatFrom} from './util'
 import {noop,parseQuery} from '../helpers/util'
 import {warn} from '../helpers/warn'
-import {uniPushTo} from "./uniNav";
+import {uniPushTo,rewriteUniFun} from "./uniNav";
 
 /**
  * 还原并执行所有 拦截下来的生命周期 app.vue 及 index 下的生命周期 
@@ -11,13 +11,15 @@ import {uniPushTo} from "./uniNav";
 const callwaitHooks= function(callHome){
 	return new Promise(async resolve=>{
 		const variation=[];	//存储一下在uni-app上的变异生命钩子  奇葩的要死
-		const {appVue,indexVue,onLaunch,onShow,waitHooks,variationFuns}=uniAppHook;
+		const {appVue,indexVue,onLaunch,onShow,waitHooks,variationFuns,indexCallHooks}=uniAppHook;
 		const app=appVue.$options;
 		await onLaunch.fun[onLaunch.fun.length-1](onLaunch.args);	//确保只执行最后一个 并且强化异步操作
 		onShow.fun[onShow.fun.length-1](onShow.args);	//onshow 不保证异步 直接确保执行最后一个
 		if(callHome){	//触发首页生命周期
 			for(let key in waitHooks){
-				callAppHook.call(waitHooks[key].fun)
+				if(indexCallHooks.includes(key)){	//只有在被包含的情况下才执行
+					callAppHook.call(waitHooks[key].fun)
+				}
 			}
 		}
 		if(onLaunch.isHijack){	//还原 onLaunch生命钩子
@@ -147,6 +149,9 @@ export const transitionTo =async function(rule, fnType, navCB){
 	navCB&&navCB.call(this,finalRoute,fnType);	//执行当前回调生命周期
 	afterEachHooks.call(this,_from,_to)
 	await this.lifeCycle["routerAfterHooks"][0].call(this) //触发内部跳转前的生命周期
+	if(fnType!=='back'){	//返回时不必要重新返回事件
+		rewriteUniFun(getPages(-2),this);
+	}
 }
 /**
  * 触发全局beforeHooks 生命钩子

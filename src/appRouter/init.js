@@ -20,6 +20,19 @@ export const registerLoddingPage = function() {
 	view.show();
 }
 /**
+ * 移除当前 页面上 非router 声明的 onBackPress 事件
+ * 
+ * @param {Object} options	当前page对象的 $options
+ */
+export const removeBackPressEvent=function(options){
+	for(let i=0;i<options.onBackPress.length;i++){
+		const item=options.onBackPress[i];
+		if(item.name!='hhyangRouterBack'){		//只要不等于 路由混入的都干掉
+			options.onBackPress.splice(i,1)
+		}
+	}
+}
+/**
  * 开始初始化app端路由配置
  * 
  * @param {Object} Router

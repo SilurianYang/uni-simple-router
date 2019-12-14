@@ -1,6 +1,6 @@
 import {uniAppHook} from './config'
 import {init} from '../vueRouter/init'
-import {appInit} from '../appRouter/init'
+import {appInit,removeBackPressEvent} from '../appRouter/init'
 import {appPlatform} from "../helpers/util";
 import {getPages} from '../appRouter/util'
 import {proxyIndexHook} from '../appRouter/hooks'
@@ -35,7 +35,11 @@ const getMixins = function(Vue,Router,depPromise) {
 				if(__uniConfig.appLaunchInfo.path==this.__route__&&uniAppHook.pageReady===false){		
 					proxyIndexHook.call(this.$options,Router.$root);
 				}
-			}
+				removeBackPressEvent(this.$options);
+			},
+			// onBackPress:function hhyangRouterBack(){
+			// 	beforeBack.call(Router.$root,this.$mp.page);
+			// }
 		},
 		APPLETS:{
 			onLaunch: function() {

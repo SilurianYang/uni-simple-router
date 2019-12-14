@@ -12,7 +12,7 @@ export const callAppHook=function(args){
 	}
 }
 /**
- * @param {Number} index //需要获取的页面下标 -2 表示获取最后一个
+ * @param {Number} index //需要获取的页面下标 -2 表示获取最后一个 -1 表示全部
  * @param {Boolean} all //是否获取全部的页面
  */
 export const getPages=function(index=-1,all){
@@ -55,7 +55,6 @@ export const formatFrom=function(routes){
 	const topPage=getPages(-2);
 	const {page,query}=getPageVmOrMp(topPage,false);
 	let route=pathOrNameToRoute(page.route,routes);	//获取到当前路由表下的 route
-	route=mergeRoute(route);	//合并一下对象,主要是合并 query:{} 及 params:{}
 	route.query=getFormatQuery(query);	//不管是编码传输还是非编码 最后都得在 to/from 中换成json对象
 	return route;
 }
@@ -64,17 +63,17 @@ export const formatFrom=function(routes){
  * @param {string} type   //path 或者 name
  * @param {Object} routes //当前对象的所有路由表
  */
-export const pathOrNameToRoute=function(type,routes){
+export const pathOrNameToRoute=function(type,routes=Global.Router.CONFIG.routes){
 	for(let key in routes){
 		const item=routes[key];
 		if(item.path===`/${type}`){
-			return copyObject(item);
+			return mergeRoute(item); //合并一下对象,主要是合并 query:{} 及 params:{}
 		}
 		if(item.path===type){
-			return copyObject(item);
+			return mergeRoute(item); //合并一下对象,主要是合并 query:{} 及 params:{}
 		}
 		if(item.name==type){
-			return copyObject(item);
+			return mergeRoute(item); //合并一下对象,主要是合并 query:{} 及 params:{}
 		}
 	}
 	err(`当前 '${type}' 在路由表中没有找到匹配的 name 或者 path`);
@@ -100,7 +99,6 @@ export const ruleToUniNavInfo=function(rule,routes){
 	}else{
 		return err(`传的什么乱七八糟的类型?路由跳转规则只认字符串 'path' , 对象 'path' , 对象 'name' `);
 	}
-	route=mergeRoute(route);	//合并一下对象,主要是合并 query:{} 及 params:{}
 	animation={...Global.Router.CONFIG.APP.animation,...route.animation||{},...animation};	//合并多种方式声明的动画效果
 	route.animation=animation;	//这才是最终的页面切换效果
 	//路径处理完后   开始格式化参数
@@ -111,14 +109,43 @@ export const ruleToUniNavInfo=function(rule,routes){
 		uniRoute
 	}
 }
-
-export const getFormatQuery = function (query) {
+/**
+ * 统一格式话 路由传递的参数 看看是编码还是非编码 做相应的对策
+ * 
+ * @param {Object} query 当前的路由参数
+ * @param {Boolean} getter 是从页面获取 route 对象下的参数 还是编码后传输
+ */
+export const getFormatQuery = function (query={},getter=false) {
 	if(Global.Router.CONFIG.encodeURI){
-		try{
-			query = JSON.parse(decodeURIComponent(query.query || encodeURIComponent('{}')))
-		}catch(e){
-			query = JSON.parse(query.query)
+		if(getter){
+			query = JSON.parse(query.query||'{}');
+		}else{
+			try{
+				query = JSON.parse(decodeURIComponent(query.query || encodeURIComponent('{}')))
+			}catch(e){
+				query = JSON.parse(query.query)
+			}
 		}
 	}
 	return query;
+}
+/**
+ * 获取当前页面下的 Route 信息
+ * 
+ * @param {Object} pages 获取页面对象集合
+ * @param {Object} Vim 用户传递的当前页面对象
+ */
+export const APPGetPageRoute=function(pages,Vim){
+	let [query,path] = [{},''];
+	if(pages.length>0){
+		const page=pages[pages.length-1];	//获取到当前页面
+		query=getFormatQuery(page.options,true);
+		path=page.route;
+	}else if(Vim!=null){
+		query=getFormatQuery(Vim.$mp.page.options,true);
+		path=page.route;
+	}
+	const route=pathOrNameToRoute(path);
+	route.query=query;
+	return route;
 }
