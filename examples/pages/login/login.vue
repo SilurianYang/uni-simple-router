@@ -12,6 +12,9 @@
 				
 			}
 		},
+		onLoad(){
+			console.log(this.$Route)
+		},
 		methods: {
 			gotoPage(){
 				this.$Router.pushTab({name:'tabbar-1'})

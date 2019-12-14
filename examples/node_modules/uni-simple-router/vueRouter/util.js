@@ -1,24 +1,7 @@
-import {
-	warn,
-	err
-} from '../helpers/warn.js'
-
-import {
-	beforeEnterHooks
-} from './concat.js'
-
-import {
-	isObject,
-	resolveRule,
-	copyObject,
-	parseQuery,
-	strObjToJsonToStr,
-	formatURLQuery
-} from '../helpers/util.js'
-
-import {
-	queryInfo,
-} from "../patch/applets-patch.js";
+import {warn,err} from '../helpers/warn.js'
+import {beforeEnterHooks} from './concat.js'
+import {isObject,resolveRule,copyObject,parseQuery,strObjToJsonToStr,formatURLQuery} from '../helpers/util.js'
+import {queryInfo} from "../patch/applets-patch.js";
 
 const pagesConfigReg = /props:\s*\(.*\)\s*(\([\s\S]*\))\s*},/;
 const defRoutersReg = /props:\s*{([\s\S]+)}\s*},/;
@@ -377,6 +360,22 @@ export const strPathToObjPath =function(path){
 	}
 	return {	//这种情况就是只有path时,直接返回path对象了
 		path	
+	}
+}
+/**
+ * 获取当前页面下的 Route 信息
+ * 
+ * @param {Object} pages 获取页面对象集合
+ * @param {Object} Vim 用户传递的当前页面对象
+ */
+export const H5GetPageRoute=function(pages,Vim){
+	if (pages.length > 0) {	//直接取当前页面的对象
+		const currentRoute = pages[pages.length - 1].$route;
+		return getRouterNextInfo(currentRoute, currentRoute, this).toRoute;
+	} else if (Vim && Vim.$route) {
+		return getRouterNextInfo(Vim.$route, Vim.$route, this).toRoute;
+	} else {
+		return {};
 	}
 }
 

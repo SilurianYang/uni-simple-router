@@ -1,5 +1,6 @@
 import {isH5,formatConfig,queryMp,resolveRule,appPlatform,formatURLQuery,parseQuery} from "./helpers/util";
-import {getRouterNextInfo,formatUserRule,strPathToObjPath} from './vueRouter/util'
+import {formatUserRule,strPathToObjPath,H5GetPageRoute} from './vueRouter/util'
+import {APPGetPageRoute} from './appRouter/util'
 import * as compile from './helpers/compile'
 import {methods,lifeCycle,Global} from "./helpers/config";
 import {warn,err} from './helpers/warn'
@@ -224,22 +225,20 @@ class Router {
 	// 		warn(`非H5端没有此api ‘addRoutes’ `)
 	// 	}
 	// }
+	
 	/**
-	 * @param {Object} Vim
+	 * 获取当前页面下的 Route 信息
 	 * 
+	 * @param {Object} Vim 当前开发者可以传递一个 vue 组件对象 来获取当前下的 Route 信息
 	 */
-	getQuery(Vim) {
+	$Route(Vim) {
+		const pages = getCurrentPages();
 		if (appPlatform() === 'H5') {
-			const pages = getCurrentPages();
-			if (pages.length > 0) {
-				const currentRoute = pages[pages.length - 1].$route;
-				return getRouterNextInfo(currentRoute, currentRoute, this).toRoute;
-			} else if (Vim && Vim.$route) {
-				return getRouterNextInfo(Vim.$route, Vim.$route, this).toRoute;
-			} else {
-				return {};
-			}
-		} else {
+			return H5GetPageRoute.call(this,pages,Vim);
+		} 
+		if(appPlatform() === 'APP'){
+			return APPGetPageRoute(pages,Vim);
+		}else {
 			Vim = queryMp(Vim);
 			const {
 				route,
@@ -289,9 +288,7 @@ Object.defineProperty(BUILTIN, 'currentVim', {
 })
 
 Router.install = function(Vue) {
-	
 	initMixins(Vue,Router,depPromise);
-	
 	Object.defineProperty(Vue.prototype, "$Router", {
 		get: function() {
 			Router.doRouter = this;
@@ -301,7 +298,7 @@ Router.install = function(Vue) {
 	});
 	Object.defineProperty(Vue.prototype, "$Route", {
 		get: function() {
-			return Router.$root.getQuery(this);
+			return Router.$root.$Route(this);
 		}
 	});
 };

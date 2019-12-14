@@ -58,8 +58,9 @@ export const uniAppHook = {
 	onLaunch: {	fun: [],args: {},isHijack:false }, //这两个是app.vue
 	onShow: { fun: [],args: {},isHijack:false },
 	variationFuns:['onReady','onUnload'],	//一些uni-app的变异方法 需要处理下
-	waitHooks:{},	//首页等待中的生命钩子 一些需要等待的Hooks,就是在页面没有进来之前一些提前触发的生命钩子
-	needHooks:['onLoad','onReady','onShow','created','beforeCreate','onHide','onUnload','onResize'],	//首页需要拦截的生命钩子
+	waitHooks:{},	//首页等待中的生命钩子 一些需要等待的Hooks,就是在页面没有进来之前一些提前触发的生命钩子 主要是用户已经声明好的
+	indexCallHooks:['onLoad','onReady','created','onShow'],	//在首页首次启动时需要触发的生命周期
+	needHooks:['onLoad','onReady','onShow','created','onHide','onUnload','onResize'],	//首页需要拦截的生命钩子
 	pageReady:false,
 }
 

@@ -36,6 +36,7 @@
 			};
 		},
 		onLoad() {
+			console.log(this.$Route)
 			console.log('tabbar1---onLoad')
 		},
 		onReady(){
@@ -71,9 +72,13 @@
 				// })
 				
 				this.$Router.push({
-					name: 'router6',
+					name: 'router5',
 					params:{
-						userId: '123'
+						name: '我只想去router5 /% *& ！',
+						key: {
+							ages: " sdasd79&)) ^&^^",
+							name: '德玛测试'
+						}
 					},
 				})
 			},

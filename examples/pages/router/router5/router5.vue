@@ -16,7 +16,7 @@
 		},
 		onLoad(){
 			console.log('onLoad')
-			// this.value=JSON.stringify(this.$Route.query)
+			this.value=JSON.stringify(this.$Route)
 			// console.log(this.$Router)
 		},
 		onShow(){
@@ -27,6 +27,9 @@
 		},
 		onUnload(){
 			console.log('onUnload')
+		},
+		onBackPress(){
+			console.log(22222)
 		},
 		methods:{
 			gotoPage(){

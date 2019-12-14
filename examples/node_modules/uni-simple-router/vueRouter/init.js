@@ -51,8 +51,11 @@ const rewriteUniFun = function(Router) {
 		url
 	}) {
 		if(url==='/'){
-			 warn(`H5端 uni.reLaunch('/')时 默认被重写了! 你可以使用 this.$Router.replaceAll() 或者 uni.reLaunch('/'?xxx)`)
-			 return Router.back();
+			 warn(`H5端 uni.reLaunch('/')时 默认被重写了! 你可以使用 this.$Router.replaceAll() 或者 uni.reLaunch('/'?xxx)`);
+			 if(history.length>1){		//只有在有历史记录的时候才返回  不然直接返回首页
+				 return Router.back();
+			 }
+			 return Router.replaceAll('/');
 		}
 		const path=url.match(/^[^?]+|(\/)/)[0];
 		try{
