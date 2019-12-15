@@ -3,8 +3,9 @@
 1、H5端 next 管道函数 传入false 无法拦截的问题
 2、H5端 next 管道函数 重定向时没有正常解析生命周期的问题
 3、H5端 在微信浏览器中直接打开某个子页面 点击顶部返回无效的问题
+4、APP端 新增  getter $Route 
 
 调整
 
-1、Router实例下的 getQuery 方法 改名为 $Route 方法
+1、Router实例下的 getQuery 方法 改名为 $Route 方法 再此改名为 getPageRoute
 
