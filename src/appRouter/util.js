@@ -4,15 +4,16 @@ import {Global,route as mergeRoute} from '../helpers/config'
 
 /**
  * 触发指定生命钩子
+ * @param {Array} funList	//需要执行的方法列表
  * @param {Object} args //触发生命钩子传递的参数
  */
-export const callAppHook=function(args){
-	for(let i=0;i<this.length;i++){
-		this[i](args);
+export const callAppHook=function(funList,args){
+	for(let i=0;i<funList.length;i++){
+		funList[i].call(this,args);
 	}
 }
 /**
- * @param {Number} index //需要获取的页面下标 -2 表示获取最后一个 -1 表示全部
+ * @param {Number} index //需要获取的页面下标 -2 表示获取最后一个及当前页面 -1 表示全部 -3当前页面的前一个页面
  * @param {Boolean} all //是否获取全部的页面
  */
 export const getPages=function(index=-1,all){
@@ -22,6 +23,9 @@ export const getPages=function(index=-1,all){
 	}
 	if(index===-2){
 		return pages[pages.length-1];
+	}
+	if(index===-3){
+		return pages[pages.length-2];
 	}
 	return pages[index];
 }

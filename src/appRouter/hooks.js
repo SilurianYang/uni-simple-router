@@ -1,24 +1,26 @@
 import {uniAppHook} from '../helpers/config'
-import {callAppHook,getPages,getPageVmOrMp,ruleToUniNavInfo,formatTo,formatFrom} from './util'
+import {callAppHook,getPages,getPageVmOrMp,ruleToUniNavInfo,formatTo,formatFrom,APPGetPageRoute} from './util'
 import {noop,parseQuery} from '../helpers/util'
 import {warn} from '../helpers/warn'
-import {uniPushTo,rewriteUniFun} from "./uniNav";
+import {uniPushTo} from "./uniNav";
 
 /**
  * 还原并执行所有 拦截下来的生命周期 app.vue 及 index 下的生命周期 
  * @param {Boolean} callHome // 是否触发首页的生命周期
+ * 
+ * this 为当前 page 对象
  */
 const callwaitHooks= function(callHome){
 	return new Promise(async resolve=>{
 		const variation=[];	//存储一下在uni-app上的变异生命钩子  奇葩的要死
 		const {appVue,indexVue,onLaunch,onShow,waitHooks,variationFuns,indexCallHooks}=uniAppHook;
 		const app=appVue.$options;
-		await onLaunch.fun[onLaunch.fun.length-1](onLaunch.args);	//确保只执行最后一个 并且强化异步操作
-		onShow.fun[onShow.fun.length-1](onShow.args);	//onshow 不保证异步 直接确保执行最后一个
+		await onLaunch.fun[onLaunch.fun.length-1].call(appVue,onLaunch.args);	//确保只执行最后一个 并且强化异步操作
+		onShow.fun[onShow.fun.length-1].call(appVue,onShow.args);	//onshow 不保证异步 直接确保执行最后一个
 		if(callHome){	//触发首页生命周期
 			for(let key in waitHooks){
 				if(indexCallHooks.includes(key)){	//只有在被包含的情况下才执行
-					callAppHook.call(waitHooks[key].fun)
+					callAppHook.call(this,waitHooks[key].fun)
 				}
 			}
 		}
@@ -77,7 +79,7 @@ export const proxyLaunchHook=function(){
 		uniAppHook.onShow.fun=onShow.splice(onShow.length-1,1,arg=>{
 			uniAppHook.onShow.args=arg;
 			if(uniAppHook.pageReady){		//因为还有app切前台后台的操作
-				callAppHook.call(uniAppHook.onShow.fun,arg)
+				callAppHook.call(this,uniAppHook.onShow.fun,arg)
 			}
 		})	//替换替换 都替换
 	}
@@ -88,22 +90,25 @@ export const proxyLaunchHook=function(){
  */
 export const proxyIndexHook=function(Router){
 	const {needHooks,waitHooks}=uniAppHook;
-	uniAppHook.indexVue=this;
+	const options=this.$options;
+	uniAppHook.indexVue=options;
 	for(let i=0;i<needHooks.length;i++){
 		const key=needHooks[i];
-		if(this[key]!=null){	//只劫持开发者声明的生命周期
-			const {length}=this[key];
+		if(options[key]!=null){	//只劫持开发者声明的生命周期
+			const {length}=options[key];
 			const whObject= waitHooks[key]={};
-			whObject.fun=this[key].splice(length-1,1,noop);	//把实际的页面生命钩子函数缓存起来,替换原有的生命钩子
+			whObject.fun=options[key].splice(length-1,1,noop);	//把实际的页面生命钩子函数缓存起来,替换原有的生命钩子
 			whObject.isHijack=true;
 		}
 	}
-	triggerLifeCycle(Router);	//接着 主动我们触发导航守卫
+	triggerLifeCycle.call(this,Router);	//接着 主动我们触发导航守卫
 }
 
 /**
  * 主动触发导航守卫
  * @param {Object} Router 当前路由对象
+ * 
+ * this  当前vue页面组件对象
  */
 export const triggerLifeCycle = function(Router) {
 	const topPage=getCurrentPages()[0];
@@ -111,12 +116,12 @@ export const triggerLifeCycle = function(Router) {
 		return warn('打扰了,当前一个页面也没有 这不是官方的bug是什么??');
 	}
 	let {query,page}=getPageVmOrMp(topPage,false);
-	transitionTo.call(Router,{path:page.route,query},'push',async function(finalRoute,fnType){
+	transitionTo.call(Router,{path:page.route,query},'push',async (finalRoute,fnType)=>{
 		let variation=[];
 		if(`/${page.route}`==finalRoute.route.path){		//在首页不动的情况下
-			await callwaitHooks(true);
+			await callwaitHooks.call(this,true);
 		}else{	//需要跳转
-			variation=await callwaitHooks(false);	//只触发app.vue中的生命周期
+			variation=await callwaitHooks.call(this,false);	//只触发app.vue中的生命周期
 			await uniPushTo(finalRoute,fnType);
 		}
 		plus.nativeObj.View.getViewById('router-loadding').close();
@@ -149,9 +154,6 @@ export const transitionTo =async function(rule, fnType, navCB){
 	navCB&&navCB.call(this,finalRoute,fnType);	//执行当前回调生命周期
 	afterEachHooks.call(this,_from,_to)
 	await this.lifeCycle["routerAfterHooks"][0].call(this) //触发内部跳转前的生命周期
-	if(fnType!=='back'){	//返回时不必要重新返回事件
-		rewriteUniFun(getPages(-2),this);
-	}
 }
 /**
  * 触发全局beforeHooks 生命钩子
@@ -197,6 +199,22 @@ const beforeEnterHooks =function(finalRoute,_from,_to){
 			return resolve();
 		}
 		await beforeEnter.call(this,_to, _from, resolve);
+	})
+}
+/**
+ * 处理返回事件的生命钩子
+ * @param {Object} options 当前 vue 组件对象下的$options对象
+ * 
+ * this 为当前 Router 对象
+ */
+export const beforeBackHooks=function(options){
+	const page=getPages(-3);
+	const route=APPGetPageRoute([page]);
+	transitionTo.call(this,{path:route.path,query:route.query}, 'RouterBack', ()=>{
+		options.onBackPress=[noop];	//改回uni-app可执行的状态
+		setTimeout(()=> {
+			this.back();
+		});
 	})
 }
 /**

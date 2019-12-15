@@ -83,6 +83,9 @@ class Router {
 			this.HooksFinish = true;
 		});
 	}
+	get $Route(){
+		return this.getPageRoute();
+	}
 	/**
 	 * 用户非h5端外 核心跳转方法
 	 * @param {customRule} param 最终格式化后的跳转路径
@@ -231,7 +234,7 @@ class Router {
 	 * 
 	 * @param {Object} Vim 当前开发者可以传递一个 vue 组件对象 来获取当前下的 Route 信息
 	 */
-	$Route(Vim) {
+	getPageRoute(Vim) {
 		const pages = getCurrentPages();
 		if (appPlatform() === 'H5') {
 			return H5GetPageRoute.call(this,pages,Vim);
@@ -298,7 +301,7 @@ Router.install = function(Vue) {
 	});
 	Object.defineProperty(Vue.prototype, "$Route", {
 		get: function() {
-			return Router.$root.$Route(this);
+			return Router.$root.getPageRoute(this);
 		}
 	});
 };

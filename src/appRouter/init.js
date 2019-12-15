@@ -1,4 +1,4 @@
-import {proxyLaunchHook} from './hooks'
+import {proxyLaunchHook,beforeBackHooks} from './hooks'
 
 /**
  * 对当前app做一个动画页面 用来过渡首次next 等待时间过长的尴尬
@@ -32,6 +32,24 @@ export const removeBackPressEvent=function(options){
 		}
 	}
 }
+/**
+ * 判断当前页面是否需要拦截返回
+ * 
+ * @param {Object} page 当前 vue 组件对象 
+ * @param {Object} options 当前 vue 组件对象下的$options对象
+ * 
+ * this 为当前 Router 对象
+ */
+export const pageIsHeadBack=function(page,options){
+	const pageStyle=page.$getAppWebview().getStyle();
+	if(pageStyle.titleNView!=null&&pageStyle.titleNView.autoBackButton){
+		beforeBackHooks.call(this,options);
+		return true
+	}else{
+		return false
+	}
+}
+
 /**
  * 开始初始化app端路由配置
  * 
