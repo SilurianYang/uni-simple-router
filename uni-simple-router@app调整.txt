@@ -21,6 +21,8 @@
 8.路由配置及跳转 应该可以传递 animationType animationDuration
 
 9.数据传递问题 及 Route 对象构建问题
-10.拦截底部自带tabbar 及返回触发路由守卫
+10.拦截底部自带tabbar 及返回触发路由守卫  (已完成返回拦截)
+
+11.首页拦截是否也需要？
 
 
