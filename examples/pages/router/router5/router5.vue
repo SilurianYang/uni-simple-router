@@ -29,7 +29,6 @@
 			console.log('onUnload')
 		},
 		onBackPress(){
-			console.log(22222)
 		},
 		methods:{
 			gotoPage(){
