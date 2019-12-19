@@ -4,6 +4,7 @@ import {isObject,resolveRule,copyObject,parseQuery,strObjToJsonToStr,formatURLQu
 import {queryInfo} from "../patch/applets-patch.js";
 
 const pagesConfigReg = /props:\s*\(.*\)\s*(\([\s\S]*\))\s*},/;
+const pagesConfigRegCli = /props:\s*Object\.assign\s*(\([\s\S]*\))\s*},/; //脚手架项目
 const defRoutersReg = /props:\s*{([\s\S]+)}\s*},/;
 
 /**
@@ -112,13 +113,18 @@ export const resloveChildrenPath = function(objRoutes, children, useUniConfig) {
 export const getFuntionConfig = function(FunStr) {
 	let matchText = FunStr.match(pagesConfigReg);
 	let prefix = '';
-	if (matchText == null) { //是uni-app自带的默认路由及配置
-		try {
-			matchText = FunStr.match(defRoutersReg)[1];
-			matchText = eval(`Object.assign({${matchText}})`);
-			prefix = 'system-'
-		} catch (error) {
-			err(`读取uni-app页面构建方法配置错误 \r\n\r\n ${error}`)
+	if (matchText == null) { //是uni-app自带的默认路由及配置 也可能是脚手架项目
+		matchText = FunStr.match(pagesConfigRegCli);
+		if(matchText==null){	//确认不是脚手架项目
+			try {
+				matchText = FunStr.match(defRoutersReg)[1];
+				matchText = eval(`Object.assign({${matchText}})`);
+				prefix = 'system-'
+			} catch (error) {
+				err(`读取uni-app页面构建方法配置错误 \r\n\r\n ${error}`)
+			}
+		}else{
+			matchText = eval(`Object.assign${matchText[1]}`)
 		}
 	} else {
 			matchText = eval(`Object.assign${matchText[1]}`)
