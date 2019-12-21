@@ -221,6 +221,7 @@ export const appMount = function(Router) {
  * 通过自动调用router api来完成触发生命周期
  * 修复 history 模式下报错的问题  https://github.com/SilurianYang/uni-simple-router/issues/38
  * 修复 history 模式下刷新页面参数丢失的问题 https://github.com/SilurianYang/uni-simple-router/issues/45
+ * 修复 history 模式下首次打开页面url错误时不走 path:* 的匹配项  https://github.com/SilurianYang/uni-simple-router/issues/58
  * 
  * @param {Object} Router	//当前simple-router 对象
  * @param {Object} vueRouter vue-router对象
@@ -249,7 +250,7 @@ export const triggerLifeCycle = function(Router, vueRouter) {
 			},'history');
 		}
 		vueRouter.replace({
-			path: toRoute.aliasPath || toRoute.path,
+			path: toRoute.aliasPath || toRoute.path|| currRoute.path,
 			query: URLQuery,
 			type:'redirectTo'
 		});

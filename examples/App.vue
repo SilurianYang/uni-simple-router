@@ -2,7 +2,6 @@
 export default {
   onLaunch: function() {
 	  console.log('onLaunch')
-	  console.log(this.$Route)
   },
   onShow: function() {
 	   console.log('onLaunch---onShow')

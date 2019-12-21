@@ -14,6 +14,7 @@ const routesConfig = {
 		loading: true,
 		vueRouterDev: false,
 		useUniConfig: true,
+		vueNext:true,
 		resetStyle: () => {
 			return {
 				style: `
@@ -24,6 +25,18 @@ const routesConfig = {
 				`
 			}
 		}
+	},
+	APP:{
+		loddingPageStyle:()=>JSON.parse('{"backgroundColor":"#96DBF3"}'),
+		loddingPageHook:(view)=>{
+			view.drawBitmap('/static/wait.gif', {}, {
+				top: 'auto',
+				left: 'auto',
+				width: '200px',
+				height: '200px'
+			})
+		},
+		holdTabbarStyle:()=>JSON.parse('{"backgroundColor":"#FF0000","opacity":0.2}')
 	},
 	encodeURI: true,
 	debugger: true,
@@ -130,7 +143,7 @@ let count =0;
 router.beforeEach((to, from, next) => {
 	console.log(to)
 	console.log(from)
-	//next();
+	// next();
 	count++
 	if(count==1){
 		next({

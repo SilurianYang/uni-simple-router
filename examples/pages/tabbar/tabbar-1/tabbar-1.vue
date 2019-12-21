@@ -15,7 +15,8 @@
 		<router-link to="{path:'/pages/router/router5/router5',query:{name:'hhyang'}}" navType="push">
 			<button type="warn">点我试试</button>
 		</router-link>
-
+		
+		<button type="primary" @click="userOut">退出去登陆</button>
 
 		<Child></Child>
 		<Child1></Child1>
@@ -48,6 +49,9 @@
 		onUnload() {
 			console.log('tabbar1---onUnload')
 		},
+		onBackPress(){
+			console.log(2222222)
+		},
 		computed: {
 			query() {
 				return this.$Route.query
@@ -55,6 +59,9 @@
 		},
 		created() {},
 		methods: {
+			userOut(){
+				this.$Router.replaceAll('/pages/login/login')
+			},
 			gotoPage() {
 				 //this.$Router.push('/router5')
 				

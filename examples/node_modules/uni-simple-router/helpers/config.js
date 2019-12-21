@@ -18,7 +18,11 @@ export const baseConfig = {
 		fallback: true,
 	},
 	APP:{
-		resetStyle:()=>JSON.parse('{}'),	//自定义加载样式函数 可返回一个包涵 html、style、id 的对象来重置Router内置的加载动画页面
+		holdTabbar:true,	//是否开启底部菜单拦截
+		rewriteFun:true,	//是否对uni-app 下的chooseLocation/openLocation 两个方法重写 目的是隐藏和显示拦截tabbar
+		loddingPageStyle:()=>JSON.parse('{"backgroundColor":"#FFF"}'),	//当前等待页面的样式 必须返回一个json
+		loddingPageHook:()=>{},		//刚刚打开页面处于等待状态,会触发此事件
+		holdTabbarStyle:()=>JSON.parse('{}'),	
 		animation:{animationType:'pop-in',animationDuration:300},	//页面切换动画
 		switchPageOutTime:1000,	//最高能忍耐的页面切换时间 达到此时间 不管切换有没有完成都会显示页面出来 这对启动页帮助很大
 	},
@@ -49,7 +53,8 @@ export const Global = { //缓存一些必要的对象，作为全局可以访问
 	vueRouter: {},
 	addedRoutes: [], //用于缓存用户动态添加的路由
 	RouterReadyPromise: () => {},
-	H5RouterReady: null //当前router是否就绪
+	H5RouterReady: null ,//当前router是否就绪
+	$holdTab:null,	//当前底部实例对象
 }
 
 export const uniAppHook = {

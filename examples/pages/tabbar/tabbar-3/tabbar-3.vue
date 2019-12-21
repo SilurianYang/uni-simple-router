@@ -27,7 +27,10 @@ export default {
 			        console.log('详细地址：' + res.address);
 			        console.log('纬度：' + res.latitude);
 			        console.log('经度：' + res.longitude);
-			    }
+			    },
+				complete:(...res)=>{
+					console.log(res)
+				}
 			});
 		},
 		getLocation(){
