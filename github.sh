@@ -5,8 +5,21 @@
 
  printf "\n -------------- Ctrl+D可以退出程序 --------------- \n\n"
 
-select name in "status" "add" "commit" "push" "pull" "branch" "checkout" "*"; do
+select name in "auto" "status" "add" "commit" "push" "pull" "branch" "checkout" "*"; do
         case "$name" in 
+            # 自动同步文件
+            "auto")
+                cp -avx ./examples/node_modules/uni-simple-router/* ./npm-package
+                rm -rf ./npm-package/package-lock.json
+                cp -avx ./README.md ./npm-package
+                cp -avx ./package.json ./npm-package
+                cp -avx ./npm-package/* ./src
+                rm -rf ./src/README.md
+                rm -rf ./src/package.json
+
+                printf "\n -------------- 自动化构建目录完毕 --------------- \n\n"
+            ;;
+
             # 查询status
             "status")
                 git status
