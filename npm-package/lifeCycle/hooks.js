@@ -71,7 +71,9 @@ export const resolveHooks=function({
 	router,
 	fnType,
 }){
+	debugger
 	return new Promise(async resolve=>{
+		debugger
 		let fromatRule={};
 		const beforeResult = await resolveBeforeHooks(ags);
 		if (navigateFun == null) {
@@ -107,11 +109,12 @@ export const resolveParams = async function (router, rule, fnType, navigateFun) 
 			return err('Vue模板未编译完成，不支持跳转。请检查 $Router API 代码')
 		}
 	}
+	
 	router.lastVim = queryMp(router.lastVim);
-
+	debugger
 	const routeInfo = queryInfo(router.lastVim);
 	const _from = resolveRule(router, routeInfo.route, routeInfo.query);
-
+	debugger
 	const _to = normalizeParams(JSON.parse(JSON.stringify(rule)), router.CONFIG.routes);
 	const ags = {
 		router,

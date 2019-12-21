@@ -1,26 +1,10 @@
-import {
-	warn,
-	err
-} from '../helpers/warn.js'
-
-import {
-	beforeEnterHooks
-} from './concat.js'
-
-import {
-	isObject,
-	resolveRule,
-	copyObject,
-	parseQuery,
-	strObjToJsonToStr,
-	formatURLQuery
-} from '../helpers/util.js'
-
-import {
-	queryInfo,
-} from "../patch/applets-patch.js";
+import {warn,err} from '../helpers/warn.js'
+import {beforeEnterHooks} from './concat.js'
+import {isObject,resolveRule,copyObject,parseQuery,strObjToJsonToStr,formatURLQuery} from '../helpers/util.js'
+import {queryInfo} from "../patch/applets-patch.js";
 
 const pagesConfigReg = /props:\s*\(.*\)\s*(\([\s\S]*\))\s*},/;
+const pagesConfigRegCli = /props:\s*Object\.assign\s*(\([\s\S]*\))\s*},/; //脚手架项目
 const defRoutersReg = /props:\s*{([\s\S]+)}\s*},/;
 
 /**
@@ -129,13 +113,18 @@ export const resloveChildrenPath = function(objRoutes, children, useUniConfig) {
 export const getFuntionConfig = function(FunStr) {
 	let matchText = FunStr.match(pagesConfigReg);
 	let prefix = '';
-	if (matchText == null) { //是uni-app自带的默认路由及配置
-		try {
-			matchText = FunStr.match(defRoutersReg)[1];
-			matchText = eval(`Object.assign({${matchText}})`);
-			prefix = 'system-'
-		} catch (error) {
-			err(`读取uni-app页面构建方法配置错误 \r\n\r\n ${error}`)
+	if (matchText == null) { //是uni-app自带的默认路由及配置 也可能是脚手架项目
+		matchText = FunStr.match(pagesConfigRegCli);
+		if(matchText==null){	//确认不是脚手架项目
+			try {
+				matchText = FunStr.match(defRoutersReg)[1];
+				matchText = eval(`Object.assign({${matchText}})`);
+				prefix = 'system-'
+			} catch (error) {
+				err(`读取uni-app页面构建方法配置错误 \r\n\r\n ${error}`)
+			}
+		}else{
+			matchText = eval(`Object.assign${matchText[1]}`)
 		}
 	} else {
 			matchText = eval(`Object.assign${matchText[1]}`)
@@ -197,7 +186,7 @@ export const formatUserRule = function(rule, selfRoutes, CONFIG) {
 	let type = '';
 	const ruleQuery = (type = 'query', rule.query || (type = 'params', rule.params)) || (type = '', {});
 	let rute = {}; //默认在router中的配置
-	if(type==''&&rule.name!=null){	//那就是可能没有穿扔个值咯
+	if(type==''&&rule.name!=null){	//那就是可能没有穿任何值咯
 		type='params';
 	}
 	if (type != 'params') {
@@ -377,6 +366,22 @@ export const strPathToObjPath =function(path){
 	}
 	return {	//这种情况就是只有path时,直接返回path对象了
 		path	
+	}
+}
+/**
+ * 获取当前页面下的 Route 信息
+ * 
+ * @param {Object} pages 获取页面对象集合
+ * @param {Object} Vim 用户传递的当前页面对象
+ */
+export const H5GetPageRoute=function(pages,Vim){
+	if (pages.length > 0) {	//直接取当前页面的对象
+		const currentRoute = pages[pages.length - 1].$route;
+		return getRouterNextInfo(currentRoute, currentRoute, this).toRoute;
+	} else if (Vim && Vim.$route) {
+		return getRouterNextInfo(Vim.$route, Vim.$route, this).toRoute;
+	} else {
+		return {};
 	}
 }
 

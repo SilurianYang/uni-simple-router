@@ -87,6 +87,12 @@ class Router {
 		return this.getPageRoute();
 	}
 	/**
+	 * app 获取底部tabbar拦截实例
+	 */
+	get $holdTab(){
+		return Global.$holdTab;
+	}
+	/**
 	 * 用户非h5端外 核心跳转方法
 	 * @param {customRule} param 最终格式化后的跳转路径
 	 */
