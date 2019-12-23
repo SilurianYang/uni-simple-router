@@ -297,7 +297,7 @@ Object.defineProperty(BUILTIN, 'currentVim', {
 })
 
 Router.install = function(Vue) {
-	initMixins(Vue,Router,depPromise);
+	initMixins(Vue,Router,depPromise,BUILTIN,Event);
 	Object.defineProperty(Vue.prototype, "$Router", {
 		get: function() {
 			Router.doRouter = this;

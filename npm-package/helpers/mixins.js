@@ -5,10 +5,7 @@ import {appPlatform} from "../helpers/util";
 import {getPages} from '../appRouter/util'
 import {proxyIndexHook} from '../appRouter/hooks'
 import {resolveParams} from "../lifeCycle/hooks";
-import {completeVim} from "../patch/app-patch.js";
-import event from '../helpers/event.js'
-const Event = new event();
-const BUILTIN = {}; //代理属性缓存上个操作的page对象
+import {completeVim} from "../patch/app-patch";
 
 
 /**
@@ -16,8 +13,10 @@ const BUILTIN = {}; //代理属性缓存上个操作的page对象
  * @param {Object} Vue	当前原始VUE 对象
  * @param {Object} Router 当前原始路由对象
  * @param {Object} depPromise 一些需要集中的promise
+ * @param {Object} BUILTIN  代理属性缓存上个操作的page对象
+ * @param {Object} Event 自定义事件对象 
  */
-const getMixins = function(Vue,Router,depPromise) {
+const getMixins = function(Vue,Router,depPromise,BUILTIN,Event) {
 	return {
 		H5: {
 			beforeCreate: function() {
@@ -60,7 +59,7 @@ const getMixins = function(Vue,Router,depPromise) {
 							Router.$root.lastVim = this;
 						}
 						Router.$root.depEvent.push(res.showId);
-						const navtoInfo = Router.$root.getQuery(this);
+						const navtoInfo = Router.$root.getPageRoute(this);
 			
 			
 						if (res.showId == 1) {
@@ -116,9 +115,9 @@ const getMixins = function(Vue,Router,depPromise) {
 	}
 }
 
-const initMixins = function(Vue, Router,depPromise) {
+const initMixins = function(Vue, Router,depPromise,BUILTIN,Event) {
 	Vue.mixin({
-		...getMixins(Vue,Router,depPromise)[appPlatform(true)],
+		...getMixins(Vue,Router,depPromise,BUILTIN,Event)[appPlatform(true)],
 	})
 }
 
