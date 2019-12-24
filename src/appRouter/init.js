@@ -93,12 +93,7 @@ export const registerLoddingPage = function(Router) {
 export const removeBackPressEvent=function(page,options){
 	const pageStyle=page.$getAppWebview().getStyle();
 	if(pageStyle.titleNView!=null&&pageStyle.titleNView.autoBackButton){	//只有处理有带返回按钮的页面
-		for(let i=0;i<options.onBackPress.length;i++){
-			const item=options.onBackPress[i];
-			if(item.name!='hhyangRouterBack'){		//只要不等于 路由混入的都干掉
-				options.onBackPress.splice(i,1)
-			}
-		}
+		options.onBackPress=[options.onBackPress[0]]		//只要不等于 路由混入的都干掉
 	}
 }
 /**
@@ -106,13 +101,14 @@ export const removeBackPressEvent=function(page,options){
  * 
  * @param {Object} page 当前 vue 组件对象 
  * @param {Object} options 当前 vue 组件对象下的$options对象
+ * @param {Array} args  当前页面是点击头部返回还是底部返回
  * 
  * this 为当前 Router 对象
  */
-export const pageIsHeadBack=function(page,options){
+export const pageIsHeadBack=function(page,options,args){
 	const pageStyle=page.$getAppWebview().getStyle();
 	if(pageStyle.titleNView!=null&&pageStyle.titleNView.autoBackButton){
-		beforeBackHooks.call(this,options);
+		beforeBackHooks.call(this,options,args);
 		return true
 	}else{
 		return false

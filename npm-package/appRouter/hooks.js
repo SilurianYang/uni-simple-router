@@ -205,11 +205,20 @@ const beforeEnterHooks =function(finalRoute,_from,_to){
 /**
  * 处理返回事件的生命钩子
  * @param {Object} options 当前 vue 组件对象下的$options对象
+ * @param {Array} args  当前页面是点击头部返回还是底部返回
  * 
  * this 为当前 Router 对象
  */
-export const beforeBackHooks=function(options){
-	const page=getPages(-3);
+export const beforeBackHooks=async function(options,args){
+	const currPage=getPages(-2);	//获取到当前页面
+	const onBeforeBack=currPage.$vm.$options.onBeforeBack;
+	if(onBeforeBack!=null&&onBeforeBack.constructor===Function){
+		const isNext = await onBeforeBack.call(currPage.$vm,args);
+		if(isNext===true){
+			return false;
+		}
+	}
+	const page=getPages(-3);	//上一个页面对象
 	const route=APPGetPageRoute([page]);
 	transitionTo.call(this,{path:route.path,query:route.query}, 'RouterBack', ()=>{
 		options.onBackPress=[noop];	//改回uni-app可执行的状态

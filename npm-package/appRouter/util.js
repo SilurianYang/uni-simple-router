@@ -13,7 +13,7 @@ export const callAppHook=function(funList,args){
 	}
 }
 /**
- * @param {Number} index //需要获取的页面下标 -2 表示获取最后一个即当前页面 -1 表示全部 -3当前页面的前一个页面
+ * @param {Number} index //需要获取的页面下标 -2:表示获取最后一个即当前页面 -1:表示全部 -3:当前页面的前一个页面
  * @param {Boolean} all //是否获取全部的页面
  */
 export const getPages=function(index=-1,all){

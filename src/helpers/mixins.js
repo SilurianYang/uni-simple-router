@@ -34,10 +34,10 @@ const getMixins = function(Vue,Router,depPromise,BUILTIN,Event) {
 				if(__uniConfig.appLaunchInfo.path==this.__route__&&uniAppHook.pageReady===false){		
 					proxyIndexHook.call(this,Router.$root);
 				}
-				removeBackPressEvent(this.$mp.page,this.$options);
+				removeBackPressEvent(this.$mp.page,this.$options);  //移除页面的onBackPress事件
 			},
-			onBackPress:function hhyangRouterBack(){
-				return pageIsHeadBack.call(Router.$root,this.$mp.page,this.$options);
+			onBackPress:function(...args){
+				return pageIsHeadBack.call(Router.$root,this.$mp.page,this.$options,args);
 			}
 		},
 		APPLETS:{
