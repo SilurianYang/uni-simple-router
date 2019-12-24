@@ -143,30 +143,30 @@ let count =0;
 router.beforeEach((to, from, next) => {
 	console.log(to)
 	console.log(from)
-	// next();
-	count++
-	if(count==1){
-		next({
-			path:'/pages/login/login',
-			NAVTYPE:'replaceAll',
-			query:{
-				userOut:true
-			}
-		});
-	}else{
-		if(to.name=='router6'){
-			next({
-				name:'router5',
-				NAVTYPE:'push',
-				animation:{
-					animationType:'slide-in-top',
-					animationDuration:1000
-				}
-			});
-		}else{
-			next();
-		}
-	}
+	 next();
+	// count++
+	// if(count==1){
+	// 	next({
+	// 		path:'/pages/login/login',
+	// 		NAVTYPE:'replaceAll',
+	// 		query:{
+	// 			userOut:true
+	// 		}
+	// 	});
+	// }else{
+	// 	if(to.name=='router6'){
+	// 		next({
+	// 			name:'router5',
+	// 			NAVTYPE:'push',
+	// 			animation:{
+	// 				animationType:'slide-in-top',
+	// 				animationDuration:1000
+	// 			}
+	// 		});
+	// 	}else{
+	// 		next();
+	// 	}
+	// }
 })
 router.afterEach((to, from) => {
 	console.log(to)

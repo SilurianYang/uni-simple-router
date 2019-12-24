@@ -28,8 +28,6 @@
 		onUnload(){
 			console.log('onUnload')
 		},
-		onBackPress(){
-		},
 		methods:{
 			gotoPage(){
 				this.$Router.push({
