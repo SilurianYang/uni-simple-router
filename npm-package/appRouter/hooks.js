@@ -4,6 +4,8 @@ import {noop,parseQuery} from '../helpers/util'
 import {warn} from '../helpers/warn'
 import {uniPushTo,pageNavFinish} from "./uniNav";
 
+let startBack=false;	// 主要是兼容低端手机返回卡 然后多次返回直接提示退出的问题 
+
 /**
  * 还原并执行所有 拦截下来的生命周期 app.vue 及 index 下的生命周期 
  * @param {Boolean} callHome // 是否触发首页的生命周期
@@ -120,6 +122,7 @@ export const triggerLifeCycle = function(Router) {
 		let variation=[];
 		if(`/${page.route}`==finalRoute.route.path){		//在首页不动的情况下
 			pageNavFinish('launch',page.route);
+			uniAppHook.pageReady=true;		//标致着路由已经就绪 可能准备起飞
 			await callwaitHooks.call(this,true);
 		}else{	//需要跳转
 			variation=await callwaitHooks.call(this,false);	//只触发app.vue中的生命周期
@@ -221,9 +224,12 @@ export const beforeBackHooks=async function(options,args){
 	const page=getPages(-3);	//上一个页面对象
 	const route=APPGetPageRoute([page]);
 	transitionTo.call(this,{path:route.path,query:route.query}, 'RouterBack', ()=>{
+		if(startBack){return false};		//如果当前处于正在放回的状态
+		startBack=true;	//标记开始返回
 		options.onBackPress=[noop];	//改回uni-app可执行的状态
 		setTimeout(()=> {
 			this.back();
+			startBack=false;	//返回结束
 			pageNavFinish('bcak',route.path);
 		});
 	})
