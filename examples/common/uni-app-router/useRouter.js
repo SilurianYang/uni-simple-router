@@ -10,11 +10,10 @@ Vue.use(Router);
 
 const routesConfig = {
 	h5: {
-		paramsToQuery: false,
+		paramsToQuery: true,
 		loading: true,
 		vueRouterDev: false,
 		useUniConfig: true,
-		vueNext:true,
 		resetStyle: () => {
 			return {
 				style: `

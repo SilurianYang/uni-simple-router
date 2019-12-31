@@ -16,8 +16,8 @@
 		},
 		onLoad(){
 			console.log('onLoad')
+			console.log(this.$Route)
 			this.value=JSON.stringify(this.$Route)
-			// console.log(this.$Router)
 		},
 		onShow(){
 			console.log('show')
@@ -27,6 +27,13 @@
 		},
 		onUnload(){
 			console.log('onUnload')
+		},
+		onBeforeBack(){
+			return new Promise(resolve=>{
+				setTimeout(()=>{
+					resolve();
+				},3000)
+			})
 		},
 		methods:{
 			gotoPage(){
