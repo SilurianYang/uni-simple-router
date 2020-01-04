@@ -1,5 +1,5 @@
-import {uniAppHook} from '../helpers/config'
-import {callAppHook,getPages,getPageVmOrMp,ruleToUniNavInfo,formatTo,formatFrom,APPGetPageRoute} from './util'
+import {uniAppHook,Global} from '../helpers/config'
+import {callAppHook,getPages,getPageVmOrMp,ruleToUniNavInfo,formatTo,formatFrom,APPGetPageRoute,getPageOnBeforeBack} from './util'
 import {noop,parseQuery} from '../helpers/util'
 import {warn} from '../helpers/warn'
 import {uniPushTo,pageNavFinish} from "./uniNav";
@@ -206,20 +206,16 @@ const beforeEnterHooks =function(finalRoute,_from,_to){
 	})
 }
 /**
- * 处理返回事件的生命钩子
+ * 处理返回按钮的生命钩子
  * @param {Object} options 当前 vue 组件对象下的$options对象
  * @param {Array} args  当前页面是点击头部返回还是底部返回
  * 
  * this 为当前 Router 对象
  */
 export const beforeBackHooks=async function(options,args){
-	const currPage=getPages(-2);	//获取到当前页面
-	const onBeforeBack=currPage.$vm.$options.onBeforeBack;
-	if(onBeforeBack!=null&&onBeforeBack.constructor===Function){
-		const isNext = await onBeforeBack.call(currPage.$vm,args);
-		if(isNext===true){
-			return false;
-		}
+	const isNext=await getPageOnBeforeBack(args);
+	if(isNext===false){
+		return false
 	}
 	const page=getPages(-3);	//上一个页面对象
 	const route=APPGetPageRoute([page]);
@@ -229,6 +225,35 @@ export const beforeBackHooks=async function(options,args){
 		options.onBackPress=[noop];	//改回uni-app可执行的状态
 		setTimeout(()=> {
 			this.back();
+			startBack=false;	//返回结束
+			pageNavFinish('bcak',route.path);
+		});
+	})
+}
+/**
+ * 处理back api的生命钩子
+ * @param {Object} options 当前 vue 组件对象下的$options对象
+ * @param {Array} args  当前页面是点击头部返回还是底部返回
+ * 
+ * this 为当前 Router 对象
+ */
+export const backApiCallHook=async function (options,args) {
+	const isNext=await getPageOnBeforeBack(args);
+	const backLayerC=Global.backLayerC;
+	const pages=getPages();
+	let page=null
+	if(backLayerC>pages.length-1||backLayerC==pages.length-1){	//返回的首页 我们需要显示tabbar拦截
+		page=pages[0];
+	}else{
+		page=pages[pages.length-2]
+	}
+	const route=APPGetPageRoute([page]);
+	transitionTo.call(this,{path:route.path,query:route.query}, 'RouterBack', ()=>{
+		if(startBack){return false};		//如果当前处于正在放回的状态
+		startBack=true;	//标记开始返回
+		options.onBackPress=[noop];	//改回uni-app可执行的状态
+		setTimeout(()=> {
+			this.back(backLayerC);
 			startBack=false;	//返回结束
 			pageNavFinish('bcak',route.path);
 		});

@@ -1,4 +1,4 @@
-import {proxyLaunchHook,beforeBackHooks,beforeTabHooks} from './hooks'
+import {proxyLaunchHook,beforeBackHooks,beforeTabHooks,backApiCallHook} from './hooks'
 import {Global} from '../helpers/config'
 import {getPages} from './util'
 import {pageNavFinish} from './uniNav'
@@ -107,6 +107,11 @@ export const removeBackPressEvent=function(page,options){
  */
 export const pageIsHeadBack=function(page,options,args){
 	const pageStyle=page.$getAppWebview().getStyle();
+	//修复 https://github.com/SilurianYang/uni-simple-router/issues/66
+	if(args[0].from=='navigateBack'){		//调用api返回 
+		backApiCallHook.call(this,options,args);
+		return true
+	}
 	if(pageStyle.titleNView!=null&&pageStyle.titleNView.autoBackButton){
 		beforeBackHooks.call(this,options,args);
 		return true

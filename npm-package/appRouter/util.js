@@ -153,3 +153,21 @@ export const APPGetPageRoute=function(pages,Vim){
 	route.query=query;
 	return route;
 }
+/**
+ * 获取当前页面下的onBeforeBack 生命周期并执行
+ * 
+ * @param {Object} args 当前返回页面时uni-app传递的参数
+ */
+export const getPageOnBeforeBack=function(args){
+	return new Promise(async resolve=>{
+		const currPage=getPages(-2);	//获取到当前页面
+		const onBeforeBack=currPage.$vm.$options.onBeforeBack;
+		if(onBeforeBack!=null&&onBeforeBack.constructor===Function){
+			const isNext = await onBeforeBack.call(currPage.$vm,args);
+			if(isNext===true){
+				return resolve(false);
+			}
+		}
+		return resolve(true);
+	})
+}

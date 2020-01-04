@@ -55,6 +55,7 @@ export const Global = { //缓存一些必要的对象，作为全局可以访问
 	RouterReadyPromise: () => {},
 	H5RouterReady: null ,//当前router是否就绪
 	$holdTab:null,	//当前底部实例对象
+	backLayerC:1,	//返回api调用时开发者传递的 delta
 }
 
 export const uniAppHook = {
