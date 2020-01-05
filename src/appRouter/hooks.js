@@ -218,17 +218,7 @@ export const beforeBackHooks=async function(options,args){
 		return false
 	}
 	const page=getPages(-3);	//上一个页面对象
-	const route=APPGetPageRoute([page]);
-	transitionTo.call(this,{path:route.path,query:route.query}, 'RouterBack', ()=>{
-		if(startBack){return false};		//如果当前处于正在放回的状态
-		startBack=true;	//标记开始返回
-		options.onBackPress=[noop];	//改回uni-app可执行的状态
-		setTimeout(()=> {
-			this.back();
-			startBack=false;	//返回结束
-			pageNavFinish('bcak',route.path);
-		});
-	})
+	backCallHook.call(this,page,options);
 }
 /**
  * 处理back api的生命钩子
@@ -247,17 +237,28 @@ export const backApiCallHook=async function (options,args) {
 	}else{
 		page=pages[pages.length-2]
 	}
+	backCallHook.call(this,page,options,backLayerC);
+}
+/**
+ * 触发返回事件公共方法
+ * @param {Object} page	用getPages获取到的页面栈对象
+ * @param {Object} options 	当前vue页面对象
+ * @param {Object} backLayerC	需要返回页面的层级
+   * 
+ * this 为当前 Router 对象
+ */
+const backCallHook=function(page,options,backLayerC=1){
 	const route=APPGetPageRoute([page]);
-	transitionTo.call(this,{path:route.path,query:route.query}, 'RouterBack', ()=>{
-		if(startBack){return false};		//如果当前处于正在放回的状态
-		startBack=true;	//标记开始返回
-		options.onBackPress=[noop];	//改回uni-app可执行的状态
-		setTimeout(()=> {
-			this.back(backLayerC);
-			startBack=false;	//返回结束
-			pageNavFinish('bcak',route.path);
-		});
-	})
+	 transitionTo.call(this,{path:route.path,query:route.query}, 'RouterBack', ()=>{
+	 	if(startBack){return false};		//如果当前处于正在放回的状态
+	 	startBack=true;	//标记开始返回
+	 	options.onBackPress=[noop];	//改回uni-app可执行的状态
+	 	setTimeout(()=> {
+	 		this.back(backLayerC);
+	 		startBack=false;	//返回结束
+	 		pageNavFinish('bcak',route.path);
+	 	});
+	 })
 }
 /**
  * 处理tabbar点击拦截事件
