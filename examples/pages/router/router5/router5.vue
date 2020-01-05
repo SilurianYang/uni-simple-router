@@ -29,11 +29,7 @@
 			console.log('onUnload')
 		},
 		onBeforeBack(){
-			return new Promise(resolve=>{
-				setTimeout(()=>{
-					resolve();
-				},3000)
-			})
+
 		},
 		methods:{
 			gotoPage(){

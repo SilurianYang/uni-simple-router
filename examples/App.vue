@@ -4,7 +4,7 @@ export default {
 		console.log('onLaunch')
   },
   onShow: function() {
-	   console.log('onLaunch---onShow')
+	   console.log(this.$Route)
   },
 };
 </script>

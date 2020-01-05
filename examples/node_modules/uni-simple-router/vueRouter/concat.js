@@ -28,6 +28,7 @@ import {
 let beforeEachCount = 0;
 let afterEachCount = 0;
 let resolveLaunch = null;
+let beforeEnterDep=[];	//记录当前是否有重复的页面进入 避免重复触发
 const beforeEachLaunch = new Promise(resolve => resolveLaunch = resolve);
 
 /**
@@ -99,6 +100,8 @@ export const forMatNext = function(to, Intercept, next,Router) {
 }
 
 /**
+ * 修复首页beforeEnter执行两次的问题 https://github.com/SilurianYang/uni-simple-router/issues/67
+ * 
  * beforeEnter 生命周期
  * @param {Object} to
  * @param {Object} from
@@ -108,6 +111,13 @@ export const forMatNext = function(to, Intercept, next,Router) {
  */
 export const beforeEnterHooks = function(to, from, next, userHooks, Router) {
 	return new Promise(async resolve => {
+		//修复 (#67)
+		if(beforeEnterDep.includes(to.path)){
+			next();
+			return resolve();
+		}else{
+			beforeEnterDep=[to.path];
+		}
 		if (Reflect.get(Router, 'H5RouterReady')) {
 			const res = await new Promise(async resolve => {
 				let {

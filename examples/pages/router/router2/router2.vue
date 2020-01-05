@@ -1,5 +1,6 @@
 <template>
 	<view class="content" >
+		<button type="primary" @click="backPage">返回</button>
 		<button type="primary">去路由页面3</button>
 		<button type="primary" @click="chooseLocation()">获取坐标</button>
 		<button type="primary" @click="getLocation()">查看位置</button>
@@ -20,6 +21,9 @@ export default {
 		
 	},
 	methods: {
+		backPage(){
+			this.$Router.back(2);
+		},
 		chooseLocation(){
 			uni.chooseLocation({
 			    success:  (res) =>{

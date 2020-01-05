@@ -214,6 +214,7 @@ class Router {
 			H5PATCH.on('historyBack', -delta)
 		})
 		compile.notH5(() => {
+			Global.backLayerC=delta;	//告诉路由需要返回几层
 			uni.navigateBack({
 				delta
 			});

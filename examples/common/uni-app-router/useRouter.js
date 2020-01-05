@@ -43,6 +43,11 @@ const routesConfig = {
 			aliasPath: '/router5',
 			path: '/pages/router/router5/router5',
 			name: 'router5',
+            beforeEnter:(to,from,next)=>{
+				console.log(to.name)
+				console.log(from.name)
+                next();
+            }
 		},
 		{
 			path: '/pages/login/login',
@@ -61,6 +66,11 @@ const routesConfig = {
 			path: "/pages/tabbar/tabbar-1/tabbar-1",
 			component: () => import('@/pages/component/router1.vue'),
 			name: 'tabbar-1',
+			beforeEnter:(to,from,next)=>{
+				console.log(to.name)
+				console.log(from.name)
+				next();
+			}
 		},
 		{
 			aliasPath: '/tabbar2',
@@ -142,7 +152,7 @@ let count =0;
 router.beforeEach((to, from, next) => {
 	console.log(to)
 	console.log(from)
-	 next();
+	next();
 	// count++
 	// if(count==1){
 	// 	next({
@@ -153,7 +163,7 @@ router.beforeEach((to, from, next) => {
 	// 		}
 	// 	});
 	// }else{
-	// 	if(to.name=='router6'){
+	// 	if(to.name=='tabbar-1'){
 	// 		next({
 	// 			name:'router5',
 	// 			NAVTYPE:'push',
