@@ -41,13 +41,20 @@
 				return this.$Route.query
 			}
 		},
-		created() {},
+		onLoad(){
+			console.log('tabbar ---- onLoad')
+		},
+		onReady(){
+			console.log('tabbar ---- onReady')
+		},
+		onShow(){
+			console.log('tabbar ---- onShow')
+		},
 		methods: {
 			userOut(){
 				this.$Router.replaceAll('/pages/login/login')
 			},
 			gotoPage() {
-				 this.$Router.push('/router5')
 				
 				// this.$Router.push({
 				// 	path: '/pages/router/router5/router5',
@@ -66,16 +73,16 @@
 				// 	name:'tabbar-2'
 				// })
 				
-				// this.$Router.push({
-				// 	name: 'router5',
-				// 	params:{
-				// 		name: '我只想去router5 /% *& ！',
-				// 		key: {
-				// 			ages: " sdasd79&)) ^&^^",
-				// 			name: '德玛测试'
-				// 		}
-				// 	},
-				// })
+				this.$Router.push({
+					name: 'router5',
+					params:{
+						name: '我只想去router5 /% *& ！',
+						key: {
+							ages: " sdasd79&)) ^&^^",
+							name: '德玛测试'
+						}
+					},
+				})
 			},
 			gotoPage1() {
 				this.$Router.push({

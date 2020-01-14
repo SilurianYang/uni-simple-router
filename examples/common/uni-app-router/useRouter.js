@@ -66,11 +66,6 @@ const routesConfig = {
 			path: "/pages/tabbar/tabbar-1/tabbar-1",
 			component: () => import('@/pages/component/router1.vue'),
 			name: 'tabbar-1',
-			beforeEnter:(to,from,next)=>{
-				console.log(to.name)
-				console.log(from.name)
-				next();
-			}
 		},
 		{
 			aliasPath: '/tabbar2',

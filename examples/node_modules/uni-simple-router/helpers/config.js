@@ -1,6 +1,7 @@
 
 export const baseConfig = {
 	h5: {
+		rewriteFun:true,	//是否对uni-app reLaunch/navigateBack 两个方法重写 处理uni刷新直接返回到首页和触发路由守卫
 		paramsToQuery: false, //h5端上通过params传参时规则是vue-router 刷新会丢失 开启此开关将变成?连接的方式
 		loading: true, //是否显示加载动画
 		hinderTab: false, //是否拦截uni-app自带底部菜单   TODO

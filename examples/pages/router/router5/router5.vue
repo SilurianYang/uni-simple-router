@@ -11,12 +11,12 @@
 	export default {
 		data() {
 			return {
-				value:''
+				value:'666',
+				name:'7777'
 			};
 		},
 		onLoad(){
 			console.log('onLoad')
-			console.log(this.$Route)
 			this.value=JSON.stringify(this.$Route)
 		},
 		onShow(){
@@ -27,6 +27,9 @@
 		},
 		onUnload(){
 			console.log('onUnload')
+		},
+		onBackPress(args){
+			console.log(args)
 		},
 		methods:{
 			gotoPage(){
