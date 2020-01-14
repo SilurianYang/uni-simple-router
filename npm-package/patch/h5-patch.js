@@ -31,10 +31,21 @@ class Patch {
 	}
 	/**
 	 * H5 专属 history.back API
-	 * @param {Object} num	需要返回的层级必须是正整数
+	 * @param {Number} backLayer	需要返回的层级必须是正整数
+	 * 2020年1月14日14:39:38  修复 https://github.com/SilurianYang/uni-simple-router/issues/73
 	 */
-	historyBack(num) {
-		history.go(num);
+	historyBack({backLayer,delta={from: 'navigateBack'}}={}) {
+		const pages=getCurrentPages();
+		const page=pages[pages.length-1]
+		const onBackPress=page.$options.onBackPress;
+		if(onBackPress!=null&&onBackPress.constructor===Array){
+			const callFun=onBackPress[onBackPress.length-1];
+			const isNext=callFun.call(page,delta);
+			if(isNext){
+				return true;
+			}
+		}
+		history.go(-backLayer)
 	}
 	/**
 	 * 把加载动画添加到dom下面,为什么一定要先添加，后移除。保证动画的连续性

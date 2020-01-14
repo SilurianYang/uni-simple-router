@@ -47,6 +47,9 @@ const defineProperty = function(Router, key, hookFun) {
  * @param {Object} Router
  */
 const rewriteUniFun = function(Router) {
+	if(Router.CONFIG.h5.rewriteFun===false){	//不需要重写
+		return false
+	}
 	uni.reLaunch = function({
 		url
 	}) {
@@ -72,11 +75,12 @@ const rewriteUniFun = function(Router) {
 			err(`${url}解析失败了....  试试 this.$Router.replaceAll() 吧`);
 		}
 	}
-	uni.navigateBack = function(delta = 1) {
+	uni.navigateBack = function(delta) {
+		let backLayer=delta;
 		if (delta.constructor === Object) { //这种可能就只是uni-app自带的返回按钮,还有种可能就是开发者另类传递的
-			delta = 1;
+			backLayer = 1;
 		}
-		Router.back(delta)
+		Router.back(backLayer,delta)
 	}
 }
 /**

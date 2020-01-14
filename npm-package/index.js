@@ -204,19 +204,22 @@ class Router {
 	/**
 	 * 返回到指定层级页面上
 	 */
-	back(delta = 1) {
-		if (delta.constructor != Number) {
+	back(backLayer=1,delta) {
+		if (backLayer.constructor != Number) {
 			return err(
-				"返回层级参数必须是一个Number类型且必须大于1：" + delta
+				"返回层级参数必须是一个Number类型且必须大于1：" + backLayer
 			);
 		}
 		compile.H5(() => {
-			H5PATCH.on('historyBack', -delta)
+			H5PATCH.on('historyBack', {
+				backLayer,
+				delta
+			})
 		})
 		compile.notH5(() => {
-			Global.backLayerC=delta;	//告诉路由需要返回几层
+			Global.backLayerC=backLayer;	//告诉路由需要返回几层
 			uni.navigateBack({
-				delta
+				delta:backLayer
 			});
 		})
 	}
