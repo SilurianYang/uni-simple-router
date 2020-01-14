@@ -32,7 +32,6 @@ const callwaitHooks= function(callHome){
 		if(onShow.isHijack){	//继续还原 onShow
 			app.onShow.splice(app.onShow.length-1,1,onShow.fun[0]);
 		}
-		
 		for(let key in waitHooks){	//还原 首页下的生命钩子
 			const item=waitHooks[key];
 			if(item.isHijack){	
@@ -40,7 +39,10 @@ const callwaitHooks= function(callHome){
 					variation.push({key,fun:item.fun[0]});
 				}else{
 					const indeHooks=indexVue[key];
-					indeHooks.splice(indeHooks.length-1,1,item.fun[0]);
+					//修复 https://github.com/SilurianYang/uni-simple-router/issues/76
+					setTimeout(function() {	//异步延迟还原 不然 uni-app 给给触发了
+						indeHooks.splice(indeHooks.length-1,1,item.fun[0]);
+					}, 50);
 				}
 			}
 		}
