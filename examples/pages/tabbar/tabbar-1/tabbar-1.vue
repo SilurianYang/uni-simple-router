@@ -47,7 +47,7 @@
 				this.$Router.replaceAll('/pages/login/login')
 			},
 			gotoPage() {
-				 //this.$Router.push('/router5')
+				 this.$Router.push('/router5')
 				
 				// this.$Router.push({
 				// 	path: '/pages/router/router5/router5',
@@ -62,16 +62,20 @@
 				// 	url:'/router5'
 				// })
 				
-				this.$Router.push({
-					name: 'router5',
-					params:{
-						name: '我只想去router5 /% *& ！',
-						key: {
-							ages: " sdasd79&)) ^&^^",
-							name: '德玛测试'
-						}
-					},
-				})
+				// this.$Router.pushTab({
+				// 	name:'tabbar-2'
+				// })
+				
+				// this.$Router.push({
+				// 	name: 'router5',
+				// 	params:{
+				// 		name: '我只想去router5 /% *& ！',
+				// 		key: {
+				// 			ages: " sdasd79&)) ^&^^",
+				// 			name: '德玛测试'
+				// 		}
+				// 	},
+				// })
 			},
 			gotoPage1() {
 				this.$Router.push({

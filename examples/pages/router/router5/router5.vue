@@ -28,9 +28,6 @@
 		onUnload(){
 			console.log('onUnload')
 		},
-		onBeforeBack(){
-
-		},
 		methods:{
 			gotoPage(){
 				this.$Router.push({
