@@ -36,11 +36,6 @@
 				title: 'Hello'
 			};
 		},
-		computed: {
-			query() {
-				return this.$Route.query
-			}
-		},
 		onLoad(){
 			console.log('tabbar ---- onLoad')
 		},
