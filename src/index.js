@@ -1,6 +1,7 @@
-import {isH5,formatConfig,queryMp,resolveRule,appPlatform,formatURLQuery,parseQuery} from "./helpers/util";
+import {isH5,formatConfig,appPlatform,formatURLQuery} from "./helpers/util";
 import {formatUserRule,strPathToObjPath,H5GetPageRoute} from './vueRouter/util'
 import {APPGetPageRoute} from './appRouter/util'
+import {AppletsPageRoute} from './appletsRouter/util'
 import * as compile from './helpers/compile'
 import {methods,lifeCycle,Global} from "./helpers/config";
 import {warn,err} from './helpers/warn'
@@ -8,11 +9,9 @@ import * as lifeMothods from "./lifeCycle/hooks";
 import {transitionTo} from './appRouter/hooks'
 import {uniPushTo} from './appRouter/uniNav'
 import {vueMount} from './vueRouter/base'
-import {queryInfo,appletsMount} from "./patch/applets-patch";
-import {completeVim,appMount} from "./patch/app-patch";
+import {appletsMount} from "./patch/applets-patch";
+import {appMount} from "./patch/app-patch";
 import initMixins from './helpers/mixins'
-import event from './helpers/event'
-const Event = new event();
 
 // #ifdef H5
 import H5 from "./patch/h5-patch";
@@ -30,58 +29,10 @@ class Router {
 		this.loadded = false;
 		this.methods = methods;
 		this.lifeCycle = lifeCycle;
-		this.lastVim = null;
-		this.HooksFinish = true; //内部生命周期是否走完
-		this.depEvent = [];
-
+		this.registerRouterHooks();
 		if (appPlatform() === 'H5') {
 			H5PATCH.setLoadingStatus(this.CONFIG.h5)
 		}
-
-		lifeMothods.registerHook(this.lifeCycle.routerbeforeHooks, function(fnType) {
-			return new Promise(async resolve => {
-				this.CONFIG.routerBeforeEach(); //触发暴露给开发者的生命钩子
-				
-				if (appPlatform() === 'H5') {		//h5端到此为止
-					H5PATCH.on('toogle', 'startLodding');
-					return resolve(true);
-				}
-				
-				if(appPlatform()==='APP'){		//app端到此为止
-					return resolve(true);
-				}
-				
-				await Router.onLaunched;
-				await Router.onshowed;
-				if (fnType !== 'Router' && Reflect.get(this.lastVim, '_uid') == null) { //验证当前是开发者直接通过api进行跳转的情况，比如vue还没有编译模板完成的情况
-					return resolve(false)
-				}
-				return resolve(true);
-			})
-		});
-		lifeMothods.registerHook(this.lifeCycle.routerAfterHooks, function(res = {}) {
-
-			if (res.H5Intercept !== true) {
-				this.CONFIG.routerAfterEach(); //触发暴露给开发者的生命钩子
-			}
-
-			if (appPlatform() === 'H5') {
-				H5PATCH.on('toogle', 'stopLodding');
-				return true;
-			}
-			if(appPlatform()==='APP'){		//app端到此为止
-				return true;
-			}
-
-			const index = this.depEvent.indexOf(res.showId);
-			if (index == -1) {
-				Event.notify('show', res);
-			} else {
-				this.depEvent.splice(index, 1)
-			}
-			this.lastVim = BUILTIN.currentVim;
-			this.HooksFinish = true;
-		});
 	}
 	get $Route(){
 		return this.getPageRoute();
@@ -91,6 +42,29 @@ class Router {
 	 */
 	get $holdTab(){
 		return Global.$holdTab;
+	}
+	/**
+	 * 注册全局Router生命钩子
+	 */
+	registerRouterHooks(){
+		lifeMothods.registerHook(this.lifeCycle.routerbeforeHooks, function(fnType) {
+			return new Promise(async resolve => {
+				this.CONFIG.routerBeforeEach(); //触发暴露给开发者的生命钩子
+				if(appPlatform(true)==='H5'){
+					H5PATCH.on('toogle', 'startLodding');
+				}
+				return resolve(true);
+			})
+		});
+		lifeMothods.registerHook(this.lifeCycle.routerAfterHooks, function(res = {}) {
+			if (res.H5Intercept !== true) {
+				this.CONFIG.routerAfterEach(); //触发暴露给开发者的生命钩子
+			}
+			if(appPlatform(true)==='H5'){
+				H5PATCH.on('toogle', 'stopLodding');
+			}
+			return true;
+		});
 	}
 	/**
 	 * 用户非h5端外 核心跳转方法
@@ -145,11 +119,6 @@ class Router {
 		if(appPlatform() === 'APP'){
 			return transitionTo.call(this,rule,'push', uniPushTo);
 		}
-		lifeMothods.resolveParams(this, rule, "push", function(customRule) {
-			return new Promise(async resolve => {
-				resolve(await this._pushTo(customRule));
-			})
-		});
 	}
 	/**动态的导航到一个新 URL 关闭当前页面，跳转到的某个页面。
 	 * redirectTo
@@ -162,11 +131,6 @@ class Router {
 		if(appPlatform() === 'APP'){
 			return transitionTo.call(this,rule,'replace', uniPushTo);
 		}
-		lifeMothods.resolveParams(this, rule, "replace", function(customRule) {
-			return new Promise(async resolve => {
-				resolve(await this._pushTo(customRule));
-			})
-		});
 	}
 	/**动态的导航到一个新 URL 关闭所有页面，打开到应用内的某个页面
 	 * 	reLaunch
@@ -179,11 +143,6 @@ class Router {
 		if(appPlatform() === 'APP'){
 			return transitionTo.call(this,rule,'replaceAll', uniPushTo);
 		}
-		lifeMothods.resolveParams(this, rule, "replaceAll", function(customRule) {
-			return new Promise(async resolve => {
-				resolve(await this._pushTo(customRule));
-			})
-		});
 	}
 	/**动态的导航到一个新 url 关闭所有页面，打开到应用内的某个tab
 	 * @param {Object} rule
@@ -195,11 +154,6 @@ class Router {
 		if(appPlatform() === 'APP'){
 			return transitionTo.call(this,rule,'pushTab', uniPushTo);
 		}
-		lifeMothods.resolveParams(this, rule, "pushTab", function(customRule) {
-			return new Promise(async resolve => {
-				resolve(await this._pushTo(customRule));
-			})
-		});
 	}
 	/**
 	 * 返回到指定层级页面上
@@ -246,19 +200,13 @@ class Router {
 	 */
 	getPageRoute(Vim) {
 		const pages = getCurrentPages();
-		if (appPlatform() === 'H5') {
-			return H5GetPageRoute.call(this,pages,Vim);
-		} 
-		if(appPlatform() === 'APP'){
-			return APPGetPageRoute(pages,Vim);
-		}else {
-			Vim = queryMp(Vim);
-			const {
-				route,
-				query,
-				ruleKey
-			} = queryInfo(Vim);
-			return resolveRule(this, route, query, ruleKey);
+		switch (appPlatform(true)) {
+			case 'H5':
+				return H5GetPageRoute.call(this,pages,Vim);
+			case 'APP':
+				return APPGetPageRoute(pages,Vim);
+			case 'APPLETS':
+				return AppletsPageRoute(pages,Vim)
 		}
 	}
 	beforeEach(fn) {
@@ -269,43 +217,10 @@ class Router {
 	}
 }
 
-const BUILTIN = {}; //代理属性缓存上个操作的page对象
-const depPromise = [];
-
-Router.$root = null;
-Router.onLaunched = new Promise((resolve) => {
-	depPromise.push(resolve)
-});
-Router.onshowed = new Promise((resolve) => {
-	depPromise.push(resolve)
-});
-Router.showId = 0;
-Router.lastVim = {};
-Router.depShowCount = [0];
-Router.doRouter = false; //用户主动触发router事件
-
-Object.defineProperty(BUILTIN, 'currentVim', {
-	configurable: true,
-	enumerable: false,
-	set: function(val) {
-		BUILTIN._currentVim = val;
-		if (Router.showId === Router.depShowCount[Router.depShowCount.length - 1]) {
-			Router.$root.lastVim = val;
-			Router.depShowCount.pop();
-		}
-	},
-	get: function() {
-		return BUILTIN._currentVim;
-	},
-
-})
-
 Router.install = function(Vue) {
-	initMixins(Vue,Router,depPromise,BUILTIN,Event);
+	initMixins(Vue,Router);
 	Object.defineProperty(Vue.prototype, "$Router", {
 		get: function() {
-			Router.doRouter = this;
-			Router.$root.lastVim = this;
 			return Router.$root;
 		}
 	});

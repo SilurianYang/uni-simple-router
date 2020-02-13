@@ -1,11 +1,12 @@
 <script>
 export default {
   onLaunch: function() {
-		console.log('onLaunch')
+    console.log(this.$Route);
+    console.log("onLaunch");
   },
   onShow: function() {
-	   console.log(this.$Route)
-  },
+    console.log("onShow");
+  }
 };
 </script>
 

@@ -39,6 +39,9 @@ const routesConfig = {
 	},
 	encodeURI: true,
 	debugger: true,
+	routerBeforeEach:()=>{
+		console.log('routerBeforeEach')
+	},
 	routes: [{
 			aliasPath: '/router5',
 			path: '/pages/router/router5/router5',
@@ -147,7 +150,7 @@ let count =0;
 router.beforeEach((to, from, next) => {
 	console.log(to)
 	console.log(from)
-	next();
+	 next();
 	// count++
 	// if(count==1){
 	// 	next({
