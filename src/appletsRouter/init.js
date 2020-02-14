@@ -1,4 +1,4 @@
-import {triggerLifeCycle,proxyLaunchHook,callwaitHooks} from './hooks'
+import {proxyLaunchHook,callwaitHooks} from './hooks'
 
 /**
  * 触发还原 app.vue下的生命钩子
@@ -9,7 +9,6 @@ import {triggerLifeCycle,proxyLaunchHook,callwaitHooks} from './hooks'
 export const callAppvueHooks=async function(Router){
 	await callwaitHooks();
 }
-
 /**
  * 开始初始化app端路由配置
  * 

@@ -1,6 +1,6 @@
 import {uniAppHook} from '../helpers/config'
 import {callAppHook,getPageVmOrMp,ruleToUniNavInfo,formatTo,formatFrom} from './util'
-import {uniPushTo} from "./appletsNav";
+import {appletsUniPushTo} from "./appletsNav";
 import {noop} from '../helpers/util'
 import {warn} from '../helpers/warn'
 
@@ -117,17 +117,17 @@ export const triggerLifeCycle = function(Router) {
 		return warn('打扰了,当前一个页面也没有 这不是官方的bug是什么??');
     }
 	let {query,page}=getPageVmOrMp(topPage,false);
-	transitionTo.call(Router,{path:page.route,query},'push',async (finalRoute,fnType)=>{
+	appletsTransitionTo.call(Router,{path:page.route,query},'push',async (finalRoute,fnType)=>{
 		let variation=[];
 		if(`/${page.route}`==finalRoute.route.path){		//在首页不动的情况下
 			uniAppHook.pageReady=true;		//标致着路由已经就绪 可能准备起飞
 			await callwaitHooks.call(this,true);
 		}else{	//需要跳转
 			variation=await callwaitHooks.call(this,false);	//只触发app.vue中的生命周期
-			await uniPushTo(finalRoute,fnType);
+			await appletsUniPushTo(finalRoute,fnType);
 		}
-		callVariationHooks(variation);
 		uniAppHook.pageReady=true;		//标致着路由已经就绪 可能准备起飞
+		callVariationHooks(variation);
 	});	
 }
 /**
@@ -139,7 +139,7 @@ export const triggerLifeCycle = function(Router) {
  * this 为当前 Router 对象
  * 
  */
-export const transitionTo =async function(rule, fnType, navCB){
+export const appletsTransitionTo =async function(rule, fnType, navCB){
 	await this.lifeCycle["routerbeforeHooks"][0].call(this) //触发内部跳转前的生命周期
 	const finalRoute=ruleToUniNavInfo(rule,this.CONFIG.routes);		//获得到最终的 route 对象
 	const _from=formatFrom(this.CONFIG.routes);	//先根据跳转类型获取 from 数据
@@ -223,11 +223,11 @@ const isNext =function(Intercept,fnType, navCB){
 		}
 		if(Intercept.constructor === String){		//说明 开发者直接传的path 并且没有指定 NAVTYPE 那么采用原来的navType
 			reject(1);
-			return transitionTo.call(this,Intercept,fnType,navCB);
+			return appletsTransitionTo.call(this,Intercept,fnType,navCB);
 		}
 		if(Intercept.constructor === Object){	//有一系列的配置 包括页面切换动画什么的
 			reject(1);
-			return transitionTo.call(this,Intercept,Intercept.NAVTYPE||fnType,navCB);
+			return appletsTransitionTo.call(this,Intercept,Intercept.NAVTYPE||fnType,navCB);
 		}
 	})
 }

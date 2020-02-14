@@ -42,6 +42,9 @@ const routesConfig = {
 	routerBeforeEach:()=>{
 		console.log('routerBeforeEach')
 	},
+	routerAfterEach:()=>{
+		console.log('routerAfterEach')
+	},
 	routes: [{
 			aliasPath: '/router5',
 			path: '/pages/router/router5/router5',

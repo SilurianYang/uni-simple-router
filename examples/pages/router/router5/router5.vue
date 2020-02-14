@@ -16,7 +16,6 @@
 			};
 		},
 		onLoad(){
-			console.log('onLoad')
 			this.value=JSON.stringify(this.$Route)
 		},
 		onShow(){

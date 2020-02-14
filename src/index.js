@@ -7,7 +7,9 @@ import {methods,lifeCycle,Global} from "./helpers/config";
 import {warn,err} from './helpers/warn'
 import * as lifeMothods from "./lifeCycle/hooks";
 import {transitionTo} from './appRouter/hooks'
+import {appletsTransitionTo} from './appletsRouter/hooks'
 import {uniPushTo} from './appRouter/uniNav'
+import {appletsUniPushTo} from './appletsRouter/appletsNav'
 import {vueMount} from './vueRouter/base'
 import {appletsMount} from "./patch/applets-patch";
 import {appMount} from "./patch/app-patch";
@@ -113,11 +115,13 @@ class Router {
 	 * @param {Object} rule
 	 */
 	push(rule) {
-		if (appPlatform() === 'H5') {
-			return this._H5PushTo('push', rule, 'navigateTo');
-		}
-		if(appPlatform() === 'APP'){
-			return transitionTo.call(this,rule,'push', uniPushTo);
+		switch (appPlatform(true)) {
+			case 'H5':
+				return this._H5PushTo('push', rule, 'navigateTo');
+			case 'APP':
+				return transitionTo.call(this,rule,'push', uniPushTo);
+			case 'APPLETS':
+				return appletsTransitionTo.call(this,rule,'push', appletsUniPushTo);
 		}
 	}
 	/**动态的导航到一个新 URL 关闭当前页面，跳转到的某个页面。
@@ -125,11 +129,13 @@ class Router {
 	 * @param {Object} rule
 	 */
 	replace(rule) {
-		if (appPlatform() === 'H5') {
-			return this._H5PushTo('replace', rule, 'redirectTo');
-		}
-		if(appPlatform() === 'APP'){
-			return transitionTo.call(this,rule,'replace', uniPushTo);
+		switch (appPlatform(true)) {
+			case 'H5':
+				return this._H5PushTo('replace', rule, 'redirectTo');
+			case 'APP':
+				return transitionTo.call(this,rule,'replace', uniPushTo);
+			case 'APPLETS':
+				return appletsTransitionTo.call(this,rule,'replace', appletsUniPushTo);
 		}
 	}
 	/**动态的导航到一个新 URL 关闭所有页面，打开到应用内的某个页面
@@ -137,22 +143,26 @@ class Router {
 	 * @param {Object} rule
 	 */
 	replaceAll(rule) {
-		if (appPlatform() === 'H5') {
-			return this._H5PushTo('replace', rule, 'reLaunch');
-		}
-		if(appPlatform() === 'APP'){
-			return transitionTo.call(this,rule,'replaceAll', uniPushTo);
+		switch (appPlatform(true)) {
+			case 'H5':
+				return this._H5PushTo('replace', rule, 'reLaunch');
+			case 'APP':
+				return transitionTo.call(this,rule,'replaceAll', uniPushTo);
+			case 'APPLETS':
+				return appletsTransitionTo.call(this,rule,'replaceAll', appletsUniPushTo);
 		}
 	}
 	/**动态的导航到一个新 url 关闭所有页面，打开到应用内的某个tab
 	 * @param {Object} rule
 	 */
 	pushTab(rule) {
-		if (appPlatform() === 'H5') {
-			return this._H5PushTo('replace', rule, 'switchTab');
-		}
-		if(appPlatform() === 'APP'){
-			return transitionTo.call(this,rule,'pushTab', uniPushTo);
+		switch (appPlatform(true)) {
+			case 'H5':
+				return this._H5PushTo('replace', rule, 'switchTab');
+			case 'APP':
+				return transitionTo.call(this,rule,'pushTab', uniPushTo);
+			case 'APPLETS':
+				return appletsTransitionTo.call(this,rule,'pushTab', appletsUniPushTo);
 		}
 	}
 	/**

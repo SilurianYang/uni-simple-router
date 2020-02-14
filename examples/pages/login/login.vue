@@ -12,6 +12,9 @@
 				
 			}
 		},
+		onShow(){
+			console.log('login----onshow')
+		},
 		onLoad(){
 			console.log(this.$Route)
 		},
