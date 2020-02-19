@@ -30,6 +30,19 @@ export const getPages=function(index=-1,all){
 	return pages[index];
 }
 /**
+ * 验证当前页面是否为nvue页面
+ * @param {Object} page 当前页面对象
+ */
+export const isNvuePage=function(page){
+	const cstr=page.constructor.name;
+	const pageType={
+		s:true,
+		z:false
+	}
+	return pageType[cstr]
+}
+
+/**
  * @param {Object} page //当前顶级页面对象
  * @param {Object} vim:? //是否获取 $vm 对象还是 $mp 对象
  */
@@ -37,7 +50,16 @@ export const getPageVmOrMp=function(page,vim=true){
 	if(vim){
 		return page.$vm;
 	}
-	return page.$vm.$mp
+	if(page.$vm.$mp){
+		return page.$vm.$mp
+	}else{
+		if(isNvuePage(page)){	//nvue 页面
+			return {
+				page,
+				query:page.__displayReporter.query
+			}
+		}
+	}
 }
 
 /**
