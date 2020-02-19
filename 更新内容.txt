@@ -1,0 +1,5 @@
+修复
+	1.nvue页面无法跳转进去的问题 https://github.com/SilurianYang/uni-simple-router/issues/84
+新增
+	1.微信、百度、支付宝小程序端重构
+	2.整理整体项目代码
