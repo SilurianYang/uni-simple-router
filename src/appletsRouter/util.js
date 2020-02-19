@@ -1,5 +1,7 @@
 import {Global,route as mergeRoute} from '../helpers/config'
 import {copyObject,parseQuery} from '../helpers/util'
+import {err} from '../helpers/warn'
+import {baiduApple} from '../helpers/compile.js'
 /**
  * 触发指定生命钩子
  * @param {Array} funList	//需要执行的方法列表
@@ -18,7 +20,11 @@ export const getPageVmOrMp=function(page,vim=true){
 	if(vim){
 		return page.$vm;
 	}
-	return page.$vm.$mp
+	const {$mp}= page.$vm;
+	baiduApple(()=>{	//百度小程序新增一个route属性
+		$mp.page.route=$mp.page.is;
+	})
+	return $mp;
 }
 /**
  * 统一格式话 路由传递的参数 看看是编码还是非编码 做相应的对策
@@ -26,10 +32,14 @@ export const getPageVmOrMp=function(page,vim=true){
  * @param {Object} query 当前的路由参数
  * @param {Boolean} getter 是从页面获取 route 对象下的参数 还是编码后传输
  */
-export const getFormatQuery = function (query={},getter=false) {
+export const getFormatQuery = function (query={},getter=false) {	
 	if(Global.Router.CONFIG.encodeURI){
 		if(getter){
-			query = JSON.parse(query.query||'{}');
+			try{		//除去微信小程序都不需要 decodeURIComponent
+				query = JSON.parse(decodeURIComponent(query.query)||'{}');
+			}catch(e){	//其他小程序
+				query = JSON.parse(query.query||'{}');
+			}
 		}else{
 			try{
 				query = JSON.parse(decodeURIComponent(query.query || encodeURIComponent('{}')))
@@ -140,7 +150,8 @@ export const AppletsPageRoute=function(pages,Vim){
 	let [query,path] = [{},''];
 	if(pages.length>0){
 		const page=pages[pages.length-1];	//获取到当前页面
-		query=getFormatQuery(page.options,true);
+		const uniQuery=getPageVmOrMp(page,false).query;
+		query=getFormatQuery(uniQuery,true);
 		path=page.route;
 	}else if(Vim!=null){
 		query=getFormatQuery(Vim.$mp.page.options,true);
