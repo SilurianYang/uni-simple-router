@@ -27,9 +27,6 @@ export const baseConfig = {
 		animation:{animationType:'pop-in',animationDuration:300},	//页面切换动画
 		switchPageOutTime:1000,	//最高能忍耐的页面切换时间 达到此时间 不管切换有没有完成都会显示页面出来 这对启动页帮助很大
 	},
-	applets:{
-
-	},
 	debugger: false, //是否处于开发阶段 设置为true则打印日志
 	encodeURI: true, //是否对url传递的参数进行编码
 	routerBeforeEach: () => {}, //router 前置路由函数 每次触发跳转前先会触发此函数

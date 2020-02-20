@@ -1,7 +1,7 @@
 import {Global,route as mergeRoute} from '../helpers/config'
 import {copyObject,parseQuery} from '../helpers/util'
 import {err} from '../helpers/warn'
-import {baiduApple} from '../helpers/compile.js'
+import {baiduApple,touTiao} from '../helpers/compile.js'
 /**
  * 触发指定生命钩子
  * @param {Array} funList	//需要执行的方法列表
@@ -23,6 +23,9 @@ export const getPageVmOrMp=function(page,vim=true){
 	const {$mp}= page.$vm;
 	baiduApple(()=>{	//百度小程序新增一个route属性
 		$mp.page.route=$mp.page.is;
+	})
+	touTiao(()=>{	//头条小程序新增一个route属性
+		$mp.page.route=$mp.page.is;	
 	})
 	return $mp;
 }

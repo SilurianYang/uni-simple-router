@@ -112,7 +112,7 @@ export const appletsProxyIndexHook=function(Router){
  * 
  */
 export const triggerLifeCycle = function(Router) {
-    const topPage=getCurrentPages()[0];
+	const topPage=getCurrentPages()[0];
     if(topPage==null){
 		return warn('打扰了,当前一个页面也没有 这不是官方的bug是什么??');
     }

@@ -23,3 +23,8 @@ export const baiduApple = function(fn) {
 	fn();
 	// #endif
 }
+export const touTiao = function(fn) {
+	// #ifdef MP-TOUTIAO
+	fn();
+	// #endif
+}
