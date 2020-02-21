@@ -64,7 +64,11 @@
 			"path": "pages/login/login",
 			"style": {}
 		}
-	],
+	    ,{
+            "path" : "pages/nvuePages/nvue1/nvue1",
+            "style" : {}
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",

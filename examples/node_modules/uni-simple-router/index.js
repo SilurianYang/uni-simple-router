@@ -5,7 +5,7 @@ import {AppletsPageRoute} from './appletsRouter/util'
 import * as compile from './helpers/compile'
 import {methods,lifeCycle,Global} from "./helpers/config";
 import {warn,err} from './helpers/warn'
-import * as lifeMothods from "./lifeCycle/hooks";
+import {registerRouterHooks,registerHook} from "./lifeCycle/hooks";
 import {transitionTo} from './appRouter/hooks'
 import {appletsTransitionTo} from './appletsRouter/hooks'
 import {uniPushTo} from './appRouter/uniNav'
@@ -31,7 +31,7 @@ class Router {
 		this.loadded = false;
 		this.methods = methods;
 		this.lifeCycle = lifeCycle;
-		this.registerRouterHooks();
+		registerRouterHooks.call(this);	//注册全局Router生命钩子
 		if (appPlatform() === 'H5') {
 			H5PATCH.setLoadingStatus(this.CONFIG.h5)
 		}
@@ -44,29 +44,6 @@ class Router {
 	 */
 	get $holdTab(){
 		return Global.$holdTab;
-	}
-	/**
-	 * 注册全局Router生命钩子
-	 */
-	registerRouterHooks(){
-		lifeMothods.registerHook(this.lifeCycle.routerbeforeHooks, function(fnType) {
-			return new Promise(async resolve => {
-				this.CONFIG.routerBeforeEach(); //触发暴露给开发者的生命钩子
-				if(appPlatform(true)==='H5'){
-					H5PATCH.on('toogle', 'startLodding');
-				}
-				return resolve(true);
-			})
-		});
-		lifeMothods.registerHook(this.lifeCycle.routerAfterHooks, function(res = {}) {
-			if (res.H5Intercept !== true) {
-				this.CONFIG.routerAfterEach(); //触发暴露给开发者的生命钩子
-			}
-			if(appPlatform(true)==='H5'){
-				H5PATCH.on('toogle', 'stopLodding');
-			}
-			return true;
-		});
 	}
 	/**
 	 * 用户非h5端外 核心跳转方法
@@ -220,10 +197,10 @@ class Router {
 		}
 	}
 	beforeEach(fn) {
-		return lifeMothods.registerHook(this.lifeCycle.beforeHooks, fn);
+		return registerHook(this.lifeCycle.beforeHooks, fn);
 	}
 	afterEach(fn) {
-		return lifeMothods.registerHook(this.lifeCycle.afterHooks, fn);
+		return registerHook(this.lifeCycle.afterHooks, fn);
 	}
 }
 

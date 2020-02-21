@@ -56,6 +56,10 @@ const routesConfig = {
             }
 		},
 		{
+			path:'/pages/nvuePages/nvue1/nvue1',
+			name:'nvue1'
+		},
+		{
 			path: '/pages/login/login',
 			name: 'login'
 		},
@@ -153,30 +157,19 @@ let count =0;
 router.beforeEach((to, from, next) => {
 	console.log(to)
 	console.log(from)
-	 next();
-	// count++
-	// if(count==1){
-	// 	next({
-	// 		path:'/pages/login/login',
-	// 		NAVTYPE:'replaceAll',
-	// 		query:{
-	// 			userOut:true
-	// 		}
-	// 	});
-	// }else{
-	// 	if(to.name=='tabbar-1'){
-	// 		next({
-	// 			name:'router5',
-	// 			NAVTYPE:'push',
-	// 			animation:{
-	// 				animationType:'slide-in-top',
-	// 				animationDuration:1000
-	// 			}
-	// 		});
-	// 	}else{
-	// 		next();
-	// 	}
-	// }
+	// next();
+	count++
+	if(count==1){
+		next({
+			path:'/pages/login/login',
+			NAVTYPE:'replaceAll',
+			query:{
+				userOut:true
+			}
+		});
+	}else{
+		next();
+	}
 })
 router.afterEach((to, from) => {
 	console.log(to)

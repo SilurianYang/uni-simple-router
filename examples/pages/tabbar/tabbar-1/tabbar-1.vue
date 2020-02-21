@@ -17,6 +17,7 @@
 		</router-link>
 		
 		<button type="primary" @click="userOut">退出去登陆</button>
+		<button type="primary" @click="$Router.push({name:'nvue1',params:{msg:'tabbar1过来的'}})">去nvue1</button>
 
 		<Child></Child>
 		<Child1></Child1>

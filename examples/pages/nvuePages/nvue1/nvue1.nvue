@@ -1,0 +1,29 @@
+<template>
+	<view>
+		<h1>nvue1</h1>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		onLoad(args){
+			setTimeout(()=>{
+				uni.navigateTo({
+					url:'/pages/router/router6/router6'
+				})
+			},3000)
+		},
+		methods: {
+			
+		}
+	}
+</script>
+
+<style>
+
+</style>
