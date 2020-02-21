@@ -1,10 +1,9 @@
-import {uniAppHook,Global} from '../helpers/config'
-import {callAppHook,getPages,getPageVmOrMp,ruleToUniNavInfo,formatTo,formatFrom,APPGetPageRoute,getPageOnBeforeBack} from './util'
+import {uniAppHook} from '../helpers/config'
+import {callAppHook,getPageVmOrMp,ruleToUniNavInfo,formatTo,formatFrom} from './util'
+import {appletsUniPushTo} from "./appletsNav";
 import {noop} from '../helpers/util'
 import {warn} from '../helpers/warn'
-import {uniPushTo,pageNavFinish} from "./uniNav";
 
-let startBack=false;	// 主要是兼容低端手机返回卡 然后多次返回直接提示退出的问题 
 
 /**
  * 还原并执行所有 拦截下来的生命周期 app.vue 及 index 下的生命周期 
@@ -60,7 +59,6 @@ const callVariationHooks=function(variation){
 		indeHooks.splice(indeHooks.length-1,1,fun);
 	}
 }
-
 /**
  * 主要是对app.vue下onLaunch和onShow生命周期进行劫持
  * 
@@ -92,7 +90,7 @@ export const proxyLaunchHook=function(){
  * 把指定页面的生命钩子函数保存并替换
  * this 为当前 page 对象
  */
-export const proxyIndexHook=function(Router){
+export const appletsProxyIndexHook=function(Router){
 	const {needHooks,waitHooks}=uniAppHook;
 	const options=this.$options;
 	uniAppHook.indexVue=options;
@@ -112,27 +110,24 @@ export const proxyIndexHook=function(Router){
  * 主动触发导航守卫
  * @param {Object} Router 当前路由对象
  * 
- * this  当前vue页面组件对象
  */
 export const triggerLifeCycle = function(Router) {
 	const topPage=getCurrentPages()[0];
-	if(topPage==null){
+    if(topPage==null){
 		return warn('打扰了,当前一个页面也没有 这不是官方的bug是什么??');
-	}
+    }
 	let {query,page}=getPageVmOrMp(topPage,false);
-	transitionTo.call(Router,{path:page.route,query},'push',async (finalRoute,fnType)=>{
+	appletsTransitionTo.call(Router,{path:page.route,query},'push',async (finalRoute,fnType)=>{
 		let variation=[];
 		if(`/${page.route}`==finalRoute.route.path){		//在首页不动的情况下
-			pageNavFinish('launch',page.route);
 			uniAppHook.pageReady=true;		//标致着路由已经就绪 可能准备起飞
 			await callwaitHooks.call(this,true);
 		}else{	//需要跳转
 			variation=await callwaitHooks.call(this,false);	//只触发app.vue中的生命周期
-			await uniPushTo(finalRoute,fnType);
+			await appletsUniPushTo(finalRoute,fnType);
 		}
-		plus.nativeObj.View.getViewById('router-loadding').close();
-		callVariationHooks(variation);
 		uniAppHook.pageReady=true;		//标致着路由已经就绪 可能准备起飞
+		callVariationHooks(variation);
 	});	
 }
 /**
@@ -144,7 +139,7 @@ export const triggerLifeCycle = function(Router) {
  * this 为当前 Router 对象
  * 
  */
-export const transitionTo =async function(rule, fnType, navCB){
+export const appletsTransitionTo =async function(rule, fnType, navCB){
 	await this.lifeCycle["routerbeforeHooks"][0].call(this) //触发内部跳转前的生命周期
 	const finalRoute=ruleToUniNavInfo(rule,this.CONFIG.routes);		//获得到最终的 route 对象
 	const _from=formatFrom(this.CONFIG.routes);	//先根据跳转类型获取 from 数据
@@ -207,72 +202,7 @@ const beforeEnterHooks =function(finalRoute,_from,_to){
 		await beforeEnter.call(this,_to, _from, resolve);
 	})
 }
-/**
- * 处理返回按钮的生命钩子
- * @param {Object} options 当前 vue 组件对象下的$options对象
- * @param {Array} args  当前页面是点击头部返回还是底部返回
- * 
- * this 为当前 Router 对象
- */
-export const beforeBackHooks=async function(options,args){
-	const isNext=await getPageOnBeforeBack(args);
-	if(isNext===false){
-		return false
-	}
-	const page=getPages(-3);	//上一个页面对象
-	backCallHook.call(this,page,options);
-}
-/**
- * 处理back api的生命钩子
- * @param {Object} options 当前 vue 组件对象下的$options对象
- * @param {Array} args  当前页面是点击头部返回还是底部返回
- * 
- * this 为当前 Router 对象
- */
-export const backApiCallHook=async function (options,args) {
-	const isNext=await getPageOnBeforeBack(args);
-	const backLayerC=Global.backLayerC;
-	const pages=getPages();
-	let page=null
-	if(backLayerC>pages.length-1||backLayerC==pages.length-1){	//返回的首页 我们需要显示tabbar拦截
-		page=pages[0];
-	}else{
-		page=pages[pages.length-2]
-	}
-	backCallHook.call(this,page,options,backLayerC);
-}
-/**
- * 触发返回事件公共方法
- * @param {Object} page	用getPages获取到的页面栈对象
- * @param {Object} options 	当前vue页面对象
- * @param {Object} backLayerC	需要返回页面的层级
-   * 
- * this 为当前 Router 对象
- */
-const backCallHook=function(page,options,backLayerC=1){
-	const route=APPGetPageRoute([page]);
-	 transitionTo.call(this,{path:route.path,query:route.query}, 'RouterBack', ()=>{
-	 	if(startBack){return false};		//如果当前处于正在放回的状态
-	 	startBack=true;	//标记开始返回
-	 	options.onBackPress=[noop];	//改回uni-app可执行的状态
-	 	setTimeout(()=> {
-	 		this.back(backLayerC);
-	 		startBack=false;	//返回结束
-	 		pageNavFinish('bcak',route.path);
-	 	});
-	 })
-}
-/**
- * 处理tabbar点击拦截事件
- * @param {Object} path 当前需要跳转的tab页面路径
- * 
- * this 为当前 Router 对象
- */
-export const beforeTabHooks=function(path){
-	transitionTo.call(this,{path:`/${path}`,query:{}},'pushTab',(finalRoute,fnType)=>{
-		uniPushTo(finalRoute,fnType);
-	})
-}
+
 /**
  * 验证当前 next() 管道函数是否支持下一步
  * 
@@ -293,11 +223,11 @@ const isNext =function(Intercept,fnType, navCB){
 		}
 		if(Intercept.constructor === String){		//说明 开发者直接传的path 并且没有指定 NAVTYPE 那么采用原来的navType
 			reject(1);
-			return transitionTo.call(this,Intercept,fnType,navCB);
+			return appletsTransitionTo.call(this,Intercept,fnType,navCB);
 		}
 		if(Intercept.constructor === Object){	//有一系列的配置 包括页面切换动画什么的
 			reject(1);
-			return transitionTo.call(this,Intercept,Intercept.NAVTYPE||fnType,navCB);
+			return appletsTransitionTo.call(this,Intercept,Intercept.NAVTYPE||fnType,navCB);
 		}
 	})
 }

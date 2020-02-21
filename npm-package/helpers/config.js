@@ -69,6 +69,11 @@ export const uniAppHook = {
 	indexCallHooks:['onLoad','onReady','created','onShow'],	//在首页首次启动时需要触发的生命周期
 	needHooks:['onLoad','onReady','onShow','created','onHide','onUnload','onResize'],	//首页需要拦截的生命钩子
 	pageReady:false,
+	onLaunched:false,	//否触发onLaunch事件
+}
+
+export const appletsConfig={	//小程序端的一些路由所需配置
+	onLaunchEd:false,	//当前小程序端是否触发onLaunch事件
 }
 
 export const route = function(object = {}) {
