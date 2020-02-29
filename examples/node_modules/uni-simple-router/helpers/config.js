@@ -19,6 +19,7 @@ export const baseConfig = {
 		fallback: true,
 	},
 	APP:{
+		V3:false,	//是否开启v3编辑器
 		holdTabbar:true,	//是否开启底部菜单拦截
 		rewriteFun:true,	//是否对uni-app 下的chooseLocation/openLocation 两个方法重写 目的是隐藏和显示拦截tabbar
 		loddingPageStyle:()=>JSON.parse('{"backgroundColor":"#FFF"}'),	//当前等待页面的样式 必须返回一个json

@@ -37,7 +37,7 @@ const routesConfig = {
 		},
 		holdTabbarStyle:()=>JSON.parse('{"backgroundColor":"#FF0000","opacity":0.2}')
 	},
-	encodeURI: true,
+	encodeURI: false,
 	debugger: true,
 	routerBeforeEach:()=>{
 		console.log('routerBeforeEach')
@@ -157,19 +157,19 @@ let count =0;
 router.beforeEach((to, from, next) => {
 	console.log(to)
 	console.log(from)
-	// next();
-	count++
-	if(count==1){
-		next({
-			path:'/pages/login/login',
-			NAVTYPE:'replaceAll',
-			query:{
-				userOut:true
-			}
-		});
-	}else{
-		next();
-	}
+	next();
+	// count++
+	// if(count==1){
+	// 	next({
+	// 		path:'/pages/login/login',
+	// 		NAVTYPE:'replaceAll',
+	// 		query:{
+	// 			userOut:true
+	// 		}
+	// 	});
+	// }else{
+	// 	next();
+	// }
 })
 router.afterEach((to, from) => {
 	console.log(to)
