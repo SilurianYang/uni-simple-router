@@ -1,29 +1,8 @@
-import {
-	warn,
-	err
-} from '../helpers/warn.js'
-import {
-	diffRouter,
-	vueDevRouteProxy,
-	getRouterNextInfo,
-	formatUserRule,
-	nameToRute,
-	encodeURLQuery,
-	strPathToObjPath
-} from './util.js'
-import {
-	parseQuery,
-	formatURLQuery,
-} from '../helpers/util.js'
-import {
-	vuelifeHooks,
-	vueMount
-} from './base.js'
-
-import {
-	lifeCycle,
-	Global
-} from "../helpers/config.js";
+import {warn,err} from '../helpers/warn.js'
+import {diffRouter,vueDevRouteProxy,getRouterNextInfo,formatUserRule,nameToRute,encodeURLQuery,strPathToObjPath} from './util.js'
+import {parseQuery,formatURLQuery} from '../helpers/util.js'
+import {vuelifeHooks,vueMount} from './base.js'
+import {lifeCycle,Global} from "../helpers/config.js";
 
 let beforeEachCount = 0;
 let afterEachCount = 0;

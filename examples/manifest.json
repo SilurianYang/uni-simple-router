@@ -42,7 +42,8 @@
             "ios" : {},
             /* ios打包配置 */
             "sdkConfigs" : {}
-        }
+        },
+        "compilerVersion" : 3
     },
     /* SDK配置 */
     "quickapp" : {},

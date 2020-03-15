@@ -45,32 +45,33 @@ const routesConfig = {
 	routerAfterEach:()=>{
 		console.log('routerAfterEach')
 	},
-	routes: [{
-			aliasPath: '/router5',
-			path: '/pages/router/router5/router5',
-			name: 'router5',
-            beforeEnter:(to,from,next)=>{
-				console.log(to.name)
-				console.log(from.name)
-                next();
-            }
-		},
+	routes: [
 		{
-			path:'/pages/nvuePages/nvue1/nvue1',
-			name:'nvue1'
-		},
-		{
-			path: '/pages/login/login',
-			name: 'login'
-		},
-		{
-			path: '/pages/tabbar/tabbar-5/tabbar-5',
-			name: 'tabbar-5'
-		},
-		{
-			path: '/pages/router/router6/router6',
-			name: 'router6'
-		},
+				aliasPath: '/router5',
+				path: '/pages/router/router5/router5',
+				name: 'router5',
+		        beforeEnter:(to,from,next)=>{
+					console.log(to.name)
+					console.log(from.name)
+		            next();
+		        }
+			},
+			{
+				path:'/pages/nvuePages/nvue1/nvue1',
+				name:'nvue1'
+			},
+			{
+				path: '/pages/login/login',
+				name: 'login'
+			},
+			{
+				path: '/pages/tabbar/tabbar-5/tabbar-5',
+				name: 'tabbar-5'
+			},
+			{
+				path: '/pages/router/router6/router6',
+				name: 'router6'
+			},
 		{
 			aliasPath: '/',
 			path: "/pages/tabbar/tabbar-1/tabbar-1",
@@ -96,19 +97,19 @@ const routesConfig = {
 			name: 'tabbar-4',
 		},
 		{
-			component: () => import('@/pages/test/404.vue'),
+			component: () => import('@/pages/component/router1.vue'),
 			path: "/pages/router/router1/router1",
-			name: 'router1'
+			name: 'router1',
 		}, {
-			component: () => import('@/pages/test/404.vue'),
+			component: () => import('@/pages/component/router2.vue'),
 			path: "/pages/router/router2/router2",
 			name: 'router2',
 		}, {
-			component: () => import('@/pages/test/404.vue'),
+			component: () => import('@/pages/component/router3.vue'),
 			path: "/pages/router/router3/router3",
 			name: 'router3'
 		}, {
-			component: () => import('@/pages/test/404.vue'),
+			component: () => import('@/pages/component/router4.vue'),
 			path: "/pages/router/router4/router4",
 			name: 'router4'
 		},

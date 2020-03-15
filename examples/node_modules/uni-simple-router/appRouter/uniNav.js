@@ -1,8 +1,6 @@
 
 import {methods,baseConfig,Global} from '../helpers/config'
 import {noop,formatURLQuery} from '../helpers/util'
-import {transitionTo} from './hooks'
-import {err} from '../helpers/warn'
 
 let stop=null;
 
