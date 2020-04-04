@@ -156,9 +156,17 @@ const whitelist = {
 let count =0;
 
 router.beforeEach((to, from, next) => {
-	console.log(to)
-	console.log(from)
+	console.log('前置守卫')
+	// console.log(to)
+	// console.log(from)
 	next();
+	
+	// if(to.name=="login"){
+	// 	next('/pages/router/router2/router2')
+	// }else{
+	// 	next()
+	// }
+	
 	// count++
 	// if(count==1){
 	// 	next({
@@ -173,17 +181,7 @@ router.beforeEach((to, from, next) => {
 	// }
 })
 router.afterEach((to, from) => {
-	console.log(to)
-	console.log(from)
-	// setTimeout(function() {
-	// 	uni.setNavigationBarTitle({
-	// 	    title: to.name
-	// 	});
-	// }, 50);
-	// setTimeout(()=>{
-	// 	console.log(__uniConfig)
-	// },1000)
-	// console.log('afterEach')
+	console.log('afterEach')
 })
 
 // setTimeout(() => {

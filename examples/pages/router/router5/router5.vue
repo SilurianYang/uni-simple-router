@@ -31,6 +31,9 @@
 		onBackPress(args){
 			console.log(args)
 		},
+		onBeforeBack(args){
+			console.log(`onBeforeBack:---${JSON.stringify(args)}`)
+		},
 		methods:{
 			gotoPage(){
 				this.$Router.push({
