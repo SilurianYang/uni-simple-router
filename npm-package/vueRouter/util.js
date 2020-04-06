@@ -1,7 +1,7 @@
 import {warn,err} from '../helpers/warn.js'
-import {beforeEnterHooks} from './concat.js'
 import {isObject,resolveRule,copyObject,parseQuery,strObjToJsonToStr,formatURLQuery} from '../helpers/util.js'
 import {queryInfo} from "../patch/applets-patch.js";
+import {proxyBeforeEnter} from './proxy/proxy.js'
 
 const pagesConfigReg = /props:\s*\(.*\)\s*(\([\s\S]*\))\s*},/;
 const pagesConfigRegCli = /props:\s*Object\.assign\s*(\([\s\S]*\))\s*},/; //脚手架项目
@@ -280,44 +280,21 @@ export const getRouterNextInfo = function(to, from, Router) {
 		fromRoute
 	}
 }
-/**
- * 通过proxy 代理一个对象主要是拦截beforeEnter 生命钩子
- * @param {Router} Router  路由实例对象
- */
-export const proxyBeforeEnter = function(Router) {
-	return new Proxy({}, {
-		get: function(t, k, r) {
-			const value = Reflect.get(t, k, r);
-			if (k == 'beforeEnter' && value !== undefined) {
-				return (to, from, next) => {
-					beforeEnterHooks(to, from, next, value, Router)
-				};
-			}
-			return value;
-		},
-		set: function(t, k, v, r) {
-			return Reflect.set(t, k, v, r);
-		}
-	})
-}
-export const APushBOject = function(from, to) {
+export const APushBOject = function(Router,from, to) {
 	for (let k in from) {
-		to[k] = from[k];
+		(Router,to,k,from[k]);
 	}
 }
 export const vueDevRouteProxy = function(routes, Router) {
 	const proxyRoutes = [];
 	for (let i = 0; i < routes.length; i++) {
 		const item = routes[i];
-		const ProxyRoute = proxyBeforeEnter(Router);
 		const childrenRoutes = Reflect.get(item, 'children');
 		if (childrenRoutes != null) {
 			const childrenProxy = vueDevRouteProxy(childrenRoutes, Router);
 			item.children = childrenProxy;
 		}
-		for (let key in item) {
-			ProxyRoute[key] = item[key];
-		}
+		const ProxyRoute = proxyBeforeEnter(Router,item);
 		proxyRoutes.push(ProxyRoute);
 	}
 	return proxyRoutes
@@ -402,7 +379,6 @@ export const diffRouter = function(Router, vueRouter, useUniConfig, routes) {
 			const vueRoute = (Router.vueRoutes[path] || Router.vueRoutes[item.path]) || Router.selfRoutes[path];
 			const CselfRoute = Router.selfRoutes[path];
 			delete cloneSelfRoutes[path]; //移除已经添加到容器中的路由，用于最后做对比 是否page.json中没有，而实例化时传递了
-			const ProxyRoute = proxyBeforeEnter(Router);
 			if (CselfRoute == null) {
 				return err(
 					`读取 ‘pages.json’ 中页面配置错误。实例化时传递的路由表中未找到路径为：${path} \r\n\r\n 可以尝试把 ‘useUniConfig’ 设置为 ‘false’。或者配置正确的路径。如果你是动态添加的则不用理会`
@@ -427,20 +403,21 @@ export const diffRouter = function(Router, vueRouter, useUniConfig, routes) {
 			};
 			CselfRoute.path = CselfRoute.aliasPath || (item.path === '/' ? item.path : CselfRoute.path);
 			item.alias = item.path === '/' ? item.alias : CselfRoute.path; //重新给vueRouter赋值一个新的路径，欺骗uni-app源码判断
-			APushBOject(CselfRoute, ProxyRoute);
+			const ProxyRoute= proxyBeforeEnter(Router,CselfRoute);
 			newRouterMap.push(ProxyRoute)
 
 		}))
 		if (Object.keys(cloneSelfRoutes).length > 0) { //确实page.json中没有，而实例化时传递了
 			const testG = cloneSelfRoutes['*']; //全局通配符 他是个例外 通配符	可以被添加
 			if (testG && routes == null) {
-				const ProxyRoute = proxyBeforeEnter(Router);
-				APushBOject(Router.selfRoutes['*'], ProxyRoute);
+				const ProxyRoute=proxyBeforeEnter(Router,Router.selfRoutes['*']);
 				newRouterMap.push(ProxyRoute)
 			}
 			if (routes == null) { //非动态添加时才打印警告
 				for (let key in cloneSelfRoutes) {
-					warn(`实例化时传递的routes参数：\r\n\r\n ${JSON.stringify(cloneSelfRoutes[key])} \r\n\r\n 在pages.json中未找到。自定排除掉，不会添加到路由中`)
+					if(key!=='*'){		//通配符不警告
+						warn(`实例化时传递的routes参数：\r\n\r\n ${JSON.stringify(cloneSelfRoutes[key])} \r\n\r\n 在pages.json中未找到。自定排除掉，不会添加到路由中`)
+					}
 				}
 			}
 		}
@@ -453,7 +430,6 @@ export const diffRouter = function(Router, vueRouter, useUniConfig, routes) {
 			}
 			delete item.components;
 			delete item.children;
-			const ProxyRoute = proxyBeforeEnter(Router);
 			item.path = item.aliasPath || item.path; //优先获取别名为路径
 			if (item.path !== '*') {
 				item.component = item.component.render || item.component; //render可能是用户使用addRoutes api进行动态添加的
@@ -463,9 +439,7 @@ export const diffRouter = function(Router, vueRouter, useUniConfig, routes) {
 				PATHKEY: item.aliasPath ? 'aliasPath' : 'path',
 				pagePath: item.path.substring(1)
 			}
-			for (let k in item) {
-				ProxyRoute[k] = item[k];
-			}
+			const ProxyRoute = proxyBeforeEnter(Router,item);
 			newRouterMap.push(ProxyRoute)
 		}
 	}

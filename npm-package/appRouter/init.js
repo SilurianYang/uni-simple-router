@@ -1,6 +1,6 @@
 import {proxyLaunchHook,beforeBackHooks,beforeTabHooks,backApiCallHook} from './hooks'
 import {Global} from '../helpers/config'
-import {getPages} from './util'
+import {getPages,assertCanBack} from './util'
 import {pageNavFinish} from './uniNav'
 import HoldTabbar  from 'uni-hold-tabbar'
 
@@ -89,11 +89,12 @@ export const registerLoddingPage = function(Router) {
  * 移除当前 页面上 非router 声明的 onBackPress 事件
  * @param {Object} page 当前 vue 组件对象 
  * @param {Object} options	当前page对象的 $options
+ * 修复 https://github.com/SilurianYang/uni-simple-router/issues/106
  */
 export const removeBackPressEvent=function(page,options){
-	const pageStyle=page.$getAppWebview().getStyle();
-	if(pageStyle.titleNView!=null&&pageStyle.titleNView.autoBackButton){	//只有处理有带返回按钮的页面
-		options.onBackPress=[options.onBackPress[0]]		//只要不等于 路由混入的都干掉
+	const isBack= assertCanBack(page);
+	if(isBack){	//可返回
+		options.onBackPress=[options.onBackPress[0]]		//路由混入的都干掉
 	}
 }
 /**
@@ -102,22 +103,21 @@ export const removeBackPressEvent=function(page,options){
  * @param {Object} page 当前 vue 组件对象 
  * @param {Object} options 当前 vue 组件对象下的$options对象
  * @param {Array} args  当前页面是点击头部返回还是底部返回
+ * 修复 https://github.com/SilurianYang/uni-simple-router/issues/66
  * 
  * this 为当前 Router 对象
  */
 export const pageIsHeadBack=function(page,options,args){
-	const pageStyle=page.$getAppWebview().getStyle();
-	//修复 https://github.com/SilurianYang/uni-simple-router/issues/66
 	if(args[0].from=='navigateBack'){		//调用api返回 
 		backApiCallHook.call(this,options,args);
 		return true
 	}
-	if(pageStyle.titleNView!=null&&pageStyle.titleNView.autoBackButton){
+	const isBack= assertCanBack(page);
+	if(isBack){	//可返回
 		beforeBackHooks.call(this,options,args);
 		return true
-	}else{
-		return false
 	}
+	return false
 }
 
 /**

@@ -143,14 +143,10 @@ export const ruleToUniNavInfo=function(rule,routes){
  */
 export const getFormatQuery = function (query={},getter=false) {
 	if(Global.Router.CONFIG.encodeURI){
-		if(getter){
-			query = JSON.parse(query.query||'{}');
-		}else{
-			try{
-				query = JSON.parse(decodeURIComponent(query.query || encodeURIComponent('{}')))
-			}catch(e){
-				query = JSON.parse(query.query)
-			}
+		try{
+			query = JSON.parse(decodeURIComponent(query.query || encodeURIComponent('{}')))
+		}catch(e){
+			query = JSON.parse(query.query)
 		}
 	}
 	return query;
@@ -192,4 +188,20 @@ export const getPageOnBeforeBack=function(args){
 		}
 		return resolve(true);
 	})
+}
+/**
+ * 断言当前页面是否可返回上一级
+ * @param {Object} page 当前页面webview对象
+ */
+export const assertCanBack=function(page){
+	const pageStyle=page.$getAppWebview().getStyle();
+	if(pageStyle.titleNView!=null&&pageStyle.titleNView.autoBackButton){	//只有处理有带返回按钮的页面  
+		return true;
+	}
+	//两种情况 1.真的是顶级页面时  2.自定义头部
+	const $page=page.$page;
+	if($page&&$page.meta.isQuit===false){		//自定义头部 不是顶级页面
+		return true;
+	}
+	return false	//不可返回 真的是顶级页面时 返回就直接退出app了
 }
