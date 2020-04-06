@@ -1,6 +1,6 @@
 {
   "name": "uni-simple-router",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "> 一个更为简洁的[Vue-router](https://router.vuejs.org/zh/)，专为 [uni-app](https://uniapp.dcloud.io/) 量身打造",
   "main": "index.js",
   "directories": {
