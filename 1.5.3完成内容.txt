@@ -1,4 +1,0 @@
-## bugFix
-* APP端 修复V3模式下 `encodeURI:true` 获取参数报错问题 
-* APP端 修复V3模式下 取消头部或自定义头部下会触发 onBackPress 导致多次返回的问题
-* H5端去除 `Proxy` 实现低版本浏览器兼容 **重要**
