@@ -35,3 +35,7 @@
 ## 特别感谢
 
 特别感谢 [markrgba](https://github.com/markrgba) 一直以来对文档和相关测试的维护。
+
+## 技术交流
+
+<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=0f4d7f38e5d15dd49bf7c3032c80ed3f54ecfa3dd800053d6ae145c869f9eb47"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="uni-app  插件" title="uni-app  插件"></a>
