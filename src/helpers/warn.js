@@ -1,6 +1,4 @@
-import {
-	Global
-} from './config.js'
+import {Global} from './config.js'
 
 const isLog = function (type, errText) {
 	const dev = Global.Router.CONFIG.debugger;
