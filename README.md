@@ -38,4 +38,4 @@
 
 ## 技术交流
 
-<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=0f4d7f38e5d15dd49bf7c3032c80ed3f54ecfa3dd800053d6ae145c869f9eb47"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="uni-app  插件" title="uni-app  插件"></a>
+<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=0f4d7f38e5d15dd49bf7c3032c80ed3f54ecfa3dd800053d6ae145c869f9eb47"><img border="0" src="http://pub.idqqimg.com/wpa/images/group.png" alt="uni-app  插件" title="uni-app  插件"></a>
