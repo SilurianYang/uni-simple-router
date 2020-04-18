@@ -198,7 +198,7 @@ export const formatUserRule = function(rule, selfRoutes, CONFIG) {
 		rute = route.rute;
 		rule.path && (rule.path = rute.path);
 	}
-	if (type != '') { //当然是对象啦 这个主要是首页_H5PushTo调用时的
+	if (type != '') { //当然是对象啦 这个主要是首页H5PushTo调用时的
 		if (type == 'params' && CONFIG.h5.paramsToQuery) { //如果是name规则并且设置了转query,那么就转path跳转了
 			const {
 				aliasPath,

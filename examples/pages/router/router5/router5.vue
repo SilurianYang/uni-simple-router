@@ -4,6 +4,7 @@
 			<textarea :value="value" placeholder="" />
 			
 			<button type="primary" @click="gotoPage">去下一个页面</button>
+			<button type="default" @click="$Router.back(1)">用api返回</button>
 	</view>
 </template>
 

@@ -26,6 +26,8 @@ const routesConfig = {
 		}
 	},
 	APP:{
+		holdTabbar:false,	
+		rewriteFun:false,
 		loddingPageStyle:()=>JSON.parse('{"backgroundColor":"#96DBF3"}'),
 		loddingPageHook:(view)=>{
 			view.drawBitmap('/static/wait.gif', {}, {
@@ -156,9 +158,9 @@ const whitelist = {
 let count =0;
 
 router.beforeEach((to, from, next) => {
-	console.log('前置守卫')
-	// console.log(to)
-	// console.log(from)
+	//console.log('前置守卫')
+	console.log(to)
+	console.log(from)
 	next();
 	
 	// if(to.name=="login"){
