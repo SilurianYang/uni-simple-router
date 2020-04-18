@@ -42,6 +42,14 @@ export const methods = {
 	pushTab: "switchTab",
 	back: "navigateBack"
 };
+
+export const H5FnTypeToggle={
+    push:'push',
+    replace:'replace',
+    replaceAll:'replace',
+    pushTab:'replace'
+}
+
 export const lifeCycle = {
 	beforeHooks: [],
 	afterHooks: [],
