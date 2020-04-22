@@ -4,15 +4,15 @@
 		<button type="primary" @click="gotoPage1">去tab5被拦截到路由4</button>
 		<button type="primary" @click="gotoTab">跳转到tab4页面</button>
 
-		<navigator url="/pages/router/router1/router1" hover-class="navigator-hover">
-			<button type="default">跳转到新页面</button>
-		</navigator>
-
-		<router-link class="best-list-item" to="{name: 'router5',params: {name: '/tabbar-5'}}">
+		<router-link class="best-list-item" :to="{name: 'router5',params}">
 			<button type="primary">router-link</button>
 		</router-link>
 
-		<router-link to="{path:'/pages/router/router5/router5',query:{name:'hhyang'}}" navType="push">
+		<router-link :to="{path,query:{name:'hhyang'}}" navType="push">
+			<button type="warn">动态router-link path</button>
+		</router-link>
+		
+		<router-link :to="{name:'router5'}" navType="push">
 			<button type="warn">点我试试</button>
 		</router-link>
 		
@@ -34,11 +34,15 @@
 		},
 		data() {
 			return {
-				title: 'Hello'
+				title: 'Hello',
+				params:{name: 'tabbar-5'},
+				path:'/pages/router/router5/router5'
+				
 			};
 		},
 		onLoad(){
 			console.log('tabbar ---- onLoad')
+			console.log(this.$Route)
 		},
 		onReady(){
 			console.log('tabbar ---- onReady')
