@@ -3,7 +3,6 @@
 		onLaunch: function() {
 			return new Promise(resolve => {
 				setTimeout(() => {
-					console.log(this.$Route)
 					console.log("onLaunch");
 					resolve();
 				}, 1000)

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router, {
 	RouterMount
-} from 'uni-simple-router';
+} from '../uni-simple-router';
 import {
 	vueDevRoutes
 } from './vueRouterDev_true/devTrue.js'
