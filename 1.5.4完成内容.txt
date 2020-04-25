@@ -2,3 +2,7 @@
 * 去除 index.js  下的  _pushTo 方法 
 * 去除 helpers/event.js 
 * index.js下抽离跳转方法 到 navJump.js 下
+* 所有 src 代码添加 eslint 验证
+
+## bugFix
+* 修复头条小程序下首次进入小程序时首页生命周期不触发的问题
