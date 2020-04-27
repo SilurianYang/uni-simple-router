@@ -28,3 +28,8 @@ export const touTiao = function (fn) {
     fn();
     // #endif
 };
+export const mp = function (fn) {
+    // #ifdef MP
+    fn();
+    // #endif
+};
