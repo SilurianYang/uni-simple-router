@@ -1,7 +1,7 @@
 import { appPlatform } from './util';
 import { methods, H5FnTypeToggle, Global } from './config';
 import { transitionTo } from '../appRouter/hooks';
-import { appletsTransitionTo } from '../appletsRouter/hooks';
+import { appletsTransitionTo, backCallHook } from '../appletsRouter/hooks';
 import { uniPushTo } from '../appRouter/uniNav';
 import appletsUniPushTo from '../appletsRouter/appletsNav';
 import { err } from './warn';
@@ -27,10 +27,17 @@ const isBcakNav = function ({
             delta,
         });
     });
-    compile.notH5(() => {
+    compile.APP(() => {
         Global.backLayerC = backLayer;	// 告诉路由需要返回几层
         uni.navigateBack({
             delta: backLayer,
+        });
+    });
+    compile.mp(() => {
+        backCallHook.call(this, backLayer, () => {
+            uni.navigateBack({
+                delta: backLayer,
+            });
         });
     });
 };

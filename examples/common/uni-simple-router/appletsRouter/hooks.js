@@ -1,6 +1,6 @@
 import { uniAppHook } from '../helpers/config';
 import {
-    callAppHook, getPageVmOrMp, ruleToUniNavInfo, formatTo, formatFrom,
+    callAppHook, getPageVmOrMp, ruleToUniNavInfo, formatTo, formatFrom, getPages,
 } from './util';
 import appletsUniPushTo from './appletsNav';
 import { noop } from '../helpers/util';
@@ -175,6 +175,32 @@ export const appletsTransitionTo = async function (rule, fnType, navCB) {
     afterEachHooks.call(this, _from, _to);
     await this.lifeCycle.routerAfterHooks[0].call(this); // 触发内部跳转前的生命周期
 };
+
+/**
+ * 触发全局 返回事件
+ * @param {Number} backLayer 需要返回的页面层级
+ * @param {Function} next 正真的回调函数
+ *
+ * this 为当前 Router 对象
+ */
+export const backCallHook = function (backLayer, next) {
+    const pages = getPages(); // 获取到全部的页面对象
+    const toPage = pages.reverse()[backLayer];
+    const { query, page } = getPageVmOrMp(toPage, false);
+    const beforeFntype = 'RouterBack';
+    appletsTransitionTo.call(this, { path: page.route, query }, beforeFntype, (finalRoute, fnType) => {
+        const toPath = finalRoute.uniRoute.url;
+        if (`/${page.route}` == toPath || page.route == toPath) { // 直接调用返回api
+            next();
+        } else { // 有拦截到其他页面时
+            if (fnType == beforeFntype) {
+                return warn('调用返回api被拦截到其他页面需要指定合理的 ‘NAVTYPE’ ');
+            }
+            appletsUniPushTo(finalRoute, fnType);
+        }
+    });
+};
+
 /**
  * 主动触发导航守卫
  * @param {Object} Router 当前路由对象
