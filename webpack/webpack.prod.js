@@ -1,4 +1,4 @@
-const path = require("path");
+const {resolve} = require("path");
 const merge = require("webpack-merge");
 const common = require("./webpack.common.js");
 const rimraf = require("rimraf");
@@ -6,27 +6,30 @@ const CopyPlugin = require('copy-webpack-plugin');
 
 const {
   version
-} = require('../npm-package/package.json');
+} = require('../npmBase/package.json');
 
 rimraf("dist", () => {});
+rimraf("npm-package", () => {});
 
 module.exports = merge(common, {
   mode: "production",
   output: {
-    filename: `uni-read-pages@${version}.js`,
-    path: path.resolve(__dirname, '../', 'dist'),
+    filename: `uni-simple-router@${version}.js`,
+    path: resolve(__dirname, '../', 'dist'),
   },
   plugins: [
-    new CopyPlugin([{
-      context: './src/',
-      from: './index.js',
-      force:true,
-      to: `uni-read-pages@${version}.js`,
-    }, {
-      context: './src/',
-      from: './index.js',
-      force:true,
-      to: `../npm-package/`,
-    }]),
+    new CopyPlugin([
+      {
+      from: resolve(__dirname, '../', 'src'),
+      to: resolve(__dirname, '../', 'npm-package'),
+    },{
+      from: resolve(__dirname, '../', 'README.md'),
+      to: resolve(__dirname, '../', 'npm-package'),
+    },
+    {
+      from: resolve(__dirname, '../', 'npmBase/package.json'),
+      to: resolve(__dirname, '../', 'npm-package'),
+    }
+  ]),
   ]
 });
