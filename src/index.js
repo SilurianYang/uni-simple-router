@@ -38,9 +38,24 @@ class Router {
     }
 
     /**
+     * 获取当前是否处于正在跳转的状态
+     * H5 状态下始终为false
+     */
+    get $lockStatus() {
+        return Global.LockStatus;
+    }
+
+    /**
+     * 动态设置拦截状态
+     */
+    set $lockStatus(status) {
+        warn('你确定要这么做？你知道后果？', true);
+        Global.LockStatus = status;
+    }
+
+    /**
 	 * app 获取底部tabbar拦截实例
 	 */
-    // eslint-disable-next-line
     get $holdTab() {
         return Global.$holdTab;
     }
