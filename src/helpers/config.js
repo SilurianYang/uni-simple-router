@@ -19,7 +19,6 @@ export const baseConfig = {
         fallback: true,
     },
     APP: {
-        V3: false,	// 是否开启v3编辑器
         holdTabbar: true,	// 是否开启底部菜单拦截
         rewriteFun: true,	// 是否对uni-app 下的chooseLocation/openLocation 两个方法重写 目的是隐藏和显示拦截tabbar
         loddingPageStyle: () => JSON.parse('{"backgroundColor":"#FFF"}'),	// 当前等待页面的样式 必须返回一个json
@@ -66,6 +65,7 @@ export const Global = { // 缓存一些必要的对象，作为全局可以访�
     H5RouterReady: null, // 当前router是否就绪
     $holdTab: null,	// 当前底部实例对象
     backLayerC: 1,	// 返回api调用时开发者传递的 delta
+    LockStatus: false, // 当前是否正在进行跳转 正在跳转调用api是不给跳转的
 };
 
 export const uniAppHook = {

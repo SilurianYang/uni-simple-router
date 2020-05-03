@@ -4,7 +4,7 @@ import { transitionTo } from '../appRouter/hooks';
 import { appletsTransitionTo, backCallHook } from '../appletsRouter/hooks';
 import { uniPushTo } from '../appRouter/uniNav';
 import appletsUniPushTo from '../appletsRouter/appletsNav';
-import { err } from './warn';
+import { err, warn } from './warn';
 import H5PushTo from '../vueRouter/routerNav';
 import * as compile from './compile';
 
@@ -55,8 +55,10 @@ const notBackNav = function (rule, fnType) {
     case 'H5':
         return H5PushTo.call(this, H5FnTypeToggle[fnType], rule, methods[fnType]);
     case 'APP':
+        Global.LockStatus = true; // 设置为锁住状态
         return transitionTo.call(this, rule, fnType, uniPushTo);
     case 'APPLETS':
+        Global.LockStatus = true; // 设置为锁住状态
         return appletsTransitionTo.call(this, rule, fnType, appletsUniPushTo);
     default:
         err('糟糕！！！还有其他的执行环境？？？没听说过啊。一脸懵逼？？？加QQ群问问：769241495');
@@ -72,6 +74,9 @@ const notBackNav = function (rule, fnType) {
  * this 为当前 Router 实例
  */
 const navjump = function (rule, fnType, isBack = false) {
+    if (Global.LockStatus) { // 正在跳转的状态下 给出提示正在跳转
+        return warn('当前页面正在处于跳转状态，请稍后再进行跳转....');
+    }
     if (isBack) { // 是返回api触发的
         return isBcakNav.call(this, rule, fnType);
     }
