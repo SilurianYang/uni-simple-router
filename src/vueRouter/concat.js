@@ -1,6 +1,6 @@
 import { warn, err } from '../helpers/warn';
 import {
-    diffRouter, vueDevRouteProxy, getRouterNextInfo, formatUserRule, nameToRute, encodeURLQuery, strPathToObjPath,
+    diffRouter, vueDevRouteProxy, getRouterNextInfo, formatUserRule, nameToRute, encodeURLQuery, strPathToObjPath, getPages,
 } from './util';
 import { formatURLQuery } from '../helpers/util';
 import { vuelifeHooks, vueMount } from './base';
@@ -102,6 +102,40 @@ export const forMatNext = function (to, Intercept, next, Router) {
     next(objPath);// 统一格式化为对象的方式传递
     return Intercept;
 };
+/**
+ *  v1.5.4+
+ * beforeRouteLeave 生命周期
+ * @param {Object} to       将要去的那个页面 vue-router to对象
+ * @param {Object} from     从那个页面触发的 vue-router from对象
+ * @param {Object} next      vue-router beforeEach next管道函数
+ * @param {Object} Router   Router路由对象
+ */
+const beforeRouteLeaveHooks = function (to, from, next, Router) {
+    return new Promise((resolve) => {
+        const { currentRoute } = Router.$route;
+        if (currentRoute.path == to.path) { // 如果是同一个页面直接返回  不执行页面中的Leave事件
+            return resolve();
+        }
+        const page = getPages(); // 获取到当前的页面对象
+        if (page == null || page._HHYANGbeforeRouteLeaveCalled) {
+            warn('当前环境下无须执行 beforeRouteLeave。 原因：1.page等于null  2.真的的无须执行');
+            return resolve();
+        }
+        const beforeRouteLeaveArray = page.$options.beforeRouteLeave; // 获取到页面下的 beforeRouteLeave 路由守卫
+        if (beforeRouteLeaveArray == null) { // 当前页面没有预设 beforeRouteLeave 啥都不做
+            return resolve();
+        }
+        const { toRoute, fromRoute } = getRouterNextInfo(to, from, Router);
+        const beforeRouteLeave = beforeRouteLeaveArray[0]; // 不管怎么样 只执行第一个钩子  其他都不管
+        beforeRouteLeave.call(page, toRoute, fromRoute, (Intercept) => { // 开始执行生命周期
+            if (Intercept == null) { // 放行状态  直接返回
+                return resolve();
+            }
+            page._HHYANGbeforeRouteLeaveCalled = true; // 标记一下当前已经做过 beforeRouteLeave 啦
+            forMatNext(to, Intercept, next, Router); // 直接交给vue-router 处理
+        });
+    });
+};
 
 /**
  * 修复首页beforeEnter执行两次的问题 https://github.com/SilurianYang/uni-simple-router/issues/67
@@ -164,14 +198,15 @@ export const afterHooks = async function (to, from, next, Router) {
 };
 /**
  * vueBefore 生命周期
- * @param {Object} to
- * @param {Object} from
- * @param {Object} next
+ * @param {Object} to       将要去的那个页面 vue-router to对象
+ * @param {Object} from     从那个页面触发的 vue-router from对象
+ * @param {Object} next      vue-router beforeEach next管道函数
  * @param {Object} H5Config
  */
 export const beforeHooks = function (to, from, next, Router) {
     return new Promise(async (resolve) => {
         await Router.lifeCycle.routerbeforeHooks[0].call(Router); // 触发Router内置前置生命周期
+        await beforeRouteLeaveHooks(to, from, next, Router); // 执行1.5.4+ beforeRouteLeave生命钩子
         const H5 = Router.CONFIG.h5;
         vuelifeHooks.beforeHooks[0](to, from, async (Intercept) => {
             if (Intercept != null && H5.keepUniIntercept === true && H5.vueRouterDev === false) {
