@@ -9,3 +9,6 @@
 
 ## add
 * 小程序端调用 $Router.back() 触发全局守卫
+* 全局 navLock 跳转时加锁、防止快速点击多开页面
+* $lockStatus getter及setter 
+* H5组件内 beforeRouteLeave 路由守卫
