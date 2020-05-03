@@ -42,6 +42,7 @@ export const uniPushTo = function (finalRoute, NAVTYPE) {
         stop = setTimeout(() => {
             resolve(url);
             resolve = noop;	// 执行完了就没了 确保不会被下一次执行
+            Global.LockStatus = false; // 跳转完成解锁状态
         }, APP.switchPageOutTime);
 
         uni[methods[NAVTYPE]]({
@@ -51,6 +52,7 @@ export const uniPushTo = function (finalRoute, NAVTYPE) {
                 clearTimeout(stop);
                 resolve(url);
                 resolve = noop;	// 执行完了就没了 确保不会被下一次执行
+                Global.LockStatus = false; // 跳转完成解锁状态
             },
         });
     });

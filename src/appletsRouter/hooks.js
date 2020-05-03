@@ -1,4 +1,4 @@
-import { uniAppHook } from '../helpers/config';
+import { uniAppHook, Global } from '../helpers/config';
 import {
     callAppHook, getPageVmOrMp, ruleToUniNavInfo, formatTo, formatFrom, getPages,
 } from './util';
@@ -167,6 +167,7 @@ export const appletsTransitionTo = async function (rule, fnType, navCB) {
         // eslint-disable-next-line
         await isNext.call(this, enterResult, fnType, navCB);	// 再次验证  如果生命钩子多的话应该写成递归或者循环
     } catch (e) {
+        warn(e); // 打印开发者操作的日志
         return false;
     }
     if (navCB) {
@@ -186,6 +187,9 @@ export const appletsTransitionTo = async function (rule, fnType, navCB) {
 export const backCallHook = function (backLayer, next) {
     const pages = getPages(); // 获取到全部的页面对象
     const toPage = pages.reverse()[backLayer];
+    if (toPage == null) { // 没有匹配到的时候
+        return warn('亲爱的开发者，你确定页面栈中有这么多历史记录给你返回？');
+    }
     const { query, page } = getPageVmOrMp(toPage, false);
     const beforeFntype = 'RouterBack';
     appletsTransitionTo.call(this, { path: page.route, query }, beforeFntype, (finalRoute, fnType) => {
@@ -263,15 +267,16 @@ const isNext = function (Intercept, fnType, navCB) {
         if (Intercept == null) {		// 什么也不做 直接执行下一个钩子
             return resolve();
         }
-        if (Intercept === false) {		// 路由中断
-            return reject(new Error('路由终止'));
+        if (Intercept === false) {		// 路由中断 我们需要把防抖设置为false
+            Global.LockStatus = false; // 解锁跳转状态
+            return reject('路由终止');
         }
         if (Intercept.constructor === String) {		// 说明 开发者直接传的path 并且没有指定 NAVTYPE 那么采用原来的navType
-            reject(new Error(1));
+            reject('next到其他页面');
             return appletsTransitionTo.call(this, Intercept, fnType, navCB);
         }
         if (Intercept.constructor === Object) {	// 有一系列的配置 包括页面切换动画什么的
-            reject(new Error(1));
+            reject('next到其他页面');
             return appletsTransitionTo.call(this, Intercept, Intercept.NAVTYPE || fnType, navCB);
         }
     });

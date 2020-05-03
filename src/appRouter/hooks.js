@@ -235,15 +235,16 @@ const isNext = function (Intercept, fnType, navCB) {
             return resolve();
         }
         if (Intercept === false) {		// 路由中断
-            return reject(new Error('路由终止'));
+            Global.LockStatus = false; // 解锁跳转状态
+            return reject('路由终止');
         }
         if (Intercept.constructor === String) {		// 说明 开发者直接传的path 并且没有指定 NAVTYPE 那么采用原来的navType
-            reject(new Error(1));
+            reject('next到其他页面');
             // eslint-disable-next-line
             return transitionTo.call(this, Intercept, fnType, navCB);
         }
         if (Intercept.constructor === Object) {	// 有一系列的配置 包括页面切换动画什么的
-            reject(new Error(1));
+            reject('next到其他页面');
             // eslint-disable-next-line
             return transitionTo.call(this, Intercept, Intercept.NAVTYPE || fnType, navCB);
         }
@@ -269,6 +270,7 @@ export const transitionTo = async function (rule, fnType, navCB) {
         const enterResult = await beforeEnterHooks.call(this, finalRoute, _from, _to);	// 接着执行 beforeEnter 生命周期
         await isNext.call(this, enterResult, fnType, navCB);	// 再次验证  如果生命钩子多的话应该写成递归或者循环
     } catch (e) {
+        warn(e); // 打印开发者操作的日志
         return false;
     }
     if (navCB) {
