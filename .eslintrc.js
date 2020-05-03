@@ -12,6 +12,7 @@ module.exports = {
     rules: {
         "no-console": 'error',
         "no-new": 'off',
+        'prefer-promise-reject-errors':'off',   //要求使用 Error 对象作为 Promise 拒绝的原因
         'no-underscore-dangle':'off',   //禁止标识符中有悬空下划线
         'eqeqeq': 'off',  //是否全等
         'no-async-promise-executor':'off',      //禁止使用异步函数作为 Promise executor
@@ -24,6 +25,7 @@ module.exports = {
         'no-continue':'off',    //禁用 continue 
         'no-tabs':'off',    //些风格指南不允许使用 tab 字符，包括在注释内。
         'semi': ['error', 'always'],
+        'class-methods-use-this': ['error', { 'exceptMethods': ['$lockStatus','$holdTab'] }],  //强制类方法使用 this
         'max-len': ["error", { "code": 200 }],  //强制行的最大长度
         'no-irregular-whitespace': ['error', { 'skipComments': true }], // 允许在注释中出现任何空白字符
         'import/no-extraneous-dependencies': ['error', {'devDependencies': true}],
