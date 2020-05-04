@@ -31,6 +31,9 @@ const isBcakNav = function ({
         Global.backLayerC = backLayer;	// 告诉路由需要返回几层
         uni.navigateBack({
             delta: backLayer,
+            complete: () => {
+                Global.LockStatus = false; // 跳转完成解锁状态
+            },
         });
     });
     compile.mp(() => {
@@ -70,11 +73,13 @@ const notBackNav = function (rule, fnType) {
  * 处理正在跳转的公共api
  * @param {Object/String} rule  当前跳转规则
  * @param {String} fnType    跳转页面的类型方法
+ * @param {Boolean} isBack  是否通过 back() api 调用的 默认为false
+ * @param {Boolean} enforce 是否强制越过跳转加锁检查 默认false  目前只有back() api 传递了
  *
  * this 为当前 Router 实例
  */
-const navjump = function (rule, fnType, isBack = false) {
-    if (Global.LockStatus) { // 正在跳转的状态下 给出提示正在跳转
+const navjump = function (rule, fnType, isBack = false, enforce = false) {
+    if (Global.LockStatus && !enforce) { // 正在跳转的状态下 给出提示正在跳转
         return warn('当前页面正在处于跳转状态，请稍后再进行跳转....');
     }
     if (isBack) { // 是返回api触发的
