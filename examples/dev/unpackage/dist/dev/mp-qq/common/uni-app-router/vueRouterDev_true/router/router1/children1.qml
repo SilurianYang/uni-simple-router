@@ -1,1 +1,0 @@
-<view class="_div"><view class="_h1">vueRouterDev:true</view><view class="_h3">router1下的子组件children1</view></view>

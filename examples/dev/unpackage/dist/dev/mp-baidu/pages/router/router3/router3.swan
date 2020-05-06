@@ -1,1 +1,0 @@
-<view><view class="_h1">路由3</view><view class="_p">提示信息：</view><view class="_p">{{msg}}</view></view>

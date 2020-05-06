@@ -1,1 +1,0 @@
-<view class="content"><button type="primary" data-event-opts="{{[['tap',[['gotoPage',['$event']]]]]}}" bindtap="__e">去路由页面5</button><button type="primary" data-event-opts="{{[['tap',[['gotoPage1',['$event']]]]]}}" bindtap="__e">去路由页面5 官方路由</button></view>

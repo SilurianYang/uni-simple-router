@@ -1,1 +1,0 @@
-<view class="_div"><view class="_h1">配置项useUniConfig:false</view><view class="_h3">我是router3</view></view>

@@ -1,9 +1,0 @@
-{
-  "defaultTitle": "这是tabbar1",
-  "pullRefresh": true,
-  "usingComponents": {
-    "router-link": "/common/uni-simple-router/component/router-link",
-    "child": "/pages/tabbar/tabbar-1/component",
-    "child1": "/pages/tabbar/tabbar-1/child"
-  }
-}
