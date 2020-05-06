@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "这是tabbar1",
+  "navigationBarTextStyle": "black",
+  "backgroundTextStyle": "light",
+  "enablePullDownRefresh": true,
+  "onReachBottomDistance": 100,
+  "usingComponents": {
+    "child": "/pages/tabbar/tabbar-1/component",
+    "child1": "/pages/tabbar/tabbar-1/child"
+  }
+}

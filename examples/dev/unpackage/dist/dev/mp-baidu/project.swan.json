@@ -1,0 +1,18 @@
+{
+    "appid": "touristappid",
+    "appInfo": {},
+    "appkey": "",
+    "condition": {},
+    "setting": {
+        "urlCheck": true
+    },
+    "libVersion": "",
+    "projectname": "tab",
+    "host": "baiduboxapp",
+    "swan": {
+        "baiduboxapp": {
+            "swanJsVersion": "3.170.14",
+            "extensionJsVersion": "1.12.4"
+        }
+    }
+}

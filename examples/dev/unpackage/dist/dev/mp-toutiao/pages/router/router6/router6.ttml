@@ -1,0 +1,1 @@
+<view><view class="_h1">路由6</view><button type="primary" data-event-opts="{{[['tap',[['gotoPage',['$event']]]]]}}" bindtap="__e">去下一个页面</button></view>

@@ -1,0 +1,1 @@
+<view class="content"><button type="primary">去路由页面4</button></view>

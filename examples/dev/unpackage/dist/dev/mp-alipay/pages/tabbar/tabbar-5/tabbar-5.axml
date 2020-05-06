@@ -1,0 +1,1 @@
+<view class="content"><view class="_h1">tab5</view><button type="primary" data-event-opts="{{[['tap',[['previewImage',['$event']]]]]}}" onTap="__e">预览图片</button></view>

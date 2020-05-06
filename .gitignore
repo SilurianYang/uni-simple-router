@@ -1,2 +1,3 @@
-/examples/unpackage
+examples/*/unpackage
+
 /node_modules

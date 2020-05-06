@@ -1,0 +1,34 @@
+@charset "UTF-8";
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.content.data-v-4f00524e {
+  text-align: center;
+  height: 400rpx;
+  margin-top: 200rpx;
+}
+
+
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8vRTovR2l0L01ZLUdJVC1JTkZPL3VuaS1zaW1wbGUtcm91dGVyL2V4YW1wbGVzL3BhZ2VzL3RhYmJhci90YWJiYXItMy90YWJiYXItMy52dWU/ZTlhZiJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQSIsImZpbGUiOiJwYWdlcy90YWJiYXIvdGFiYmFyLTMvdGFiYmFyLTMuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiQGNoYXJzZXQgXCJVVEYtOFwiO1xuLyoqXG4gKiDov5nph4zmmK91bmktYXBw5YaF572u55qE5bi455So5qC35byP5Y+Y6YePXG4gKlxuICogdW5pLWFwcCDlrpjmlrnmianlsZXmj5Lku7blj4rmj5Lku7bluILlnLrvvIhodHRwczovL2V4dC5kY2xvdWQubmV0LmNu77yJ5LiK5b6I5aSa5LiJ5pa55o+S5Lu25Z2H5L2/55So5LqG6L+Z5Lqb5qC35byP5Y+Y6YePXG4gKiDlpoLmnpzkvaDmmK/mj5Lku7blvIDlj5HogIXvvIzlu7rorq7kvaDkvb/nlKhzY3Nz6aKE5aSE55CG77yM5bm25Zyo5o+S5Lu25Luj56CB5Lit55u05o6l5L2/55So6L+Z5Lqb5Y+Y6YeP77yI5peg6ZyAIGltcG9ydCDov5nkuKrmlofku7bvvInvvIzmlrnkvr/nlKjmiLfpgJrov4fmkK3np6/mnKjnmoTmlrnlvI/lvIDlj5HmlbTkvZPpo47moLzkuIDoh7TnmoRBcHBcbiAqXG4gKi9cbi8qKlxuICog5aaC5p6c5L2g5pivQXBw5byA5Y+R6ICF77yI5o+S5Lu25L2/55So6ICF77yJ77yM5L2g5Y+v5Lul6YCa6L+H5L+u5pS56L+Z5Lqb5Y+Y6YeP5p2l5a6a5Yi26Ieq5bex55qE5o+S5Lu25Li76aKY77yM5a6e546w6Ieq5a6a5LmJ5Li76aKY5Yqf6IO9XG4gKlxuICog5aaC5p6c5L2g55qE6aG555uu5ZCM5qC35L2/55So5LqGc2Nzc+mihOWkhOeQhu+8jOS9oOS5n+WPr+S7peebtOaOpeWcqOS9oOeahCBzY3NzIOS7o+eggeS4reS9v+eUqOWmguS4i+WPmOmHj++8jOWQjOaXtuaXoOmcgCBpbXBvcnQg6L+Z5Liq5paH5Lu2XG4gKi9cbi8qIOminOiJsuWPmOmHjyAqL1xuLyog6KGM5Li655u45YWz6aKc6ImyICovXG4vKiDmloflrZfln7rmnKzpopzoibIgKi9cbi8qIOiDjOaZr+minOiJsiAqL1xuLyog6L655qGG6aKc6ImyICovXG4vKiDlsLrlr7jlj5jph48gKi9cbi8qIOaWh+Wtl+WwuuWvuCAqL1xuLyog5Zu+54mH5bC65a+4ICovXG4vKiBCb3JkZXIgUmFkaXVzICovXG4vKiDmsLTlubPpl7Tot50gKi9cbi8qIOWeguebtOmXtOi3nSAqL1xuLyog6YCP5piO5bqmICovXG4vKiDmlofnq6DlnLrmma/nm7jlhbMgKi9cbi5jb250ZW50LmRhdGEtdi00ZjAwNTI0ZSB7XG4gIHRleHQtYWxpZ246IGNlbnRlcjtcbiAgaGVpZ2h0OiA0MDBycHg7XG4gIG1hcmdpbi10b3A6IDIwMHJweDtcbn1cbiJdLCJzb3VyY2VSb290IjoiIn0=*/

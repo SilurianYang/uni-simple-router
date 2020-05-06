@@ -1,0 +1,120 @@
+{
+	"pages": [{
+			"path": "pages/tabbar/tabbar-1/tabbar-1",
+			"style": {
+				"navigationBarTitleText": "这是tabbar1",
+				"navigationBarTextStyle": "black",
+				"navigationBarShadow": {
+					"colorType": "red"
+				},
+				"backgroundTextStyle": "light",
+				"enablePullDownRefresh": true,
+				"onReachBottomDistance": 100,
+				"h5": {
+					"titleNView": {
+						"titleColor": "#f00"
+					}
+				}
+			}
+		},
+		{
+			"path": "pages/test/404",
+			"style": {
+				"navigationBarTitleText": "牛逼",
+				"navigationBarBackgroundColor": "#F0AD4E"
+			}
+		},
+		{
+			"path": "pages/tabbar/tabbar-2/tabbar-2",
+			"style": {
+				"navigationBarTitleText": "uni-app"
+			}
+		},
+		{
+			"path": "pages/tabbar/tabbar-3/tabbar-3",
+			"style": {}
+		},
+		{
+			"path": "pages/tabbar/tabbar-4/tabbar-4",
+			"style": {}
+		},
+		{
+			"path": "pages/tabbar/tabbar-5/tabbar-5",
+			"style": {}
+		},
+		{
+			"path": "pages/router/router1/router1",
+			"style": {}
+		}, {
+			"path": "pages/router/router2/router2",
+			"style": {}
+		}, {
+			"path": "pages/router/router3/router3",
+			"style": {}
+		}, {
+			"path": "pages/router/router4/router4",
+			"style": {}
+		}, {
+			"path": "pages/router/router5/router5",
+			"style": {
+				"app-plus":{
+					"animationDuration":3000
+				}
+			}
+		}, {
+			"path": "pages/router/router6/router6",
+			"style": {}
+		}, {
+			"path": "pages/login/login",
+			"style": {}
+		}
+	    ,{
+            "path" : "pages/nvuePages/nvue1/nvue1",
+            "style" : {}
+        }
+    ],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"tabBar": {
+		"borderStyle": "black",
+		"backgroundColor": "#333",
+		"color": "#8F8F94",
+		"selectedColor": "#f33e54",
+		"list": [{
+				"pagePath": "pages/tabbar/tabbar-1/tabbar-1",
+				"iconPath": "static/img/tabbar/home.png",
+				"selectedIconPath": "static/img/tabbar/homeactive.png",
+				"text": "首页"
+			},
+			{
+				"pagePath": "pages/tabbar/tabbar-2/tabbar-2",
+				"iconPath": "static/img/tabbar/guanzhu.png",
+				"selectedIconPath": "static/img/tabbar/guanzhuactive.png",
+				"text": "关注"
+			},
+			{
+				"pagePath": "pages/tabbar/tabbar-3/tabbar-3",
+				"iconPath": "static/img/tabbar/add.png",
+				"selectedIconPath": "static/img/tabbar/addactive.png",
+				"text": "新闻"
+
+			},
+			{
+				"pagePath": "pages/tabbar/tabbar-4/tabbar-4",
+				"iconPath": "static/img/tabbar/news.png",
+				"selectedIconPath": "static/img/tabbar/newsactive.png",
+				"text": "消息"
+			},
+			{
+				"pagePath": "pages/tabbar/tabbar-5/tabbar-5",
+				"iconPath": "static/img/tabbar/me.png",
+				"selectedIconPath": "static/img/tabbar/meactive.png",
+				"text": "我"
+			}
+		]
+	}
+}

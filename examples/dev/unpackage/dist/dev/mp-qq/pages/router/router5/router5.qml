@@ -1,0 +1,1 @@
+<view><view class="_p">这是一个检测参数的页面</view><textarea placeholder value="{{value}}"></textarea><button type="primary" data-event-opts="{{[['tap',[['gotoPage',['$event']]]]]}}" bindtap="__e">去下一个页面</button><button type="default" data-event-opts="{{[['tap',[['e0',['$event']]]]]}}" bindtap="__e">用api返回</button></view>
