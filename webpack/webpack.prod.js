@@ -20,16 +20,21 @@ module.exports = merge(common, {
   plugins: [
     new CopyPlugin([
       {
-      from: resolve(__dirname, '../', 'src'),
-      to: resolve(__dirname, '../', 'npm-package'),
-    },{
-      from: resolve(__dirname, '../', 'README.md'),
-      to: resolve(__dirname, '../', 'npm-package'),
-    },
-    {
-      from: resolve(__dirname, '../', 'npmBase/package.json'),
-      to: resolve(__dirname, '../', 'npm-package'),
-    }
+        from: resolve(__dirname, '../', 'src'),
+        to: resolve(__dirname, '../', 'npm-package'),
+      },
+      {
+        from: resolve(__dirname, '../', 'README.md'),
+        to: resolve(__dirname, '../', 'npm-package'),
+      },
+      {
+        from: resolve(__dirname, '../', 'npmBase/package.json'),
+        to: resolve(__dirname, '../', 'npm-package'),
+      },
+      {
+        from: resolve(__dirname, '../', 'types'),
+        to: resolve(__dirname, '../', 'npm-package'),
+      },
   ]),
   ]
 });
