@@ -5,6 +5,7 @@ import {
 import { Global } from '../helpers/config';
 import { getPages, assertCanBack } from './util';
 import { pageNavFinish } from './uniNav';
+import { warn } from '../helpers/warn';
 
 /**
  * 创建底部菜单拦截
@@ -117,11 +118,21 @@ export const removeBackPressEvent = function (page, options) {
  */
 export const pageIsHeadBack = function (page, options, args) {
     if (args[0].from == 'navigateBack') {		// 调用api返回
+        if (Global.LockStatus) { // 正在跳转的时候 返回按键按的太快啦
+            warn('当前页面正在处于跳转状态，请稍后再进行跳转....');
+            return true;
+        }
+        Global.LockStatus = true; // 设置为锁住状态
         backApiCallHook.call(this, options, args);
         return true;
     }
     const isBack = assertCanBack(page);
     if (isBack) {	// 可返回
+        if (Global.LockStatus) { // 正在跳转的时候 返回按键按的太快啦
+            warn('当前页面正在处于跳转状态，请稍后再进行跳转....');
+            return true;
+        }
+        Global.LockStatus = true; // 设置为锁住状态
         beforeBackHooks.call(this, options, args);
         return true;
     }

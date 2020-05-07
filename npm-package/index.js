@@ -38,9 +38,24 @@ class Router {
     }
 
     /**
+     * 获取当前是否处于正在跳转的状态
+     * H5 状态下始终为false
+     */
+    get $lockStatus() {
+        return Global.LockStatus;
+    }
+
+    /**
+     * 动态设置拦截状态
+     */
+    set $lockStatus(status) {
+        warn('你确定要这么做？你知道后果？', true);
+        Global.LockStatus = status;
+    }
+
+    /**
 	 * app 获取底部tabbar拦截实例
 	 */
-    // eslint-disable-next-line
     get $holdTab() {
         return Global.$holdTab;
     }
@@ -78,14 +93,19 @@ class Router {
 
     /**
 	 * 返回到指定层级页面上
+     * @param {Number} backLayer 需要返回的页面层级 默认 1
+     * @param {Object} delta 暂时无用
+     * @param {enforce} 是否强制越过跳转加锁检查 默认 false
 	 */
-    back(backLayer = 1, delta) {
+    back(backLayer = 1, delta, enforce = false) {
         if (backLayer.constructor != Number) {
             return err(
                 `返回层级参数必须是一个Number类型且必须大于1：${backLayer}`,
             );
         }
-        navjump.call(this, { backLayer, delta, H5PATCH }, 'back', true);
+        navjump.call(this, {
+            backLayer, delta, H5PATCH,
+        }, 'back', true, enforce);
     }
     // TODO 目前来不及做啊 有很多事情 版本也很久没更新了
     // async addRoutes(routes){

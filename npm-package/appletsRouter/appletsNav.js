@@ -1,5 +1,5 @@
 
-import { methods } from '../helpers/config';
+import { methods, Global } from '../helpers/config';
 import { formatURLQuery } from '../helpers/util';
 
 
@@ -15,6 +15,7 @@ const appletsUniPushTo = function (finalRoute, NAVTYPE) {
             url: url + query,
             complete: () => {
                 resolve(url);
+                Global.LockStatus = false; // 跳转完成解锁状态
             },
         });
     });

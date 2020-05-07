@@ -1,4 +1,4 @@
-import { uniAppHook } from '../helpers/config';
+import { uniAppHook, Global } from '../helpers/config';
 import {
     callAppHook, getPageVmOrMp, ruleToUniNavInfo, formatTo, formatFrom, getPages,
 } from './util';
@@ -144,29 +144,66 @@ const beforeEnterHooks = function (finalRoute, _from, _to) {
         await beforeEnter.call(this, _to, _from, resolve);
     });
 };
+/**
+ *  v1.5.4+
+ * beforeRouteLeave 生命周期
+ * @param {Object} to       将要去的那个页面 to对象
+ * @param {Object} from     从那个页面触发的 from对象
+ *  @param {Boolean} leaveHook:? 是否为 beforeRouteLeave 触发的next 到别处 如果是则不再触发 beforeRouteLeave 生命钩子
+ * this 为当前 Router 对象
+ */
+const beforeRouteLeaveHooks = function (from, to, leaveHook) {
+    return new Promise(async (resolve) => {
+        if (leaveHook) { // 我们知道这个是来自页面beforeRouteLeave next到其他地方，所有不必再执行啦
+            warn('beforeRouteLeave next到其他地方，无须再执行！');
+            return resolve();
+        }
+        if (from.path == to.path) { // 进入首页的时候不触发
+            return resolve();
+        }
+        const currentPage = getPages(-2); // 获取到全部的页面对象
+        const callThis = getPageVmOrMp(currentPage); // 获取到页面的 $vm 对象 及 page页面的this对象
+        const { beforeRouteLeave } = callThis.$options; // 查看当前是否有开发者声明
+        if (beforeRouteLeave == null) {
+            warn('当前页面下无 beforeRouteLeave 钩子声明，无须执行！');
+            return resolve();
+        }
+        if (beforeRouteLeave != null && beforeRouteLeave.constructor !== Function) {
+            warn('beforeRouteLeave 生命钩子声明错误，必须是一个函数！');
+            return resolve();
+        }
+        await beforeRouteLeave.call(callThis, to, from, resolve); // 执行生命钩子
+    });
+};
 
 /**
  * 核心方法 处理一系列的跳转配置
  * @param {Object} rule 当前跳转规则
  * @param {Object} fnType 跳转页面的类型方法
  * @param {Object} navCB:? 回调函数
- *
+ * @param {Boolean} leaveHook:? 是否为 beforeRouteLeave 触发的next 到别处 如果是则不再触发 beforeRouteLeave 生命钩子
  * this 为当前 Router 对象
  *
  */
-export const appletsTransitionTo = async function (rule, fnType, navCB) {
+export const appletsTransitionTo = async function (rule, fnType, navCB, leaveHook = false) {
     await this.lifeCycle.routerbeforeHooks[0].call(this); // 触发内部跳转前的生命周期
     const finalRoute = ruleToUniNavInfo(rule, this.CONFIG.routes);		// 获得到最终的 route 对象
     const _from = formatFrom(this.CONFIG.routes);	// 先根据跳转类型获取 from 数据
     const _to = formatTo(finalRoute);	// 再根据跳转类型获取 to 数据
-    const beforeResult = await beforeHooks.call(this, _from, _to);		// 执行 beforeEach 生命周期
     try {
+        const leaveResult = await beforeRouteLeaveHooks.call(this, _from, _to, leaveHook); // 执行页面中的 beforeRouteLeave 生命周期 v1.5.4+
+        // eslint-disable-next-line
+        await isNext.call(this, leaveResult, fnType, navCB,true);	// 验证当前是否继续  可能需要递归  那么 我们把参数传递过去
+
+        const beforeResult = await beforeHooks.call(this, _from, _to);		// 执行 beforeEach 生命周期
         // eslint-disable-next-line
         await isNext.call(this, beforeResult, fnType, navCB);	// 验证当前是否继续  可能需要递归  那么 我们把参数传递过去
+
         const enterResult = await beforeEnterHooks.call(this, finalRoute, _from, _to);	// 接着执行 beforeEnter 生命周期
         // eslint-disable-next-line
         await isNext.call(this, enterResult, fnType, navCB);	// 再次验证  如果生命钩子多的话应该写成递归或者循环
     } catch (e) {
+        warn(e); // 打印开发者操作的日志
         return false;
     }
     if (navCB) {
@@ -186,6 +223,9 @@ export const appletsTransitionTo = async function (rule, fnType, navCB) {
 export const backCallHook = function (backLayer, next) {
     const pages = getPages(); // 获取到全部的页面对象
     const toPage = pages.reverse()[backLayer];
+    if (toPage == null) { // 没有匹配到的时候
+        return warn('亲爱的开发者，你确定页面栈中有这么多历史记录给你返回？');
+    }
     const { query, page } = getPageVmOrMp(toPage, false);
     const beforeFntype = 'RouterBack';
     appletsTransitionTo.call(this, { path: page.route, query }, beforeFntype, (finalRoute, fnType) => {
@@ -254,25 +294,26 @@ export const appletsProxyIndexHook = function (Router) {
  * @param {Object} Intercept 拦截到的新路由规则
  * @param {Object} fnType 跳转页面的类型方法 原始的
  * @param {Object} navCB 回调函数 原始的
- *
+ * @param {Boolean} leaveHookCall:? 是否为 beforeRouteLeave 触发的next 做拦截判断
  * this 为当前 Router 对象
  *
  */
-const isNext = function (Intercept, fnType, navCB) {
+const isNext = function (Intercept, fnType, navCB, leaveHookCall = false) {
     return new Promise((resolve, reject) => {
         if (Intercept == null) {		// 什么也不做 直接执行下一个钩子
             return resolve();
         }
-        if (Intercept === false) {		// 路由中断
-            return reject(new Error('路由终止'));
+        if (Intercept === false) {		// 路由中断 我们需要把防抖设置为false
+            Global.LockStatus = false; // 解锁跳转状态
+            return reject('路由终止');
         }
         if (Intercept.constructor === String) {		// 说明 开发者直接传的path 并且没有指定 NAVTYPE 那么采用原来的navType
-            reject(new Error(1));
-            return appletsTransitionTo.call(this, Intercept, fnType, navCB);
+            reject('next到其他页面');
+            return appletsTransitionTo.call(this, Intercept, fnType, navCB, leaveHookCall);
         }
         if (Intercept.constructor === Object) {	// 有一系列的配置 包括页面切换动画什么的
-            reject(new Error(1));
-            return appletsTransitionTo.call(this, Intercept, Intercept.NAVTYPE || fnType, navCB);
+            reject('next到其他页面');
+            return appletsTransitionTo.call(this, Intercept, Intercept.NAVTYPE || fnType, navCB, leaveHookCall);
         }
     });
 };

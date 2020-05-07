@@ -356,6 +356,15 @@ export const strPathToObjPath = function (path) {
     };
 };
 /**
+ * 通过 getCurrentPages() api 获取指定页面的 page 对象 默认是获取当前页面page对象
+ * @param {Number} index //需要获取的页面索引
+ * @param {Boolean} all //是否获取全部的页面
+ */
+export const getPages = function (index = 0, all) {
+    const pages = getCurrentPages(all);
+    return pages.reverse()[index];
+};
+/**
  * 获取当前页面下的 Route 信息
  *
  * @param {Object} pages 获取页面对象集合

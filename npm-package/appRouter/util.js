@@ -174,7 +174,7 @@ export const APPGetPageRoute = function (pages, Vim) {
     return route;
 };
 /**
- * 获取当前页面下的onBeforeBack 生命周期并执行
+ * 获取当前页面下的 onBeforeBack 生命周期并执行
  *
  * @param {Object} args 当前返回页面时uni-app传递的参数
  */
