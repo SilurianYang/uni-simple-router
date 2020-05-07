@@ -4,7 +4,7 @@ const common = require("./webpack.common.js");
 const CopyPlugin = require('copy-webpack-plugin');
 const rimraf = require("rimraf");
 
-const baseDist=resolve(__dirname, '../', 'examples/common/uni-simple-router');
+const baseDist=resolve(__dirname, '../', 'examples/dev/common/uni-simple-router');
 
 rimraf(baseDist, () => {});
 

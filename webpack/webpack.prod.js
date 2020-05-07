@@ -33,7 +33,7 @@ module.exports = merge(common, {
       },
       {
         from: resolve(__dirname, '../', 'types'),
-        to: resolve(__dirname, '../', 'npm-package'),
+        to: resolve(__dirname, '../', 'npm-package/types'),
       },
   ]),
   ]
