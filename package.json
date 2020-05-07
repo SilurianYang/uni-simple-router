@@ -7,7 +7,6 @@
     "example": "examples"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack --watch  --progress --config webpack/webpack.dev.js",
     "build": "webpack --progress --config webpack/webpack.prod.js"
   },
