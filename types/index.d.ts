@@ -33,24 +33,24 @@ declare class Router {
 	 * navigateTo
 	 * @param {Object} rule
 	 */
-    push(rule: Location): void;
+    push(rule: Location | string): void;
 
     /**动态的导航到一个新 URL 关闭当前页面，跳转到的某个页面。
 	 * redirectTo
 	 * @param {Object} rule
 	 */
-    replace(rule:Location):void;
+    replace(rule:Location | string):void;
 
     /**动态的导航到一个新 URL 关闭所有页面，打开到应用内的某个页面
 	 * 	reLaunch
 	 * @param {Object} rule
 	 */
-    replaceAll(rule:Location):void;
+    replaceAll(rule:Location | string):void;
 
     /**动态的导航到一个新 url 关闭所有页面，打开到应用内的某个tab
 	 * @param {Object} rule
 	 */
-    pushTab(rule:Location) :void;
+    pushTab(rule:Location | string) :void;
 
     /**
 	 * 返回到指定层级页面上
@@ -76,6 +76,13 @@ declare class Router {
     afterEach(hooks:Function) : Function
 
     static install:PluginFunction<never>
+}
+
+declare module "vue/types/vue" {
+    interface Vue {
+      $Router: Router;
+      $Route: Route;
+    }
 }
 
 export default Router;

@@ -4,7 +4,7 @@
 		<view>
             <text class="title">{{title}}</text>
         </view>
-		<button @click="$Router.push('/pages/router1/router1')">去router1页面</button>
+		<button @click="gotoPage">去router1页面</button>
 	</view>
 </template>
 
@@ -20,7 +20,11 @@
 
 		},
 		methods: {
-
+			gotoPage():void{
+				this.$Router.push({
+					path:'/pages/router1/router1'
+				});
+			}
 		}
 	});
 </script>
