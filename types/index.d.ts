@@ -12,22 +12,22 @@ declare class Router {
     /**
      * 当前的 Route
      */
-    $Route:Route;
+    get $Route():Route;
     /**
 	 * app 获取底部tabbar拦截实例
 	 */
-    $holdTab:Object;
+    get $holdTab():Object;
 
     /**
      * 获取当前是否处于正在跳转的状态
      * H5 状态下始终为false
      */
-    $lockStatus:boolean;
+    get $lockStatus():boolean;
     
     /**
      * 动态设置拦截状态
      */
-    $lockStatus:(status:boolean)=>boolean;
+    set $lockStatus(status:boolean);
 
 	/**动态的导航到一个新 URL 保留浏览历史
 	 * navigateTo
