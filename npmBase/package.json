@@ -29,5 +29,6 @@
     "bugs": {
       "url": "https://github.com/SilurianYang/uni-simple-router/issues"
     },
-    "homepage": "https://github.com/SilurianYang/uni-simple-router#readme"
+    "homepage": "https://github.com/SilurianYang/uni-simple-router#readme",
+    "types": "./types/index.d.ts"
   }
