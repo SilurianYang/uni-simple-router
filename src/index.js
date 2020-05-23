@@ -10,6 +10,7 @@ import { vueMount } from './vueRouter/base';
 import { appletsMount } from './patch/applets-patch';
 import appMount from './patch/app-patch';
 import initMixins from './helpers/mixins';
+import ParseQuery from './helpers/urlQuery';
 // #ifdef H5
 import H5 from './patch/h5-patch';
 // #endif
@@ -19,12 +20,15 @@ let H5PATCH = null;
 H5PATCH = new H5(isH5());
 // #endif
 
+const parseQuery = new ParseQuery();
+
 Global.H5RouterReady = new Promise((resolve) => Global.RouterReadyPromise = resolve);
 
 class Router {
     constructor(arg) {
         Router.$root = this;
         Global.Router = this; // 全局缓存一个对象，不必使用时都传递
+        Global.$parseQuery = parseQuery;
         this.CONFIG = formatConfig(arg);
         this.lifeCycle = lifeCycle;
         registerRouterHooks.call(this);	// 注册全局Router生命钩子
@@ -35,6 +39,13 @@ class Router {
 
     get $Route() {
         return this.getPageRoute();
+    }
+
+    /**
+     * 获取 url 参数帮助类实例
+     */
+    get $parseQuery() {
+        return Global.$parseQuery;
     }
 
     /**
