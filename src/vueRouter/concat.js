@@ -255,6 +255,7 @@ export const beforeHooks = function (to, from, next, Router) {
  * @param {Object} vueRouter vue-router对象
  */
 export const triggerLifeCycle = function (Router, vueRouter) {
+    debugger;
     const { CONFIG } = Router;
     const currRoute = vueRouter.currentRoute;
     if (vueRouter.mode === 'hash') {
