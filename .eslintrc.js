@@ -25,7 +25,9 @@ module.exports = {
         'no-continue':'off',    //禁用 continue 
         'no-tabs':'off',    //些风格指南不允许使用 tab 字符，包括在注释内。
         'semi': ['error', 'always'],
-        'class-methods-use-this': ['error', { 'exceptMethods': ['$lockStatus','$holdTab'] }],  //强制类方法使用 this
+        'class-methods-use-this': ['error', { 'exceptMethods': 
+            ['$lockStatus','$holdTab','$parseQuery','extract','parse','stringify','isDepthObject','queryName'] 
+        }],  //强制类方法使用 this
         'max-len': ["error", { "code": 200 }],  //强制行的最大长度
         'no-irregular-whitespace': ['error', { 'skipComments': true }], // 允许在注释中出现任何空白字符
         'import/no-extraneous-dependencies': ['error', {'devDependencies': true}],
