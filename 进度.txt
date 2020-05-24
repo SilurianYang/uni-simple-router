@@ -1,0 +1,10 @@
+## bugFix
+* 修复 `H5` 端 `vueRouterDev: true` `history` 模式下刷新后会无限加query （[#124](https://github.com/SilurianYang/uni-simple-router/issues/124)）
+
+## add
+* **$parseQuery** `getter` 用于处理参数类实例
+* 新增 `urlQuery.js` 快捷参数操作类  可以通过 `this.$Router.$parseQuery` 获取
+* 路由 `api` 跳转时，当跳转规则为字符串时，参数可以通过 `?` 连接
+
+## revise
+* 调整 `H5` 端 参数传递和获取
