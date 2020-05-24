@@ -58,6 +58,7 @@ export const lifeCycle = {
 };
 
 export const Global = { // 缓存一些必要的对象，作为全局可以访问的参数
+    $parseQuery: null, // url query 帮助类实例
     Router: {},
     vueRouter: {},
     addedRoutes: [], // 用于缓存用户动态添加的路由

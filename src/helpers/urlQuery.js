@@ -1,9 +1,13 @@
 import { Global } from './config';
-import { warn } from './warn';
+import { warn, err } from './warn';
 
 const nodeURL = require('query-string');
 
 class ParseQuery {
+    get queryName() {
+        return nodeURL;
+    }
+
     /**
      * 判断当前这个对象是否为深度对象
      * @param {Object} obj
@@ -105,11 +109,14 @@ class ParseQuery {
 
     queryGet(query) {
         const { encodeURI } = Global.Router.CONFIG; // 获取到路由配置
-        let [decode, strQuery] = [query, ''];
+        let [decode, historyObj, strQuery] = [query, query, ''];
         switch (encodeURI) {
         case true: { // 加密模式
             decode = this.decode(query);
             strQuery = this.encode(decode);
+            historyObj = {
+                query: encodeURIComponent(JSON.stringify(decode)),
+            };
             break;
         }
         case false: { // 不加密模式
@@ -117,10 +124,10 @@ class ParseQuery {
             break;
         }
         default: {
-
+            err('未知参数模式，请检查 \'encodeURI\'', true);
         }
         }
-        return { strQuery, decode };
+        return { strQuery, historyObj, decode };
     }
 
 
@@ -140,12 +147,8 @@ class ParseQuery {
             // 不加密模式
             return this.stringify(query);
         }
-        default: { // 自动模式
-            const isEncode = this.isDepthObject(query);
-            if (isEncode) { // 深度对象需要加密
-                return this.encode(query, false);
-            }
-            return this.stringify(query);
+        default: {
+            err('未知参数模式，请检查 \'encodeURI\' ', true);
         }
         }
     }

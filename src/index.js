@@ -7,7 +7,7 @@ import { lifeCycle, Global } from './helpers/config';
 import { warn, err } from './helpers/warn';
 import { registerRouterHooks, registerHook } from './lifeCycle/hooks';
 import { vueMount } from './vueRouter/base';
-import { appletsMount } from './patch/applets-patch';
+import appletsMount from './patch/applets-patch';
 import appMount from './patch/app-patch';
 import initMixins from './helpers/mixins';
 import ParseQuery from './helpers/urlQuery';
@@ -118,21 +118,6 @@ class Router {
             backLayer, delta, H5PATCH,
         }, 'back', true, enforce);
     }
-    // TODO 目前来不及做啊 有很多事情 版本也很久没更新了
-    // async addRoutes(routes){
-    // 	if(appPlatform() === 'H5'){
-    // 		await Global.H5RouterReady;
-    // 		this.CONFIG.routes=this.CONFIG.routes.concat(routes);
-    // 		const formatRts= fromatRoutes(routes, true, this.CONFIG.h5);
-    // 		this.selfRoutes={...this.selfRoutes||{},...formatRts};
-    // 		const Routes= diffRouter(this,Global.vueRouter , this.CONFIG.h5.useUniConfig,Object.values(formatRts));
-    // 		console.log(Routes)
-    // 		await timeout(20);
-    // 		Global.vueRouter.addRoutes(Routes);
-    // 	}else{
-    // 		warn(`非H5端没有此api ‘addRoutes’ `)
-    // 	}
-    // }
 
     /**
 	 * 获取当前页面下的 Route 信息

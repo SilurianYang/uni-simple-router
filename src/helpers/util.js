@@ -1,16 +1,6 @@
-import {
-    route,
-    baseConfig,
-    Global,
-} from './config';
-import {
-    builtIn,
-} from '../vueRouter/base';
-import {
-    err,
-    log,
-    warn,
-} from './warn';
+import { route, baseConfig, Global } from './config';
+import { builtIn } from '../vueRouter/base';
+import { err, log, warn } from './warn';
 
 /**
  * 当前是不是H5运行环境
@@ -111,23 +101,6 @@ export const formatConfig = function (userConfig) {
         }
     }
     return config;
-};
-/** 递归查找当前page路径对应的vue组件
- * @param {Object} Vim
- */
-export const queryMp = function (Vim) {
-    if (Vim.constructor.name == 'Vue') {
-        Vim.$options.page = '';
-        Vim.$options.ONLAUNCH = true;
-        return Vim.$options;
-    }
-    if (Object.keys(Vim).length < 6) {
-        return Vim;
-    }
-    if (Vim.$mp && Vim.$mp.page) {
-        return Vim.$mp;
-    }
-    return queryMp(Vim.$parent);
 };
 export const filter = function (str) {
     str += '';
@@ -239,27 +212,6 @@ export const exactRule = function (cloneRule, routes, ruleKey, getRule = false) 
     }
 };
 
-export const normalizeParams = function (cloneRule, routes) {
-    let params = {};
-    if (cloneRule.constructor === String) {
-        const rule = {};
-        rule.path = cloneRule;
-        rule.query = {};
-        cloneRule = rule;
-    }
-    params =		(cloneRule.path && parseQuery('path', cloneRule.query || {}))
-		|| (cloneRule.name && parseQuery('name', cloneRule.params || {}));
-    params = {
-        ...exactRule(cloneRule, routes, params.url),
-        query: params.query,
-    };
-    return params;
-};
-
-export const encodeURI = function (rule) {
-    return encodeURIComponent(rule);
-};
-
 export const resolveRule = function (router, rule, query = {}, ruleKey = 'path') {
     const ruleInfo = route(
         exactRule({
@@ -300,22 +252,4 @@ export const formatURLQuery = function (URLQuery) {
  */
 export const copyObject = function (object) {
     return JSON.parse(JSON.stringify(object));
-};
-/**
- * 把一个字符串对象转json再转字符串
- * @param {Object} strObj 字符串对象
- */
-export const strObjToJsonToStr = function (strObj) {
-    return JSON.stringify(JSON.parse(strObj));
-};
-/**
- * 延迟函数 返回一个promise来进行延迟
- * @param {Number} time 需要延迟的时间戳
- */
-export const timeout = function (time = 0) {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve();
-        }, time);
-    });
 };
