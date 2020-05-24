@@ -257,6 +257,7 @@ export const beforeHooks = function (to, from, next, Router) {
 export const triggerLifeCycle = function (Router, vueRouter) {
     const { CONFIG } = Router;
     const currRoute = vueRouter.currentRoute;
+    debugger;
     if (vueRouter.mode === 'hash') {
         const {
             query,

@@ -39,7 +39,7 @@ const routesConfig = {
 		},
 		holdTabbarStyle:()=>JSON.parse('{"backgroundColor":"#FF0000","opacity":0.2}')
 	},
-	encodeURI: false,
+	encodeURI: true,
 	debugger: true,
 	routerBeforeEach:()=>{
 		console.log('routerBeforeEach')
