@@ -38,6 +38,7 @@
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-loader": "^4.0.0",
     "eslint-plugin-import": "^2.20.2",
+    "query-string": "^6.12.1",
     "rimraf": "^3.0.2",
     "uni-hold-tabbar": "^1.0.0",
     "useless-files-webpack-plugin": "^1.0.1",
