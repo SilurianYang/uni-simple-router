@@ -14,9 +14,13 @@ declare class Router {
      */
     get $Route():Route;
     /**
+     * 获取 url 参数帮助类实例
+     */
+    get $parseQuery():object;
+    /**
 	 * app 获取底部tabbar拦截实例
 	 */
-    get $holdTab():Object;
+    get $holdTab():object;
 
     /**
      * 获取当前是否处于正在跳转的状态
