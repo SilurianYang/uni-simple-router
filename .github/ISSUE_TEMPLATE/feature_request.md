@@ -1,20 +1,21 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
+name: 建议新功能（Feature Request）
+about: 对 uni-simple-router 提出改善建议
 title: ''
 labels: ''
 assignees: ''
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+**新功能描述**
+简洁描述你希望补充完善的增强功能
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+**现状及问题**
+[当前现状及由此导致的不便]
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+**尝试方案**
+[如果你有尝试绕开或其它解决方案，在这里描述你的建议方案]
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+**补充信息**
+[其它你认为有参考价值的信息]
+

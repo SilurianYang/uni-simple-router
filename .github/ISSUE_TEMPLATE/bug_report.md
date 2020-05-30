@@ -1,38 +1,39 @@
 ---
-name: Bug report
-about: Create a report to help us improve
+name: 报告问题（Bug report）
+about: 详细描述你遇到的问题并寻求社区帮助
 title: ''
 labels: ''
 assignees: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+**问题描述**
+[问题描述：尽可能简洁清晰地把问题描述清楚]
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+**复现步骤**
+[复现问题的步骤]
+1. 启动 '...'
+2. 点击  '....'
+3. 查看
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+[或者可以直接贴源代码]
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+**预期结果**
+[使用简洁清晰的语言描述你希望生效的预期结果]
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+**实际结果**
+[这里请贴上你的报错截图或文字]
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
 
-**Additional context**
-Add any other context about the problem here.
+**系统信息:**
+ - 发行平台: [如 微信小程序、H5平台、5+ App等]
+ - 操作系统 [如 iOS 12.1.2、Android 7.0]
+ - HBuilderX版本 [如使用HBuilderX，则需提供 HBuilderX 版本号]
+ - 项目创建方法 [如使用Vue-cli创建/HBuilderX]
+ - 设备信息 [如 iPhone8 Plus]
+ - uni-simple-router版本 [如 v1.5.4]
+
+
+**补充信息**
+[可选]
+[根据你的分析，出现这个问题的原因可能在哪里？]
