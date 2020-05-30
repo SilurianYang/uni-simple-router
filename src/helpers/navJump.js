@@ -2,7 +2,7 @@ import { appPlatform } from './util';
 import { methods, H5FnTypeToggle, Global } from './config';
 import { transitionTo } from '../appRouter/hooks';
 import { appletsTransitionTo, backCallHook } from '../appletsRouter/hooks';
-import { uniPushTo } from '../appRouter/uniNav';
+import uniPushTo from '../appRouter/uniNav';
 import appletsUniPushTo from '../appletsRouter/appletsNav';
 import { err, warn } from './warn';
 import H5PushTo from '../vueRouter/routerNav';
