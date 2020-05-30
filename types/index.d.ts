@@ -18,11 +18,6 @@ declare class Router {
      */
     get $parseQuery():object;
     /**
-	 * app 获取底部tabbar拦截实例
-	 */
-    get $holdTab():object;
-
-    /**
      * 获取当前是否处于正在跳转的状态
      * H5 状态下始终为false
      */
