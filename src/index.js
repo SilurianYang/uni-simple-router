@@ -64,13 +64,6 @@ class Router {
         Global.LockStatus = status;
     }
 
-    /**
-	 * app 获取底部tabbar拦截实例
-	 */
-    get $holdTab() {
-        return Global.$holdTab;
-    }
-
     /** 动态的导航到一个新 URL 保留浏览历史
 	 * navigateTo
 	 * @param {Object} rule
