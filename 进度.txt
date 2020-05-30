@@ -5,6 +5,13 @@
 * **$parseQuery** `getter` 用于处理参数类实例
 * 新增 `urlQuery.js` 快捷参数操作类  可以通过 `this.$Router.$parseQuery` 获取
 * 路由 `api` 跳转时，当跳转规则为字符串时，参数可以通过 `?` 连接
+* `app` 端 `v3` 模式可拦截原生`tabbar`
 
 ## revise
 * 调整 `H5` 端 参数传递和获取
+* `app` 端 `plus.nativeObj.View` 默认显示调整到 `loddingPageHook` 生命周期函数下手动执行
+* `app` 端 `init.js` 移除 `createdHoldTab/uniRewritePublicFun` 重写 `rewriteUniFun` 函数
+* `app` 端 `uniNav.js` 移除 `pageNavFinish` 函数 并重写 `uniPushTo` 函数
+* `app` 端 默认配置移除 `rewriteFun/holdTabbarStyle` 调整 `holdTabbar/loddingPageHook`
+* `helpers/util.js` 移除 `queryMp/normalizeParams/strObjToJsonToStr/timeout` 函数
+* `helpers/applets-patch.js` 移除 `queryInfo` 函数
