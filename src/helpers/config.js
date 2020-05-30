@@ -19,11 +19,9 @@ export const baseConfig = {
         fallback: true,
     },
     APP: {
-        holdTabbar: false,	// 是否开启底部菜单拦截
-        rewriteFun: false,	// 是否对uni-app 下的chooseLocation/openLocation 两个方法重写 目的是隐藏和显示拦截tabbar
+        holdTabbar: true,	// 是否开启底部菜单拦截
         loddingPageStyle: () => JSON.parse('{"backgroundColor":"#FFF"}'),	// 当前等待页面的样式 必须返回一个json
-        loddingPageHook: () => { plus.navigator.closeSplashscreen(); },		// 刚刚打开页面处于等待状态,会触发此事件
-        holdTabbarStyle: () => JSON.parse('{}'),
+        loddingPageHook: (view) => { plus.navigator.closeSplashscreen(); view.show(); },		// 刚刚打开页面处于等待状态,会触发此事件
         animation: { animationType: 'pop-in', animationDuration: 300 },	// 页面切换动画
         switchPageOutTime: 1000,	// 最高能忍耐的页面切换时间 达到此时间 不管切换有没有完成都会显示页面出来 这对启动页帮助很大
     },
@@ -64,7 +62,6 @@ export const Global = { // 缓存一些必要的对象，作为全局可以访�
     addedRoutes: [], // 用于缓存用户动态添加的路由
     RouterReadyPromise: () => {},
     H5RouterReady: null, // 当前router是否就绪
-    $holdTab: null,	// 当前底部实例对象
     backLayerC: 1,	// 返回api调用时开发者传递的 delta
     LockStatus: false, // 当前是否正在进行跳转 正在跳转调用api是不给跳转的
 };
