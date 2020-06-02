@@ -4,7 +4,7 @@ import {
 } from './util';
 import { noop } from '../helpers/util';
 import { warn } from '../helpers/warn';
-import { uniPushTo, pageNavFinish } from './uniNav';
+import uniPushTo from './uniNav';
 
 let startBack = false;	// 主要是兼容低端手机返回卡 然后多次返回直接提示退出的问题
 
@@ -186,7 +186,6 @@ const backCallHook = function (page, options, backLayerC = 1) {
         setTimeout(() => {
             this.back(backLayerC, undefined, true); // 越过加锁验证
             startBack = false;	// 返回结束
-            pageNavFinish('bcak', route.path);
         });
     });
 };
@@ -337,7 +336,6 @@ export const triggerLifeCycle = function (Router) {
     transitionTo.call(Router, { path: page.route, query }, 'push', async (finalRoute, fnType) => {
         let variation = [];
         if (`/${page.route}` == finalRoute.route.path) {		// 在首页不动的情况下
-            pageNavFinish('launch', page.route);
             uniAppHook.pageReady = true;		// 标致着路由已经就绪 可能准备起飞
             await callwaitHooks.call(this, true);
         } else {	// 需要跳转

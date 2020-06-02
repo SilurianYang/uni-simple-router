@@ -7,9 +7,10 @@ import { lifeCycle, Global } from './helpers/config';
 import { warn, err } from './helpers/warn';
 import { registerRouterHooks, registerHook } from './lifeCycle/hooks';
 import { vueMount } from './vueRouter/base';
-import { appletsMount } from './patch/applets-patch';
+import appletsMount from './patch/applets-patch';
 import appMount from './patch/app-patch';
 import initMixins from './helpers/mixins';
+import ParseQuery from './helpers/urlQuery';
 // #ifdef H5
 import H5 from './patch/h5-patch';
 // #endif
@@ -19,12 +20,15 @@ let H5PATCH = null;
 H5PATCH = new H5(isH5());
 // #endif
 
+const parseQuery = new ParseQuery();
+
 Global.H5RouterReady = new Promise((resolve) => Global.RouterReadyPromise = resolve);
 
 class Router {
     constructor(arg) {
         Router.$root = this;
         Global.Router = this; // 全局缓存一个对象，不必使用时都传递
+        Global.$parseQuery = parseQuery;
         this.CONFIG = formatConfig(arg);
         this.lifeCycle = lifeCycle;
         registerRouterHooks.call(this);	// 注册全局Router生命钩子
@@ -35,6 +39,13 @@ class Router {
 
     get $Route() {
         return this.getPageRoute();
+    }
+
+    /**
+     * 获取 url 参数帮助类实例
+     */
+    get $parseQuery() {
+        return Global.$parseQuery;
     }
 
     /**
@@ -51,13 +62,6 @@ class Router {
     set $lockStatus(status) {
         warn('你确定要这么做？你知道后果？', true);
         Global.LockStatus = status;
-    }
-
-    /**
-	 * app 获取底部tabbar拦截实例
-	 */
-    get $holdTab() {
-        return Global.$holdTab;
     }
 
     /** 动态的导航到一个新 URL 保留浏览历史
@@ -107,21 +111,6 @@ class Router {
             backLayer, delta, H5PATCH,
         }, 'back', true, enforce);
     }
-    // TODO 目前来不及做啊 有很多事情 版本也很久没更新了
-    // async addRoutes(routes){
-    // 	if(appPlatform() === 'H5'){
-    // 		await Global.H5RouterReady;
-    // 		this.CONFIG.routes=this.CONFIG.routes.concat(routes);
-    // 		const formatRts= fromatRoutes(routes, true, this.CONFIG.h5);
-    // 		this.selfRoutes={...this.selfRoutes||{},...formatRts};
-    // 		const Routes= diffRouter(this,Global.vueRouter , this.CONFIG.h5.useUniConfig,Object.values(formatRts));
-    // 		console.log(Routes)
-    // 		await timeout(20);
-    // 		Global.vueRouter.addRoutes(Routes);
-    // 	}else{
-    // 		warn(`非H5端没有此api ‘addRoutes’ `)
-    // 	}
-    // }
 
     /**
 	 * 获取当前页面下的 Route 信息

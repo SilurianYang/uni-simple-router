@@ -1,80 +1,33 @@
-import HoldTabbar from 'uni-hold-tabbar';
 import {
     proxyLaunchHook, beforeBackHooks, beforeTabHooks, backApiCallHook,
 } from './hooks';
-import { Global } from '../helpers/config';
-import { getPages, assertCanBack } from './util';
-import { pageNavFinish } from './uniNav';
+import { Global, uniAppHook } from '../helpers/config';
+import { assertCanBack } from './util';
 import { warn } from '../helpers/warn';
 
 /**
- * 创建底部菜单拦截
+ * 重写掉uni-app的 uni.getLocation 和 uni.chooseLocation APi
  * @param {Object} Router  当前路由对象
  */
-const createdHoldTab = function (Router) {
-    const { holdTabbarStyle } = Router.CONFIG.APP;	// 获取app所有配置
-    const holdTab = new HoldTabbar({
-        style: holdTabbarStyle.call(Router),
-        event: {
-            click: (index, { pagePath }) => {
-                beforeTabHooks.call(Router, pagePath);
-            },
-        },
-    });
-    Global.$holdTab = holdTab;
-};
-/**
- * uni-app 重写共用的方法
- * @param {Object} object 开发者传递的相关参数
- * @param {Object} callFun 需要执行的uni方法
- */
-export const uniRewritePublicFun = function (object, finishFun, callFun) {
-    const page = getPages(-2);
-    const { complete } = object;	// 获取到开发者传递的complete事件
-    if (complete) {		// 有写此函数的时候
-        object.complete = function (arg) {
-            if (finishFun) {
-                finishFun('pageShow', page.route);
+export const rewriteUniFun = function (Router) {
+    const oldSwitchTab = uni.switchTab; // 缓存 跳转到 tabBar 页面
+    uni.switchTab = function ({ url, ...args }, normal = false) {
+        if (normal === true || uniAppHook.pageReady === false) { // 调用原始的uni-app  api
+            oldSwitchTab({
+                url,
+                ...args,
+            });
+        } else {
+            if (uniAppHook.pageReady) { // 只有在路由守卫等  处理完所有操作后才能触发
+                const { path } = Router.$Route; // 获取当前路径
+                if (path == url) { // 路径相同不执行
+                    return warn(`当前跳转路径：${url}  已在本页面无须跳转`);
+                }
+                beforeTabHooks.call(Router, url.substring(1)); // 不要 /
+            } else {
+                warn('路由守卫正在忙碌中 不允许执行 ‘uni.switchTab’');
             }
-            complete.call(page.$vm, arg);
-        };
-    } else { // 没有写次函数
-        object.complete = function () {
-            if (finishFun) {
-                finishFun('pageShow', page.route);
-            }
-        };
-    }
-    if (Global.$holdTab.isVisible) {
-        Global.$holdTab.hideHoldTab();	// 先隐藏底部tabbar拦截器
-    }
-    if (callFun) {
-        callFun(object);
-    }
-};
-
-/**
- * 重写掉uni-app的 uni.getLocation 和 uni.chooseLocation APi
- * @param {Boolean}  rewriteFun 是否重写方法
- */
-export const rewriteUniFun = function (rewriteFun) {
-    if (rewriteFun === false) {
-        return false;
-    }
-    const oldChooseLocation = uni.chooseLocation; // 打开地图选择位置
-    const oldOpenLocation = uni.openLocation;	// 打开内置地图
-    uni.chooseLocation = function (object) {
-        uniRewritePublicFun(object, pageNavFinish, oldChooseLocation);
-    };
-    uni.openLocation = function (object) {
-        uniRewritePublicFun(object, () => {
-            const webViews = plus.webview.all();
-            const webview = webViews[webViews.length - 1];
-            webview.addEventListener('close', () => {
-                const page = getPages(-2);
-                pageNavFinish('pageShow', page.route);
-            }, false);
-        }, oldOpenLocation);
+        }
     };
 };
 
@@ -92,7 +45,6 @@ export const registerLoddingPage = function (Router) {
         ...loddingPageStyle.call(Router),
     });
     loddingPageHook.call(Router, view);	// 触发等待页面生命周期
-    view.show();
 };
 /**
  * 移除当前 页面上 非router 声明的 onBackPress 事件
@@ -148,10 +100,9 @@ export const pageIsHeadBack = function (page, options, args) {
  */
 export const appInit = function (Router) {
     proxyLaunchHook.call(this);
-    const { holdTabbar, rewriteFun } = Router.CONFIG.APP;
-    if (holdTabbar) {
-        rewriteUniFun(rewriteFun);
-        createdHoldTab(Router);
+    const { holdTabbar } = Router.CONFIG.APP;
+    if (holdTabbar) { // 开启tab拦截时
+        rewriteUniFun(Router);
     }
     registerLoddingPage(Router);
 };

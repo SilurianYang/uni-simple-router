@@ -1,9 +1,7 @@
 import { warn, err } from '../helpers/warn';
-import {
-    isObject, resolveRule, copyObject, parseQuery, strObjToJsonToStr, formatURLQuery,
-} from '../helpers/util';
-import { queryInfo } from '../patch/applets-patch';
+import { isObject, resolveRule, copyObject } from '../helpers/util';
 import { proxyBeforeEnter } from './proxy/proxy';
+import { Global } from '../helpers/config';
 
 const pagesConfigReg = /props:\s*\(.*\)\s*(\([\s\S]*\))\s*},/;
 const pagesConfigRegCli = /props:\s*Object\.assign\s*(\([\s\S]*\))\s*},/; // 脚手架项目
@@ -223,11 +221,8 @@ export const formatUserRule = function (rule, selfRoutes, CONFIG) {
             rule.path = aliasPath || path;
             type = 'query';
         }
-        let {
-            query,
-        } = parseQuery(type, ruleQuery, false);
+        const query = Global.$parseQuery.transfer(ruleQuery);
         if (CONFIG.encodeURI) {
-            query = formatURLQuery(query);
             if (query != '') {
                 rule[type] = {
                     query: query.replace(/^query=/, ''),
@@ -270,14 +265,8 @@ export const getRouterNextInfo = function (to, from, Router) {
         delete isEmptyTo.__id__; // 删除uni-app下的内置属性
         delete isEmptyFrom.__id__;
         /* eslint-enable */
-
-        const toQuery = queryInfo({
-            query: isEmptyTo,
-        }).query;
-        const fromQuery = queryInfo({
-            query: isEmptyFrom,
-        }).query;
-
+        const toQuery = Global.$parseQuery.queryGet(isEmptyTo).decode;
+        const fromQuery = Global.$parseQuery.queryGet(isEmptyFrom).decode;
         toRoute = resolveRule(Router, toPath, toQuery, Object.keys(toPath)[0]);
         fromRoute = resolveRule(Router, fromPath, fromQuery, Object.keys(fromPath)[0]);
     } else {
@@ -317,28 +306,20 @@ export const vueDevRouteProxy = function (routes, Router) {
  */
 
 export const encodeURLQuery = function (CONFIG, query, mode) {
-    let URLQuery = '';
-    if (CONFIG.encodeURI === true && CONFIG.h5.vueRouterDev === false) {
-        URLQuery = `?query=${encodeURIComponent(strObjToJsonToStr(query.query || '{}'))}`;
-    } else {
-        URLQuery = `?${parseQuery('', query, false).query}`;
+    if (Object.keys(query).length == 0) { // 没有传值的时候 我们啥都不管
+        return '';
     }
-    URLQuery = formatURLQuery(URLQuery);
-    if (mode === 'history') {
-        const queryT = URLQuery.replace(/\?query=/, (t) => {
-            if (t != '') {
-                URLQuery = {
-                    query: '',
-                };
-            }
-            return '';
-        });
-        if (URLQuery.constructor === Object) {
-            URLQuery.query = queryT;
+    if (CONFIG.h5.vueRouterDev === false) { // 没有采取完全模式开发时 才转换
+        const { strQuery, historyObj } = Global.$parseQuery.queryGet(query);
+        if (mode === 'history') {
+            return historyObj;
         }
+        return strQuery;
+    } // 完全彩种 vue-router 开发的时候 我们不用管
+    if (mode === 'history') { // 此模式下 需要的就是对象
+        return query;
     }
-
-    return URLQuery;
+    return Global.$parseQuery.stringify(query); // hash转成字符串拼接
 };
 /**
  * 把一个未知的路由跳转规则进行格式化为 hash、history 可用的,主要表现在 history模式下直接传入path会报错__id__错误的问题

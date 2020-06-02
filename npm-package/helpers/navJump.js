@@ -2,7 +2,7 @@ import { appPlatform } from './util';
 import { methods, H5FnTypeToggle, Global } from './config';
 import { transitionTo } from '../appRouter/hooks';
 import { appletsTransitionTo, backCallHook } from '../appletsRouter/hooks';
-import { uniPushTo } from '../appRouter/uniNav';
+import uniPushTo from '../appRouter/uniNav';
 import appletsUniPushTo from '../appletsRouter/appletsNav';
 import { err, warn } from './warn';
 import H5PushTo from '../vueRouter/routerNav';
@@ -54,6 +54,18 @@ const isBcakNav = function ({
  */
 
 const notBackNav = function (rule, fnType) {
+    if (rule == null) {
+        return err('跳转规则为空，不允许这样操作');
+    }
+    if (rule.constructor === String) { // 单独 path 的情况   允许？拼接参数
+        const ruleArray = rule.split('?');
+        if (ruleArray.length > 1) {
+            rule = {
+                path: ruleArray[0],
+                query: Global.$parseQuery.parse(ruleArray[1]),
+            };
+        }
+    }
     switch (appPlatform(true)) {
     case 'H5':
         return H5PushTo.call(this, H5FnTypeToggle[fnType], rule, methods[fnType]);

@@ -14,10 +14,9 @@ declare class Router {
      */
     get $Route():Route;
     /**
-	 * app 获取底部tabbar拦截实例
-	 */
-    get $holdTab():Object;
-
+     * 获取 url 参数帮助类实例
+     */
+    get $parseQuery():object;
     /**
      * 获取当前是否处于正在跳转的状态
      * H5 状态下始终为false
