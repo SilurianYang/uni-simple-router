@@ -1,4 +1,1 @@
-examples/*/unpackage
-examples/*/node_modules
-examples/*/dist
 /node_modules
