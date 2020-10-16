@@ -10,12 +10,16 @@
     "webpack-cli": "^4.0.0"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.4.1",
+    "@typescript-eslint/parser": "^4.4.1",
     "rimraf": "^3.0.2",
     "webpack-merge": "^5.2.0"
   },
   "scripts": {
     "dev": "webpack --watch  --progress --config webpack/webpack.dev.js",
-    "build": "webpack --progress --config webpack/webpack.prod.js"
+    "build": "webpack --progress --config webpack/webpack.prod.js",
+    "lint": "eslint --ext .js,.ts src",
+    "lintFix": "eslint --ext .js,.ts src --fix"
   },
   "repository": {
     "type": "git",
