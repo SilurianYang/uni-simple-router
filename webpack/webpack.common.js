@@ -1,17 +1,12 @@
-const {resolve} = require('path');
-const rimraf = require('rimraf');
-
-rimraf('dist', () => {});
-
 module.exports = {
-	entry: './src/index.ts',
-	output: {
-		path: resolve(__dirname, '../', 'dist'),
-		filename: 'uni-simple-router.js',
+    entry: './src/index.ts',
+    output: {
+        library:'Router',
+        libraryTarget:'umd'
 	},
 	resolve: {
-		extensions: ['.tsx', '.ts', '.js', '.json'],
-	},
+        extensions: ['.tsx', '.ts', '.js', '.json'],
+    },
 	module: {
 		rules: [
 			{
