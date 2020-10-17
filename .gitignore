@@ -1,1 +1,3 @@
 /node_modules
+/util_example/*/node_modules
+/util_example/*/unpackage
