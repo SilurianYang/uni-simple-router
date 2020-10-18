@@ -24,6 +24,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/page2/page2",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"tabBar": {
 	    "color": "#7A7E83",

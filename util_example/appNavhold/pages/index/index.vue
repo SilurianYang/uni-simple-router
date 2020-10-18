@@ -4,6 +4,7 @@
 		<view class="text-area">
 			<text class="title">{{title}}</text>
 		</view>
+		<button type="default" @click="gotoPage">去下一个页面</button>
 	</view>
 </template>
 
@@ -33,7 +34,11 @@
 			console.log('onResize')
 		},
 		methods: {
-
+			gotoPage(){
+				uni.navigateTo({
+					url:'/pages/page2/page2'
+				})
+			}
 		}
 	}
 </script>

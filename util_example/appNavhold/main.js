@@ -1,23 +1,55 @@
 import Vue from 'vue'
 import App from './App'
-// import '@/common/navHold.js'
+import './common/navHold.js'
 
-import {RouterMount,Router} from './dist/uni-simple-router.js'
 
-console.log(RouterMount)
+import {
+	RouterMount,
+	Router
+} from './dist/uni-simple-router.js'
 
-console.log(process.env.VUE_APP_PLATFORM)
+const router = new Router({
+	platform: process.env.VUE_APP_PLATFORM,
+	routes: [{
+			aliasPath: '/',
+			path: '/pages/index/index',
+			name: 'index',
+			style: {
+				navigationBarTitleText: 'uni-app'
+			},
+			children: [{
+				aliasPath: '/',
+				path: '/pages/index/index',
+				name: 'index',
+				style: {
+					navigationBarTitleText: 'uni-app'
+				},
+			}]
+		},
+		{
+			path: '/pages/tab1/tab1',
+			style: {
+				navigationBarTitleText: '',
+				enablePullDownRefresh: false
+			},
+		},
+		{
+			path: '/pages/tab2/tab2',
+			style: {
+				navigationBarTitleText: '',
+				enablePullDownRefresh: false
+			},
+		},
+	],
+});
 
-const router= new Router();
-console.log(router)
-
+RouterMount()
 
 Vue.config.productionTip = false
-	
+
 App.mpType = 'app'
 
 const app = new Vue({
-    ...App
+	...App
 })
-console.log(app)
-// app.$mount()
+app.$mount()
