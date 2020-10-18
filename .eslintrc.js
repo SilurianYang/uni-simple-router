@@ -6,7 +6,8 @@ module.exports = {
         es6: true
     },
     globals: {
-
+        uni: true,
+        plus: true
     },
     parser: '@typescript-eslint/parser',
     extends: ['eslint:recommended'],
