@@ -21,7 +21,7 @@ export type endAnimationType =
 	| 'zoom-fade-in'
 	| 'none';
 
-//跳转api时，传递的跳转规则
+// 跳转api时，传递的跳转规则
 export interface navtoRule {
 	NAVTYPE?: NAVTYPE; // 跳转类型 v1.1.0+
 	path?: string; // 跳转路径 绝对路径
@@ -36,35 +36,44 @@ export interface nextRoute {
 	params: object;
 }
 
-//开始切换窗口动画 app端可用
+// 开始切换窗口动画 app端可用
 export interface startAnimationRule {
-	animationType?: startAnimationType; //窗口关闭的动画效果
-	animationDuration?: number; //窗口关闭动画的持续时间
+	animationType?: startAnimationType; // 窗口关闭的动画效果
+	animationDuration?: number; // 窗口关闭动画的持续时间
 }
 // 关闭窗口时的动画 app端可用
 export interface endAnimationRule {
-	animationType?: endAnimationType; //窗口关闭的动画效果
-	animationDuration?: number; //窗口关闭动画的持续时间
+	animationType?: endAnimationType; // 窗口关闭的动画效果
+	animationDuration?: number; // 窗口关闭动画的持续时间
 }
 // 执行路由跳转失败或者 next(false) 时走的规则
-export interface navErrorRule{
-    type:1|2|3;
-    msg:string
+export interface navErrorRule {
+	type: 1 | 2 | 3;
+	msg: string;
+}
+// uni原生api跳转时的规则
+export interface uniNavApiRule {
+	url: string;
+	[propName: string]: any;
 }
 
 export interface RoutesRule {
-	path: string; //pages.json中的path 必须加上 '/' 开头
-	component?: object; //H5端可用
+	path: string; // pages.json中的path 必须加上 '/' 开头
+	component?: object; // H5端可用
 	name?: string; // 命名路由
 	components?: object; // 命名视图组件，H5端可用
-	redirect?: string | Location | Function; //H5端可用
-	props?: boolean | object | Function; //H5端可用
-	aliasPath?: string; //h5端 设置一个别名路径来替换 uni-app的默认路径
-	alias?: string | Array<string>; //H5端可用
+	redirect?: string | Location | Function; // H5端可用
+	props?: boolean | object | Function; // H5端可用
+	aliasPath?: string; // h5端 设置一个别名路径来替换 uni-app的默认路径
+	alias?: string | Array<string>; // H5端可用
 	children?: Array<RoutesRule>; // 嵌套路由，H5端可用
-	beforeEnter?: <T>(to: nextRouteT<T>, from: nextRouteT<T>, next: Function) => void; //路由元守卫
-    meta?: any; //其他格外参数
-    [propName:string]:any;
+	beforeEnter?: <T>(
+		to: nextRouteT<T>,
+		from: nextRouteT<T>,
+		next: Function
+	) => void; // 路由元守卫
+	meta?: any; // 其他格外参数
+	[propName: string]: any;
 }
 
 export abstract class RouterDescribe {
