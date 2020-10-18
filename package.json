@@ -4,6 +4,7 @@
   "description": "> 一个更为简洁的[Vue-router](https://router.vuejs.org/zh/)，专为 [uni-app](https://uniapp.dcloud.io/) 量身打造",
   "main": "index.js",
   "dependencies": {
+    "lodash.merge": "^4.6.2",
     "ts-loader": "^8.0.5",
     "typescript": "^4.0.3",
     "webpack": "^5.1.0",
@@ -12,6 +13,8 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.4.1",
     "@typescript-eslint/parser": "^4.4.1",
+    "eslint": "^7.11.0",
+    "lodash": "^4.17.20",
     "rimraf": "^3.0.2",
     "webpack-merge": "^5.2.0"
   },
