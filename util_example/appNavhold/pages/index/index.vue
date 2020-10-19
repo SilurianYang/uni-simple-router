@@ -16,7 +16,8 @@
 			}
 		},
 		onLoad() {
-			console.log('onLoad')
+			console.log('onLoad');
+			console.log(this.$router)
 		},
 		onShow() {
 			console.log('onShow')

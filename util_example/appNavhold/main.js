@@ -2,13 +2,14 @@ import Vue from 'vue'
 import App from './App'
 import './common/navHold.js'
 
+console.log(process.env)
 
 import {
 	RouterMount,
-	Router
+	createRouter
 } from './dist/uni-simple-router.js'
 
-const router = new Router({
+const router = createRouter({
 	platform: process.env.VUE_APP_PLATFORM,
 	routes: [{
 			aliasPath: '/',
@@ -43,7 +44,9 @@ const router = new Router({
 	],
 });
 
-RouterMount()
+console.log(router)
+
+Vue.use(router);
 
 Vue.config.productionTip = false
 
@@ -52,4 +55,7 @@ App.mpType = 'app'
 const app = new Vue({
 	...App
 })
-app.$mount()
+
+RouterMount(app,router,'#app')
+
+// app.$mount()
