@@ -1,3 +1,10 @@
+import {InstantiateConfig, LifeCycleConfig} from '../options/config';
+
+export enum navRuleStatus{
+    '失败',
+    '成功',
+    'next拦截'
+}
 export type nextRouteT<T> = nextRoute & T;
 export type NAVTYPE = 'push' | 'replace' | 'replaceAll' | 'pushTab';
 export type startAnimationType =
@@ -48,7 +55,7 @@ export interface endAnimationRule {
 }
 // 执行路由跳转失败或者 next(false) 时走的规则
 export interface navErrorRule {
-	type: 1 | 2 | 3;
+	type: navRuleStatus;
 	msg: string;
 }
 // uni原生api跳转时的规则
@@ -76,11 +83,15 @@ export interface RoutesRule {
 	[propName: string]: any;
 }
 
-export abstract class RouterDescribe {
-	abstract push(rule: navtoRule | string): void; // 动态的导航到一个新 URL 保留浏览历史
-	abstract replace(rule: navtoRule | string): void; // 动态的导航到一个新 URL 关闭当前页面，跳转到的某个页面。
-	abstract replaceAll(rule: navtoRule | string): void; // 动态的导航到一个新 URL 关闭所有页面，打开到应用内的某个页面
-	abstract pushTab(rule: navtoRule | string): void; // 动态的导航到一个新 url 关闭所有页面，打开到应用内的某个tab
-	abstract beforeEach(guard: Function): void; // 添加全局前置路由守卫
-	abstract afterEach(guard: Function): void; // 添加全局后置路由守卫
+export interface Router{
+    readonly lifeCycle:LifeCycleConfig;
+    readonly options:InstantiateConfig;
+    mount:Array<{app:any,el:string}>;
+    install(Vue:any): void;
+    push(rule: navtoRule | string): Promise<void |undefined|navRuleStatus>; // 动态的导航到一个新 URL 保留浏览历史
+    replace(rule: navtoRule | string): Promise<void |undefined|navRuleStatus>; // 动态的导航到一个新 URL 关闭当前页面，跳转到的某个页面。
+    replaceAll(rule: navtoRule | string): Promise<void |undefined|navRuleStatus>; // 动态的导航到一个新 URL 关闭所有页面，打开到应用内的某个页面
+    pushTab(rule: navtoRule | string): Promise<void |undefined|navRuleStatus>; // 动态的导航到一个新 url 关闭所有页面，打开到应用内的某个tab
+    beforeEach(guard: Function): void; // 添加全局前置路由守卫
+    afterEach(guard: Function): void; // 添加全局后置路由守卫
 }

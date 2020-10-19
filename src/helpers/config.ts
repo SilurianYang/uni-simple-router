@@ -1,8 +1,9 @@
 import {plus} from '../types';
-import {InstantiateConfig} from '../options/config'
+import {err} from './warn'
+import {InstantiateConfig, LifeCycleConfig} from '../options/config'
 
 export const baseConfig:InstantiateConfig = {
-    platform: '',
+    platform: 'h5',
     h5: {
         rewriteFun: true,
         paramsToQuery: false,
@@ -28,8 +29,16 @@ export const baseConfig:InstantiateConfig = {
     },
     debugger: false,
     encodeURI: true,
-    routerBeforeEach: () => {},
-    routerAfterEach: () => {},
-    routerErrorEach: () => {},
+    routerBeforeEach: (rule, next) => { next() },
+    routerAfterEach: (rule) => {},
+    routerErrorEach: (error) => { err(error, true) },
     routes: []
 }
+
+export const lifeCycle:LifeCycleConfig = {
+    beforeHooks: [],
+    afterHooks: [],
+    routerBeforeHooks: [],
+    routerAfterHooks: [],
+    routerErrorHooks: []
+};

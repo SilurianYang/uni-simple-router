@@ -1,29 +1,60 @@
-import {RouterDescribe, navtoRule} from './options/base';
-import {InstantiateConfig} from './options/config';
-import {baseConfig} from './helpers/config';
-import {assertStrOptions} from './helpers/utils';
+import {Router} from './options/base';
+import {InstantiateConfig, LifeCycleConfig} from './options/config';
+import {lifeCycle} from './helpers/config';
+import {assertNewOptions} from './helpers/utils';
+import {registerRouterHooks} from './helpers/lifeCycle';
+import {initMixins} from './helpers/mixins'
 
-class Router extends RouterDescribe {
-    public CONFIG:InstantiateConfig = baseConfig;
-    constructor(options: InstantiateConfig) {
-        super();
-        this.CONFIG = assertStrOptions<InstantiateConfig>(options);
-        console.log(this.CONFIG)
+function createRouter(params: InstantiateConfig):Router {
+    const options = assertNewOptions<InstantiateConfig>(params);
+    const router:Router = {
+        options,
+        mount: [],
+        lifeCycle: registerRouterHooks<LifeCycleConfig>(lifeCycle, options),
+        push: () => {
+            return new Promise(resolve => resolve())
+        },
+        replace: () => {
+            return new Promise(resolve => resolve())
+        },
+        replaceAll: () => {
+            return new Promise(resolve => resolve())
+        },
+        pushTab: () => {
+            return new Promise(resolve => resolve())
+        },
+        beforeEach(guard: Function): void {},
+        afterEach(guard: Function): void {},
+        install(Vue:any):void{
+            initMixins(Vue, this);
+            Object.defineProperty(Vue.prototype, '$Router', {
+                get() {
+                    return 11;
+                }
+            });
+            Object.defineProperty(Vue.prototype, '$Route', {
+                get() {
+                    return 22;
+                }
+            });
+        }
     }
-    push(rule: navtoRule | string): void {
-        console.log('这是push函数');
-    }
-    replace(rule: navtoRule | string): void {}
-    replaceAll(rule: navtoRule | string): void {}
-    pushTab(rule: navtoRule | string): void {}
-    beforeEach(guard: Function): void {}
-    afterEach(guard: Function): void {}
+    return router;
 }
 
-function RouterMount(Vim:any, el:string) :void {
+function RouterMount(Vim:any, router:Router, el:string | undefined = '#app') :void|never {
+    if (router.mount instanceof Array) {
+        router.mount.push({
+            app: Vim,
+            el
+        })
+    } else {
+        throw new Error(`挂载路由失败，router.app 应该为数组类型。目前是 ${typeof router.mount}`);
+    }
+    Vim.$mount();
 }
 
 export {
     RouterMount,
-    Router
+    createRouter
 }

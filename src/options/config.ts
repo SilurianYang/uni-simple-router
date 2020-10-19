@@ -1,6 +1,6 @@
 import {startAnimationRule, RoutesRule, navtoRule, navErrorRule} from './base';
 
-export interface h5Config {
+export interface H5Config {
 	rewriteFun?: boolean; // 是否对uni-app reLaunch/navigateBack 两个方法重写 处理uni刷新直接返回到首页和触发路由守卫
 	paramsToQuery?: boolean; // h5端上通过params传参时规则是vue-router 刷新会丢失 开启此开关将变成?连接的方式
 	loading?: boolean; // 是否显示加载动画
@@ -25,8 +25,8 @@ export interface AppConfig {
 }
 
 export interface InstantiateConfig {
-    platform:string; // 当前运行平台
-	h5?: h5Config;
+    platform:'h5'|'app-plus'|'app-lets'|'mp-weixin'|'mp-baidu'|'mp-alipay'|'mp-toutiao'|'mp-qq'|'mp-360'; // 当前运行平台
+	h5?: H5Config;
 	APP?: AppConfig;
 	debugger?: boolean; // 是否处于开发阶段 设置为true则打印日志
 	encodeURI?: boolean; // 是否对url传递的参数进行编码
@@ -34,4 +34,11 @@ export interface InstantiateConfig {
 	routerAfterEach?: (rule: navtoRule) => void; // router 后置路由函数 每次触发跳转后会触发此函数
 	routerErrorEach?: (error: navErrorRule) => void;
 	routes: RoutesRule[];
+}
+export interface LifeCycleConfig{
+    beforeHooks: Array<Function>;
+    afterHooks: Array<Function>;
+    routerBeforeHooks: Array<Function>;
+    routerAfterHooks: Array<Function>;
+    routerErrorHooks: Array<Function>;
 }
