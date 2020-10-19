@@ -1,9 +1,9 @@
 import {InstantiateConfig, LifeCycleConfig} from '../options/config';
 
-export enum navRuleStatus{
-    '失败',
-    '成功',
-    'next拦截'
+export enum navRuleStatus {
+	'失败',
+	'成功',
+	'next拦截',
 }
 export type nextRouteT<T> = nextRoute & T;
 export type NAVTYPE = 'push' | 'replace' | 'replaceAll' | 'pushTab';
@@ -35,6 +35,12 @@ export interface navtoRule {
 	name?: string; // 跳转路径名称
 	query?: object; // 跳转使用path时 query包含需要传递的参数
 	params?: object; // 跳转使用name时 params包含需要传递的参数
+    animationType?:startAnimationType;
+    animationDuration?:number;
+    events?:object;
+    success?:Function;
+    fail?:Function;
+    complete?:Function;
 }
 
 export interface nextRoute {
@@ -83,15 +89,21 @@ export interface RoutesRule {
 	[propName: string]: any;
 }
 
-export interface Router{
-    readonly lifeCycle:LifeCycleConfig;
-    readonly options:InstantiateConfig;
-    mount:Array<{app:any,el:string}>;
-    install(Vue:any): void;
-    push(rule: navtoRule | string): Promise<void |undefined|navRuleStatus>; // 动态的导航到一个新 URL 保留浏览历史
-    replace(rule: navtoRule | string): Promise<void |undefined|navRuleStatus>; // 动态的导航到一个新 URL 关闭当前页面，跳转到的某个页面。
-    replaceAll(rule: navtoRule | string): Promise<void |undefined|navRuleStatus>; // 动态的导航到一个新 URL 关闭所有页面，打开到应用内的某个页面
-    pushTab(rule: navtoRule | string): Promise<void |undefined|navRuleStatus>; // 动态的导航到一个新 url 关闭所有页面，打开到应用内的某个tab
-    beforeEach(guard: Function): void; // 添加全局前置路由守卫
-    afterEach(guard: Function): void; // 添加全局后置路由守卫
+export interface Router {
+	readonly lifeCycle: LifeCycleConfig;
+	readonly options: InstantiateConfig;
+	mount: Array<{app: any; el: string}>;
+	install(Vue: any): void;
+	push(rule: navtoRule | string): Promise<void | undefined | navRuleStatus>; // 动态的导航到一个新 URL 保留浏览历史
+	replace(
+		rule: navtoRule | string
+	): Promise<void | undefined | navRuleStatus>; // 动态的导航到一个新 URL 关闭当前页面，跳转到的某个页面。
+	replaceAll(
+		rule: navtoRule | string
+	): Promise<void | undefined | navRuleStatus>; // 动态的导航到一个新 URL 关闭所有页面，打开到应用内的某个页面
+	pushTab(
+		rule: navtoRule | string
+	): Promise<void | undefined | navRuleStatus>; // 动态的导航到一个新 url 关闭所有页面，打开到应用内的某个tab
+	beforeEach(guard: Function): void; // 添加全局前置路由守卫
+	afterEach(guard: Function): void; // 添加全局后置路由守卫
 }
