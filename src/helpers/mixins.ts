@@ -47,7 +47,9 @@ export function getMixins(router: Router):{
     return toggleHooks[(platform as 'h5'|'app-plus'|'app-lets')];
 }
 export function initMixins(Vue: any, router: Router) {
-    const = createRouteMap(router.options.routes);
+    const {pathList, pathMap} = createRouteMap(router, router.options.routes);
+    router.routesMap = {pathList, pathMap};
+    console.log(router)
     Vue.mixin({
         ...getMixins(router)
     });

@@ -38,6 +38,7 @@ const router = createRouter({
 		},
 		{
 			path: '/pages/tab1/tab1',
+			alias:'/tab1',
 			style: {
 				navigationBarTitleText: '',
 				enablePullDownRefresh: false

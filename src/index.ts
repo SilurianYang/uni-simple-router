@@ -11,6 +11,7 @@ function createRouter(params: InstantiateConfig):Router {
         options,
         mount: [],
         $route: null,
+        routesMap: {},
         lifeCycle: registerRouterHooks<LifeCycleConfig>(lifeCycle, options),
         push: () => {
             return new Promise(resolve => resolve())

@@ -1,4 +1,5 @@
 import {InstantiateConfig} from '../options/config';
+import {RoutesRule} from '../options/base';
 import {baseConfig} from '../helpers/config';
 const merge = require('lodash.merge');
 
@@ -14,4 +15,8 @@ export function assertNewOptions<T extends InstantiateConfig>(
     }
     const mergeOptions:T = merge(baseConfig, options);
     return mergeOptions;
+}
+
+export function routesForMapRoute(routes:RoutesRule[], path:string) {
+
 }

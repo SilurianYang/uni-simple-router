@@ -5,7 +5,7 @@ export enum navRuleStatus {
 	'成功',
 	'next拦截',
 }
-export type hooksReturnRule =Promise<navtoRule|false|undefined>;
+export type hooksReturnRule = Promise<navtoRule | false | undefined>;
 export type NAVTYPE = 'push' | 'replace' | 'replaceAll' | 'pushTab';
 export type startAnimationType =
 	| 'slide-in-right'
@@ -32,34 +32,34 @@ export type endAnimationType =
 export interface navtoRule {
 	NAVTYPE?: NAVTYPE; // 跳转类型 v1.1.0+
 	path?: string; // 跳转路径 绝对路径
-    name?: string|undefined; // 跳转路径名称
+	name?: string | undefined; // 跳转路径名称
 	query?: {[propName: string]: any}; // 跳转使用path时 query包含需要传递的参数
 	params?: {[propName: string]: any}; // 跳转使用name时 params包含需要传递的参数
-    animationType?:startAnimationType;
-    animationDuration?:number;
-    events?:{[propName: string]: any};
-    success?:Function;
-    fail?:Function;
-    complete?:Function;
+	animationType?: startAnimationType;
+	animationDuration?: number;
+	events?: {[propName: string]: any};
+	success?: Function;
+	fail?: Function;
+	complete?: Function;
 }
 // h5 next管道函数中传递的from及to对象
-export interface h5NextRule{
-    fullPath?: string|undefined;
-    hash?: string|undefined;
-    matched?: Array<object>;
-    meta?: object;
-    name?: undefined|string;
-    type?: undefined|string;
+export interface h5NextRule {
+	fullPath?: string | undefined;
+	hash?: string | undefined;
+	matched?: Array<object>;
+	meta?: object;
+	name?: undefined | string;
+	type?: undefined | string;
 }
 // 非H5端基本的next管道函数from及to对象
 export interface notH5NextRoute {
 	path: string;
 	query: {[propName: string]: any};
-    params: {[propName: string]: any};
+	params: {[propName: string]: any};
 }
 
-export interface totalNextRoute extends h5NextRule,notH5NextRoute{
-    [propName: string]: any
+export interface totalNextRoute extends h5NextRule, notH5NextRoute {
+	[propName: string]: any;
 }
 
 // 开始切换窗口动画 app端可用
@@ -104,8 +104,9 @@ export interface RoutesRule {
 
 export interface Router {
 	readonly lifeCycle: LifeCycleConfig;
-    readonly options: InstantiateConfig;
-    $route:object|null;
+	readonly options: InstantiateConfig;
+	$route: object | null;
+	routesMap: {pathList: Array<string>; pathMap: RoutesRule} | {};
 	mount: Array<{app: any; el: string}>;
 	install(Vue: any): void;
 	push(rule: navtoRule | string): Promise<void | undefined | navRuleStatus>; // 动态的导航到一个新 URL 保留浏览历史
