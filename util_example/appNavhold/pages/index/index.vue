@@ -17,7 +17,7 @@
 		},
 		onLoad() {
 			console.log('onLoad');
-			console.log(this.$router)
+			console.log(this)
 		},
 		onShow() {
 			console.log('onShow')
@@ -33,6 +33,9 @@
 		},
 		onResize() {
 			console.log('onResize')
+		},
+		beforeRouteLeave(){
+			console.log('beforeRouteLeave---H5')
 		},
 		methods: {
 			gotoPage(){

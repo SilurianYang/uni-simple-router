@@ -11,6 +11,15 @@ import {
 
 const router = createRouter({
 	platform: process.env.VUE_APP_PLATFORM,
+	routerBeforeEach: (to, from, next) => {
+		console.log(to)
+		console.log(from);
+		console.log(next)
+	},
+	routerAfterEach: (to, from) => {
+		console.log(to)
+		console.log(from);
+	},
 	routes: [{
 			aliasPath: '/',
 			path: '/pages/index/index',

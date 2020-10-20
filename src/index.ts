@@ -10,6 +10,7 @@ function createRouter(params: InstantiateConfig):Router {
     const router:Router = {
         options,
         mount: [],
+        $route: null,
         lifeCycle: registerRouterHooks<LifeCycleConfig>(lifeCycle, options),
         push: () => {
             return new Promise(resolve => resolve())

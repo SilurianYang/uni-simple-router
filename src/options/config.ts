@@ -30,8 +30,8 @@ export interface InstantiateConfig {
 	APP?: AppConfig;
 	debugger?: boolean; // 是否处于开发阶段 设置为true则打印日志
 	encodeURI?: boolean; // 是否对url传递的参数进行编码
-	routerBeforeEach?: (rule: navtoRule, next: Function) => void; // router 前置路由函数 每次触发跳转前先会触发此函数
-	routerAfterEach?: (rule: navtoRule) => void; // router 后置路由函数 每次触发跳转后会触发此函数
+	routerBeforeEach?: (to:navtoRule, from:navtoRule, next: Function) => void; // router 前置路由函数 每次触发跳转前先会触发此函数
+	routerAfterEach?: (to:navtoRule, from:navtoRule, next: Function) => void; // router 后置路由函数 每次触发跳转后会触发此函数
 	routerErrorEach?: (error: navErrorRule) => void;
 	routes: RoutesRule[];
 }

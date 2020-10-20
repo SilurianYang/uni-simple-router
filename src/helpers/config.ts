@@ -29,8 +29,8 @@ export const baseConfig:InstantiateConfig = {
     },
     debugger: false,
     encodeURI: true,
-    routerBeforeEach: (rule, next) => { next() },
-    routerAfterEach: (rule) => {},
+    routerBeforeEach: (to, from, next) => { next() },
+    routerAfterEach: (to, from) => {},
     routerErrorEach: (error) => { err(error, true) },
     routes: []
 }

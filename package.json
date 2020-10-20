@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "lodash.merge": "^4.6.2",
+    "path-to-regexp": "^1.8.0",
     "ts-loader": "^8.0.5",
     "typescript": "^4.0.3",
     "webpack": "^5.1.0",
@@ -16,13 +17,15 @@
     "eslint": "^7.11.0",
     "lodash": "^4.17.20",
     "rimraf": "^3.0.2",
+    "ts-node": "^9.0.0",
     "webpack-merge": "^5.2.0"
   },
   "scripts": {
     "dev": "webpack --watch  --progress --config webpack/webpack.dev.js",
     "build": "webpack --progress --config webpack/webpack.prod.js",
     "lint": "eslint --ext .js,.ts src",
-    "lintFix": "eslint --ext .js,.ts src --fix"
+    "lintFix": "eslint --ext .js,.ts src --fix",
+    "test": "ts-node ./src/index.ts"
   },
   "repository": {
     "type": "git",
