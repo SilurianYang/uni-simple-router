@@ -1,6 +1,7 @@
-import {Router} from '../options/base';
+import {Router, routesMapRule} from '../options/base';
 import {transitionTo} from '../public/hooks'
 import {createRouteMap} from '../helpers/createRouteMap'
+import {buildVueRoutes, buildVueRouter} from '../H5/buildRouter'
 
 const mpPlatform = /(^mp-weixin$)|(^mp-baidu$)|(^mp-alipay$)|(^mp-toutiao$)|(^mp-qq$)|(^mp-360$)/gi;
 
@@ -19,6 +20,11 @@ export function getMixins(router: Router):{
         h5: {
             beforeCreate(this: any): void {
                 if (this.$options.router) {
+                    router.$route = this.$options.router; // 挂载vue-router到路由对象下
+                    const {finallyPathMap: vueRouteMap} = createRouteMap(router, this.$options.router.options.routes);
+                    (router.routesMap as routesMapRule).vueRouteMap = vueRouteMap;
+                    buildVueRoutes(router, vueRouteMap);
+                    buildVueRouter(router, this.$options.router, vueRouteMap);
                     console.log(this.$options.router)
                     const {currentRoute} = this.$options.router;
                     const navRule = {
@@ -47,9 +53,8 @@ export function getMixins(router: Router):{
     return toggleHooks[(platform as 'h5'|'app-plus'|'app-lets')];
 }
 export function initMixins(Vue: any, router: Router) {
-    const {pathList, pathMap} = createRouteMap(router, router.options.routes);
-    router.routesMap = {pathList, pathMap};
-    console.log(router)
+    const routesMap = createRouteMap(router, router.options.routes);
+    router.routesMap = routesMap; // 挂载自身路由表到路由对象下
     Vue.mixin({
         ...getMixins(router)
     });

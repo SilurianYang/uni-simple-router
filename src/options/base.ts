@@ -1,10 +1,7 @@
 import {InstantiateConfig, LifeCycleConfig} from '../options/config';
 
-export enum navRuleStatus {
-	'失败',
-	'成功',
-	'next拦截',
-}
+export type navRuleStatus=	'失败'|'成功'|'next拦截';
+export type navMethodRule = Promise<void | undefined | navRuleStatus>;
 export type hooksReturnRule = Promise<navtoRule | false | undefined>;
 export type NAVTYPE = 'push' | 'replace' | 'replaceAll' | 'pushTab';
 export type startAnimationType =
@@ -82,6 +79,15 @@ export interface uniNavApiRule {
 	url: string;
 	[propName: string]: any;
 }
+export interface routesMapRule{
+    finallyPathList: Array<string>;
+    finallyPathMap:RoutesRule;
+    aliasPathMap: RoutesRule;
+    pathMap: RoutesRule;
+    vueRouteMap:{
+        [propName: string]:any
+    }
+}
 
 export interface RoutesRule {
 	path: string; // pages.json中的path 必须加上 '/' 开头
@@ -106,19 +112,13 @@ export interface Router {
 	readonly lifeCycle: LifeCycleConfig;
 	readonly options: InstantiateConfig;
 	$route: object | null;
-	routesMap: {pathList: Array<string>; pathMap: RoutesRule} | {};
+	routesMap: routesMapRule|{};
 	mount: Array<{app: any; el: string}>;
 	install(Vue: any): void;
-	push(rule: navtoRule | string): Promise<void | undefined | navRuleStatus>; // 动态的导航到一个新 URL 保留浏览历史
-	replace(
-		rule: navtoRule | string
-	): Promise<void | undefined | navRuleStatus>; // 动态的导航到一个新 URL 关闭当前页面，跳转到的某个页面。
-	replaceAll(
-		rule: navtoRule | string
-	): Promise<void | undefined | navRuleStatus>; // 动态的导航到一个新 URL 关闭所有页面，打开到应用内的某个页面
-	pushTab(
-		rule: navtoRule | string
-	): Promise<void | undefined | navRuleStatus>; // 动态的导航到一个新 url 关闭所有页面，打开到应用内的某个tab
+	push(rule: navtoRule | string): navMethodRule; // 动态的导航到一个新 URL 保留浏览历史
+	replace(rule: navtoRule | string): navMethodRule; // 动态的导航到一个新 URL 关闭当前页面，跳转到的某个页面。
+	replaceAll(rule: navtoRule | string): navMethodRule; // 动态的导航到一个新 URL 关闭所有页面，打开到应用内的某个页面
+	pushTab(rule: navtoRule | string): navMethodRule; // 动态的导航到一个新 url 关闭所有页面，打开到应用内的某个tab
 	beforeEach(guard: Function): void; // 添加全局前置路由守卫
 	afterEach(guard: Function): void; // 添加全局后置路由守卫
 }

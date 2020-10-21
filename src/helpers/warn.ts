@@ -1,34 +1,37 @@
 
-type callType='error'|'warn'|'log';
-declare const Global:any;
+import {debuggerConfig, debuggerArrayConfig} from '../options/config'
+import {Router} from '../options/base'
 
-export function isLog(type:callType, errText:any, enforce:boolean) {
+type callType='error'|'warn'|'log';
+
+export function isLog(type:callType, dev:debuggerConfig, errText:string, enforce:boolean = false):boolean {
     if (!enforce) {
-        const dev = Global.Router.CONFIG.debugger;
         const isObject = dev.toString() === '[object Object]';
         if (dev === false) {
-            return false;
-        } if (dev === false) {
-            return false;
-        } if (isObject) {
-            if (dev[type] === false) {
+            return false
+        } else if (isObject) {
+            if ((dev as debuggerArrayConfig)[type] === false) {
                 return false;
             }
         }
     }
     console[type](errText);
+    return true;
 }
-export function err(errText:any, enforce:boolean = false) {
-    isLog('error', errText, enforce);
-}
-
-export function warn(errText:any, enforce:boolean = false) {
-    isLog('warn', errText, enforce);
+export function err(errText:string, router:Router, enforce?:boolean):void {
+    const dev = (router.options.debugger as debuggerConfig);
+    isLog('error', dev, errText, enforce);
 }
 
-export function log(errText:any, enforce:boolean = false) {
-    isLog('log', errText, enforce);
+export function warn(errText:string, router:Router, enforce?:boolean):void {
+    const dev = (router.options.debugger as debuggerConfig);
+    isLog('warn', dev, errText, enforce);
 }
-export function warnLock(errText:any) {
+
+export function log(errText:string, router:Router, enforce?:boolean):void {
+    const dev = (router.options.debugger as debuggerConfig);
+    isLog('log', dev, errText, enforce);
+}
+export function warnLock(errText:string):void {
     console.warn(errText);
 }

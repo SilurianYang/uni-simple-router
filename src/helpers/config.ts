@@ -5,6 +5,7 @@ import {InstantiateConfig, LifeCycleConfig} from '../options/config'
 export const baseConfig:InstantiateConfig = {
     platform: 'h5',
     h5: {
+        aliasCoverPath: false,
         rewriteFun: true,
         paramsToQuery: false,
         loading: true,
@@ -31,8 +32,18 @@ export const baseConfig:InstantiateConfig = {
     encodeURI: true,
     routerBeforeEach: (to, from, next) => { next() },
     routerAfterEach: (to, from) => {},
-    routerErrorEach: (error) => { err(error, true) },
-    routes: []
+    routerErrorEach: (error, router) => { err(JSON.stringify(error), router, true) },
+    routes: [
+        {
+            path: '/choose-location'
+        },
+        {
+            path: '/open-location'
+        },
+        {
+            path: '/preview-image'
+        }
+    ]
 }
 
 export const lifeCycle:LifeCycleConfig = {
