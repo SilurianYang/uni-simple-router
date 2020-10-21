@@ -20,15 +20,22 @@ const router = createRouter({
 		console.log(to)
 		console.log(from);
 	},
+	APP:{
+		animation:{
+			animationDuration:1000
+		}
+	},
+	h5:{
+		aliasCoverPath:true
+	},
 	routes: [{
-			aliasPath: '/',
 			path: '/pages/index/index',
+			alias:'/index',
 			name: 'index',
 			style: {
 				navigationBarTitleText: 'uni-app'
 			},
 			children: [{
-				aliasPath: '/',
 				path: '/pages/index/index',
 				name: 'index',
 				style: {
@@ -46,11 +53,23 @@ const router = createRouter({
 		},
 		{
 			path: '/pages/tab2/tab2',
+			alias:'/tab2',
 			style: {
 				navigationBarTitleText: '',
 				enablePullDownRefresh: false
 			},
 		},
+		{
+			path:'/pages/page2/page2',
+			alias:'/pages/:name',
+		},
+		{
+			path:'*',
+			redirect:to=>{
+				console.log(to)
+				return '/index'
+			}
+		}
 	],
 });
 

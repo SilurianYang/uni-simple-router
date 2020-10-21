@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<h1>这是页面2</h1>
+		<h1>这是page2</h1>
 	</view>
 </template>
 
@@ -13,6 +13,9 @@
 		},
 		onBackPress(){
 			console.log('返回')
+		},
+		onLoad(){
+			console.log(this.$route)
 		},
 		methods: {
 			

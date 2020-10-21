@@ -39,9 +39,10 @@
 		},
 		methods: {
 			gotoPage(){
-				uni.navigateTo({
-					url:'/pages/page2/page2'
-				})
+				this.$router.push('/pages/page2/page2')
+				// uni.navigateTo({
+				// 	url:'/pages/page2/page2'
+				// })
 			}
 		}
 	}

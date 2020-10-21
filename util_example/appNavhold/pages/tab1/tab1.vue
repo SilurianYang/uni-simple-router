@@ -1,6 +1,6 @@
 <template>
 	<view>
-		
+		<h1>tab1</h1>
 	</view>
 </template>
 
