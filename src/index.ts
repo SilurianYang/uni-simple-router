@@ -2,7 +2,7 @@ import {Router} from './options/base';
 import {InstantiateConfig, LifeCycleConfig} from './options/config';
 import {lifeCycle} from './helpers/config';
 import {assertNewOptions} from './helpers/utils';
-import {registerRouterHooks} from './helpers/lifeCycle';
+import {registerRouterHooks, registerEachHooks} from './helpers/lifeCycle';
 import {initMixins} from './helpers/mixins'
 
 function createRouter(params: InstantiateConfig):Router {
@@ -13,20 +13,24 @@ function createRouter(params: InstantiateConfig):Router {
         $route: null,
         routesMap: {},
         lifeCycle: registerRouterHooks<LifeCycleConfig>(lifeCycle, options),
-        push: () => {
+        push() {
             return new Promise(resolve => resolve())
         },
-        replace: () => {
+        replace() {
             return new Promise(resolve => resolve())
         },
-        replaceAll: () => {
+        replaceAll() {
             return new Promise(resolve => resolve())
         },
-        pushTab: () => {
+        pushTab() {
             return new Promise(resolve => resolve())
         },
-        beforeEach(guard: Function): void {},
-        afterEach(guard: Function): void {},
+        beforeEach(userGuard):void {
+            registerEachHooks(router, 'beforeHooks', userGuard);
+        },
+        afterEach(userGuard):void {
+            registerEachHooks(router, 'afterHooks', userGuard);
+        },
         install(Vue:any):void{
             initMixins(Vue, this);
             Object.defineProperty(Vue.prototype, '$Router', {
@@ -51,8 +55,9 @@ function RouterMount(Vim:any, router:Router, el:string | undefined = '#app') :vo
             el
         })
     } else {
-        throw new Error(`挂载路由失败，router.app 应该为数组类型。目前是 ${typeof router.mount}`);
+        throw new Error(`挂载路由失败，router.app 应该为数组类型。当前类型：${typeof router.mount}`);
     }
+    console.log(1111)
     Vim.$mount();
 }
 

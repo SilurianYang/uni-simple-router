@@ -1,5 +1,5 @@
 import {InstantiateConfig} from '../options/config';
-import {RoutesRule} from '../options/base';
+import {RoutesRule, routesMapRule} from '../options/base';
 import {baseConfig} from '../helpers/config';
 const Regexp = require('path-to-regexp');
 
@@ -32,7 +32,17 @@ export function assertNewOptions<T extends InstantiateConfig>(
     return mergeOptions;
 }
 
-export function routesForMapRoute(routes: RoutesRule[], path: string) {}
+export function routesForMapRoute(routesMap: routesMapRule, path: string):RoutesRule|never {
+    const {finallyPathMap} = routesMap;
+    const pathRule:RegExp = Regexp(path);
+    for (const [key, value] of Object.entries(finallyPathMap)) {
+        const result = pathRule.exec(key);
+        if (result != null) {
+            return (value as RoutesRule)
+        }
+    }
+    throw new Error(`${path} 路径无法在路由表中找到！检查跳转路径及路由表`);
+}
 
 export function mergeConfig<T extends InstantiateConfig>(baseConfig: T, userConfig: T): T {
     const config: {[key: string]: any} = Object.create(null);

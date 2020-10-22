@@ -1,8 +1,12 @@
 import {InstantiateConfig, LifeCycleConfig} from '../options/config';
 
+export type reloadNavRule=navtoRule | false | undefined|string;
+export type hookListRule=Array<(router:Router, to:totalNextRoute, from: totalNextRoute, toRoute:RoutesRule)=>hooksReturnRule>
+export type guardHookRule=(to: totalNextRoute, from: totalNextRoute, next:(rule: navtoRule)=>void)=>void;
 export type navRuleStatus=	'失败'|'成功'|'next拦截';
+export type proxyHookName='beforeHooks'|'afterHooks';
 export type navMethodRule = Promise<void | undefined | navRuleStatus>;
-export type hooksReturnRule = Promise<navtoRule | false | undefined>;
+export type hooksReturnRule = Promise<reloadNavRule>;
 export type NAVTYPE = 'push' | 'replace' | 'replaceAll' | 'pushTab';
 export type startAnimationType =
 	| 'slide-in-right'
@@ -102,7 +106,7 @@ export interface RoutesRule {
 	beforeEnter?: (
 		to: totalNextRoute,
 		from: totalNextRoute,
-		next: Function
+		next:(rule: navtoRule)=>void
 	) => void; // 路由元守卫
 	meta?: any; // 其他格外参数
 	[propName: string]: any;
@@ -119,6 +123,6 @@ export interface Router {
 	replace(rule: navtoRule | string): navMethodRule; // 动态的导航到一个新 URL 关闭当前页面，跳转到的某个页面。
 	replaceAll(rule: navtoRule | string): navMethodRule; // 动态的导航到一个新 URL 关闭所有页面，打开到应用内的某个页面
 	pushTab(rule: navtoRule | string): navMethodRule; // 动态的导航到一个新 url 关闭所有页面，打开到应用内的某个tab
-	beforeEach(guard: Function): void; // 添加全局前置路由守卫
-	afterEach(guard: Function): void; // 添加全局后置路由守卫
+	beforeEach(userGuard:guardHookRule): void; // 添加全局前置路由守卫
+    afterEach(userGuard:(to: totalNextRoute, from: totalNextRoute)=>void): void; // 添加全局后置路由守卫
 }

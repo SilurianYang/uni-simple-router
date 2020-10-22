@@ -25,6 +25,10 @@ export function buildVueRoutes(router: Router, vueRouteMap:RoutesRule):RoutesRul
                     vueRoute['alias'] = alias;
                 }
             }
+            const beforeEnter = myRoute.beforeEnter;
+            if (beforeEnter) {
+                vueRoute['beforeEnter'] = beforeEnter;
+            }
         }
     }
     if (finallyPathList.includes('*')) {
@@ -33,11 +37,19 @@ export function buildVueRoutes(router: Router, vueRouteMap:RoutesRule):RoutesRul
     return vueRouteMap
 }
 
-export function buildVueRouter(router:Router, vueRouter:any, vueRouteMap:RoutesRule) {
+export function buildVueRouter(router:Router, vueRouter:any, vueRouteMap:RoutesRule) :void |never {
     const routes:RoutesRule[] = Object.values(vueRouteMap);
+
+    // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
     const newVueRouter:any = new vueRouter.constructor({
         ...router.options.h5,
         routes
     });
     vueRouter.matcher = newVueRouter.matcher;
+    console.log('实例化完成')
+    // const [mount] = router.mount;
+    // if (mount == null) {
+    //     throw new Error(`你真的不需要挂载实例吗？要不要试试\r\n\r\n RouterMount(Vim:any, router:Router, el:string | undefined = '#app') :void|never \r\n`);
+    // }
+    // mount.app.$mount();
 }

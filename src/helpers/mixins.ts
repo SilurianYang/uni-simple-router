@@ -2,6 +2,7 @@ import {Router, routesMapRule} from '../options/base';
 import {transitionTo} from '../public/hooks'
 import {createRouteMap} from '../helpers/createRouteMap'
 import {buildVueRoutes, buildVueRouter} from '../H5/buildRouter'
+import {proxyEachHook} from '../H5/proxyHook'
 
 const mpPlatform = /(^mp-weixin$)|(^mp-baidu$)|(^mp-alipay$)|(^mp-toutiao$)|(^mp-qq$)|(^mp-360$)/gi;
 
@@ -25,13 +26,14 @@ export function getMixins(router: Router):{
                     (router.routesMap as routesMapRule).vueRouteMap = vueRouteMap;
                     buildVueRoutes(router, vueRouteMap);
                     buildVueRouter(router, this.$options.router, vueRouteMap);
+                    proxyEachHook(router, this.$options.router);
                     console.log(this.$options.router)
-                    const {currentRoute} = this.$options.router;
-                    const navRule = {
-                        path: currentRoute.path,
-                        query: currentRoute.query
-                    }
-                    transitionTo(router, navRule);
+                    // const {currentRoute} = this.$options.router;
+                    // const navRule = {
+                    //     path: currentRoute.path,
+                    //     query: currentRoute.query
+                    // }
+                    // transitionTo(router, navRule);
                 }
             }
         },
