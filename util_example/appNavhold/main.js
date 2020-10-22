@@ -12,11 +12,13 @@ import {
 const router = createRouter({
 	platform: process.env.VUE_APP_PLATFORM,
 	routerBeforeEach: (to, from, next) => {
+		console.log('-------------------------routerBeforeEach-------------------------------------')
 		console.log(to)
 		console.log(from);
-		console.log(next)
+		next()
 	},
 	routerAfterEach: (to, from) => {
+		console.log('-------------------------routerAfterEach-------------------------------------')
 		console.log(to)
 		console.log(from);
 	},
@@ -35,6 +37,12 @@ const router = createRouter({
 			style: {
 				navigationBarTitleText: 'uni-app'
 			},
+			  beforeEnter: (to, from, next) => {
+				console.log(to, from);
+				setTimeout(()=>{
+					next();
+				},2000)
+			  },
 			children: [{
 				path: '/pages/index/index',
 				name: 'index',
@@ -72,7 +80,12 @@ const router = createRouter({
 		}
 	],
 });
-
+router.beforeEach((to, from, next) => {
+	console.log(to,from)
+})
+router.afterEach((to, from) => {
+  console.log(to,from)
+})
 console.log(router)
 
 Vue.use(router);
