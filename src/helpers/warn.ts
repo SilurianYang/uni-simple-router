@@ -4,7 +4,7 @@ import {Router} from '../options/base'
 
 type callType='error'|'warn'|'log';
 
-export function isLog(type:callType, dev:debuggerConfig, errText:string, enforce:boolean = false):boolean {
+export function isLog(type:callType, dev:debuggerConfig, errText:any, enforce:boolean = false):boolean {
     if (!enforce) {
         const isObject = dev.toString() === '[object Object]';
         if (dev === false) {
@@ -18,20 +18,20 @@ export function isLog(type:callType, dev:debuggerConfig, errText:string, enforce
     console[type](errText);
     return true;
 }
-export function err(errText:string, router:Router, enforce?:boolean):void {
+export function err(errText:any, router:Router, enforce?:boolean):void {
     const dev = (router.options.debugger as debuggerConfig);
     isLog('error', dev, errText, enforce);
 }
 
-export function warn(errText:string, router:Router, enforce?:boolean):void {
+export function warn(errText:any, router:Router, enforce?:boolean):void {
     const dev = (router.options.debugger as debuggerConfig);
     isLog('warn', dev, errText, enforce);
 }
 
-export function log(errText:string, router:Router, enforce?:boolean):void {
+export function log(errText:any, router:Router, enforce?:boolean):void {
     const dev = (router.options.debugger as debuggerConfig);
     isLog('log', dev, errText, enforce);
 }
-export function warnLock(errText:string):void {
+export function warnLock(errText:any):void {
     console.warn(errText);
 }

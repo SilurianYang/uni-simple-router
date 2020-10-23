@@ -1,4 +1,4 @@
-import {startAnimationRule, RoutesRule, navtoRule, navErrorRule, Router} from './base';
+import {startAnimationRule, hookListRule, RoutesRule, navtoRule, navErrorRule, Router} from './base';
 
 export type debuggerConfig=boolean|debuggerArrayConfig;
 
@@ -39,15 +39,15 @@ export interface InstantiateConfig {
 	APP?: AppConfig;
 	debugger?: debuggerConfig; // 是否处于开发阶段 设置为true则打印日志
 	encodeURI?: boolean; // 是否对url传递的参数进行编码
-	routerBeforeEach?: (to:navtoRule, from:navtoRule, next: Function) => void; // router 前置路由函数 每次触发跳转前先会触发此函数
-	routerAfterEach?: (to:navtoRule, from:navtoRule, next: Function) => void; // router 后置路由函数 每次触发跳转后会触发此函数
+	routerBeforeEach?: (to:navtoRule, from:navtoRule, next:(rule?: navtoRule)=>void) => void; // router 前置路由函数 每次触发跳转前先会触发此函数
+	routerAfterEach?: (to:navtoRule, from:navtoRule, next?: Function) => void; // router 后置路由函数 每次触发跳转后会触发此函数
 	routerErrorEach?: (error: navErrorRule, router:Router) => void;
 	routes: RoutesRule[];
 }
 export interface LifeCycleConfig{
-    beforeHooks: Array<Function>;
-    afterHooks: Array<Function>;
-    routerBeforeHooks: Array<Function>;
-    routerAfterHooks: Array<Function>;
-    routerErrorHooks: Array<Function>;
+    beforeHooks: hookListRule;
+    afterHooks: hookListRule;
+    routerBeforeHooks: hookListRule;
+    routerAfterHooks: hookListRule;
+    routerErrorHooks: Array<(error:navErrorRule, router:Router)=>void>;
 }

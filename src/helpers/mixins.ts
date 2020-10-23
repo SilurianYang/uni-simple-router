@@ -1,5 +1,4 @@
 import {Router, routesMapRule} from '../options/base';
-import {transitionTo} from '../public/hooks'
 import {createRouteMap} from '../helpers/createRouteMap'
 import {buildVueRoutes, buildVueRouter} from '../H5/buildRouter'
 import {proxyEachHook} from '../H5/proxyHook'
@@ -27,13 +26,6 @@ export function getMixins(router: Router):{
                     buildVueRoutes(router, vueRouteMap);
                     buildVueRouter(router, this.$options.router, vueRouteMap);
                     proxyEachHook(router, this.$options.router);
-                    console.log(this.$options.router)
-                    // const {currentRoute} = this.$options.router;
-                    // const navRule = {
-                    //     path: currentRoute.path,
-                    //     query: currentRoute.query
-                    // }
-                    // transitionTo(router, navRule);
                 }
             }
         },

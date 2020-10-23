@@ -1,7 +1,12 @@
-import {navtoRule} from '../options/base'
+import { NAVTYPE, Router, totalNextRoute} from '../options/base'
+import {queryPageToMap} from './page'
 
-export function push(rule: navtoRule | string):Promise<void |undefined> {
-    return new Promise(resolve => {
-        resolve();
-    })
+export function navjump(
+    to:string|totalNextRoute,
+    router:Router,
+    navType:NAVTYPE,
+    from?:totalNextRoute
+) {
+    queryPageToMap(to, router)
 }
+

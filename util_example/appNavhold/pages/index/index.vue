@@ -5,6 +5,7 @@
 			<text class="title">{{title}}</text>
 		</view>
 		<button type="default" @click="gotoPage">去下一个页面</button>
+		<button type="primary" @click="gotoPage1">去第三方页面</button>
 	</view>
 </template>
 
@@ -34,15 +35,24 @@
 		onResize() {
 			console.log('onResize')
 		},
-		beforeRouteLeave(){
-			console.log('beforeRouteLeave---H5')
+		beforeRouteLeave(to,from,next){
+			console.log('-------------------------index++++beforeRouteLeave-------------------------------------')
+			console.log(to)
+			console.log(from)
+			next();
+			console.log('-------------------------index++++beforeRouteLeave结束-------------------------------------')
 		},
 		methods: {
 			gotoPage(){
-				this.$router.push('/pages/page2/page2')
+				this.$Router.push({
+					name:'page2'
+				})
 				// uni.navigateTo({
 				// 	url:'/pages/page2/page2'
 				// })
+			},
+			gotoPage1(){
+				location.href='https://www.baidu.com/'
 			}
 		}
 	}

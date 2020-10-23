@@ -12,7 +12,8 @@ export function createRouteMap(
         finallyPathMap: Object.create(null),
         aliasPathMap: Object.create(null),
         pathMap: Object.create(null),
-        vueRouteMap: Object.create(null)
+        vueRouteMap: Object.create(null),
+        nameMap: Object.create(null)
     }
     routes.forEach(route => {
         const { finallyPath, aliasPath, path} = getRoutePath(route);
@@ -36,6 +37,9 @@ export function createRouteMap(
             routesMap.aliasPathMap[strAliasPath] = route;
             routesMap.pathMap[path] = route;
             routesMap.finallyPathList.push(strFinallyPath);
+            if (route.name != null) {
+                routesMap.nameMap[route.name] = route;
+            }
         }
     })
 

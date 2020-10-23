@@ -15,12 +15,16 @@ const router = createRouter({
 		console.log('-------------------------routerBeforeEach-------------------------------------')
 		console.log(to)
 		console.log(from);
-		next()
+		setTimeout(()=>{
+			console.log('-------------------------routerBeforeEach结束-------------------------------------')
+			next()
+		},500)
 	},
 	routerAfterEach: (to, from) => {
 		console.log('-------------------------routerAfterEach-------------------------------------')
 		console.log(to)
 		console.log(from);
+		console.log('-------------------------routerAfterEach结束-------------------------------------')
 	},
 	APP:{
 		animation:{
@@ -30,6 +34,7 @@ const router = createRouter({
 	h5:{
 		aliasCoverPath:true
 	},
+	debugger:true,
 	routes: [{
 			path: '/pages/index/index',
 			alias:'/index',
@@ -38,10 +43,13 @@ const router = createRouter({
 				navigationBarTitleText: 'uni-app'
 			},
 			  beforeEnter: (to, from, next) => {
-				console.log(to, from);
+				console.log('-------------------------beforeEnter-------------------------------------')
+				console.log(to);
+				console.log(from);
 				setTimeout(()=>{
+					console.log('-------------------------beforeEnter结束-------------------------------------')
 					next();
-				},2000)
+				},1000)
 			  },
 			children: [{
 				path: '/pages/index/index',
@@ -54,6 +62,7 @@ const router = createRouter({
 		{
 			path: '/pages/tab1/tab1',
 			alias:'/tab1',
+			name: 'tab1',
 			style: {
 				navigationBarTitleText: '',
 				enablePullDownRefresh: false
@@ -69,6 +78,7 @@ const router = createRouter({
 		},
 		{
 			path:'/pages/page2/page2',
+			name:'page2',
 			alias:'/pages/:name',
 		},
 		{
@@ -81,10 +91,19 @@ const router = createRouter({
 	],
 });
 router.beforeEach((to, from, next) => {
-	console.log(to,from)
+	console.log('-------------------------beforeEach-------------------------------------')
+	console.log(to)
+	console.log(from)
+	setTimeout(()=>{
+		console.log('-------------------------beforeEach结束-------------------------------------')
+		next();
+	},500)
 })
 router.afterEach((to, from) => {
-  console.log(to,from)
+	console.log('-------------------------afterEach-------------------------------------')
+	  console.log(to)
+	  console.log(from)
+	  console.log('-------------------------afterEach结束-------------------------------------')
 })
 console.log(router)
 

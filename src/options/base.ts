@@ -1,9 +1,13 @@
 import {InstantiateConfig, LifeCycleConfig} from '../options/config';
 
-export type reloadNavRule=navtoRule | false | undefined|string;
+export enum hookToggle{
+    'beforeHooks'='beforeEach',
+    'afterHooks'='afterEach'
+}
+export type reloadNavRule=totalNextRoute | false | undefined|string;
 export type hookListRule=Array<(router:Router, to:totalNextRoute, from: totalNextRoute, toRoute:RoutesRule)=>hooksReturnRule>
-export type guardHookRule=(to: totalNextRoute, from: totalNextRoute, next:(rule: navtoRule)=>void)=>void;
-export type navRuleStatus=	'失败'|'成功'|'next拦截';
+export type guardHookRule=(to: totalNextRoute, from: totalNextRoute, next:(rule?: navtoRule)=>void)=>void;
+export type navRuleStatus=	0|1|2;  //0: next(false) 1:next(unknownType)
 export type proxyHookName='beforeHooks'|'afterHooks';
 export type navMethodRule = Promise<void | undefined | navRuleStatus>;
 export type hooksReturnRule = Promise<reloadNavRule>;
@@ -52,15 +56,10 @@ export interface h5NextRule {
 	name?: undefined | string;
 	type?: undefined | string;
 }
-// 非H5端基本的next管道函数from及to对象
-export interface notH5NextRoute {
-	path: string;
-	query: {[propName: string]: any};
-	params: {[propName: string]: any};
-}
 
-export interface totalNextRoute extends h5NextRule, notH5NextRoute {
-	[propName: string]: any;
+export interface totalNextRoute extends h5NextRule, navtoRule {
+    path:string;
+    [propName: string]: any;
 }
 
 // 开始切换窗口动画 app端可用
@@ -76,7 +75,11 @@ export interface endAnimationRule {
 // 执行路由跳转失败或者 next(false) 时走的规则
 export interface navErrorRule {
 	type: navRuleStatus;
-	msg: string;
+    msg: string;
+    to?:totalNextRoute;
+    from?:totalNextRoute;
+    nextTo?:any;
+    [propName:string]:any;
 }
 // uni原生api跳转时的规则
 export interface uniNavApiRule {
@@ -88,6 +91,7 @@ export interface routesMapRule{
     finallyPathMap:RoutesRule;
     aliasPathMap: RoutesRule;
     pathMap: RoutesRule;
+    nameMap:RoutesRule,
     vueRouteMap:{
         [propName: string]:any
     }
@@ -103,11 +107,7 @@ export interface RoutesRule {
 	aliasPath?: string; // h5端 设置一个别名路径来替换 uni-app的默认路径
 	alias?: string | Array<string>; // H5端可用
 	children?: Array<RoutesRule>; // 嵌套路由，H5端可用
-	beforeEnter?: (
-		to: totalNextRoute,
-		from: totalNextRoute,
-		next:(rule: navtoRule)=>void
-	) => void; // 路由元守卫
+	beforeEnter?:guardHookRule; // 路由元守卫
 	meta?: any; // 其他格外参数
 	[propName: string]: any;
 }
@@ -119,10 +119,10 @@ export interface Router {
 	routesMap: routesMapRule|{};
 	mount: Array<{app: any; el: string}>;
 	install(Vue: any): void;
-	push(rule: navtoRule | string): navMethodRule; // 动态的导航到一个新 URL 保留浏览历史
-	replace(rule: navtoRule | string): navMethodRule; // 动态的导航到一个新 URL 关闭当前页面，跳转到的某个页面。
-	replaceAll(rule: navtoRule | string): navMethodRule; // 动态的导航到一个新 URL 关闭所有页面，打开到应用内的某个页面
-	pushTab(rule: navtoRule | string): navMethodRule; // 动态的导航到一个新 url 关闭所有页面，打开到应用内的某个tab
+	push(to: totalNextRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 URL 保留浏览历史
+	replace(to: totalNextRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 URL 关闭当前页面，跳转到的某个页面。
+	replaceAll(to: totalNextRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 URL 关闭所有页面，打开到应用内的某个页面
+	pushTab(to: totalNextRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 url 关闭所有页面，打开到应用内的某个tab
 	beforeEach(userGuard:guardHookRule): void; // 添加全局前置路由守卫
     afterEach(userGuard:(to: totalNextRoute, from: totalNextRoute)=>void): void; // 添加全局后置路由守卫
 }

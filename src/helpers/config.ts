@@ -32,7 +32,7 @@ export const baseConfig:InstantiateConfig = {
     encodeURI: true,
     routerBeforeEach: (to, from, next) => { next() },
     routerAfterEach: (to, from) => {},
-    routerErrorEach: (error, router) => { err(JSON.stringify(error), router, true) },
+    routerErrorEach: (error, router) => { err(error, router, true) },
     routes: [
         {
             path: '/choose-location'

@@ -1,9 +1,11 @@
 import {Router} from './options/base';
 import {InstantiateConfig, LifeCycleConfig} from './options/config';
 import {lifeCycle} from './helpers/config';
-import {assertNewOptions} from './helpers/utils';
+import {assertNewOptions, getDataType} from './helpers/utils';
 import {registerRouterHooks, registerEachHooks} from './helpers/lifeCycle';
 import {initMixins} from './helpers/mixins'
+import {navjump} from './public/methods'
+import {proxyH5Mount} from './H5/proxyHook'
 
 function createRouter(params: InstantiateConfig):Router {
     const options = assertNewOptions<InstantiateConfig>(params);
@@ -13,17 +15,17 @@ function createRouter(params: InstantiateConfig):Router {
         $route: null,
         routesMap: {},
         lifeCycle: registerRouterHooks<LifeCycleConfig>(lifeCycle, options),
-        push() {
-            return new Promise(resolve => resolve())
+        push(to, from) {
+            navjump(to, router, 'push', from);
         },
-        replace() {
-            return new Promise(resolve => resolve())
+        replace(to, from) {
+            navjump(to, router, 'replace', from);
         },
-        replaceAll() {
-            return new Promise(resolve => resolve())
+        replaceAll(to, from) {
+            navjump(to, router, 'replaceAll', from);
         },
-        pushTab() {
-            return new Promise(resolve => resolve())
+        pushTab(to, from) {
+            navjump(to, router, 'pushTab', from);
         },
         beforeEach(userGuard):void {
             registerEachHooks(router, 'beforeHooks', userGuard);
@@ -35,7 +37,7 @@ function createRouter(params: InstantiateConfig):Router {
             initMixins(Vue, this);
             Object.defineProperty(Vue.prototype, '$Router', {
                 get() {
-                    return 11;
+                    return router;
                 }
             });
             Object.defineProperty(Vue.prototype, '$Route', {
@@ -49,7 +51,7 @@ function createRouter(params: InstantiateConfig):Router {
 }
 
 function RouterMount(Vim:any, router:Router, el:string | undefined = '#app') :void|never {
-    if (router.mount instanceof Array) {
+    if (getDataType<Array<any>>(router.mount) === '[object Array]') {
         router.mount.push({
             app: Vim,
             el
@@ -57,8 +59,15 @@ function RouterMount(Vim:any, router:Router, el:string | undefined = '#app') :vo
     } else {
         throw new Error(`挂载路由失败，router.app 应该为数组类型。当前类型：${typeof router.mount}`);
     }
-    console.log(1111)
-    Vim.$mount();
+    switch (router.options.platform) {
+    case 'h5':
+        proxyH5Mount(Vim, router);
+        break;
+
+    default:
+        console.warn('其他端还没实现')
+        break;
+    }
 }
 
 export {
