@@ -45,8 +45,40 @@
 		methods: {
 			gotoPage(){
 				this.$Router.push({
-					name:'page2'
+					name:'page2',
+					success:(agrs)=>{
+						console.log(agrs)
+						console.log('跳转成功')
+					},
+						fail: ()=>{
+							console.log('跳转失败')
+						},
+						complete:()=>{
+							console.log('跳转结束')
+						},
+						params:{
+							name:123,
+							ages:10086
+						}
 				})
+				// console.log('-------------------------------')
+				// this.$Router.push({
+				// 	path:'/pages',
+				// 		query:{
+				// 			name:123,
+				// 			ages:10086
+				// 		}
+				// })
+				// console.log('-------------------------------')
+				// this.$Router.push('/1111')
+				
+				// this.$router.push({
+				// 	name:'page2',
+				// 	// params:{
+				// 	// 	name:123
+				// 	// }
+				// })
+				
 				// uni.navigateTo({
 				// 	url:'/pages/page2/page2'
 				// })

@@ -84,6 +84,7 @@ const router = createRouter({
 		{
 			path:'*',
 			redirect:to=>{
+				debugger
 				console.log(to)
 				return '/index'
 			}
