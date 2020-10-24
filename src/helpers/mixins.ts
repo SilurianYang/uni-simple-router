@@ -2,8 +2,7 @@ import {Router, routesMapRule} from '../options/base';
 import {createRouteMap} from '../helpers/createRouteMap'
 import {buildVueRoutes, buildVueRouter} from '../H5/buildRouter'
 import {proxyEachHook} from '../H5/proxyHook'
-
-const mpPlatform = /(^mp-weixin$)|(^mp-baidu$)|(^mp-alipay$)|(^mp-toutiao$)|(^mp-qq$)|(^mp-360$)/gi;
+import {mpPlatformReg} from './config'
 
 export function getMixins(router: Router):{
     beforeCreate(this: any): void;
@@ -13,7 +12,7 @@ export function getMixins(router: Router):{
     onLaunch(): void;
 } {
     let platform = router.options.platform;
-    if (mpPlatform.test(platform)) {
+    if (mpPlatformReg.test(platform)) {
         platform = 'app-lets';
     }
     const toggleHooks = {

@@ -18,6 +18,9 @@ export function buildVueRoutes(router: Router, vueRouteMap:RoutesRule):RoutesRul
             if (finallyPath instanceof Array) {
                 throw new Error(`非 vueRouterDev 模式下，alias、aliasPath、path 无法提供数组类型！ ${JSON.stringify(myRoute)}`);
             }
+            if (myRoute.name != null) {
+                vueRoute.name = myRoute.name;
+            }
             if (h5Options.aliasCoverPath) {
                 vueRoute['path'] = (finallyPath as string);
             } else {

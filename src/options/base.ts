@@ -86,6 +86,15 @@ export interface uniNavApiRule {
 	url: string;
 	[propName: string]: any;
 }
+
+export type routesMapKeysRule=
+    'finallyPathList'|
+    'finallyPathMap'|
+    'aliasPathMap'|
+    'pathMap'|
+    'nameMap'|
+    'vueRouteMap';
+
 export interface routesMapRule{
     finallyPathList: Array<string>;
     finallyPathMap:RoutesRule;

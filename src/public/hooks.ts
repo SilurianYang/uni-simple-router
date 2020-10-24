@@ -96,7 +96,7 @@ export function loopCallHook(
     from: totalNextRoute,
     navType:NAVTYPE,
 ): void|Function {
-    const toRoute = routesForMapRoute((router.routesMap as routesMapRule), to.path);
+    const toRoute = routesForMapRoute((router.routesMap as routesMapRule), to.path, 'finallyPathMap');
     if (hooks.length - 1 < index) {
         return next();
     }

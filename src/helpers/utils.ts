@@ -1,8 +1,10 @@
 import {InstantiateConfig} from '../options/config';
-import {RoutesRule, routesMapRule} from '../options/base';
+import {RoutesRule, routesMapRule, routesMapKeysRule} from '../options/base';
 import {baseConfig} from '../helpers/config';
 import { getCurrentPages } from '../types';
 const Regexp = require('path-to-regexp');
+
+export function voidFun():void{}
 
 export function mergeConfig<T extends InstantiateConfig>(baseConfig: T, userConfig: T): T {
     const config: {[key: string]: any} = Object.create(null);
@@ -59,13 +61,25 @@ export function assertNewOptions<T extends InstantiateConfig>(
     return mergeOptions;
 }
 
-export function routesForMapRoute(routesMap: routesMapRule, path: string):RoutesRule|never {
-    const {finallyPathMap} = routesMap;
-    for (const [key, value] of Object.entries(finallyPathMap)) {
-        const pathRule:RegExp = Regexp(key);
+export function routesForMapRoute(
+    routesMap: routesMapRule,
+    path: string,
+    mapKey:routesMapKeysRule
+):RoutesRule|never {
+    const mapList = routesMap[mapKey];
+    for (const [key, value] of Object.entries(mapList)) {
+        const route:string|RoutesRule = value;
+        let rule:string = key;
+        if (getDataType<Array<string>|{[propName: string]: any}>(mapList) === '[object Array]') {
+            rule = (route as string);
+        }
+        const pathRule:RegExp = Regexp(rule);
         const result = pathRule.exec(path);
         if (result != null) {
-            return (value as RoutesRule)
+            if (getDataType<string|RoutesRule>(route) === '[object String]') {
+                return routesMap.finallyPathMap[(route as string)];
+            }
+            return (route as RoutesRule);
         }
     }
     throw new Error(`${path} 路径无法在路由表中找到！检查跳转路径及路由表`);
@@ -81,4 +95,23 @@ export function getUniCachePage<T extends Array<{[propName:string]:any}>>(pageIn
         return pages
     }
     return pages.reverse()[pageIndex];
+}
+
+export function urlToJson(url :string):{
+    path:string;
+    query:{[propName: string]: any}
+} {
+    const query:{[propName: string]: any} = {};
+    const [path, params] = url.split('?');
+    if (params != null) {
+        const parr = params.split('&');
+        for (const i of parr) {
+            const arr = i.split('=');
+            query[arr[0]] = arr[1];
+        }
+    }
+    return {
+        path,
+        query
+    }
 }

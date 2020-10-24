@@ -2,6 +2,8 @@ import {plus} from '../types';
 import {err} from './warn'
 import {InstantiateConfig, LifeCycleConfig} from '../options/config'
 
+export const mpPlatformReg = /(^mp-weixin$)|(^mp-baidu$)|(^mp-alipay$)|(^mp-toutiao$)|(^mp-qq$)|(^mp-360$)/g;
+
 export const baseConfig:InstantiateConfig = {
     platform: 'h5',
     h5: {
