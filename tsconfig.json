@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "module": "commonjs",
+    "module": "CommonJS",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true 
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["ES2015"],
   },
   "include": [
-    "src/*"
+    "src/global.d.ts",
+    "src/*",
   ],
   "exclude": [
     "node_modules",
