@@ -9,6 +9,13 @@ import {
 	createRouter
 } from './dist/uni-simple-router.js'
 
+
+const whitelist={
+		'/': 'index',
+		'/pages/tab1/tab1': 'tab1',
+		'/pages/tab2/tab2': 'tab2',
+}
+
 const router = createRouter({
 	platform: process.env.VUE_APP_PLATFORM,
 	routerBeforeEach: (to, from, next) => {
@@ -17,6 +24,16 @@ const router = createRouter({
 		console.log(from);
 		setTimeout(()=>{
 			console.log('-------------------------routerBeforeEach结束-------------------------------------')
+			// if(to.name=='page2'){
+			// 	return next({
+			// 		name:'tab2',
+			// 		NAVTYPE:'replaceAll',
+			// 		params:{
+			// 			msg:'拦截page2到tab2',
+			// 			...to.query
+			// 		}
+			// 	})
+			// }
 			next()
 		},500)
 	},
@@ -37,7 +54,7 @@ const router = createRouter({
 	debugger:true,
 	routes: [{
 			path: '/pages/index/index',
-			alias:'/index',
+			alias:'/',
 			name: 'index',
 			style: {
 				navigationBarTitleText: 'uni-app'
@@ -71,6 +88,7 @@ const router = createRouter({
 		{
 			path: '/pages/tab2/tab2',
 			alias:'/tab2',
+			name:'tab2',
 			style: {
 				navigationBarTitleText: '',
 				enablePullDownRefresh: false
@@ -84,9 +102,11 @@ const router = createRouter({
 		{
 			path:'*',
 			redirect:to=>{
-				debugger
-				console.log(to)
-				return '/index'
+				if(whitelist[to]){
+					return {
+						name:whitelist[to]
+					}
+				}
 			}
 		}
 	],
