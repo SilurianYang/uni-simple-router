@@ -6,6 +6,7 @@ import {registerRouterHooks, registerEachHooks} from './helpers/lifeCycle';
 import {initMixins} from './helpers/mixins'
 import {navjump} from './public/methods'
 import {proxyH5Mount} from './H5/proxyHook'
+import {rewriteMethod} from './public/rewrite'
 
 function createRouter(params: InstantiateConfig):Router {
     const options = assertNewOptions<InstantiateConfig>(params);
@@ -27,6 +28,12 @@ function createRouter(params: InstantiateConfig):Router {
         pushTab(to, from) {
             navjump(to, router, 'pushTab', from);
         },
+        back(level = 1, origin) {
+
+        },
+        preloadPage(rule):void{
+
+        },
         beforeEach(userGuard):void {
             registerEachHooks(router, 'beforeHooks', userGuard);
         },
@@ -34,6 +41,7 @@ function createRouter(params: InstantiateConfig):Router {
             registerEachHooks(router, 'afterHooks', userGuard);
         },
         install(Vue:any):void{
+            rewriteMethod(this);
             initMixins(Vue, this);
             Object.defineProperty(Vue.prototype, '$Router', {
                 get() {

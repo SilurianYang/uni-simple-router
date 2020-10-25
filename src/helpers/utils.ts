@@ -1,7 +1,6 @@
 import {InstantiateConfig} from '../options/config';
 import {RoutesRule, routesMapRule, routesMapKeysRule} from '../options/base';
 import {baseConfig} from '../helpers/config';
-import { getCurrentPages } from '../types';
 const Regexp = require('path-to-regexp');
 
 export function voidFun():void{}

@@ -4,6 +4,17 @@ export enum hookToggle{
     'beforeHooks'='beforeEach',
     'afterHooks'='afterEach'
 }
+export enum rewriteMethodToggle{
+    'navigateTo'='push',
+    'redirectTo'='replace',
+    'reLaunch'='replaceAll',
+    'switchTab'='pushTab',
+    'navigateBack'='back',
+    'preloadPage'='preloadPage'
+}
+
+export type reNavMethodRule='navigateTo'|'redirectTo'|'reLaunch'|'switchTab';
+export type reNotNavMethodRule='navigateBack'|'preloadPage';
 export type reloadNavRule=totalNextRoute | false | undefined|string;
 export type hookListRule=Array<(router:Router, to:totalNextRoute, from: totalNextRoute, toRoute:RoutesRule)=>hooksReturnRule>
 export type guardHookRule=(to: totalNextRoute, from: totalNextRoute, next:(rule?: navtoRule)=>void)=>void;
@@ -72,6 +83,14 @@ export interface endAnimationRule {
 	animationType?: endAnimationType; // 窗口关闭的动画效果
 	animationDuration?: number; // 窗口关闭动画的持续时间
 }
+//预加载页面 加载规则
+export interface preloadPageRule{
+    path:string;
+    success?:Function;
+    fail?:Function;
+    complete?:Function;
+}
+
 // 执行路由跳转失败或者 next(false) 时走的规则
 export interface navErrorRule {
 	type: navRuleStatus;
@@ -83,8 +102,13 @@ export interface navErrorRule {
 }
 // uni原生api跳转时的规则
 export interface uniNavApiRule {
-	url: string;
+    url: string;
+    detail?:{[propName: string]: any};
 	[propName: string]: any;
+}
+// uni-app 原始返回api 回调参数
+export interface uniBackRule{
+    from:string;
 }
 
 export type routesMapKeysRule=
@@ -111,7 +135,7 @@ export interface RoutesRule {
 	component?: object; // H5端可用
 	name?: string; // 命名路由
 	components?: object; // 命名视图组件，H5端可用
-	redirect?: string | Location | Function; // H5端可用
+	redirect?: string | Function; // H5端可用
 	props?: boolean | object | Function; // H5端可用
 	aliasPath?: string; // h5端 设置一个别名路径来替换 uni-app的默认路径
 	alias?: string | Array<string>; // H5端可用
@@ -122,6 +146,7 @@ export interface RoutesRule {
 }
 
 export interface Router {
+    [key:string]:any;
 	readonly lifeCycle: LifeCycleConfig;
 	readonly options: InstantiateConfig;
 	$route: object | null;
@@ -132,6 +157,8 @@ export interface Router {
 	replace(to: totalNextRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 URL 关闭当前页面，跳转到的某个页面。
 	replaceAll(to: totalNextRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 URL 关闭所有页面，打开到应用内的某个页面
 	pushTab(to: totalNextRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 url 关闭所有页面，打开到应用内的某个tab
-	beforeEach(userGuard:guardHookRule): void; // 添加全局前置路由守卫
+    back(level:number|undefined,origin?:uniBackRule):void;
+    preloadPage(rule:preloadPageRule):void;     //预加载页面
+    beforeEach(userGuard:guardHookRule): void; // 添加全局前置路由守卫
     afterEach(userGuard:(to: totalNextRoute, from: totalNextRoute)=>void): void; // 添加全局后置路由守卫
 }

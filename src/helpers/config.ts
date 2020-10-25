@@ -1,16 +1,13 @@
-import {plus} from '../types';
 import {err} from './warn'
 import {InstantiateConfig, LifeCycleConfig} from '../options/config'
 
 export const mpPlatformReg = /(^mp-weixin$)|(^mp-baidu$)|(^mp-alipay$)|(^mp-toutiao$)|(^mp-qq$)|(^mp-360$)/g;
 
 export const baseConfig:InstantiateConfig = {
-    platform: 'h5',
     h5: {
         aliasCoverPath: false,
         rewriteFun: true,
         paramsToQuery: false,
-        loading: true,
         vueRouterDev: false,
         useUniConfig: true,
         keepUniIntercept: false,
@@ -30,6 +27,8 @@ export const baseConfig:InstantiateConfig = {
         loddingPageHook: (view:any) => { plus.navigator.closeSplashscreen(); view.show(); },
         animation: { animationType: 'pop-in', animationDuration: 300 }
     },
+    platform: 'h5',
+    keepUniOriginNav: false,
     debugger: false,
     encodeURI: true,
     routerBeforeEach: (to, from, next) => { next() },
@@ -55,3 +54,4 @@ export const lifeCycle:LifeCycleConfig = {
     routerAfterHooks: [],
     routerErrorHooks: []
 };
+

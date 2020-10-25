@@ -6,7 +6,6 @@ export interface H5Config {
     aliasCoverPath?:boolean; // 开始别名覆盖path的方式，关闭后页面可以通过 path aliasPath alias 访问
 	rewriteFun?: boolean; // 是否对uni-app reLaunch/navigateBack 两个方法重写 处理uni刷新直接返回到首页和触发路由守卫
 	paramsToQuery?: boolean; // h5端上通过params传参时规则是vue-router 刷新会丢失 开启此开关将变成?连接的方式
-	loading?: boolean; // 是否显示加载动画
 	vueRouterDev?: boolean; // 完全使用采用vue-router的开发模式
 	useUniConfig?: boolean; // 是否采用在pages.json下的所有页面配置信息,false时需开发者自行设置页面
 	keepUniIntercept?: boolean; // 保留uni-app使用vue-router的拦截器
@@ -34,6 +33,7 @@ export interface debuggerArrayConfig{
 
 export interface InstantiateConfig {
     [key:string]:any;
+    keepUniOriginNav:boolean; // 重写uni-app的跳转方法；使用uni-app的原始方法跳转和插件api跳转等同
     platform:'h5'|'app-plus'|'app-lets'|'mp-weixin'|'mp-baidu'|'mp-alipay'|'mp-toutiao'|'mp-qq'|'mp-360'; // 当前运行平台
 	h5?: H5Config;
 	APP?: AppConfig;

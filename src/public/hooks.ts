@@ -10,7 +10,7 @@ import {
     NAVTYPE,
     navErrorRule
 } from '../options/base';
-import {routesForMapRoute, getDataType} from '../helpers/utils'
+import {routesForMapRoute, getDataType, urlToJson} from '../helpers/utils'
 
 export const ERRORHOOK:Array<(error:navErrorRule, router:Router)=>void> = [
     (error, router) => router.lifeCycle.routerErrorHooks[0](error, router)
@@ -18,7 +18,7 @@ export const ERRORHOOK:Array<(error:navErrorRule, router:Router)=>void> = [
 export const HOOKLIST: hookListRule = [
     (router, to, from, toRoute) => callHook(router.lifeCycle.routerBeforeHooks[0], to, from, router),
     (router, to, from, toRoute) => {
-        const page = (window as any).getCurrentPages()[0];
+        const page = getCurrentPages()[0];
         let beforeRouteLeave;
         if (page != null) {
             const leaveHooks:Array<Function>|undefined = page.$options.beforeRouteLeave;
@@ -61,7 +61,7 @@ export function onTriggerEachHook(
     from: totalNextRoute,
     router:Router,
     hookType:hookToggle,
-    next?:(rule?: navtoRule)=>void, // afterEach 没有next
+    next?:(rule?: navtoRule|false)=>void, // afterEach 没有next
 ):void {
     let callHookList:hookListRule = [];
     if (hookType === 'beforeEach') {
@@ -69,9 +69,9 @@ export function onTriggerEachHook(
     } else {
         callHookList = HOOKLIST.slice(4);
     }
-    transitionTo(router, to, from, 'push', callHookList, () => {
+    transitionTo(router, to, from, 'push', callHookList, (nextTo?:navtoRule|false) => {
         if (typeof next === 'function') {
-            next();
+            next(nextTo);
         }
     });
 }
@@ -103,15 +103,31 @@ export function loopCallHook(
     const hook = hooks[index];
     const errHook = ERRORHOOK[0];
     hook(router, to, from, toRoute).then((nextTo:reloadNavRule):void => {
-        console.log('nextTo:' + nextTo)
         if (nextTo === false) {
             errHook({ type: 0, msg: '管道函数传递 false 导航被终止!', to, from, nextTo }, router)
         } else if (typeof nextTo === 'string' || typeof nextTo === 'object') {
-            if (typeof nextTo === 'object' && nextTo.NAVTYPE != null) {
+            let newNavType = navType;
+            let newTo = nextTo;
+            if (typeof nextTo === 'object') {
                 const {NAVTYPE: type, ...moreTo} = nextTo;
-                router[type](moreTo, from);
+                if (type != null) {
+                    newNavType = type;
+                }
+                newTo = moreTo;
             } else {
-                router[navType](nextTo, from);
+                const {path, query} = urlToJson(nextTo);
+                newTo = { path, query };
+            }
+            if (router.options.platform === 'h5') {
+                next({
+                    replace: newNavType !== 'push',
+                    ...newTo
+                })
+            } else {
+                router[navType]({
+                    ...newTo,
+                    NAVTYPE: newNavType
+                }, from);
             }
         } else if (nextTo == null) {
             index++;
