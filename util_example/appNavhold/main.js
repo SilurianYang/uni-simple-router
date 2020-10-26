@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import App from './App'
-import './common/navHold.js'
 
 console.log(process.env)
 
@@ -22,20 +21,18 @@ const router = createRouter({
 		console.log('-------------------------routerBeforeEach-------------------------------------')
 		console.log(to)
 		console.log(from);
-		setTimeout(()=>{
-			console.log('-------------------------routerBeforeEach结束-------------------------------------')
-			// if(to.name=='page2'){
-			// 	return next({
-			// 		name:'tab2',
-			// 		NAVTYPE:'replaceAll',
-			// 		params:{
-			// 			msg:'拦截page2到tab2',
-			// 			...to.query
-			// 		}
-			// 	})
-			// }
-			next()
-		},500)
+		console.log('-------------------------routerBeforeEach结束-------------------------------------')
+		if(to.name=='page2'){
+			// return next({
+			// 	name:'tab2',
+			// 	NAVTYPE:'replaceAll',
+			// 	params:{
+			// 		msg:'拦截page2到tab2',
+			// 		...to.query
+			// 	}
+			// })
+		}
+		next()
 	},
 	routerAfterEach: (to, from) => {
 		console.log('-------------------------routerAfterEach-------------------------------------')
@@ -49,7 +46,17 @@ const router = createRouter({
 		}
 	},
 	h5:{
-		aliasCoverPath:true
+		aliasCoverPath:true,
+		paramsToQuery: true,
+		     parseQuery (query) {
+			console.log(query)
+			return ''
+		     },      //object->string
+		//     stringifyQuery (obj) {
+		// 		debugger
+		// console.log(obj)
+		//      }
+		
 	},
 	debugger:true,
 	routes: [{
@@ -63,10 +70,8 @@ const router = createRouter({
 				console.log('-------------------------beforeEnter-------------------------------------')
 				console.log(to);
 				console.log(from);
-				setTimeout(()=>{
-					console.log('-------------------------beforeEnter结束-------------------------------------')
-					next();
-				},1000)
+				console.log('-------------------------beforeEnter结束-------------------------------------')
+				next();
 			  },
 			children: [{
 				path: '/pages/index/index',
@@ -100,25 +105,27 @@ const router = createRouter({
 			alias:'/pages/:name',
 		},
 		{
-			path:'*',
-			redirect:to=>{
-				if(whitelist[to]){
-					return {
-						name:whitelist[to]
-					}
-				}
-			}
-		}
+			path:'/pages/page3/page3',
+			name:'page3'
+		},
+		// {
+		// 	path:'*',
+		// 	redirect:to=>{
+		// 		if(whitelist[to]){
+		// 			return {
+		// 				name:whitelist[to]
+		// 			}
+		// 		}
+		// 	}
+		// }
 	],
 });
 router.beforeEach((to, from, next) => {
 	console.log('-------------------------beforeEach-------------------------------------')
 	console.log(to)
 	console.log(from)
-	setTimeout(()=>{
-		console.log('-------------------------beforeEach结束-------------------------------------')
-		next();
-	},500)
+	console.log('-------------------------beforeEach结束-------------------------------------')
+	next();
 })
 router.afterEach((to, from) => {
 	console.log('-------------------------afterEach-------------------------------------')
