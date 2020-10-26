@@ -4,7 +4,7 @@ import {lifeCycle} from './helpers/config';
 import {assertNewOptions, getDataType} from './helpers/utils';
 import {registerRouterHooks, registerEachHooks} from './helpers/lifeCycle';
 import {initMixins} from './helpers/mixins'
-import {navjump} from './public/methods'
+import {navjump, navBack} from './public/methods'
 import {proxyH5Mount} from './H5/proxyHook'
 import {rewriteMethod} from './public/rewrite'
 
@@ -29,7 +29,7 @@ function createRouter(params: InstantiateConfig):Router {
             navjump(to, router, 'pushTab', from);
         },
         back(level = 1, origin) {
-
+            navBack(this, level, origin)
         },
         preloadPage(rule):void{
 
@@ -74,6 +74,7 @@ function RouterMount(Vim:any, router:Router, el:string | undefined = '#app') :vo
 
     default:
         console.warn('其他端还没实现')
+        Vim.$mount();
         break;
     }
 }

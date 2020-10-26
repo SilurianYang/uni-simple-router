@@ -6,7 +6,8 @@ import {
     Router,
     rewriteMethodToggle,
     uniBackRule,
-    routesMapRule
+    routesMapRule,
+    uniBackApiRule
 } from '../options/base'
 
 import {
@@ -41,23 +42,40 @@ export function rewriteMethod(
     }
 }
 function callRouterMethod(
-    option: uniNavApiRule|uniBackRule|preloadPageRule,
+    option: uniNavApiRule|uniBackRule|preloadPageRule|uniBackApiRule,
     oldMethod:Function,
     funName:reNavMethodRule|reNotNavMethodRule,
     router:Router
 ): void {
     console.log(option);
+    if (funName === 'reLaunch' && JSON.stringify(option) === '{"url":"/"}') {
+        warn(
+            `uni-app 原生方法：reLaunch({url:'/'}) 默认被重写啦！你可以使用 this.$Router.replaceAll() 或者 uni.reLaunch({url:'/?xxx=xxx'})`,
+            router,
+            true
+        );
+        funName = 'navigateBack';
+        option = {
+            from: 'backbutton'
+        }
+    }
     if (funName === 'navigateBack') {
-        router.back(1, (option as uniBackRule));
+        let level:number = 1;
+        if (getDataType<number|undefined>((option as uniBackApiRule).delta) === '[object Number]') {
+            level = ((option as uniBackApiRule).delta as number);
+        }
+        router.back(level, (option as uniBackRule|uniBackApiRule));
     } else if (funName === 'preloadPage') {
         router.preloadPage((option as preloadPageRule));
     } else {
         const routerMethodName = rewriteMethodToggle[(funName as reNavMethodRule)]
         let path = (option as uniNavApiRule).url;
+        // eslint-disable-next-line no-unused-vars
+        const {url, detail, ...navArgs} = (option as uniNavApiRule);
         if (funName === 'switchTab') {
             const detail = (option as uniNavApiRule).detail;
             path = '/' + (detail as {pagePath:string}).pagePath;
-            const route = routesForMapRoute((router.routesMap as routesMapRule), path, 'pathMap')
+            const route = routesForMapRoute((router.routesMap as routesMapRule), path, ['pathMap', 'finallyPathList'])
             const {finallyPath} = getRoutePath(route);
             if (getDataType<string | string[]>(finallyPath) === '[object Array]') {
                 warn(
@@ -76,7 +94,8 @@ function callRouterMethod(
             path = (finallyPath as string);
         }
         router[routerMethodName]({
-            path
+            path,
+            ...navArgs
         })
     }
 }

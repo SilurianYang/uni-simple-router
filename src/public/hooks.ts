@@ -10,7 +10,12 @@ import {
     NAVTYPE,
     navErrorRule
 } from '../options/base';
-import {routesForMapRoute, getDataType, urlToJson} from '../helpers/utils'
+import {
+    routesForMapRoute,
+    getDataType,
+    urlToJson,
+    forMatNextToFrom
+} from '../helpers/utils'
 
 export const ERRORHOOK:Array<(error:navErrorRule, router:Router)=>void> = [
     (error, router) => router.lifeCycle.routerErrorHooks[0](error, router)
@@ -18,7 +23,8 @@ export const ERRORHOOK:Array<(error:navErrorRule, router:Router)=>void> = [
 export const HOOKLIST: hookListRule = [
     (router, to, from, toRoute) => callHook(router.lifeCycle.routerBeforeHooks[0], to, from, router),
     (router, to, from, toRoute) => {
-        const page = getCurrentPages()[0];
+        const pages = getCurrentPages();
+        const page = pages[pages.length - 1];
         let beforeRouteLeave;
         if (page != null) {
             const leaveHooks:Array<Function>|undefined = page.$options.beforeRouteLeave;
@@ -61,7 +67,7 @@ export function onTriggerEachHook(
     from: totalNextRoute,
     router:Router,
     hookType:hookToggle,
-    next?:(rule?: navtoRule|false)=>void, // afterEach 没有next
+    next:(rule?: navtoRule|false)=>void,
 ):void {
     let callHookList:hookListRule = [];
     if (hookType === 'beforeEach') {
@@ -69,11 +75,7 @@ export function onTriggerEachHook(
     } else {
         callHookList = HOOKLIST.slice(4);
     }
-    transitionTo(router, to, from, 'push', callHookList, (nextTo?:navtoRule|false) => {
-        if (typeof next === 'function') {
-            next(nextTo);
-        }
-    });
+    transitionTo(router, to, from, 'push', callHookList, next);
 }
 
 export function transitionTo(
@@ -96,15 +98,16 @@ export function loopCallHook(
     from: totalNextRoute,
     navType:NAVTYPE,
 ): void|Function {
-    const toRoute = routesForMapRoute((router.routesMap as routesMapRule), to.path, 'finallyPathMap');
+    const toRoute = routesForMapRoute((router.routesMap as routesMapRule), to.path, ['finallyPathMap', 'pathMap']);
     if (hooks.length - 1 < index) {
         return next();
     }
     const hook = hooks[index];
     const errHook = ERRORHOOK[0];
-    hook(router, to, from, toRoute).then((nextTo:reloadNavRule):void => {
+    const {matTo, matFrom} = forMatNextToFrom<totalNextRoute>(router, to, from);
+    hook(router, matTo, matFrom, toRoute).then((nextTo:reloadNavRule):void => {
         if (nextTo === false) {
-            errHook({ type: 0, msg: '管道函数传递 false 导航被终止!', to, from, nextTo }, router)
+            errHook({ type: 0, msg: '管道函数传递 false 导航被终止!', matTo, matFrom, nextTo }, router)
         } else if (typeof nextTo === 'string' || typeof nextTo === 'object') {
             let newNavType = navType;
             let newTo = nextTo;
@@ -133,7 +136,7 @@ export function loopCallHook(
             index++;
             loopCallHook(hooks, index, next, router, to, from, navType)
         } else {
-            errHook({ type: 1, msg: '管道函数传递未知类型，无法被识别。导航被终止！', to, from, nextTo }, router)
+            errHook({ type: 1, msg: '管道函数传递未知类型，无法被识别。导航被终止！', matTo, matFrom, nextTo }, router)
         }
     });
 }

@@ -28,8 +28,8 @@ export function createRouteMap(
         const strFinallyPath = (finallyPath as string);
         const strAliasPath = (aliasPath as string);
         if (router.options.platform !== 'h5') {
-            if (strFinallyPath.indexOf('/') !== 0) {
-                warn(`当前路由对象下，route：${route} 是否缺少了前缀 ‘/’`, router, true);
+            if (strFinallyPath.indexOf('/') !== 0 && path !== '*') {
+                warn(`当前路由对象下，route：${JSON.stringify(route)} 是否缺少了前缀 ‘/’`, router, true);
             }
         }
         if (!routesMap.finallyPathMap[strFinallyPath]) {

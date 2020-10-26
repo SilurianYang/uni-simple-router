@@ -7,8 +7,12 @@ export class MyArray extends Array {
     }
     push(v:any):any {
         this.vueEachArray.splice(0, 1, v);
-        this[this.length] = (to: totalNextRoute, from: totalNextRoute, next:(rule: navtoRule)=>void) => {
-            this.myEachHook(to, from, next, this.router, true);
+        this[this.length] = (to: totalNextRoute, from: totalNextRoute, next:(rule?: navtoRule|false)=>void) => {
+            this.myEachHook(to, from, (nextTo?:navtoRule|false) => {
+                this.vueEachArray[0](to, from, (uniNextTo?:navtoRule|false) => {
+                    next(nextTo);
+                })
+            }, this.router, true);
         };
     }
 }
@@ -26,7 +30,9 @@ export function proxyEachHook(router:Router, vueRouter:any):void {
 }
 export function proxyH5Mount(Vim:any, router:Router) {
     const vueRouter = (router.$route as any);
-    vueRouter.replace(vueRouter.currentRoute.fullPath, function(to:totalNextRoute):void {
+    vueRouter.replace({
+        path: vueRouter.currentRoute.fullPath
+    }, function(to:totalNextRoute):void {
         Vim.$mount();
     }, function(abort:any):void {
         console.log(abort)

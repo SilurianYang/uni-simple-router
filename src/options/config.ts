@@ -4,14 +4,9 @@ export type debuggerConfig=boolean|debuggerArrayConfig;
 
 export interface H5Config {
     aliasCoverPath?:boolean; // 开始别名覆盖path的方式，关闭后页面可以通过 path aliasPath alias 访问
-	rewriteFun?: boolean; // 是否对uni-app reLaunch/navigateBack 两个方法重写 处理uni刷新直接返回到首页和触发路由守卫
 	paramsToQuery?: boolean; // h5端上通过params传参时规则是vue-router 刷新会丢失 开启此开关将变成?连接的方式
 	vueRouterDev?: boolean; // 完全使用采用vue-router的开发模式
-	useUniConfig?: boolean; // 是否采用在pages.json下的所有页面配置信息,false时需开发者自行设置页面
-	keepUniIntercept?: boolean; // 保留uni-app使用vue-router的拦截器
 	vueNext?: boolean; // 在next管道函数中是否获取vueRouter next的原本参数
-	replaceStyle?: boolean; // 是否对resetStyle函数中返回的style节点进行全部替换，否则为追加
-	resetStyle?: Function; // 自定义加载样式函数 可返回一个包涵 html、style、script 的对象来重置Router内置的加载动画
 	mode?: string;
 	base?: string;
 	linkActiveClass?: string;

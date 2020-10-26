@@ -22,6 +22,7 @@ export type navRuleStatus=	0|1|2;  //0: next(false) 1:next(unknownType)
 export type proxyHookName='beforeHooks'|'afterHooks';
 export type navMethodRule = Promise<void | undefined | navRuleStatus>;
 export type hooksReturnRule = Promise<reloadNavRule>;
+export type objectAny={[propName: string]: any;};
 export type NAVTYPE = 'push' | 'replace' | 'replaceAll' | 'pushTab';
 export type startAnimationType =
 	| 'slide-in-right'
@@ -49,11 +50,11 @@ export interface navtoRule {
 	NAVTYPE?: NAVTYPE; // 跳转类型 v1.1.0+
 	path?: string; // 跳转路径 绝对路径
 	name?: string | undefined; // 跳转路径名称
-	query?: {[propName: string]: any}; // 跳转使用path时 query包含需要传递的参数
-	params?: {[propName: string]: any}; // 跳转使用name时 params包含需要传递的参数
+	query?: objectAny; // 跳转使用path时 query包含需要传递的参数
+	params?: objectAny; // 跳转使用name时 params包含需要传递的参数
 	animationType?: startAnimationType;
 	animationDuration?: number;
-	events?: {[propName: string]: any};
+	events?: objectAny;
 	success?: Function;
 	fail?: Function;
 	complete?: Function;
@@ -103,12 +104,23 @@ export interface navErrorRule {
 // uni原生api跳转时的规则
 export interface uniNavApiRule {
     url: string;
-    detail?:{[propName: string]: any};
-	[propName: string]: any;
+    detail?:{[propName:string]:any};
+    animationType?:startAnimationType;
+    animationDuration?:number;
+    events?:{[propName:string]:any};
+    success?:Function;
+    fail?:Function;
+    complete?:Function;
 }
 // uni-app 原始返回api 回调参数
 export interface uniBackRule{
     from:string;
+}
+
+export interface uniBackApiRule{
+    delta?: number;
+    animationDuration?: number;
+    animationType?:endAnimationType;
 }
 
 export type routesMapKeysRule=
@@ -120,14 +132,13 @@ export type routesMapKeysRule=
     'vueRouteMap';
 
 export interface routesMapRule{
+    [key:string]:any;
     finallyPathList: Array<string>;
     finallyPathMap:RoutesRule;
     aliasPathMap: RoutesRule;
     pathMap: RoutesRule;
     nameMap:RoutesRule,
-    vueRouteMap:{
-        [propName: string]:any
-    }
+    vueRouteMap:objectAny
 }
 
 export interface RoutesRule {
@@ -157,7 +168,7 @@ export interface Router {
 	replace(to: totalNextRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 URL 关闭当前页面，跳转到的某个页面。
 	replaceAll(to: totalNextRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 URL 关闭所有页面，打开到应用内的某个页面
 	pushTab(to: totalNextRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 url 关闭所有页面，打开到应用内的某个tab
-    back(level:number|undefined,origin?:uniBackRule):void;
+    back(level:number|undefined,origin?:uniBackRule|uniBackApiRule):void;
     preloadPage(rule:preloadPageRule):void;     //预加载页面
     beforeEach(userGuard:guardHookRule): void; // 添加全局前置路由守卫
     afterEach(userGuard:(to: totalNextRoute, from: totalNextRoute)=>void): void; // 添加全局后置路由守卫

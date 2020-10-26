@@ -18,7 +18,7 @@ export function queryPageToMap(
         const objNavRule = (toRule as totalNextRoute);
         if (objNavRule.path != null) {
             const {path, query: newQuery} = urlToJson(objNavRule.path);
-            route = routesForMapRoute((router.routesMap as routesMapRule), path, 'finallyPathList')
+            route = routesForMapRoute((router.routesMap as routesMapRule), path, ['finallyPathList', 'pathMap'])
             query = {...newQuery, ...((toRule as totalNextRoute).query || {})};
         } else if (objNavRule.name != null) {
             route = (router.routesMap as routesMapRule).nameMap[objNavRule.name];
@@ -32,7 +32,7 @@ export function queryPageToMap(
         }
     } else {
         const {path, query: newQuery} = urlToJson((toRule as string));
-        route = routesForMapRoute((router.routesMap as routesMapRule), path, 'finallyPathList')
+        route = routesForMapRoute((router.routesMap as routesMapRule), path, ['finallyPathList', 'pathMap'])
         query = newQuery;
     }
     if (router.options.platform === 'h5') {

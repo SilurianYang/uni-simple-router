@@ -6,19 +6,14 @@ export const mpPlatformReg = /(^mp-weixin$)|(^mp-baidu$)|(^mp-alipay$)|(^mp-tout
 export const baseConfig:InstantiateConfig = {
     h5: {
         aliasCoverPath: false,
-        rewriteFun: true,
         paramsToQuery: false,
         vueRouterDev: false,
-        useUniConfig: true,
-        keepUniIntercept: false,
         vueNext: false,
-        replaceStyle: false,
-        resetStyle: () => JSON.parse('{}'),
         mode: 'hash',
         base: '/',
         linkActiveClass: 'router-link-active',
         linkExactActiveClass: 'router-link-exact-active',
-        scrollBehavior: (to:any, from:any, savedPostion:Function) => savedPostion,
+        scrollBehavior: (to:any, from:any, savedPostion:Function) => ({ x: 0, y: 0 }),
         fallback: true
     },
     APP: {

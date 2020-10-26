@@ -24,7 +24,13 @@ export function registerRouterHooks<T extends LifeCycleConfig>(cycleHooks:T, opt
 }
 
 export function registerEachHooks(router:Router, hookType:proxyHookName, userGuard:guardHookRule) {
-    registerHook(router.lifeCycle[hookType], function(to:totalNextRoute, from: totalNextRoute, next:(rule?: navtoRule|false)=>void, router:Router, auto:boolean):void {
+    registerHook(router.lifeCycle[hookType], function(
+        to:totalNextRoute,
+        from: totalNextRoute,
+        next:(rule?: navtoRule|false)=>void,
+        router:Router,
+        auto:boolean,
+    ):void {
         if (auto) { // h5端 vue-router自动触发 非自己调用触发
             onTriggerEachHook(to, from, router, hookToggle[hookType], next)
         } else {

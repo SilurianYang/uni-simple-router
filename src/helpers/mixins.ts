@@ -1,8 +1,9 @@
-import {Router, routesMapRule} from '../options/base';
+import {Router, routesMapRule, RoutesRule} from '../options/base';
 import {createRouteMap} from '../helpers/createRouteMap'
 import {buildVueRoutes, buildVueRouter} from '../H5/buildRouter'
 import {proxyEachHook} from '../H5/proxyHook'
 import {mpPlatformReg} from './config'
+import { H5Config } from '../options/config';
 
 export function getMixins(router: Router):{
     beforeCreate(this: any): void;
@@ -20,9 +21,14 @@ export function getMixins(router: Router):{
             beforeCreate(this: any): void {
                 if (this.$options.router) {
                     router.$route = this.$options.router; // 挂载vue-router到路由对象下
-                    const {finallyPathMap: vueRouteMap} = createRouteMap(router, this.$options.router.options.routes);
-                    (router.routesMap as routesMapRule).vueRouteMap = vueRouteMap;
-                    buildVueRoutes(router, vueRouteMap);
+                    let vueRouteMap:RoutesRule[]|RoutesRule = [];
+                    if ((router.options.h5 as H5Config).vueRouterDev) {
+                        vueRouteMap = router.options.routes;
+                    } else {
+                        vueRouteMap = createRouteMap(router, this.$options.router.options.routes).finallyPathMap;
+                        (router.routesMap as routesMapRule).vueRouteMap = vueRouteMap;
+                        buildVueRoutes(router, vueRouteMap);
+                    }
                     buildVueRouter(router, this.$options.router, vueRouteMap);
                     proxyEachHook(router, this.$options.router);
                 }

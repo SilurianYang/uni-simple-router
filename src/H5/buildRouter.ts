@@ -1,7 +1,7 @@
-import {RoutesRule, Router, routesMapRule} from '../options/base';
+import {RoutesRule, Router, routesMapRule, totalNextRoute} from '../options/base';
 import {H5Config} from '../options/config';
 import {warn} from '../helpers/warn'
-import {getRoutePath} from '../helpers/utils'
+import {getDataType, getRoutePath} from '../helpers/utils'
 
 export function buildVueRoutes(router: Router, vueRouteMap:RoutesRule):RoutesRule {
     const {pathMap, finallyPathList} = (router.routesMap as routesMapRule);
@@ -40,19 +40,31 @@ export function buildVueRoutes(router: Router, vueRouteMap:RoutesRule):RoutesRul
     return vueRouteMap
 }
 
-export function buildVueRouter(router:Router, vueRouter:any, vueRouteMap:RoutesRule) :void |never {
-    const routes:RoutesRule[] = Object.values(vueRouteMap);
-
+export function buildVueRouter(router:Router, vueRouter:any, vueRouteMap:RoutesRule|RoutesRule[]) :void |never {
+    let routes:RoutesRule[] = [];
+    if (getDataType<RoutesRule|RoutesRule[]>(vueRouteMap) === '[object Array]') {
+        routes = (vueRouteMap as RoutesRule[]);
+    } else {
+        routes = Object.values(vueRouteMap);
+    }
+    const {scrollBehavior, fallback} = router.options.h5 as H5Config;
+    const oldScrollBehavior = vueRouter.options.scrollBehavior;
+    vueRouter.options.scrollBehavior = function proxyScrollBehavior(
+        to:totalNextRoute,
+        from:totalNextRoute,
+        savedPosition:any
+    ) {
+        oldScrollBehavior && oldScrollBehavior(to, from, savedPosition);
+        return (scrollBehavior as Function)(to, from, savedPosition)
+    }
+    vueRouter.fallback = fallback;
     // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
     const newVueRouter:any = new vueRouter.constructor({
         ...router.options.h5,
+        base: vueRouter.options.base,
+        mode: vueRouter.options.mode,
         routes
     });
     vueRouter.matcher = newVueRouter.matcher;
     console.log('实例化完成')
-    // const [mount] = router.mount;
-    // if (mount == null) {
-    //     throw new Error(`你真的不需要挂载实例吗？要不要试试\r\n\r\n RouterMount(Vim:any, router:Router, el:string | undefined = '#app') :void|never \r\n`);
-    // }
-    // mount.app.$mount();
 }
