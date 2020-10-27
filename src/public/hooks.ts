@@ -14,7 +14,8 @@ import {
     routesForMapRoute,
     getDataType,
     urlToJson,
-    forMatNextToFrom
+    forMatNextToFrom,
+    paramsToQuery
 } from '../helpers/utils'
 
 export const ERRORHOOK:Array<(error:navErrorRule, router:Router)=>void> = [
@@ -122,9 +123,10 @@ export function loopCallHook(
                 newTo = { path, query };
             }
             if (router.options.platform === 'h5') {
+                const toRule = paramsToQuery(router, newTo);
                 next({
                     replace: newNavType !== 'push',
-                    ...newTo
+                    ...(toRule as totalNextRoute)
                 })
             } else {
                 router[navType]({

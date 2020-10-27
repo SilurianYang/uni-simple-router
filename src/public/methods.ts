@@ -1,5 +1,5 @@
 import { NAVTYPE, Router, uniBackApiRule, totalNextRoute, uniBackRule} from '../options/base'
-import {queryPageToMap} from './page'
+import {queryPageToMap, resolveQuery} from './query'
 import {voidFun, paramsToQuery} from '../helpers/utils'
 
 export function navjump(
@@ -8,13 +8,15 @@ export function navjump(
     navType:NAVTYPE,
     from?:totalNextRoute
 ) :void{
+    debugger
     const {rule} = queryPageToMap(to, router);
+    const toRule = paramsToQuery(router, rule);
+    const parseToRule = resolveQuery(toRule as totalNextRoute);
     if (router.options.platform === 'h5') {
         if (navType !== 'push') {
             navType = 'replace';
         }
-        const toRule = paramsToQuery(router, rule);
-        (router.$route as any)[navType](toRule, (toRule as totalNextRoute).success || voidFun, (toRule as totalNextRoute).fail || voidFun)
+        (router.$route as any)[navType](parseToRule, (parseToRule as totalNextRoute).success || voidFun, (parseToRule as totalNextRoute).fail || voidFun)
     } else {
         // transitionTo(router, toRule, from, navType, HOOKLIST, function() {
         //     console.log('跳转完成')

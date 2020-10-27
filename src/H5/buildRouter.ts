@@ -6,7 +6,6 @@ import {getDataType, getRoutePath} from '../helpers/utils'
 export function buildVueRoutes(router: Router, vueRouteMap:RoutesRule):RoutesRule {
     const {pathMap, finallyPathList} = (router.routesMap as routesMapRule);
     const vueRoutePathList:Array<string> = Object.keys(vueRouteMap);
-    const h5Options = (router.options.h5 as H5Config);
     for (let i = 0; i < vueRoutePathList.length; i++) {
         const path = vueRoutePathList[i];
         const myRoute:RoutesRule = pathMap[path];
@@ -14,19 +13,20 @@ export function buildVueRoutes(router: Router, vueRouteMap:RoutesRule):RoutesRul
         if (!myRoute) {
             warn(`${path} 路由地址在路由表中未找到，确定是否传递漏啦`, router, true);
         } else {
-            const {finallyPath, alias} = getRoutePath(myRoute);
+            const {finallyPath} = getRoutePath(myRoute);
             if (finallyPath instanceof Array) {
                 throw new Error(`非 vueRouterDev 模式下，alias、aliasPath、path 无法提供数组类型！ ${JSON.stringify(myRoute)}`);
             }
             if (myRoute.name != null) {
                 vueRoute.name = myRoute.name;
             }
-            if (h5Options.aliasCoverPath) {
-                vueRoute['path'] = (finallyPath as string);
-            } else {
-                if (alias != null) {
-                    vueRoute['alias'] = alias;
-                }
+            const vuePath = vueRoute['path'];
+            const vueAlias = vueRoute['alias'];
+            delete vueRoute['alias'];
+            vueRoute['path'] = (finallyPath as string);
+            if (vuePath === '/' && vueAlias != null) {
+                vueRoute['alias'] = vueAlias;
+                vueRoute['path'] = vuePath;
             }
             const beforeEnter = myRoute.beforeEnter;
             if (beforeEnter) {
@@ -66,5 +66,4 @@ export function buildVueRouter(router:Router, vueRouter:any, vueRouteMap:RoutesR
         routes
     });
     vueRouter.matcher = newVueRouter.matcher;
-    console.log('实例化完成')
 }

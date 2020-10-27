@@ -5,7 +5,6 @@ export const mpPlatformReg = /(^mp-weixin$)|(^mp-baidu$)|(^mp-alipay$)|(^mp-tout
 
 export const baseConfig:InstantiateConfig = {
     h5: {
-        aliasCoverPath: false,
         paramsToQuery: false,
         vueRouterDev: false,
         vueNext: false,

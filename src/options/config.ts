@@ -3,7 +3,6 @@ import {startAnimationRule, hookListRule, RoutesRule, navtoRule, navErrorRule, R
 export type debuggerConfig=boolean|debuggerArrayConfig;
 
 export interface H5Config {
-    aliasCoverPath?:boolean; // 开始别名覆盖path的方式，关闭后页面可以通过 path aliasPath alias 访问
 	paramsToQuery?: boolean; // h5端上通过params传参时规则是vue-router 刷新会丢失 开启此开关将变成?连接的方式
 	vueRouterDev?: boolean; // 完全使用采用vue-router的开发模式
 	vueNext?: boolean; // 在next管道函数中是否获取vueRouter next的原本参数

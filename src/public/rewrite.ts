@@ -70,6 +70,13 @@ function callRouterMethod(
     } else {
         const routerMethodName = rewriteMethodToggle[(funName as reNavMethodRule)]
         let path = (option as uniNavApiRule).url;
+        if (!path.startsWith('/')) {
+            warn(
+                `uni-app 原生方法被重写时，只能使用绝对路径进行跳转。${JSON.stringify(option)}`,
+                router,
+                true
+            );
+        }
         // eslint-disable-next-line no-unused-vars
         const {url, detail, ...navArgs} = (option as uniNavApiRule);
         if (funName === 'switchTab') {

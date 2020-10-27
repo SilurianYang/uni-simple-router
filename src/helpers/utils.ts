@@ -2,6 +2,7 @@ import {H5Config, InstantiateConfig} from '../options/config';
 import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, objectAny} from '../options/base';
 import {baseConfig} from '../helpers/config';
 import {ERRORHOOK} from '../public/hooks'
+import {warnLock} from '../helpers/warn'
 const Regexp = require('path-to-regexp');
 
 export function voidFun():void{}
@@ -135,26 +136,35 @@ export function forMatNextToFrom<T extends totalNextRoute>(
     if (router.options.platform === 'h5') {
         const {vueNext, vueRouterDev} = (router.options.h5 as H5Config);
         if (!vueNext && !vueRouterDev) {
-            const toRoute = routesForMapRoute((router.routesMap as routesMapRule), to.path, ['finallyPathMap', 'pathMap']);
-            const fromRoute = routesForMapRoute((router.routesMap as routesMapRule), from.path, ['finallyPathMap', 'pathMap']);
-            const matToParams = copyData(to.params as objectAny);
-            const matFromParams = copyData(from.params as objectAny);
+            const toRoute = routesForMapRoute((router.routesMap as routesMapRule), matTo.path, ['finallyPathMap', 'pathMap']);
+            const fromRoute = routesForMapRoute((router.routesMap as routesMapRule), matFrom.path, ['finallyPathMap', 'pathMap']);
+            const matToParams = copyData(matTo.params as objectAny);
+            const matFromParams = copyData(matFrom.params as objectAny);
 
             delete matToParams.__id__;
             delete matFromParams.__id__;
             matTo = ({
                 ...toRoute,
-                fullPath: to.fullPath,
-                params: matToParams,
-                query: copyData(to.query as objectAny)
+                fullPath: matTo.fullPath,
+                params: {},
+                query: {
+                    ...matToParams,
+                    ...copyData(matTo.query as objectAny)
+                }
             } as T);
             matFrom = ({
                 ...fromRoute,
-                fullPath: from.fullPath,
-                params: matFromParams,
-                query: copyData(from.query as objectAny)
+                fullPath: matFrom.fullPath,
+                params: {},
+                query: {
+                    ...matFromParams,
+                    ...copyData(matFrom.query as objectAny)
+                }
             }as T)
         }
+    } else {
+        matTo = copyData(matTo) as T;
+        matFrom = copyData(matFrom) as T;
     }
     return {
         matTo: matTo,
@@ -166,6 +176,9 @@ export function paramsToQuery(
     router:Router,
     toRule:totalNextRoute|string
 ):totalNextRoute|string {
+    if (router.options.platform !== 'h5') {
+        return toRule;
+    }
     if (!(router.options.h5 as H5Config).paramsToQuery) {
         return toRule
     }
@@ -188,4 +201,21 @@ export function paramsToQuery(
         }
     }
     return toRule
+}
+
+export function assertDeepObject(object:objectAny):boolean {
+    const str = JSON.stringify(object);
+    let arrMark = null;
+    try {
+        arrMark = JSON.stringify(str).match(/{|[|}|]/g);
+    } catch (error) {
+        warnLock(`传递的参数解析对象失败。` + error)
+    }
+    if (arrMark == null) {
+        return false
+    }
+    if (arrMark.length > 3) {
+        return true;
+    }
+    return false
 }
