@@ -58,25 +58,37 @@
 						},
 						params:{
 							name:123,
-							ages:10086
+							ags:10086,
+							list:[
+								{
+									id:1
+								},
+								{
+									id:2
+								}
+							]
 						}
 				})
+				
 				// console.log('-------------------------------')
 				// this.$Router.push({
-				// 	path:'/pages',
-				// 		query:{
-				// 			name:123,
-				// 			ages:10086
-				// 		}
+				// 	path:'/pages/page2/page2',
+				// 	query:{
+				// 		name:123,
+				// 		ages:10086
+				// 	}
 				// })
-				// console.log('-------------------------------')
-				// this.$Router.push('/1111')
+				console.log('-------------------------------')
+				// this.$Router.push('/pages/page2/page2?id=122121&name=4411')
 				
-				// this.$router.push({
+				// this.$Router.push({
 				// 	name:'page2',
-				// 	// params:{
-				// 	// 	name:123
-				// 	// }
+				// 	params:{
+				// 		name:123
+				// 	},
+				// 	query:{
+				// 		ages:454545
+				// 	}
 				// })
 				
 				// uni.navigateTo({

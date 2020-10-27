@@ -22,16 +22,19 @@ const router = createRouter({
 		console.log(to)
 		console.log(from);
 		console.log('-------------------------routerBeforeEach结束-------------------------------------')
-		if(to.name=='page2'){
-			// return next({
-			// 	name:'tab2',
-			// 	NAVTYPE:'replaceAll',
-			// 	params:{
-			// 		msg:'拦截page2到tab2',
-			// 		...to.query
-			// 	}
-			// })
-		}
+		// if(to.name=='page2'){
+		// 	return next({
+		// 		name:'tab2',
+		// 		NAVTYPE:'replaceAll',
+		// 		success:()=>{
+		// 			alert('跳转成功')
+		// 		},
+		// 		params:{
+		// 			msg:'拦截page2到tab2',
+		// 			...to.query
+		// 		}
+		// 	})
+		// }
 		next()
 	},
 	routerAfterEach: (to, from) => {
@@ -46,22 +49,12 @@ const router = createRouter({
 		}
 	},
 	h5:{
-		aliasCoverPath:true,
-		paramsToQuery: true,
-		     parseQuery (query) {
-			console.log(query)
-			return ''
-		     },      //object->string
-		//     stringifyQuery (obj) {
-		// 		debugger
-		// console.log(obj)
-		//      }
-		
+		paramsToQuery: false,
 	},
 	debugger:true,
 	routes: [{
+			aliasPath:'/',
 			path: '/pages/index/index',
-			alias:'/',
 			name: 'index',
 			style: {
 				navigationBarTitleText: 'uni-app'
@@ -73,17 +66,10 @@ const router = createRouter({
 				console.log('-------------------------beforeEnter结束-------------------------------------')
 				next();
 			  },
-			children: [{
-				path: '/pages/index/index',
-				name: 'index',
-				style: {
-					navigationBarTitleText: 'uni-app'
-				},
-			}]
 		},
 		{
 			path: '/pages/tab1/tab1',
-			alias:'/tab1',
+			// alias:'/tab1',
 			name: 'tab1',
 			style: {
 				navigationBarTitleText: '',
@@ -92,7 +78,7 @@ const router = createRouter({
 		},
 		{
 			path: '/pages/tab2/tab2',
-			alias:'/tab2',
+			//alias:'/tab2',
 			name:'tab2',
 			style: {
 				navigationBarTitleText: '',
@@ -102,11 +88,12 @@ const router = createRouter({
 		{
 			path:'/pages/page2/page2',
 			name:'page2',
-			alias:'/pages/:name',
+			//alias:'/pages/:name',
 		},
 		{
 			path:'/pages/page3/page3',
-			name:'page3'
+			name:'page3',
+			//alias:'/page3'
 		},
 		// {
 		// 	path:'*',
