@@ -4,7 +4,7 @@ import {lifeCycle} from './helpers/config';
 import {assertNewOptions, getDataType} from './helpers/utils';
 import {registerRouterHooks, registerEachHooks} from './helpers/lifeCycle';
 import {initMixins} from './helpers/mixins'
-import {navjump, navBack} from './public/methods'
+import {navjump, navBack, createRoute} from './public/methods'
 import {proxyH5Mount} from './H5/proxyHook'
 import {rewriteMethod} from './public/rewrite'
 
@@ -16,17 +16,17 @@ function createRouter(params: InstantiateConfig):Router {
         $route: null,
         routesMap: {},
         lifeCycle: registerRouterHooks<LifeCycleConfig>(lifeCycle, options),
-        push(to, from) {
-            navjump(to, router, 'push', from);
+        push(to) {
+            navjump(to, router, 'push');
         },
-        replace(to, from) {
-            navjump(to, router, 'replace', from);
+        replace(to) {
+            navjump(to, router, 'replace');
         },
-        replaceAll(to, from) {
-            navjump(to, router, 'replaceAll', from);
+        replaceAll(to) {
+            navjump(to, router, 'replaceAll');
         },
-        pushTab(to, from) {
-            navjump(to, router, 'pushTab', from);
+        pushTab(to) {
+            navjump(to, router, 'pushTab');
         },
         back(level = 1, origin) {
             navBack(this, level, origin)
@@ -50,7 +50,7 @@ function createRouter(params: InstantiateConfig):Router {
             });
             Object.defineProperty(Vue.prototype, '$Route', {
                 get() {
-                    return 22;
+                    return createRoute(router);
                 }
             });
         }

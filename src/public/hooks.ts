@@ -5,7 +5,6 @@ import {
     navtoRule,
     reloadNavRule,
     totalNextRoute,
-    routesMapRule,
     hookToggle,
     NAVTYPE,
     navErrorRule
@@ -13,10 +12,9 @@ import {
 import {
     routesForMapRoute,
     getDataType,
-    urlToJson,
-    forMatNextToFrom,
-    paramsToQuery
+    forMatNextToFrom
 } from '../helpers/utils'
+import { navjump } from './methods';
 
 export const ERRORHOOK:Array<(error:navErrorRule, router:Router)=>void> = [
     (error, router) => router.lifeCycle.routerErrorHooks[0](error, router)
@@ -71,10 +69,16 @@ export function onTriggerEachHook(
     next:(rule?: navtoRule|false)=>void,
 ):void {
     let callHookList:hookListRule = [];
-    if (hookType === 'beforeEach') {
+    switch (hookType) {
+    case 'beforeEach':
         callHookList = HOOKLIST.slice(0, 3);
-    } else {
+        break;
+    case 'afterEach':
         callHookList = HOOKLIST.slice(4);
+        break
+    case 'beforeEnter':
+        callHookList = HOOKLIST.slice(3, 4);
+        break;
     }
     transitionTo(router, to, from, 'push', callHookList, next);
 }
@@ -99,7 +103,7 @@ export function loopCallHook(
     from: totalNextRoute,
     navType:NAVTYPE,
 ): void|Function {
-    const toRoute = routesForMapRoute((router.routesMap as routesMapRule), to.path, ['finallyPathMap', 'pathMap']);
+    const toRoute = routesForMapRoute(router, to.path, ['finallyPathMap', 'pathMap']);
     if (hooks.length - 1 < index) {
         return next();
     }
@@ -111,29 +115,15 @@ export function loopCallHook(
             errHook({ type: 0, msg: '管道函数传递 false 导航被终止!', matTo, matFrom, nextTo }, router)
         } else if (typeof nextTo === 'string' || typeof nextTo === 'object') {
             let newNavType = navType;
-            let newTo = nextTo;
+            let newNextTo = nextTo;
             if (typeof nextTo === 'object') {
                 const {NAVTYPE: type, ...moreTo} = nextTo;
+                newNextTo = moreTo;
                 if (type != null) {
                     newNavType = type;
                 }
-                newTo = moreTo;
-            } else {
-                const {path, query} = urlToJson(nextTo);
-                newTo = { path, query };
             }
-            if (router.options.platform === 'h5') {
-                const toRule = paramsToQuery(router, newTo);
-                next({
-                    replace: newNavType !== 'push',
-                    ...(toRule as totalNextRoute)
-                })
-            } else {
-                router[navType]({
-                    ...newTo,
-                    NAVTYPE: newNavType
-                }, from);
-            }
+            navjump(newNextTo, router, newNavType, {from, next})
         } else if (nextTo == null) {
             index++;
             loopCallHook(hooks, index, next, router, to, from, navType)

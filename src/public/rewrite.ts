@@ -6,7 +6,6 @@ import {
     Router,
     rewriteMethodToggle,
     uniBackRule,
-    routesMapRule,
     uniBackApiRule
 } from '../options/base'
 
@@ -82,7 +81,7 @@ function callRouterMethod(
         if (funName === 'switchTab') {
             const detail = (option as uniNavApiRule).detail;
             path = '/' + (detail as {pagePath:string}).pagePath;
-            const route = routesForMapRoute((router.routesMap as routesMapRule), path, ['pathMap', 'finallyPathList'])
+            const route = routesForMapRoute(router, path, ['pathMap', 'finallyPathList'])
             const {finallyPath} = getRoutePath(route);
             if (getDataType<string | string[]>(finallyPath) === '[object Array]') {
                 warn(

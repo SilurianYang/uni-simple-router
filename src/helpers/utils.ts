@@ -3,13 +3,14 @@ import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, ob
 import {baseConfig} from '../helpers/config';
 import {ERRORHOOK} from '../public/hooks'
 import {warnLock} from '../helpers/warn'
+import {parseQuery} from '../public/query'
 const Regexp = require('path-to-regexp');
 
 export function voidFun():void{}
 
 export function mergeConfig<T extends InstantiateConfig>(baseConfig: T, userConfig: T): T {
     const config: {[key: string]: any} = Object.create(null);
-    const baseConfigKeys: Array<string> = Object.keys(baseConfig);
+    const baseConfigKeys: Array<string> = Object.keys(baseConfig).concat(['resolveQuery', 'parseQuery']);
     for (let i = 0; i < baseConfigKeys.length; i += 1) {
         const key = baseConfigKeys[i];
         if (userConfig[key] != null) {
@@ -58,15 +59,24 @@ export function assertNewOptions<T extends InstantiateConfig>(
     if (routes == null || routes.length === 0) {
         throw new Error(`你在实例化路由时必须传递 routes 为空，这是无意义的。`);
     }
+    if (options.platform === 'h5') {
+        if (options.h5?.vueRouterDev) {
+            baseConfig.routes = [];
+        }
+    }
     const mergeOptions = mergeConfig<T>(baseConfig as T, options);
     return mergeOptions;
 }
 
 export function routesForMapRoute(
-    routesMap: routesMapRule,
+    router: Router,
     path: string,
     mapArrayKey:Array<routesMapKeysRule>
 ):RoutesRule|never {
+    if (router.options.h5?.vueRouterDev) {
+        return {path}
+    }
+    const routesMap = (router.routesMap as routesMapRule);
     for (let i = 0; i < mapArrayKey.length; i++) {
         const mapKey = mapArrayKey[i];
         const mapList = routesMap[mapKey];
@@ -97,7 +107,7 @@ export function copyData(object:objectAny): objectAny {
     return JSON.parse(JSON.stringify(object))
 }
 
-export function getUniCachePage<T extends Array<objectAny>>(pageIndex?:number):T|{[propName:string]:any} {
+export function getUniCachePage<T extends objectAny>(pageIndex?:number):T {
     const pages:T = getCurrentPages();
     if (pageIndex == null) {
         return pages
@@ -136,30 +146,27 @@ export function forMatNextToFrom<T extends totalNextRoute>(
     if (router.options.platform === 'h5') {
         const {vueNext, vueRouterDev} = (router.options.h5 as H5Config);
         if (!vueNext && !vueRouterDev) {
-            const toRoute = routesForMapRoute((router.routesMap as routesMapRule), matTo.path, ['finallyPathMap', 'pathMap']);
-            const fromRoute = routesForMapRoute((router.routesMap as routesMapRule), matFrom.path, ['finallyPathMap', 'pathMap']);
+            const toRoute = routesForMapRoute(router, matTo.path, ['finallyPathMap', 'pathMap']);
+            const fromRoute = routesForMapRoute(router, matFrom.path, ['finallyPathMap', 'pathMap']);
             const matToParams = copyData(matTo.params as objectAny);
             const matFromParams = copyData(matFrom.params as objectAny);
 
             delete matToParams.__id__;
             delete matFromParams.__id__;
+
+            const toQuery = parseQuery({...matToParams, ...copyData(matTo.query as objectAny)}, router);
+            const fromQuery = parseQuery({...matFromParams, ...copyData(matFrom.query as objectAny)}, router);
             matTo = ({
                 ...toRoute,
                 fullPath: matTo.fullPath,
                 params: {},
-                query: {
-                    ...matToParams,
-                    ...copyData(matTo.query as objectAny)
-                }
+                query: toQuery
             } as T);
             matFrom = ({
                 ...fromRoute,
                 fullPath: matFrom.fullPath,
                 params: {},
-                query: {
-                    ...matFromParams,
-                    ...copyData(matFrom.query as objectAny)
-                }
+                query: fromQuery
             }as T)
         }
     } else {
@@ -204,10 +211,9 @@ export function paramsToQuery(
 }
 
 export function assertDeepObject(object:objectAny):boolean {
-    const str = JSON.stringify(object);
     let arrMark = null;
     try {
-        arrMark = JSON.stringify(str).match(/{|[|}|]/g);
+        arrMark = JSON.stringify(object).match(/\{|\[|\}|\]/g);
     } catch (error) {
         warnLock(`传递的参数解析对象失败。` + error)
     }

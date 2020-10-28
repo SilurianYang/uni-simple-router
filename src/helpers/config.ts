@@ -24,7 +24,6 @@ export const baseConfig:InstantiateConfig = {
     platform: 'h5',
     keepUniOriginNav: false,
     debugger: false,
-    encodeURI: true,
     routerBeforeEach: (to, from, next) => { next() },
     routerAfterEach: (to, from) => {},
     routerErrorEach: (error, router) => { err(error, router, true) },

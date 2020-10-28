@@ -1,7 +1,8 @@
-import {RoutesRule, Router, routesMapRule, totalNextRoute} from '../options/base';
+import {RoutesRule, Router, routesMapRule, totalNextRoute, hookToggle, navtoRule} from '../options/base';
 import {H5Config} from '../options/config';
 import {warn} from '../helpers/warn'
 import {getDataType, getRoutePath} from '../helpers/utils'
+import { onTriggerEachHook } from '../public/hooks';
 
 export function buildVueRoutes(router: Router, vueRouteMap:RoutesRule):RoutesRule {
     const {pathMap, finallyPathList} = (router.routesMap as routesMapRule);
@@ -30,7 +31,13 @@ export function buildVueRoutes(router: Router, vueRouteMap:RoutesRule):RoutesRul
             }
             const beforeEnter = myRoute.beforeEnter;
             if (beforeEnter) {
-                vueRoute['beforeEnter'] = beforeEnter;
+                vueRoute['beforeEnter'] = function(
+                    to:totalNextRoute,
+                    from: totalNextRoute,
+                    next:(rule?: navtoRule|false)=>void,
+                ):void{
+                    onTriggerEachHook(to, from, router, hookToggle['enterHooks'], next)
+                };
             }
         }
     }

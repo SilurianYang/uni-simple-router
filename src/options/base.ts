@@ -2,7 +2,8 @@ import {InstantiateConfig, LifeCycleConfig} from '../options/config';
 
 export enum hookToggle{
     'beforeHooks'='beforeEach',
-    'afterHooks'='afterEach'
+    'afterHooks'='afterEach',
+    'enterHooks'='beforeEnter'
 }
 export enum rewriteMethodToggle{
     'navigateTo'='push',
@@ -17,7 +18,7 @@ export type reNavMethodRule='navigateTo'|'redirectTo'|'reLaunch'|'switchTab';
 export type reNotNavMethodRule='navigateBack'|'preloadPage';
 export type reloadNavRule=totalNextRoute | false | undefined|string;
 export type hookListRule=Array<(router:Router, to:totalNextRoute, from: totalNextRoute, toRoute:RoutesRule)=>hooksReturnRule>
-export type guardHookRule=(to: totalNextRoute, from: totalNextRoute, next:(rule?: navtoRule)=>void)=>void;
+export type guardHookRule=(to: totalNextRoute, from: totalNextRoute, next:(rule?: navtoRule|false)=>void)=>void;
 export type navRuleStatus=	0|1|2;  //0: next(false) 1:next(unknownType)
 export type proxyHookName='beforeHooks'|'afterHooks';
 export type navMethodRule = Promise<void | undefined | navRuleStatus>;
@@ -140,6 +141,18 @@ export interface routesMapRule{
     nameMap:RoutesRule,
     vueRouteMap:objectAny
 }
+
+export interface routeRule{
+    name:string|undefined;
+    meta:objectAny;
+    path:string;
+    query:objectAny;
+    params:objectAny;
+    fullPath:string;
+    NAVTYPE:NAVTYPE|'';
+    [propName: string]: any;
+}
+
 
 export interface RoutesRule {
 	path: string; // pages.json中的path 必须加上 '/' 开头

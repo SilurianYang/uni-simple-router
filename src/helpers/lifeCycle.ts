@@ -11,7 +11,7 @@ export function registerHook(list:Array<Function>, fn:Function):Function {
 }
 
 export function registerRouterHooks<T extends LifeCycleConfig>(cycleHooks:T, options:InstantiateConfig):T {
-    registerHook(cycleHooks.routerBeforeHooks, function(to:totalNextRoute, from: totalNextRoute, next:(rule: navtoRule)=>void):void {
+    registerHook(cycleHooks.routerBeforeHooks, function(to:totalNextRoute, from: totalNextRoute, next:(rule?: navtoRule|false)=>void):void {
         (options.routerBeforeEach as Function)(to, from, next);
     })();
     registerHook(cycleHooks.routerAfterHooks, function(to:totalNextRoute, from: totalNextRoute):void {

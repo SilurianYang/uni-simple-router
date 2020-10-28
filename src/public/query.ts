@@ -10,9 +10,11 @@ import {
     urlToJson,
     routesForMapRoute,
     getRoutePath,
-    assertDeepObject
+    assertDeepObject,
+    copyData
 } from '../helpers/utils'
 import {ERRORHOOK} from './hooks'
+import {warn} from '../helpers/warn'
 
 export function queryPageToMap(
     toRule:string|totalNextRoute,
@@ -30,7 +32,7 @@ export function queryPageToMap(
         const objNavRule = (toRule as totalNextRoute);
         if (objNavRule.path != null) {
             const {path, query: newQuery} = urlToJson(objNavRule.path);
-            route = routesForMapRoute((router.routesMap as routesMapRule), path, ['finallyPathList', 'pathMap']);
+            route = routesForMapRoute(router, path, ['finallyPathList', 'pathMap']);
             query = {...newQuery, ...((toRule as totalNextRoute).query || {})};
             delete (toRule as totalNextRoute).params;
         } else if (objNavRule.name != null) {
@@ -46,7 +48,7 @@ export function queryPageToMap(
         }
     } else {
         toRule = urlToJson((toRule as string)) as totalNextRoute;
-        route = routesForMapRoute((router.routesMap as routesMapRule), toRule.path, ['finallyPathList', 'pathMap'])
+        route = routesForMapRoute(router, toRule.path, ['finallyPathList', 'pathMap'])
         query = toRule.query as objectAny;
     }
     if (router.options.platform === 'h5') {
@@ -88,35 +90,64 @@ export function queryPageToMap(
     }
 }
 
-export function resolveQuery(toRule:totalNextRoute):totalNextRoute {
-    let queryKey:'params'|'query'|'' = '';
+export function resolveQuery(
+    toRule:totalNextRoute,
+    router:Router
+):totalNextRoute {
+    let queryKey:'params'|'query' = 'query';
     if (toRule.params as objectAny != null) {
         queryKey = 'params';
     }
     if (toRule.query as objectAny != null) {
         queryKey = 'query';
     }
-    if (queryKey === '') {
-        return toRule;
-    }
-    const deepObj = assertDeepObject(toRule[queryKey] as objectAny);
-    if (!deepObj) {
-        return toRule;
-    }
-    const encode = encodeURIComponent(JSON.stringify(toRule[queryKey]));
-    toRule[queryKey] = {
-        query: encode
+    const query = copyData(toRule[queryKey] || {});
+    const {resolveQuery: userResolveQuery} = router.options;
+    if (userResolveQuery) {
+        const jsonQuery = userResolveQuery(query);
+        if (getDataType<objectAny>(jsonQuery) !== '[object Object]') {
+            warn('请按格式返回参数： resolveQuery?:(jsonQuery:{[propName: string]: any;})=>{[propName: string]: any;}', router)
+        } else {
+            toRule[queryKey] = jsonQuery;
+        }
+    } else {
+        const deepObj = assertDeepObject(query as objectAny);
+        if (!deepObj) {
+            return toRule;
+        }
+        const encode = encodeURIComponent(JSON.stringify(query));
+        toRule[queryKey] = {
+            query: encode
+        }
     }
     return toRule
 }
 
-// export function decode(str: string) {
-//     try {
-//         return decodeURIComponent(str)
-//     } catch (err) {
-//         if (process.env.NODE_ENV !== 'production') {
-//             warn(false, `Error decoding "${str}". Leaving it intact.`)
-//         }
-//     }
-//     return str
-// }
+export function parseQuery(
+    query:objectAny,
+    router:Router
+):objectAny {
+    const {parseQuery: userParseQuery} = router.options;
+    if (userParseQuery) {
+        query = userParseQuery(copyData(query));
+        if (getDataType<objectAny>(query) !== '[object Object]') {
+            warn('请按格式返回参数： parseQuery?:(jsonQuery:{[propName: string]: any;})=>{[propName: string]: any;}', router)
+        }
+    } else {
+        if (Reflect.get(query, 'query')) { // 验证一下是不是深度对象
+            const deepQuery = Reflect.get(query, 'query');
+            let jsonQuery:objectAny = {
+                query: decodeURIComponent(deepQuery)
+            };
+            try {
+                jsonQuery = JSON.parse(jsonQuery.query);
+                if (typeof jsonQuery === 'object') {
+                    return jsonQuery;
+                }
+            } catch (error) {
+                warn('尝试解析深度对象失败，按原样输出。' + error, router)
+            }
+        }
+    }
+    return query
+}
