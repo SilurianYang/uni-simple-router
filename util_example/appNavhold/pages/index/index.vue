@@ -19,6 +19,7 @@
 		onLoad() {
 			console.log('onLoad');
 			console.log(this)
+			console.log(getCurrentPages()[0])
 		},
 		onShow() {
 			console.log('onShow')
@@ -44,31 +45,31 @@
 		},
 		methods: {
 			gotoPage(){
-				this.$Router.push({
-					name:'page2',
-					success:(agrs)=>{
-						console.log(agrs)
-						console.log('跳转成功')
-					},
-						fail: ()=>{
-							console.log('跳转失败')
-						},
-						complete:()=>{
-							console.log('跳转结束')
-						},
-						params:{
-							name:123,
-							ags:10086,
-							list:[
-								{
-									id:1
-								},
-								{
-									id:2
-								}
-							]
-						}
-				})
+				// this.$Router.push({
+				// 	name:'page2',
+				// 	success:(agrs)=>{
+				// 		console.log(agrs)
+				// 		console.log('跳转成功')
+				// 	},
+				// 		fail: ()=>{
+				// 			console.log('跳转失败')
+				// 		},
+				// 		complete:()=>{
+				// 			console.log('跳转结束')
+				// 		},
+				// 		params:{
+				// 			name:123,
+				// 			ags:10086,
+				// 			list:[
+				// 				{
+				// 					id:1
+				// 				},
+				// 				{
+				// 					id:2
+				// 				}
+				// 			]
+				// 		}
+				// })
 				
 				// console.log('-------------------------------')
 				// this.$Router.push({
@@ -91,9 +92,9 @@
 				// 	}
 				// })
 				
-				// uni.navigateTo({
-				// 	url:'/pages/page2/page2'
-				// })
+				uni.navigateTo({
+					url:'/pages/page2/page2?name=123&ages=454545'
+				})
 			},
 			gotoPage1(){
 				location.href='https://www.baidu.com/'

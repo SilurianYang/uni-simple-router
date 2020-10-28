@@ -24,6 +24,7 @@
 		},
 		onLoad(){
 			console.log('-------------page2-----------onLoad')
+			console.log(this.$Route)
 		},
 		methods: {
 			gotoPage1(){
