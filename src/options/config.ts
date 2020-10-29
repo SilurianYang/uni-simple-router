@@ -1,4 +1,4 @@
-import {startAnimationRule, hookListRule, RoutesRule, navtoRule, navErrorRule, Router, objectAny} from './base';
+import {startAnimationRule, hookListRule, RoutesRule, navtoRule, navErrorRule, Router, objectAny, hookObjectRule} from './base';
 
 export type debuggerConfig=boolean|debuggerArrayConfig;
 
@@ -16,7 +16,7 @@ export interface H5Config {
 export interface AppConfig {
 	holdTabbar?: boolean; // 是否开启底部菜单拦截
 	loddingPageStyle?: () => object; // 当前等待页面的样式 必须返回一个json
-	loddingPageHook?: Function; // 刚刚打开页面处于等待状态,会触发此事件
+	loddingPageHook?: (view:any, next:()=>void)=>void; // 刚刚打开页面处于等待状态,会触发此事件
 	animation?: startAnimationRule; // 页面切换动画
 }
 export interface debuggerArrayConfig{
@@ -45,4 +45,9 @@ export interface LifeCycleConfig{
     routerBeforeHooks: hookListRule;
     routerAfterHooks: hookListRule;
     routerErrorHooks: Array<(error:navErrorRule, router:Router)=>void>;
+}
+export interface appVueHookConfig{
+    onLaunch:Array<hookObjectRule|Function>;
+    onShow:Array<hookObjectRule|Function>;
+    onHide:Array<hookObjectRule|Function>;
 }

@@ -21,6 +21,9 @@ import {
     getUniCachePage,
     routesForMapRoute
 } from '../helpers/utils'
+import { transitionTo } from './hooks';
+import {createToFrom} from '../public/page'
+import {HOOKLIST} from './hooks'
 
 export function navjump(
     to:string|totalNextRoute,
@@ -48,10 +51,17 @@ export function navjump(
             (router.$route as any)[navType](parseToRule, (parseToRule as totalNextRoute).success || voidFun, (parseToRule as totalNextRoute).fail || voidFun)
         }
     } else {
-        // transitionTo(router, toRule, from, navType, HOOKLIST, function() {
-        //     console.log('跳转完成')
-        // })
-        console.log('非h5端跳转TODO')
+        let from:totalNextRoute = {path: ''};
+        if (nextCall == null) {
+            from = createToFrom(parseToRule, router);
+        } else {
+            from = nextCall.from;
+        }
+        transitionTo(router, parseToRule, from, navType, HOOKLIST, function() {
+            uni[navtypeToggle[navType]](parseToRule, true);
+            plus.nativeObj.View.getViewById('router-loadding').close();
+        })
+        // console.log('非h5端跳转TODO')
     }
 }
 

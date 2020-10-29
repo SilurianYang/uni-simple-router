@@ -6,7 +6,8 @@ import {
     Router,
     rewriteMethodToggle,
     uniBackRule,
-    uniBackApiRule
+    uniBackApiRule,
+    navtoRule
 } from '../options/base'
 
 import {
@@ -18,6 +19,8 @@ import {
 import {
     warn
 } from '../helpers/warn'
+
+import {uniOriginJump} from './uniOrigin'
 
 const rewrite: Array<reNavMethodRule|reNotNavMethodRule> = [
     'navigateTo',
@@ -34,15 +37,18 @@ export function rewriteMethod(
     if (router.options.keepUniOriginNav === false) {
         rewrite.forEach(name => {
             const oldMethod: Function = uni[name];
-            uni[name] = function(params:uniNavApiRule|{from:string}):void {
-                callRouterMethod(params, oldMethod, name, router);
+            uni[name] = function(params:uniNavApiRule|{from:string}|navtoRule, originCall:boolean = false):void {
+                if (originCall) {
+                    uniOriginJump(oldMethod, (params as uniNavApiRule|navtoRule))
+                } else {
+                    callRouterMethod(params as uniNavApiRule, name, router);
+                }
             };
         })
     }
 }
 function callRouterMethod(
     option: uniNavApiRule|uniBackRule|preloadPageRule|uniBackApiRule,
-    oldMethod:Function,
     funName:reNavMethodRule|reNotNavMethodRule,
     router:Router
 ): void {
@@ -67,6 +73,7 @@ function callRouterMethod(
     } else if (funName === 'preloadPage') {
         router.preloadPage((option as preloadPageRule));
     } else {
+        debugger
         const routerMethodName = rewriteMethodToggle[(funName as reNavMethodRule)]
         let path = (option as uniNavApiRule).url;
         if (!path.startsWith('/')) {
@@ -79,10 +86,12 @@ function callRouterMethod(
         // eslint-disable-next-line no-unused-vars
         const {url, detail, ...navArgs} = (option as uniNavApiRule);
         if (funName === 'switchTab') {
-            const detail = (option as uniNavApiRule).detail;
-            path = '/' + (detail as {pagePath:string}).pagePath;
+            if (router.options.platform === 'h5') {
+                const detail = (option as uniNavApiRule).detail;
+                path = '/' + (detail as {pagePath:string}).pagePath;
+            }
             const route = routesForMapRoute(router, path, ['pathMap', 'finallyPathList'])
-            const {finallyPath} = getRoutePath(route);
+            const {finallyPath} = getRoutePath(route, router);
             if (getDataType<string | string[]>(finallyPath) === '[object Array]') {
                 warn(
                     `uni-app 原生方法跳转路径为：${path}。此路为是tab页面时，不允许设置 alias 为数组的情况，并且不能为动态路由！当然你可以通过通配符*解决！`,

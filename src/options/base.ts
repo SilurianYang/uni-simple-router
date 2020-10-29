@@ -1,4 +1,4 @@
-import {InstantiateConfig, LifeCycleConfig} from '../options/config';
+import {appVueHookConfig, InstantiateConfig, LifeCycleConfig} from '../options/config';
 
 export enum hookToggle{
     'beforeHooks'='beforeEach',
@@ -17,9 +17,9 @@ export enum rewriteMethodToggle{
     'reLaunch'='replaceAll',
     'switchTab'='pushTab',
     'navigateBack'='back',
-    'preloadPage'='preloadPage'
+    'preloadPage'='preloadPage',
 }
-
+export type appProxyNameRule='onLaunch'|'onShow'|'onHide';
 export type reNavMethodRule='navigateTo'|'redirectTo'|'reLaunch'|'switchTab';
 export type reNotNavMethodRule='navigateBack'|'preloadPage';
 export type reloadNavRule=totalNextRoute | false | undefined|string;
@@ -97,6 +97,11 @@ export interface preloadPageRule{
     success?:Function;
     fail?:Function;
     complete?:Function;
+}
+
+export interface hookObjectRule {
+    options:Array<any>;
+    hook:Function;
 }
 
 // 执行路由跳转失败或者 next(false) 时走的规则
@@ -179,7 +184,8 @@ export interface Router {
     [key:string]:any;
 	readonly lifeCycle: LifeCycleConfig;
 	readonly options: InstantiateConfig;
-	$route: object | null;
+    $route: object | null;
+    appProxyHook:appVueHookConfig;
 	routesMap: routesMapRule|{};
 	mount: Array<{app: any; el: string}>;
 	install(Vue: any): void;

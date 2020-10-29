@@ -1,5 +1,5 @@
 import {err} from './warn'
-import {InstantiateConfig, LifeCycleConfig} from '../options/config'
+import {appVueHookConfig, InstantiateConfig, LifeCycleConfig} from '../options/config'
 
 export const mpPlatformReg = /(^mp-weixin$)|(^mp-baidu$)|(^mp-alipay$)|(^mp-toutiao$)|(^mp-qq$)|(^mp-360$)/g;
 
@@ -18,7 +18,7 @@ export const baseConfig:InstantiateConfig = {
     APP: {
         holdTabbar: true,
         loddingPageStyle: () => JSON.parse('{"backgroundColor":"#FFF"}'),
-        loddingPageHook: (view:any) => { plus.navigator.closeSplashscreen(); view.show(); },
+        loddingPageHook: (view:any, next:()=>void) => { plus.navigator.closeSplashscreen(); view.show(); next(); },
         animation: { animationType: 'pop-in', animationDuration: 300 }
     },
     platform: 'h5',
@@ -48,3 +48,8 @@ export const lifeCycle:LifeCycleConfig = {
     routerErrorHooks: []
 };
 
+export const appProxyHook:appVueHookConfig = {
+    onLaunch: [],
+    onShow: [],
+    onHide: []
+}

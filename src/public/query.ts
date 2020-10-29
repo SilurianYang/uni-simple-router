@@ -16,6 +16,15 @@ import {
 import {ERRORHOOK} from './hooks'
 import {warn} from '../helpers/warn'
 
+const encodeReserveRE = /[!'()*]/g
+const encodeReserveReplacer = (c:string) => '%' + c.charCodeAt(0).toString(16)
+const commaRE = /%2C/g
+
+const encode = (str:string) =>
+    encodeURIComponent(str)
+        .replace(encodeReserveRE, encodeReserveReplacer)
+        .replace(commaRE, ',')
+
 export function queryPageToMap(
     toRule:string|totalNextRoute,
     router:Router
@@ -54,7 +63,7 @@ export function queryPageToMap(
         query = toRule.query as objectAny;
     }
     if (router.options.platform === 'h5') {
-        const {finallyPath} = getRoutePath(route as RoutesRule);
+        const {finallyPath} = getRoutePath(route as RoutesRule, router);
         if (finallyPath.includes(':') && (toRule as totalNextRoute).name == null) {
             ERRORHOOK[0]({ type: 2, msg: `当有设置 alias或者aliasPath 为动态路由时，不允许使用 path 跳转。请使用 name 跳转！`, route}, router)
         }
@@ -152,4 +161,41 @@ export function parseQuery(
         }
     }
     return query
+}
+
+export function stringifyQuery(obj:objectAny): string {
+    const res = obj
+        ? Object.keys(obj)
+            .map(key => {
+                const val = obj[key]
+
+                if (val === undefined) {
+                    return ''
+                }
+
+                if (val === null) {
+                    return encode(key)
+                }
+
+                if (Array.isArray(val)) {
+                    const result:Array<any> = []
+                    val.forEach(val2 => {
+                        if (val2 === undefined) {
+                            return
+                        }
+                        if (val2 === null) {
+                            result.push(encode(key))
+                        } else {
+                            result.push(encode(key) + '=' + encode(val2))
+                        }
+                    })
+                    return result.join('&')
+                }
+
+                return encode(key) + '=' + encode(val)
+            })
+            .filter(x => x.length > 0)
+            .join('&')
+        : null
+    return res ? `?${res}` : ''
 }

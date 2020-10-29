@@ -3,6 +3,9 @@ import {createRouteMap} from '../helpers/createRouteMap'
 import {buildVueRoutes, buildVueRouter} from '../H5/buildRouter'
 import {proxyEachHook} from '../H5/proxyHook'
 import {mpPlatformReg} from './config'
+import {proxyLaunchHook, registerLoddingPage} from '../app/proxyHook';
+
+let registerRouter:boolean = false;
 
 export function getMixins(router: Router):{
     beforeCreate(this: any): void;
@@ -34,9 +37,16 @@ export function getMixins(router: Router):{
             }
         },
         'app-plus': {
-            beforeCreate(): void {
-                console.log('beforeCreate---app');
-                // transitionTo(router);
+            beforeCreate(this: any): void {
+                if (!registerRouter) {
+                    registerRouter = true;
+                    console.log(this)
+                    proxyLaunchHook(this.$options, router);
+                    registerLoddingPage(router, () => {
+
+                    });
+                    console.log('beforeCreate---app');
+                }
             },
             onLoad():void{
                 console.log('onLoad---app');

@@ -14,7 +14,7 @@ export function buildVueRoutes(router: Router, vueRouteMap:RoutesRule):RoutesRul
         if (!myRoute) {
             warn(`${path} 路由地址在路由表中未找到，确定是否传递漏啦`, router, true);
         } else {
-            const {finallyPath} = getRoutePath(myRoute);
+            const {finallyPath} = getRoutePath(myRoute, router);
             if (finallyPath instanceof Array) {
                 throw new Error(`非 vueRouterDev 模式下，alias、aliasPath、path 无法提供数组类型！ ${JSON.stringify(myRoute)}`);
             }

@@ -34,13 +34,16 @@ export function mergeConfig<T extends InstantiateConfig>(baseConfig: T, userConf
     return config as T;
 }
 
-export function getRoutePath(route: RoutesRule): {
+export function getRoutePath(route: RoutesRule, router:Router): {
     finallyPath: string | string[];
     aliasPath: string;
     path: string;
     alias: string | string[] | undefined;
 } {
-    const finallyPath = route.aliasPath || route.alias || route.path;
+    let finallyPath = route.aliasPath || route.alias || route.path;
+    if (router.options.platform !== 'h5') {
+        finallyPath = route.path
+    }
     return {
         finallyPath,
         aliasPath: route.aliasPath || route.path,
@@ -112,7 +115,10 @@ export function getUniCachePage<T extends objectAny>(pageIndex?:number):T {
     if (pageIndex == null) {
         return pages
     }
-    return pages.reverse()[pageIndex];
+    if (pages.length === 0) {
+        return pages;
+    }
+    return pages.reverse()[pageIndex]
 }
 
 export function urlToJson(url :string):{
@@ -197,7 +203,7 @@ export function paramsToQuery(
             if (route == null) {
                 ERRORHOOK[0]({ type: 2, msg: `命名路由为：${name} 的路由，无法在路由表中找到！`, toRule}, router)
             }
-            const {finallyPath} = getRoutePath(route);
+            const {finallyPath} = getRoutePath(route, router);
             if (finallyPath.includes(':')) { // 动态路由无法使用 paramsToQuery
                 ERRORHOOK[0]({ type: 2, msg: `动态路由：${finallyPath} 无法使用 paramsToQuery！`, toRule}, router);
             } else {

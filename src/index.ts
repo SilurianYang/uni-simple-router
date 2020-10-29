@@ -1,18 +1,20 @@
 import {Router} from './options/base';
 import {InstantiateConfig, LifeCycleConfig} from './options/config';
-import {lifeCycle} from './helpers/config';
+import {appProxyHook, lifeCycle} from './helpers/config';
 import {assertNewOptions, getDataType} from './helpers/utils';
 import {registerRouterHooks, registerEachHooks} from './helpers/lifeCycle';
 import {initMixins} from './helpers/mixins'
 import {navjump, navBack, createRoute} from './public/methods'
 import {proxyH5Mount} from './H5/proxyHook'
 import {rewriteMethod} from './public/rewrite'
+import { proxyAppMount } from './app/proxyHook';
 
 function createRouter(params: InstantiateConfig):Router {
     const options = assertNewOptions<InstantiateConfig>(params);
     const router:Router = {
         options,
         mount: [],
+        appProxyHook: appProxyHook,
         $route: null,
         routesMap: {},
         lifeCycle: registerRouterHooks<LifeCycleConfig>(lifeCycle, options),
@@ -71,7 +73,9 @@ function RouterMount(Vim:any, router:Router, el:string | undefined = '#app') :vo
     case 'h5':
         proxyH5Mount(Vim, router);
         break;
-
+    case 'app-plus':
+        proxyAppMount(Vim, router);
+        break
     default:
         console.warn('其他端还没实现')
         Vim.$mount();

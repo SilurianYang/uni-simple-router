@@ -16,7 +16,7 @@ export function createRouteMap(
         nameMap: Object.create(null)
     }
     routes.forEach(route => {
-        const { finallyPath, aliasPath, path} = getRoutePath(route);
+        const { finallyPath, aliasPath, path} = getRoutePath(route, router);
         if (path == null) {
             throw new Error(`请提供一个完整的路由对象，包括以绝对路径开始的 ‘path’ 字符串 ${JSON.stringify(route)}`);
         }
