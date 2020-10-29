@@ -36,6 +36,13 @@ export const namalRoutes=[{
 		{
 			path:'/pages/page2/page2',
 			name:'page2',
+			meta:{
+				enablePullDownRefresh:true
+			},
+			style: {
+				navigationBarTitleText: '',
+				enablePullDownRefresh: false
+			},
 			//alias:'/pages/:name',
 		},
 		{

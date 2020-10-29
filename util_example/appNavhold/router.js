@@ -54,6 +54,7 @@ const router = createRouter({
 		paramsToQuery: true,
 	},
 	debugger:true,
+	keepUniOriginNav:false,
 	routes: namalRoutes
 });
 router.beforeEach((to, from, next) => {

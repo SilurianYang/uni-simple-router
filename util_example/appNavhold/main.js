@@ -1,12 +1,10 @@
 import Vue from 'vue'
 import App from './App'
 
-// #ifdef H5
 import {	
 	router,
 	RouterMount
 } from './router'
-// #endif
 
 Vue.config.productionTip = false
 
@@ -21,5 +19,5 @@ RouterMount(app,router,'#app')
 // #endif
 
 // #ifndef H5
-	app.$mount()
+RouterMount(app,router,'#app')
 // #endif

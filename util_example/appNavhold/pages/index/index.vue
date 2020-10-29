@@ -72,15 +72,16 @@
 				// })
 				
 				// console.log('-------------------------------')
-				// this.$Router.push({
-				// 	path:'/pages/page2/page2',
-				// 	query:{
-				// 		name:123,
-				// 		ages:10086
-				// 	}
-				// })
+				this.$Router.push({
+					path:'/pages/page2/page2',
+					query:{
+						name:123,
+						ages:10086
+					}
+				})
 				console.log('-------------------------------')
 				// this.$Router.push('/pages/page2/page2?id=122121&name=4411')
+				//this.$Router.push('/pages/page2/page2')
 				
 				// this.$Router.push({
 				// 	name:'page2',
@@ -92,9 +93,13 @@
 				// 	}
 				// })
 				
-				uni.navigateTo({
-					url:'/pages/page2/page2?name=123&ages=454545'
-				})
+				// uni.navigateTo({
+				// 	url:'/pages/page2/page2?name=123&ages=454545'
+				// })
+				// uni.navigateTo({
+				// 	url:'/pages/page2/page2'
+				// })
+				
 			},
 			gotoPage1(){
 				location.href='https://www.baidu.com/'
