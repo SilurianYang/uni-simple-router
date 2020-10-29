@@ -5,6 +5,12 @@ export enum hookToggle{
     'afterHooks'='afterEach',
     'enterHooks'='beforeEnter'
 }
+export enum navtypeToggle{
+    'push'='navigateTo',
+    'replace'='redirectTo',
+    'replaceAll'='reLaunch',
+    'pushTab'='switchTab'
+}
 export enum rewriteMethodToggle{
     'navigateTo'='push',
     'redirectTo'='replace',

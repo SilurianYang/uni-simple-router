@@ -1,5 +1,5 @@
 import {H5Config, InstantiateConfig} from '../options/config';
-import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, objectAny} from '../options/base';
+import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, objectAny, rewriteMethodToggle, reNavMethodRule} from '../options/base';
 import {baseConfig} from '../helpers/config';
 import {ERRORHOOK} from '../public/hooks'
 import {warnLock} from '../helpers/warn'
@@ -153,20 +153,21 @@ export function forMatNextToFrom<T extends totalNextRoute>(
 
             delete matToParams.__id__;
             delete matFromParams.__id__;
-
             const toQuery = parseQuery({...matToParams, ...copyData(matTo.query as objectAny)}, router);
             const fromQuery = parseQuery({...matFromParams, ...copyData(matFrom.query as objectAny)}, router);
             matTo = ({
                 ...toRoute,
                 fullPath: matTo.fullPath,
                 params: {},
-                query: toQuery
+                query: toQuery,
+                NAVTYPE: rewriteMethodToggle[(matTo.type as reNavMethodRule) || 'reLaunch'] // 这里可以为undefined
             } as T);
             matFrom = ({
                 ...fromRoute,
                 fullPath: matFrom.fullPath,
                 params: {},
-                query: fromQuery
+                query: fromQuery,
+                NAVTYPE: rewriteMethodToggle[(matFrom.type as reNavMethodRule) || 'reLaunch'] // 这里可以为undefined
             }as T)
         }
     } else {
@@ -190,7 +191,7 @@ export function paramsToQuery(
         return toRule
     }
     if (getDataType<totalNextRoute|string>(toRule) === '[object Object]') {
-        const {name, params} = (toRule as totalNextRoute);
+        const {name, params, ...moreToRule} = (toRule as totalNextRoute);
         if (name != null && params != null) {
             const route = (router.routesMap as routesMapRule).nameMap[name];
             if (route == null) {
@@ -201,6 +202,7 @@ export function paramsToQuery(
                 ERRORHOOK[0]({ type: 2, msg: `动态路由：${finallyPath} 无法使用 paramsToQuery！`, toRule}, router);
             } else {
                 return {
+                    ...moreToRule,
                     path: finallyPath as string,
                     query: params
                 }

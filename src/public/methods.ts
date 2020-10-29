@@ -7,7 +7,8 @@ import {
     objectAny,
     routeRule,
     reNavMethodRule,
-    rewriteMethodToggle
+    rewriteMethodToggle,
+    navtypeToggle
 } from '../options/base'
 import {
     queryPageToMap,
@@ -31,6 +32,7 @@ export function navjump(
     }
 ) :void{
     const {rule} = queryPageToMap(to, router);
+    rule.type = navtypeToggle[navType];
     const toRule = paramsToQuery(router, rule);
     const parseToRule = resolveQuery(toRule as totalNextRoute, router);
     if (router.options.platform === 'h5') {
@@ -84,7 +86,7 @@ export function createRoute(
         route.path = vueRoute.path;
         route.fullPath = vueRoute.fullPath;
         route.query = vueRoute.query;
-        route.NAVTYPE = vueRoute.type;
+        route.NAVTYPE = rewriteMethodToggle[vueRoute.type as reNavMethodRule || 'reLaunch'];
         break;
     case 'app-plus':
         // eslint-disable-next-line no-case-declarations
@@ -94,7 +96,7 @@ export function createRoute(
         route.query = page.options;
         route.path = page.$page.path;
         route.fullPath = page.$page.fullPath;
-        route.NAVTYPE = rewriteMethodToggle[openType]
+        route.NAVTYPE = rewriteMethodToggle[openType || 'reLaunch']
         break
     default:
         break;

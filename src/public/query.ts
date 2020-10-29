@@ -20,11 +20,11 @@ export function queryPageToMap(
     toRule:string|totalNextRoute,
     router:Router
 ) :{
-    rule:string|totalNextRoute;
+    rule:totalNextRoute;
     route:RoutesRule,
-    query:{[propName:string]:any}
+    query:objectAny
 } {
-    let query:{[propName:string]:any} = {};
+    let query:objectAny = {};
     let route:RoutesRule|string = '';
     let successCb = (toRule as totalNextRoute).success;
     let failCb = (toRule as totalNextRoute).fail;
@@ -34,6 +34,8 @@ export function queryPageToMap(
             const {path, query: newQuery} = urlToJson(objNavRule.path);
             route = routesForMapRoute(router, path, ['finallyPathList', 'pathMap']);
             query = {...newQuery, ...((toRule as totalNextRoute).query || {})};
+            objNavRule.path = path;
+            objNavRule.query = query;
             delete (toRule as totalNextRoute).params;
         } else if (objNavRule.name != null) {
             route = (router.routesMap as routesMapRule).nameMap[objNavRule.name];
