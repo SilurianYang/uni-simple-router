@@ -18,8 +18,6 @@
 		},
 		onLoad() {
 			console.log('onLoad');
-			console.log(this)
-			console.log(getCurrentPages()[0])
 		},
 		onShow() {
 			console.log('onShow')

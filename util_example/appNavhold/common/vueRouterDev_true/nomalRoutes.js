@@ -50,6 +50,12 @@ export const namalRoutes=[{
 			name:'page3',
 			//alias:'/page3'
 		},
+		{
+			path: "/pages/tab3/tab3",
+			"iconPath": "static/icon_component.png",
+			"selectedIconPath": "static/icon_component.png",
+			"text": "nvue"
+		},
 		// {
 		// 	path:'*',
 		// 	redirect:to=>{

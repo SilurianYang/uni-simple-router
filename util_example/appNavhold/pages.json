@@ -35,7 +35,16 @@
 
 		}
 
-	],
+	    ,{
+            "path" : "pages/tab3/tab3",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"tabBar": {
 		"color": "#7A7E83",
 		"selectedColor": "#3cc51f",
@@ -57,6 +66,11 @@
 				"iconPath": "static/icon_component.png",
 				"selectedIconPath": "static/icon_component.png",
 				"text": "接口"
+			},{
+				"pagePath": "pages/tab3/tab3",
+				"iconPath": "static/icon_component.png",
+				"selectedIconPath": "static/icon_component.png",
+				"text": "nvue"
 			}
 		]
 	},
