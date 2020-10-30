@@ -31,7 +31,7 @@ function createRouter(params: InstantiateConfig):Router {
             navjump(to, router, 'pushTab');
         },
         back(level = 1, origin) {
-            navBack(this, level, origin)
+            navBack(this, level, 'back', origin)
         },
         preloadPage(rule):void{
 

@@ -7,12 +7,14 @@ import {
     totalNextRoute,
     hookToggle,
     NAVTYPE,
-    navErrorRule
+    navErrorRule,
+    objectAny
 } from '../options/base';
 import {
     routesForMapRoute,
     getDataType,
-    forMatNextToFrom
+    forMatNextToFrom,
+    getUniCachePage
 } from '../helpers/utils'
 import { navjump } from './methods';
 
@@ -21,24 +23,41 @@ export const ERRORHOOK:Array<(error:navErrorRule, router:Router)=>void> = [
 ]
 export const HOOKLIST: hookListRule = [
     (router, to, from, toRoute) => callHook(router.lifeCycle.routerBeforeHooks[0], to, from, router),
-    (router, to, from, toRoute) => {
-        const pages = getCurrentPages();
-        const page = pages[pages.length - 1];
-        let beforeRouteLeave;
-        if (page != null) {
-            const leaveHooks:Array<Function>|undefined = page.$options.beforeRouteLeave;
-            if (getDataType<Array<Function>>((leaveHooks as Array<Function>)) === '[object Array]') {
-                beforeRouteLeave = (leaveHooks as Array<Function>)[0];
-                beforeRouteLeave = beforeRouteLeave.bind(page)
-            }
-        }
-        return callHook(beforeRouteLeave, to, from, router);
-    },
+    (router, to, from, toRoute) => callBeforeRouteLeave(router, to, from),
     (router, to, from, toRoute) => callHook(router.lifeCycle.beforeHooks[0], to, from, router),
     (router, to, from, toRoute) => callHook(toRoute.beforeEnter, to, from, router),
     (router, to, from, toRoute) => callHook(router.lifeCycle.afterHooks[0], to, from, router, false),
     (router, to, from, toRoute) => callHook(router.lifeCycle.routerAfterHooks[0], to, from, router, false)
 ];
+
+export function callBeforeRouteLeave(
+    router:Router,
+    to:totalNextRoute,
+    from:totalNextRoute
+):hooksReturnRule {
+    const page = getUniCachePage<objectAny>(0);
+    let beforeRouteLeave;
+    if (Object.keys(page).length > 0) {
+        let leaveHooks:Array<Function>|undefined|Function;
+        if (router.options.platform === 'h5') {
+            leaveHooks = page.$options.beforeRouteLeave;
+        } else {
+            if (page.$vm != null) {
+                leaveHooks = page.$vm.$options.beforeRouteLeave;
+            }
+        }
+        switch (getDataType<Array<Function>>((leaveHooks as Array<Function>))) {
+        case '[object Array]': // h5端表现
+            beforeRouteLeave = (leaveHooks as Array<Function>)[0];
+            beforeRouteLeave = beforeRouteLeave.bind(page)
+            break;
+        case '[object Function]': // 目前app端表现
+            beforeRouteLeave = (leaveHooks as Function).bind(page.$vm);
+            break
+        }
+    }
+    return callHook(beforeRouteLeave, to, from, router);
+}
 
 export function callHook(
     hook:Function|undefined,

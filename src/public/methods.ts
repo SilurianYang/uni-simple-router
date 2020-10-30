@@ -37,7 +37,7 @@ export function navjump(
     const {rule} = queryPageToMap(to, router);
     rule.type = navtypeToggle[navType];
     const toRule = paramsToQuery(router, rule);
-    const parseToRule = resolveQuery(toRule as totalNextRoute, router);
+    let parseToRule = resolveQuery(toRule as totalNextRoute, router);
     if (router.options.platform === 'h5') {
         if (navType !== 'push') {
             navType = 'replace';
@@ -53,6 +53,8 @@ export function navjump(
     } else {
         let from:totalNextRoute = {path: ''};
         if (nextCall == null) {
+            const toRoute = routesForMapRoute(router, parseToRule.path, ['finallyPathMap', 'pathMap']);
+            parseToRule = { ...toRoute, ...{params: {}}, ...parseToRule }
             from = createToFrom(parseToRule, router);
         } else {
             from = nextCall.from;
@@ -61,25 +63,30 @@ export function navjump(
             uni[navtypeToggle[navType]](parseToRule, true);
             plus.nativeObj.View.getViewById('router-loadding').close();
         })
-        // console.log('非h5端跳转TODO')
     }
 }
 
 export function navBack(
     router:Router,
     level:number,
+    navType:NAVTYPE,
     origin?:uniBackRule|uniBackApiRule
 ):void{
     if (router.options.platform === 'h5') {
         (router.$route as any).go(-level)
     } else {
-        console.log('非h5端返回TODO')
+        const toRule = createRoute(router, level);
+        navjump({
+            path: toRule.path,
+            query: toRule.query
+        }, router, navType);
     }
 }
 
 export function createRoute(
     router:Router,
-):routeRule {
+    level:number|undefined = 0
+):routeRule|never {
     const route:routeRule = {
         name: '',
         meta: {},
@@ -100,7 +107,10 @@ export function createRoute(
         break;
     case 'app-plus':
         // eslint-disable-next-line no-case-declarations
-        const page = getUniCachePage<objectAny>(0);
+        const page = getUniCachePage<objectAny>(level);
+        if (Object.keys(page).length === 0) {
+            throw new Error(`不存在的页面栈，请确保有足够的页面可用`);
+        }
         // eslint-disable-next-line no-case-declarations
         const openType:reNavMethodRule = page.$page.openType;
         route.query = page.options;

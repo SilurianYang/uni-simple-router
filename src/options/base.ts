@@ -9,10 +9,12 @@ export enum navtypeToggle{
     'push'='navigateTo',
     'replace'='redirectTo',
     'replaceAll'='reLaunch',
-    'pushTab'='switchTab'
+    'pushTab'='switchTab',
+    'back'='navigateBack'
 }
 export enum rewriteMethodToggle{
     'navigateTo'='push',
+    'navigate'='push',
     'redirectTo'='replace',
     'reLaunch'='replaceAll',
     'switchTab'='pushTab',
@@ -30,7 +32,7 @@ export type proxyHookName='beforeHooks'|'afterHooks';
 export type navMethodRule = Promise<void | undefined | navRuleStatus>;
 export type hooksReturnRule = Promise<reloadNavRule>;
 export type objectAny={[propName: string]: any;};
-export type NAVTYPE = 'push' | 'replace' | 'replaceAll' | 'pushTab';
+export type NAVTYPE = 'push' | 'replace' | 'replaceAll' | 'pushTab'|'back';
 export type startAnimationType =
 	| 'slide-in-right'
 	| 'slide-in-left'
@@ -116,6 +118,8 @@ export interface navErrorRule {
 // uni原生api跳转时的规则
 export interface uniNavApiRule {
     url: string;
+    query?:objectAny;
+    path?:string;
     detail?:{[propName:string]:any};
     animationType?:startAnimationType;
     animationDuration?:number;

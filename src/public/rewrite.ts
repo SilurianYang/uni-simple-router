@@ -39,7 +39,7 @@ export function rewriteMethod(
             const oldMethod: Function = uni[name];
             uni[name] = function(params:uniNavApiRule|{from:string}|navtoRule, originCall:boolean = false):void {
                 if (originCall) {
-                    uniOriginJump(oldMethod, (params as uniNavApiRule|navtoRule))
+                    uniOriginJump(oldMethod, (params as uniNavApiRule))
                 } else {
                     callRouterMethod(params as uniNavApiRule, name, router);
                 }
@@ -73,7 +73,6 @@ function callRouterMethod(
     } else if (funName === 'preloadPage') {
         router.preloadPage((option as preloadPageRule));
     } else {
-        debugger
         const routerMethodName = rewriteMethodToggle[(funName as reNavMethodRule)]
         let path = (option as uniNavApiRule).url;
         if (!path.startsWith('/')) {
@@ -84,7 +83,7 @@ function callRouterMethod(
             );
         }
         // eslint-disable-next-line no-unused-vars
-        const {url, detail, ...navArgs} = (option as uniNavApiRule);
+        // const {url, detail, ...navArgs} = (option as uniNavApiRule);
         if (funName === 'switchTab') {
             if (router.options.platform === 'h5') {
                 const detail = (option as uniNavApiRule).detail;
@@ -108,9 +107,6 @@ function callRouterMethod(
             }
             path = (finallyPath as string);
         }
-        router[routerMethodName]({
-            path,
-            ...navArgs
-        })
+        router[routerMethodName]({path})
     }
 }

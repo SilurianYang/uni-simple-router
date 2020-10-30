@@ -177,8 +177,21 @@ export function forMatNextToFrom<T extends totalNextRoute>(
             }as T)
         }
     } else {
-        matTo = copyData(matTo) as T;
-        matFrom = copyData(matFrom) as T;
+        const [{
+            type: typeTo,
+            ...cloneTo
+        }, {
+            type: typeFrom,
+            ...cloneFrom
+        }] = [deepClone<T>(matTo), deepClone<T>(matFrom)]
+        matTo = ({
+            ...cloneTo,
+            NAVTYPE: rewriteMethodToggle[(typeTo as reNavMethodRule) || 'reLaunch']
+        } as T)
+        matFrom = ({
+            ...cloneFrom,
+            NAVTYPE: rewriteMethodToggle[(typeFrom as reNavMethodRule) || 'reLaunch']
+        } as T)
     }
     return {
         matTo: matTo,
@@ -232,4 +245,30 @@ export function assertDeepObject(object:objectAny):boolean {
         return true;
     }
     return false
+}
+
+export function baseClone<
+T extends {
+    [key:string]:any
+}, K extends keyof T
+>(
+    source:T,
+    target:Array<any>|objectAny
+):void {
+    for (const key of Object.keys(source)) {
+        const dyKey = key as T[K];
+        if (source[key] === source) continue
+        if (typeof source[key] === 'object') {
+            target[dyKey] = getDataType<T>(source[key]) === '[object Array]' ? ([] as Array<any>) : ({} as objectAny)
+            baseClone(source[key], target[dyKey])
+        } else {
+            target[dyKey] = source[key]
+        }
+    }
+}
+
+export function deepClone<T>(source:T):T {
+    const __ob__ = getDataType<T>(source) === '[object Array]' ? ([] as Array<any>) : ({} as objectAny);
+    baseClone(source, __ob__)
+    return __ob__ as T
 }
