@@ -126,7 +126,7 @@ export function resolveQuery(
         if (!deepObj) {
             return toRule;
         }
-        const encode = encodeURIComponent(JSON.stringify(query));
+        const encode = JSON.stringify(query);
         toRule[queryKey] = {
             query: encode
         }
@@ -136,7 +136,7 @@ export function resolveQuery(
 
 export function parseQuery(
     query:objectAny,
-    router:Router
+    router:Router,
 ):objectAny {
     const {parseQuery: userParseQuery} = router.options;
     if (userParseQuery) {

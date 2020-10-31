@@ -40,7 +40,6 @@ export function getMixins(router: Router):{
             beforeCreate(this: any): void {
                 if (!registerRouter) {
                     registerRouter = true;
-                    console.log(this)
                     proxyLaunchHook(this.$options, router);
                     registerLoddingPage(router, () => {
 

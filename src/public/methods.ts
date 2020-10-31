@@ -19,10 +19,11 @@ import {
     voidFun,
     paramsToQuery,
     getUniCachePage,
-    routesForMapRoute
+    routesForMapRoute,
+    copyData
 } from '../helpers/utils'
 import { transitionTo } from './hooks';
-import {createToFrom} from '../public/page'
+import {createFullPath, createToFrom} from '../public/page'
 import {HOOKLIST} from './hooks'
 
 export function navjump(
@@ -59,6 +60,7 @@ export function navjump(
         } else {
             from = nextCall.from;
         }
+        createFullPath(parseToRule, from);
         transitionTo(router, parseToRule, from, navType, HOOKLIST, function() {
             uni[navtypeToggle[navType]](parseToRule, true);
             plus.nativeObj.View.getViewById('router-loadding').close();
@@ -85,7 +87,8 @@ export function navBack(
 
 export function createRoute(
     router:Router,
-    level:number|undefined = 0
+    level:number|undefined = 0,
+    orignRule?:totalNextRoute,
 ):routeRule|never {
     const route:routeRule = {
         name: '',
@@ -97,27 +100,44 @@ export function createRoute(
         params: {}
     };
     switch (router.options.platform) {
-    case 'h5':
-        // eslint-disable-next-line no-case-declarations
-        const vueRoute = (router.$route as objectAny).currentRoute;
+    case 'h5': {
+        let vueRoute:totalNextRoute = {path: ''};
+        if (orignRule != null) {
+            const matRouteParams = copyData(orignRule.params as objectAny);
+            delete matRouteParams.__id__;
+            const toQuery = parseQuery({...matRouteParams, ...copyData(orignRule.query as objectAny)}, router);
+            vueRoute = {...(orignRule as totalNextRoute), query: toQuery}
+        } else {
+            vueRoute = (router.$route as objectAny).currentRoute;
+        }
         route.path = vueRoute.path;
-        route.fullPath = vueRoute.fullPath;
-        route.query = vueRoute.query;
+        route.fullPath = vueRoute.fullPath || '';
+        route.query = vueRoute.query || {};
         route.NAVTYPE = rewriteMethodToggle[vueRoute.type as reNavMethodRule || 'reLaunch'];
         break;
-    case 'app-plus':
-        // eslint-disable-next-line no-case-declarations
-        const page = getUniCachePage<objectAny>(level);
-        if (Object.keys(page).length === 0) {
-            throw new Error(`不存在的页面栈，请确保有足够的页面可用`);
+    }
+    case 'app-plus': {
+        let appPage:objectAny = {};
+        if (orignRule != null) {
+            appPage = {...orignRule, openType: orignRule.type};
+        } else {
+            const page:[]|objectAny = getUniCachePage<objectAny>(level);
+            if (Object.keys(page).length === 0) {
+                throw new Error(`不存在的页面栈，请确保有足够的页面可用`);
+            }
+            appPage = {
+                ...(page as objectAny).$page,
+                query: page.options,
+                fullPath: decodeURIComponent(page.$page.fullPath)
+            }
         }
-        // eslint-disable-next-line no-case-declarations
-        const openType:reNavMethodRule = page.$page.openType;
-        route.query = page.options;
-        route.path = page.$page.path;
-        route.fullPath = page.$page.fullPath;
+        const openType:reNavMethodRule = appPage.openType;
+        route.query = appPage.query;
+        route.path = appPage.path;
+        route.fullPath = appPage.fullPath;
         route.NAVTYPE = rewriteMethodToggle[openType || 'reLaunch']
         break
+    }
     default:
         break;
     }

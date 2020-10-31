@@ -1,9 +1,9 @@
 import {H5Config, InstantiateConfig} from '../options/config';
-import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, objectAny, rewriteMethodToggle, reNavMethodRule} from '../options/base';
+import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, objectAny} from '../options/base';
 import {baseConfig} from '../helpers/config';
 import {ERRORHOOK} from '../public/hooks'
 import {warnLock} from '../helpers/warn'
-import {parseQuery} from '../public/query'
+import { createRoute } from '../public/methods';
 const Regexp = require('path-to-regexp');
 
 export function voidFun():void{}
@@ -152,46 +152,12 @@ export function forMatNextToFrom<T extends totalNextRoute>(
     if (router.options.platform === 'h5') {
         const {vueNext, vueRouterDev} = (router.options.h5 as H5Config);
         if (!vueNext && !vueRouterDev) {
-            const toRoute = routesForMapRoute(router, matTo.path, ['finallyPathMap', 'pathMap']);
-            const fromRoute = routesForMapRoute(router, matFrom.path, ['finallyPathMap', 'pathMap']);
-            const matToParams = copyData(matTo.params as objectAny);
-            const matFromParams = copyData(matFrom.params as objectAny);
-
-            delete matToParams.__id__;
-            delete matFromParams.__id__;
-            const toQuery = parseQuery({...matToParams, ...copyData(matTo.query as objectAny)}, router);
-            const fromQuery = parseQuery({...matFromParams, ...copyData(matFrom.query as objectAny)}, router);
-            matTo = ({
-                ...toRoute,
-                fullPath: matTo.fullPath,
-                params: {},
-                query: toQuery,
-                NAVTYPE: rewriteMethodToggle[(matTo.type as reNavMethodRule) || 'reLaunch'] // 这里可以为undefined
-            } as T);
-            matFrom = ({
-                ...fromRoute,
-                fullPath: matFrom.fullPath,
-                params: {},
-                query: fromQuery,
-                NAVTYPE: rewriteMethodToggle[(matFrom.type as reNavMethodRule) || 'reLaunch'] // 这里可以为undefined
-            }as T)
+            matTo = createRoute(router, undefined, matTo) as T;
+            matFrom = createRoute(router, undefined, matFrom) as T;
         }
     } else {
-        const [{
-            type: typeTo,
-            ...cloneTo
-        }, {
-            type: typeFrom,
-            ...cloneFrom
-        }] = [deepClone<T>(matTo), deepClone<T>(matFrom)]
-        matTo = ({
-            ...cloneTo,
-            NAVTYPE: rewriteMethodToggle[(typeTo as reNavMethodRule) || 'reLaunch']
-        } as T)
-        matFrom = ({
-            ...cloneFrom,
-            NAVTYPE: rewriteMethodToggle[(typeFrom as reNavMethodRule) || 'reLaunch']
-        } as T)
+        matTo = createRoute(router, undefined, deepClone<T>(matTo)) as T;
+        matFrom = createRoute(router, undefined, deepClone<T>(matFrom)) as T;
     }
     return {
         matTo: matTo,
@@ -203,15 +169,16 @@ export function paramsToQuery(
     router:Router,
     toRule:totalNextRoute|string
 ):totalNextRoute|string {
-    if (router.options.platform !== 'h5') {
+    if (router.options.platform === 'h5' && !router.options.h5?.paramsToQuery) {
         return toRule;
-    }
-    if (!(router.options.h5 as H5Config).paramsToQuery) {
-        return toRule
     }
     if (getDataType<totalNextRoute|string>(toRule) === '[object Object]') {
         const {name, params, ...moreToRule} = (toRule as totalNextRoute);
-        if (name != null && params != null) {
+        let paramsQuery = params;
+        if (router.options.platform !== 'h5' && paramsQuery == null) {
+            paramsQuery = {};
+        }
+        if (name != null && paramsQuery != null) {
             const route = (router.routesMap as routesMapRule).nameMap[name];
             if (route == null) {
                 ERRORHOOK[0]({ type: 2, msg: `命名路由为：${name} 的路由，无法在路由表中找到！`, toRule}, router)
@@ -223,7 +190,7 @@ export function paramsToQuery(
                 return {
                     ...moreToRule,
                     path: finallyPath as string,
-                    query: params
+                    query: paramsQuery
                 }
             }
         }

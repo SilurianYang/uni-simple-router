@@ -52,6 +52,12 @@ function callRouterMethod(
     funName:reNavMethodRule|reNotNavMethodRule,
     router:Router
 ): void {
+    if (router.options.platform === 'app-plus') {
+        const openType = (option as uniNavApiRule).openType;
+        if (openType != null && openType === 'appLaunch') {
+            funName = 'reLaunch'
+        }
+    }
     console.log(option);
     if (funName === 'reLaunch' && JSON.stringify(option) === '{"url":"/"}') {
         warn(

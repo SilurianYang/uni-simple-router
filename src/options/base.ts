@@ -118,6 +118,7 @@ export interface navErrorRule {
 // uni原生api跳转时的规则
 export interface uniNavApiRule {
     url: string;
+    openType?:'appLaunch',
     query?:objectAny;
     path?:string;
     detail?:{[propName:string]:any};

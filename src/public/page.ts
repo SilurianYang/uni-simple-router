@@ -1,17 +1,32 @@
 import { getDataType, getUniCachePage, deepClone} from '../helpers/utils';
 import { objectAny, Router, totalNextRoute } from '../options/base';
 import {createRoute} from './methods'
+import { stringifyQuery } from './query';
 
 export function createToFrom(
     to:totalNextRoute,
     router:Router,
 ):totalNextRoute {
+    let fromRoute:totalNextRoute = {path: ''};
     const page = getUniCachePage<Array<any>|objectAny>(0);
     if (getDataType<Array<any>|objectAny>(page) === '[object Array]') {
-        const from = deepClone<totalNextRoute>(to)
-        return from;
+        fromRoute = deepClone<totalNextRoute>(to)
     } else {
-        const fromRoute = createRoute(router);
-        return fromRoute as totalNextRoute;
+        fromRoute = createRoute(router) as totalNextRoute;
+    }
+    return fromRoute;
+}
+
+export function createFullPath(
+    to:totalNextRoute,
+    from:totalNextRoute
+):void{
+    if (to.fullPath == null) {
+        const strQuery = stringifyQuery(to.query as objectAny);
+        to.fullPath = to.path + strQuery;
+    }
+    if (from.fullPath == null) {
+        const strQuery = stringifyQuery(from.query as objectAny);
+        from.fullPath = from.path + strQuery;
     }
 }
