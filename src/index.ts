@@ -16,6 +16,7 @@ function createRouter(params: InstantiateConfig):Router {
         mount: [],
         appProxyHook: appProxyHook,
         $route: null,
+        $lockStatus: false,
         routesMap: {},
         lifeCycle: registerRouterHooks<LifeCycleConfig>(lifeCycle, options),
         push(to) {
@@ -30,11 +31,8 @@ function createRouter(params: InstantiateConfig):Router {
         pushTab(to) {
             navjump(to, router, 'pushTab');
         },
-        back(level = 1, origin) {
-            navBack(this, level, 'back', origin)
-        },
-        preloadPage(rule):void{
-
+        back(level = 1) {
+            navBack(this, level, 'back')
         },
         beforeEach(userGuard):void {
             registerEachHooks(router, 'beforeHooks', userGuard);

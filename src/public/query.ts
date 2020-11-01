@@ -84,8 +84,6 @@ export function queryPageToMap(
                 publicCb.call(this, args, cacheFail);
             };
         }
-    } else {
-        console.log('这是非h端 需要做的 TODO')
     }
     const rule = (toRule as totalNextRoute);
     if (getDataType<Function|undefined>(rule.success) === '[object Function]') {

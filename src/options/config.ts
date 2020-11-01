@@ -29,7 +29,7 @@ export interface InstantiateConfig {
     [key:string]:any;
     keepUniOriginNav:boolean; // 重写uni-app的跳转方法；关闭后使用uni-app的原始方法跳转和插件api跳转等同
     platform:'h5'|'app-plus'|'app-lets'|'mp-weixin'|'mp-baidu'|'mp-alipay'|'mp-toutiao'|'mp-qq'|'mp-360'; // 当前运行平台
-	h5?: H5Config;
+    h5?: H5Config;
 	APP?: AppConfig;
 	debugger?: debuggerConfig; // 是否处于开发阶段 设置为true则打印日志
 	routerBeforeEach?: (to:navtoRule, from:navtoRule, next:(rule?: navtoRule|false)=>void) => void; // router 前置路由函数 每次触发跳转前先会触发此函数

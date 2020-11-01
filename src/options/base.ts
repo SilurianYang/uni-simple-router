@@ -19,11 +19,10 @@ export enum rewriteMethodToggle{
     'reLaunch'='replaceAll',
     'switchTab'='pushTab',
     'navigateBack'='back',
-    'preloadPage'='preloadPage',
 }
 export type appProxyNameRule='onLaunch'|'onShow'|'onHide';
 export type reNavMethodRule='navigateTo'|'redirectTo'|'reLaunch'|'switchTab';
-export type reNotNavMethodRule='navigateBack'|'preloadPage';
+export type reNotNavMethodRule='navigateBack';
 export type reloadNavRule=totalNextRoute | false | undefined|string;
 export type hookListRule=Array<(router:Router, to:totalNextRoute, from: totalNextRoute, toRoute:RoutesRule)=>hooksReturnRule>
 export type guardHookRule=(to: totalNextRoute, from: totalNextRoute, next:(rule?: navtoRule|false)=>void)=>void;
@@ -188,7 +187,8 @@ export interface RoutesRule {
 export interface Router {
     [key:string]:any;
 	readonly lifeCycle: LifeCycleConfig;
-	readonly options: InstantiateConfig;
+    readonly options: InstantiateConfig;
+    $lockStatus:boolean;
     $route: object | null;
     appProxyHook:appVueHookConfig;
 	routesMap: routesMapRule|{};
@@ -199,7 +199,6 @@ export interface Router {
 	replaceAll(to: totalNextRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 URL 关闭所有页面，打开到应用内的某个页面
 	pushTab(to: totalNextRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 url 关闭所有页面，打开到应用内的某个tab
     back(level:number|undefined,origin?:uniBackRule|uniBackApiRule):void;
-    preloadPage(rule:preloadPageRule):void;     //预加载页面
     beforeEach(userGuard:guardHookRule): void; // 添加全局前置路由守卫
     afterEach(userGuard:(to: totalNextRoute, from: totalNextRoute)=>void): void; // 添加全局后置路由守卫
 }

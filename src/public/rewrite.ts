@@ -27,8 +27,7 @@ const rewrite: Array<reNavMethodRule|reNotNavMethodRule> = [
     'redirectTo',
     'reLaunch',
     'switchTab',
-    'navigateBack',
-    'preloadPage'
+    'navigateBack'
 ];
 
 export function rewriteMethod(
@@ -58,7 +57,6 @@ function callRouterMethod(
             funName = 'reLaunch'
         }
     }
-    console.log(option);
     if (funName === 'reLaunch' && JSON.stringify(option) === '{"url":"/"}') {
         warn(
             `uni-app 原生方法：reLaunch({url:'/'}) 默认被重写啦！你可以使用 this.$Router.replaceAll() 或者 uni.reLaunch({url:'/?xxx=xxx'})`,
@@ -76,8 +74,6 @@ function callRouterMethod(
             level = ((option as uniBackApiRule).delta as number);
         }
         router.back(level, (option as uniBackRule|uniBackApiRule));
-    } else if (funName === 'preloadPage') {
-        router.preloadPage((option as preloadPageRule));
     } else {
         const routerMethodName = rewriteMethodToggle[(funName as reNavMethodRule)]
         let path = (option as uniNavApiRule).url;

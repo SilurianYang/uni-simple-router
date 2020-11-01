@@ -72,7 +72,6 @@ export function navBack(
     router:Router,
     level:number,
     navType:NAVTYPE,
-    origin?:uniBackRule|uniBackApiRule
 ):void{
     if (router.options.platform === 'h5') {
         (router.$route as any).go(-level)
