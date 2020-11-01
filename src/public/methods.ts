@@ -1,9 +1,7 @@
 import {
     NAVTYPE,
     Router,
-    uniBackApiRule,
     totalNextRoute,
-    uniBackRule,
     objectAny,
     routeRule,
     reNavMethodRule,
