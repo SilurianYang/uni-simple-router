@@ -23,8 +23,23 @@
 			console.log('返回')
 		},
 		onLoad(){
-			console.log('-------------page2-----------onLoad')
+			console.log('onLoad-------page2')
 			console.log(this.$Route)
+		},
+		onShow() {
+			console.log('onShow-------page2')
+		},
+		onReady() {
+			console.log('onReady-------page2')
+		},
+		onHide() {
+			console.log('onHide-------page2')
+		},
+		onUnload() {
+			console.log('onUnload-------page2')
+		},
+		onResize() {
+			console.log('onResize-------page2')
 		},
 		methods: {
 			gotoPage1(){

@@ -56,6 +56,14 @@ export const namalRoutes=[{
 			"selectedIconPath": "static/icon_component.png",
 			"text": "nvue"
 		},
+		{
+			path: "/pages/nvue1/nvue1",
+			name:'nvue1'
+		},
+		{
+			path: "/pages/nvue2/nvue2",
+			name:'nvue2'
+		}
 		// {
 		// 	path:'*',
 		// 	redirect:to=>{

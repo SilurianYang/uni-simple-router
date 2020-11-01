@@ -1,0 +1,41 @@
+<template>
+	<view>
+		<h1>nvue2</h1>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		onLoad(...options) {
+			console.log(options)
+			console.log('onLoad-------nvue2');
+		},
+		onShow() {
+			console.log('onShow-------nvue2')
+		},
+		onReady() {
+			console.log('onReady-------nvue2')
+		},
+		onHide() {
+			console.log('onHide-------nvue2')
+		},
+		onUnload() {
+			console.log('onUnload-------nvue2')
+		},
+		onResize() {
+			console.log('onResize-------nvue2')
+		},
+		methods: {
+			
+		}
+	}
+</script>
+
+<style>
+
+</style>

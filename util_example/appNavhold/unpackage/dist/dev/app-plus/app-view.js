@@ -1470,7 +1470,21 @@ var render = function() {
   return _c(
     "v-uni-view",
     { attrs: { _i: 0 } },
-    [_c("h1", { attrs: { _i: 1 } }, [_vm._v("页面3")])],
+    [
+      _c("h1", { attrs: { _i: 1 } }, [_vm._v("页面3")]),
+      _c(
+        "v-uni-button",
+        {
+          attrs: { type: "default", _i: 2 },
+          on: {
+            click: function($event) {
+              return _vm.$handleViewEvent($event)
+            }
+          }
+        },
+        [_vm._v("去nvue1页面")]
+      )
+    ],
     1
   )
 }

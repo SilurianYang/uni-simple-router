@@ -17,22 +17,22 @@
 			}
 		},
 		onLoad() {
-			console.log('onLoad');
+			console.log('onLoad-----index');
 		},
 		onShow() {
-			console.log('onShow')
+			console.log('onShow-----index')
 		},
 		onReady() {
-			console.log('onReady')
+			console.log('onReady-----index')
 		},
 		onHide() {
-			console.log('onHide')
+			console.log('onHide-----index')
 		},
 		onUnload() {
-			console.log('onUnload')
+			console.log('onUnload-----index')
 		},
 		onResize() {
-			console.log('onResize')
+			console.log('onResize-----index')
 		},
 		beforeRouteLeave(to,from,next){
 			console.log('-------------------------index++++beforeRouteLeave-------------------------------------')

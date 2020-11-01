@@ -1,0 +1,46 @@
+<template>
+	<view>
+		<h1>nvue1</h1>
+		<button type="default" @click="gotoPage">去nvue2页面</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		onLoad(...options) {
+			console.log(options)
+			console.log('onLoad-------nvue1');
+		},
+		onShow() {
+			console.log('onShow-------nvue1')
+		},
+		onReady() {
+			console.log('onReady-------nvue1')
+		},
+		onHide() {
+			console.log('onHide-------nvue1')
+		},
+		onUnload() {
+			console.log('onUnload-------nvue1')
+		},
+		onResize() {
+			console.log('onResize-------nvue1')
+		},
+		methods: {
+			gotoPage(){
+				uni.navigateTo({
+					url:'/pages/nvue2/nvue2'
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>

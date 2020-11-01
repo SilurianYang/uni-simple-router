@@ -44,6 +44,24 @@
             }
             
         }
+        ,{
+            "path" : "pages/nvue1/nvue1",
+            "style" :                                                                                    
+            {
+				"navigationBarTitleText": "nvue1",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/nvue2/nvue2",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "nvue2",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"tabBar": {
 		"color": "#7A7E83",
