@@ -1,6 +1,7 @@
 <script>
 	export default {
 		onLaunch: function() {
+			console.log(this)
 			console.log('App Launch')
 		},
 		onShow: function() {
@@ -8,6 +9,9 @@
 		},
 		onHide: function() {
 			console.log('App Hide')
+		},
+		methods:{
+			aaaa(){}
 		}
 	}
 </script>
