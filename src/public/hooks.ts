@@ -14,7 +14,8 @@ import {
     routesForMapRoute,
     getDataType,
     forMatNextToFrom,
-    getUniCachePage
+    getUniCachePage,
+    voidFun
 } from '../helpers/utils'
 import { navjump } from './methods';
 
@@ -27,7 +28,10 @@ export const HOOKLIST: hookListRule = [
     (router, to, from, toRoute) => callHook(router.lifeCycle.beforeHooks[0], to, from, router),
     (router, to, from, toRoute) => callHook(toRoute.beforeEnter, to, from, router),
     (router, to, from, toRoute) => callHook(router.lifeCycle.afterHooks[0], to, from, router, false),
-    (router, to, from, toRoute) => callHook(router.lifeCycle.routerAfterHooks[0], to, from, router, false)
+    (router, to, from, toRoute) => {
+        router.$lockStatus = false;
+        return callHook(router.lifeCycle.routerAfterHooks[0], to, from, router, false)
+    }
 ];
 
 export function callBeforeRouteLeave(
@@ -40,10 +44,10 @@ export function callBeforeRouteLeave(
     if (Object.keys(page).length > 0) {
         let leaveHooks:Array<Function>|undefined|Function;
         if (router.options.platform === 'h5') {
-            leaveHooks = page.$options.beforeRouteLeave;
+            leaveHooks = (page as objectAny).$options.beforeRouteLeave;
         } else {
-            if (page.$vm != null) {
-                leaveHooks = page.$vm.$options.beforeRouteLeave;
+            if ((page as objectAny).$vm != null) {
+                leaveHooks = (page as objectAny).$vm.$options.beforeRouteLeave;
             }
         }
         switch (getDataType<Array<Function>>((leaveHooks as Array<Function>))) {
@@ -52,7 +56,7 @@ export function callBeforeRouteLeave(
             beforeRouteLeave = beforeRouteLeave.bind(page)
             break;
         case '[object Function]': // 目前app端表现
-            beforeRouteLeave = (leaveHooks as Function).bind(page.$vm);
+            beforeRouteLeave = (leaveHooks as Function).bind((page as objectAny).$vm);
             break
         }
     }
@@ -110,7 +114,15 @@ export function transitionTo(
     callHookList:hookListRule,
     hookCB:Function
 ) :void{
-    loopCallHook(callHookList, 0, hookCB, router, to, from, navType);
+    if (router.options.platform === 'h5') {
+        loopCallHook(callHookList, 0, hookCB, router, to, from, navType);
+    } else {
+        loopCallHook(callHookList.slice(0, 4), 0, () => {
+            hookCB(() => { // 非H5端等他跳转完才触发最后两个生命周期
+                loopCallHook(callHookList.slice(4), 0, voidFun, router, to, from, navType);
+            });
+        }, router, to, from, navType);
+    }
 }
 
 export function loopCallHook(

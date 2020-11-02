@@ -6,7 +6,8 @@ import {
     routeRule,
     reNavMethodRule,
     rewriteMethodToggle,
-    navtypeToggle
+    navtypeToggle,
+    navErrorRule
 } from '../options/base'
 import {
     queryPageToMap,
@@ -18,11 +19,25 @@ import {
     paramsToQuery,
     getUniCachePage,
     routesForMapRoute,
-    copyData
+    copyData,
+    lockDetectWarn
 } from '../helpers/utils'
 import { transitionTo } from './hooks';
 import {createFullPath, createToFrom} from '../public/page'
 import {HOOKLIST} from './hooks'
+
+export function lockNavjump(
+    to:string|totalNextRoute,
+    router:Router,
+    navType:NAVTYPE,
+):void{
+    lockDetectWarn(router, () => {
+        if (router.options.platform !== 'h5') {
+            router.$lockStatus = true;
+        }
+        navjump(to, router, navType);
+    });
+}
 
 export function navjump(
     to:string|totalNextRoute,
@@ -59,9 +74,10 @@ export function navjump(
             from = nextCall.from;
         }
         createFullPath(parseToRule, from);
-        transitionTo(router, parseToRule, from, navType, HOOKLIST, function() {
-            uni[navtypeToggle[navType]](parseToRule, true);
-            plus.nativeObj.View.getViewById('router-loadding').close();
+        transitionTo(router, parseToRule, from, navType, HOOKLIST, function(
+            callOkCb:Function
+        ):void{
+            uni[navtypeToggle[navType]](parseToRule, true, callOkCb);
         })
     }
 }
@@ -71,15 +87,18 @@ export function navBack(
     level:number,
     navType:NAVTYPE,
 ):void{
-    if (router.options.platform === 'h5') {
-        (router.$route as any).go(-level)
-    } else {
-        const toRule = createRoute(router, level);
-        navjump({
-            path: toRule.path,
-            query: toRule.query
-        }, router, navType);
-    }
+    lockDetectWarn(router, () => {
+        if (router.options.platform === 'h5') {
+            (router.$route as any).go(-level);
+        } else {
+            router.$lockStatus = true;
+            const toRule = createRoute(router, level);
+            navjump({
+                path: toRule.path,
+                query: toRule.query
+            }, router, navType);
+        }
+    })
 }
 
 export function createRoute(
@@ -118,14 +137,18 @@ export function createRoute(
         if (orignRule != null) {
             appPage = {...orignRule, openType: orignRule.type};
         } else {
-            const page:[]|objectAny = getUniCachePage<objectAny>(level);
+            const page = getUniCachePage<objectAny>(level);
             if (Object.keys(page).length === 0) {
-                throw new Error(`不存在的页面栈，请确保有足够的页面可用`);
+                (router.options.routerErrorEach as (error: navErrorRule, router:Router) => void)({
+                    type: 3,
+                    msg: `不存在的页面栈，请确保有足够的页面可用，当前 level:${level}`
+                }, router);
+                throw new Error(`不存在的页面栈，请确保有足够的页面可用，当前 level:${level}`)
             }
             appPage = {
                 ...(page as objectAny).$page,
-                query: page.options,
-                fullPath: decodeURIComponent(page.$page.fullPath)
+                query: (page as objectAny).options,
+                fullPath: decodeURIComponent((page as objectAny).$page.fullPath)
             }
         }
         const openType:reNavMethodRule = appPage.openType;

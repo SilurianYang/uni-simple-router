@@ -1,5 +1,5 @@
 import {H5Config, InstantiateConfig} from '../options/config';
-import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, objectAny} from '../options/base';
+import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, objectAny, navErrorRule} from '../options/base';
 import {baseConfig} from '../helpers/config';
 import {ERRORHOOK} from '../public/hooks'
 import {warnLock} from '../helpers/warn'
@@ -110,7 +110,7 @@ export function copyData(object:objectAny): objectAny {
     return JSON.parse(JSON.stringify(object))
 }
 
-export function getUniCachePage<T extends objectAny>(pageIndex?:number):T {
+export function getUniCachePage<T extends objectAny>(pageIndex?:number):T|[] {
     const pages:T = getCurrentPages();
     if (pageIndex == null) {
         return pages
@@ -118,7 +118,11 @@ export function getUniCachePage<T extends objectAny>(pageIndex?:number):T {
     if (pages.length === 0) {
         return pages;
     }
-    return pages.reverse()[pageIndex]
+    const page = pages.reverse()[pageIndex];
+    if (page == null) {
+        return []
+    }
+    return page;
 }
 
 export function urlToJson(url :string):{
@@ -238,4 +242,23 @@ export function deepClone<T>(source:T):T {
     const __ob__ = getDataType<T>(source) === '[object Array]' ? ([] as Array<any>) : ({} as objectAny);
     baseClone(source, __ob__)
     return __ob__ as T
+}
+
+export function lockDetectWarn(
+    router:Router,
+    next:Function,
+    passiveType?:'beforeHooks'| 'afterHooks'
+):void{
+    if (passiveType === 'afterHooks') {
+        next();
+    } else {
+        if (router.$lockStatus) {
+            (router.options.routerErrorEach as (error: navErrorRule, router:Router) => void)({
+                type: 2,
+                msg: '当前页面正在处于跳转状态，请稍后再进行跳转....'
+            }, router);
+        } else {
+            next();
+        }
+    }
 }

@@ -4,7 +4,7 @@ import {appProxyHook, lifeCycle} from './helpers/config';
 import {assertNewOptions, getDataType} from './helpers/utils';
 import {registerRouterHooks, registerEachHooks} from './helpers/lifeCycle';
 import {initMixins} from './helpers/mixins'
-import {navjump, navBack, createRoute} from './public/methods'
+import {navBack, createRoute, lockNavjump} from './public/methods'
 import {proxyH5Mount} from './H5/proxyHook'
 import {rewriteMethod} from './public/rewrite'
 import { proxyAppMount } from './app/proxyHook';
@@ -20,16 +20,16 @@ function createRouter(params: InstantiateConfig):Router {
         routesMap: {},
         lifeCycle: registerRouterHooks<LifeCycleConfig>(lifeCycle, options),
         push(to) {
-            navjump(to, router, 'push');
+            lockNavjump(to, router, 'push');
         },
         replace(to) {
-            navjump(to, router, 'replace');
+            lockNavjump(to, router, 'replace');
         },
         replaceAll(to) {
-            navjump(to, router, 'replaceAll');
+            lockNavjump(to, router, 'replaceAll');
         },
         pushTab(to) {
-            navjump(to, router, 'pushTab');
+            lockNavjump(to, router, 'pushTab');
         },
         back(level = 1) {
             navBack(this, level, 'back')

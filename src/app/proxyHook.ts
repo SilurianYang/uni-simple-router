@@ -4,7 +4,6 @@ import {getDataType} from '../helpers/utils'
 
 export function registerLoddingPage(
     router:Router,
-    next:()=>void
 ):void{
     const { loddingPageHook, loddingPageStyle } = router.options.APP as AppConfig;	// 获取app所有配置
     const view = new plus.nativeObj.View('router-loadding', {
@@ -14,7 +13,7 @@ export function registerLoddingPage(
         width: '100%',
         ...(loddingPageStyle as Function)()
     });
-    (loddingPageHook as Function)(view, next);	// 触发等待页面生命周期
+    (loddingPageHook as Function)(view);	// 触发等待页面生命周期
 }
 
 export function proxyLaunchHook(
@@ -30,7 +29,13 @@ export function proxyLaunchHook(
                 options: [],
                 hook: Function
             };
-            proxyInfo.hook = (hooList as Array<Function>).splice((hooList as Array<Function>).length - 1, 1, (...options:Array<any>) => (proxyInfo.options = options))[0]
+            const hook = (hooList as Array<Function>).splice((hooList as Array<Function>).length - 1, 1, (...options:Array<any>) => (proxyInfo.options = options))[0]
+            proxyInfo.hook = function resetHook(this:any) {
+                (hooList as Array<Function>).splice((hooList as Array<Function>).length - 1, 1, hook);
+                if (name !== 'onHide') {
+                    hook.apply(this, proxyInfo.options)
+                }
+            }
             router.appProxyHook[name] = [proxyInfo];
         }
     }

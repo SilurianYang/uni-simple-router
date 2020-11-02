@@ -41,14 +41,8 @@ export function getMixins(router: Router):{
                 if (!registerRouter) {
                     registerRouter = true;
                     proxyLaunchHook(this.$options, router);
-                    registerLoddingPage(router, () => {
-
-                    });
-                    console.log('beforeCreate---app');
+                    registerLoddingPage(router);
                 }
-            },
-            onLoad():void{
-                console.log('onLoad---app');
             }
         },
         'app-lets': {

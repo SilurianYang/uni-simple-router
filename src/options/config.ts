@@ -14,9 +14,9 @@ export interface H5Config {
 	fallback?: boolean;
 }
 export interface AppConfig {
-	holdTabbar?: boolean; // 是否开启底部菜单拦截
 	loddingPageStyle?: () => object; // 当前等待页面的样式 必须返回一个json
-	loddingPageHook?: (view:any, next:()=>void)=>void; // 刚刚打开页面处于等待状态,会触发此事件
+    loddingPageHook?: (view:any)=>void; // 刚刚打开页面处于等待状态,会触发此函数
+    launchedHook?:()=>void; // 首次启动app完成
 	animation?: startAnimationRule; // 页面切换动画
 }
 export interface debuggerArrayConfig{

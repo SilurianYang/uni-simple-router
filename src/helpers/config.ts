@@ -16,9 +16,9 @@ export const baseConfig:InstantiateConfig = {
         fallback: true
     },
     APP: {
-        holdTabbar: true,
         loddingPageStyle: () => JSON.parse('{"backgroundColor":"#FFF"}'),
-        loddingPageHook: (view:any, next:()=>void) => { plus.navigator.closeSplashscreen(); view.show(); next(); },
+        loddingPageHook: (view:any) => { view.show(); },
+        launchedHook: () => { plus.navigator.closeSplashscreen(); },
         animation: { animationType: 'pop-in', animationDuration: 300 }
     },
     platform: 'h5',

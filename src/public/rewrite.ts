@@ -36,9 +36,13 @@ export function rewriteMethod(
     if (router.options.keepUniOriginNav === false) {
         rewrite.forEach(name => {
             const oldMethod: Function = uni[name];
-            uni[name] = function(params:uniNavApiRule|{from:string}|navtoRule, originCall:boolean = false):void {
+            uni[name] = function(
+                params:uniNavApiRule|{from:string}|navtoRule,
+                originCall:boolean = false,
+                callOkCb?:Function
+            ):void {
                 if (originCall) {
-                    uniOriginJump(oldMethod, (params as uniNavApiRule))
+                    uniOriginJump(router, oldMethod, name, (params as uniNavApiRule), callOkCb)
                 } else {
                     callRouterMethod(params as uniNavApiRule, name, router);
                 }

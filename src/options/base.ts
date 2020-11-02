@@ -26,7 +26,7 @@ export type reNotNavMethodRule='navigateBack';
 export type reloadNavRule=totalNextRoute | false | undefined|string;
 export type hookListRule=Array<(router:Router, to:totalNextRoute, from: totalNextRoute, toRoute:RoutesRule)=>hooksReturnRule>
 export type guardHookRule=(to: totalNextRoute, from: totalNextRoute, next:(rule?: navtoRule|false)=>void)=>void;
-export type navRuleStatus=	0|1|2;  //0: next(false) 1:next(unknownType)
+export type navRuleStatus=	0|1|2|3;  //0: next(false) 1:next(unknownType) 2:加锁状态，禁止跳转  3:在获取页面栈的时候，页面栈不够level获取
 export type proxyHookName='beforeHooks'|'afterHooks';
 export type navMethodRule = Promise<void | undefined | navRuleStatus>;
 export type hooksReturnRule = Promise<reloadNavRule>;
