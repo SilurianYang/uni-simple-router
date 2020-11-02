@@ -1,3 +1,4 @@
 /node_modules
 /util_example/*/node_modules
 /util_example/*/unpackage
+/util_example/*/uni-simple-router.js.map
