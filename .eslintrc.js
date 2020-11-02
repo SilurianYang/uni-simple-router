@@ -8,7 +8,8 @@ module.exports = {
     globals: {
         uni: true,
         plus: true,
-        getCurrentPages: true
+        getCurrentPages: true,
+        getApp: true
     },
     parser: '@typescript-eslint/parser',
     extends: ['eslint:recommended'],
