@@ -46,8 +46,13 @@ export function getMixins(router: Router):{
             }
         },
         'app-lets': {
-            onLaunch(): void {
-                console.log('beforeCreate----app-lets');
+            onLaunch(this: any): void {
+                if (!registerRouter) {
+                    registerRouter = true;
+                    proxyLaunchHook(this.$options, router);
+                    console.log(getCurrentPages())
+                }
+                console.log('onLaunch----app-lets');
             }
         }
     };

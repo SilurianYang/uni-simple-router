@@ -74,10 +74,6 @@ function RouterMount(Vim:any, router:Router, el:string | undefined = '#app') :vo
     case 'app-plus':
         proxyAppMount(Vim, router);
         break
-    default:
-        console.warn('其他端还没实现')
-        Vim.$mount();
-        break;
     }
 }
 
