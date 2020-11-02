@@ -73,7 +73,6 @@ router.afterEach((to, from) => {
 console.log(router)
 
 Vue.use(router);
-
 export {
 	router,
 	RouterMount
