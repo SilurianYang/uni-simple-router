@@ -1,7 +1,18 @@
 <script>
 	export default {
+		beforeCreate:function(){
+			console.log('App beforeCreate')
+		},
+		created:function(){
+			console.log('App created')
+		},
+		beforeMount:function(){
+			console.log('App beforeMount')
+		},
+		mounted:function(){
+			console.log('App mounted')
+		},
 		onLaunch: function() {
-			console.log(this)
 			console.log('App Launch')
 		},
 		onShow: function() {

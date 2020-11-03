@@ -43,6 +43,7 @@
 		},
 		methods: {
 			gotoPage(){
+				console.log('开始跳转')
 				// this.$Router.push({
 				// 	name:'page2',
 				// 	success:(agrs)=>{

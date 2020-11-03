@@ -638,10 +638,47 @@ exports.proxyH5Mount = proxyH5Mount;
 
 /***/ }),
 
-/***/ "./src/app/proxyHook.ts":
-/*!******************************!*\
-  !*** ./src/app/proxyHook.ts ***!
-  \******************************/
+/***/ "./src/app/appPatch.ts":
+/*!*****************************!*\
+  !*** ./src/app/appPatch.ts ***!
+  \*****************************/
+/*! unknown exports (runtime-defined) */
+/*! runtime requirements: top-level-this-exports, __webpack_exports__ */
+/***/ (function(__unused_webpack_module, exports) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.proxyAppMount = exports.registerLoddingPage = void 0;
+function registerLoddingPage(router) {
+    var _a = router.options.APP, loddingPageHook = _a.loddingPageHook, loddingPageStyle = _a.loddingPageStyle; // 获取app所有配置
+    var view = new plus.nativeObj.View('router-loadding', __assign({ top: '0px', left: '0px', height: '100%', width: '100%' }, loddingPageStyle()));
+    loddingPageHook(view); // 触发等待页面生命周期
+}
+exports.registerLoddingPage = registerLoddingPage;
+function proxyAppMount(Vim, router) {
+    Vim.$mount();
+}
+exports.proxyAppMount = proxyAppMount;
+
+
+/***/ }),
+
+/***/ "./src/helpers/config.ts":
+/*!*******************************!*\
+  !*** ./src/helpers/config.ts ***!
+  \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
@@ -659,73 +696,21 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.proxyAppMount = exports.proxyLaunchHook = exports.registerLoddingPage = void 0;
-var utils_1 = __webpack_require__(/*! ../helpers/utils */ "./src/helpers/utils.ts");
-function registerLoddingPage(router) {
-    var _a = router.options.APP, loddingPageHook = _a.loddingPageHook, loddingPageStyle = _a.loddingPageStyle; // 获取app所有配置
-    var view = new plus.nativeObj.View('router-loadding', __assign({ top: '0px', left: '0px', height: '100%', width: '100%' }, loddingPageStyle()));
-    loddingPageHook(view); // 触发等待页面生命周期
-}
-exports.registerLoddingPage = registerLoddingPage;
-function proxyLaunchHook(appVue, router) {
-    var proxyHook = Object.keys(router.appProxyHook);
-    var _loop_1 = function (i) {
-        var name = proxyHook[i];
-        var hooList = appVue[name];
-        if (utils_1.getDataType(hooList) === '[object Array]') {
-            var proxyInfo_1 = {
-                options: [],
-                hook: Function
-            };
-            var hook_1 = hooList.splice(hooList.length - 1, 1, function () {
-                var options = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    options[_i] = arguments[_i];
-                }
-                return (proxyInfo_1.options = options);
-            })[0];
-            proxyInfo_1.hook = function resetHook() {
-                hooList.splice(hooList.length - 1, 1, hook_1);
-                if (name !== 'onHide') {
-                    hook_1.apply(this, proxyInfo_1.options);
-                }
-            };
-            router.appProxyHook[name] = [proxyInfo_1];
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
         }
-    };
-    for (var i = 0; i < proxyHook.length; i++) {
-        _loop_1(i);
-    }
-}
-exports.proxyLaunchHook = proxyLaunchHook;
-function proxyAppMount(Vim, router) {
-    Vim.$mount();
-}
-exports.proxyAppMount = proxyAppMount;
-
-
-/***/ }),
-
-/***/ "./src/helpers/config.ts":
-/*!*******************************!*\
-  !*** ./src/helpers/config.ts ***!
-  \*******************************/
-/*! flagged exports */
-/*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
-/*! export appProxyHook [provided] [no usage info] [missing usage info prevents renaming] */
-/*! export baseConfig [provided] [no usage info] [missing usage info prevents renaming] */
-/*! export lifeCycle [provided] [no usage info] [missing usage info prevents renaming] */
-/*! export mpPlatformReg [provided] [no usage info] [missing usage info prevents renaming] */
-/*! other exports [not provided] [no usage info] */
-/*! runtime requirements: __webpack_exports__, __webpack_require__ */
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
+    return t;
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.appProxyHook = exports.lifeCycle = exports.baseConfig = exports.mpPlatformReg = void 0;
+exports.notCallProxyHook = exports.proxyVueSortHookName = exports.indexProxyHook = exports.appProxyHook = exports.lifeCycle = exports.baseConfig = exports.mpPlatformReg = void 0;
 var warn_1 = __webpack_require__(/*! ./warn */ "./src/helpers/warn.ts");
+var utils_1 = __webpack_require__(/*! ./utils */ "./src/helpers/utils.ts");
 exports.mpPlatformReg = /(^mp-weixin$)|(^mp-baidu$)|(^mp-alipay$)|(^mp-toutiao$)|(^mp-qq$)|(^mp-360$)/g;
 exports.baseConfig = {
     h5: {
@@ -771,10 +756,33 @@ exports.lifeCycle = {
     routerErrorHooks: []
 };
 exports.appProxyHook = {
-    onLaunch: [],
-    onShow: [],
-    onHide: []
+    app: {
+        beforeCreate: [],
+        created: [],
+        beforeMount: [],
+        mounted: [],
+        onLaunch: [],
+        onShow: [],
+        onHide: [],
+        beforeDestroy: [],
+        destroyed: []
+    }
 };
+exports.indexProxyHook = {
+    app: exports.appProxyHook.app,
+    index: (function (appHooks) {
+        // eslint-disable-next-line no-unused-vars
+        var onLaunch = appHooks.onLaunch, otherHooks = __rest(appHooks, ["onLaunch"]);
+        return __assign(__assign({}, otherHooks), { onLoad: [], onReady: [], onUnload: [], onResize: [] });
+    })(utils_1.copyData(exports.appProxyHook.app))
+};
+exports.proxyVueSortHookName = {
+    app: ['beforeCreate', 'created', 'beforeMount', 'mounted', 'onLaunch', 'onShow', 'onHide', 'beforeDestroy', 'destroyed'],
+    index: ['beforeCreate', 'created', 'beforeMount', 'mounted', 'onLoad', 'onReady', 'onShow', 'onResize', 'onHide', 'beforeDestroy', 'destroyed', 'onUnload']
+};
+exports.notCallProxyHook = [
+    'onHide', 'beforeDestroy', 'destroyed', 'destroyed', 'onUnload', 'onResize'
+];
 
 
 /***/ }),
@@ -923,8 +931,11 @@ var createRouteMap_1 = __webpack_require__(/*! ../helpers/createRouteMap */ "./s
 var buildRouter_1 = __webpack_require__(/*! ../H5/buildRouter */ "./src/H5/buildRouter.ts");
 var proxyHook_1 = __webpack_require__(/*! ../H5/proxyHook */ "./src/H5/proxyHook.ts");
 var config_1 = __webpack_require__(/*! ./config */ "./src/helpers/config.ts");
-var proxyHook_2 = __webpack_require__(/*! ../app/proxyHook */ "./src/app/proxyHook.ts");
+var appPatch_1 = __webpack_require__(/*! ../app/appPatch */ "./src/app/appPatch.ts");
+var page_1 = __webpack_require__(/*! ../public/page */ "./src/public/page.ts");
+var methods_1 = __webpack_require__(/*! ../public/methods */ "./src/public/methods.ts");
 var registerRouter = false;
+var onloadProxyOk = false;
 function getMixins(router) {
     var platform = router.options.platform;
     if (config_1.mpPlatformReg.test(platform)) {
@@ -954,19 +965,24 @@ function getMixins(router) {
             beforeCreate: function () {
                 if (!registerRouter) {
                     registerRouter = true;
-                    proxyHook_2.proxyLaunchHook(this.$options, router);
-                    proxyHook_2.registerLoddingPage(router);
+                    page_1.proxyPageHook(this, router, 'appProxyHook', 'app');
+                    appPatch_1.registerLoddingPage(router);
                 }
             }
         },
         'app-lets': {
-            onLaunch: function () {
+            beforeCreate: function () {
                 if (!registerRouter) {
                     registerRouter = true;
-                    proxyHook_2.proxyLaunchHook(this.$options, router);
-                    console.log(getCurrentPages());
+                    page_1.proxyPageHook(this, router, 'appletsProxyHook', 'app');
                 }
-                console.log('onLaunch----app-lets');
+            },
+            onLoad: function () {
+                if (!onloadProxyOk) {
+                    onloadProxyOk = true;
+                    page_1.proxyPageHook(this, router, 'appletsProxyHook', 'index');
+                    methods_1.forceGuardEach(router);
+                }
             }
         }
     };
@@ -989,6 +1005,9 @@ exports.initMixins = initMixins;
   \******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
+/*! CommonJS bailout: this is used directly at 13:14-18 */
+/*! CommonJS bailout: this is used directly at 24:22-26 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1023,7 +1042,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.lockDetectWarn = exports.deepClone = exports.baseClone = exports.assertDeepObject = exports.paramsToQuery = exports.forMatNextToFrom = exports.urlToJson = exports.getUniCachePage = exports.copyData = exports.getDataType = exports.routesForMapRoute = exports.assertNewOptions = exports.getRoutePath = exports.mergeConfig = exports.voidFun = void 0;
+exports.replaceHook = exports.lockDetectWarn = exports.deepClone = exports.baseClone = exports.assertDeepObject = exports.paramsToQuery = exports.forMatNextToFrom = exports.urlToJson = exports.getUniCachePage = exports.copyData = exports.getDataType = exports.routesForMapRoute = exports.assertNewOptions = exports.getRoutePath = exports.mergeConfig = exports.voidFun = void 0;
 var config_1 = __webpack_require__(/*! ../helpers/config */ "./src/helpers/config.ts");
 var hooks_1 = __webpack_require__(/*! ../public/hooks */ "./src/public/hooks.ts");
 var warn_1 = __webpack_require__(/*! ../helpers/warn */ "./src/helpers/warn.ts");
@@ -1257,6 +1276,41 @@ function lockDetectWarn(router, next, passiveType) {
     }
 }
 exports.lockDetectWarn = lockDetectWarn;
+function replaceHook(router, vueVim, proxyHookKey, pageType) {
+    var vueOptions = vueVim.$options;
+    var proxyHook = router[proxyHookKey][pageType];
+    if (proxyHook != null) {
+        var proxyName = config_1.proxyVueSortHookName[pageType];
+        var _loop_1 = function (i) {
+            var name = proxyName[i];
+            var originHook = vueOptions[name];
+            if (getDataType(originHook) === '[object Array]') {
+                var proxyInfo_1 = {
+                    options: [],
+                    hook: Function
+                };
+                var hook_1 = originHook.splice(originHook.length - 1, 1, function () {
+                    var options = [];
+                    for (var _i = 0; _i < arguments.length; _i++) {
+                        options[_i] = arguments[_i];
+                    }
+                    return (proxyInfo_1.options = options);
+                })[0];
+                proxyInfo_1.hook = function resetHook() {
+                    originHook.splice(originHook.length - 1, 1, hook_1);
+                    if (!config_1.notCallProxyHook.includes(name)) {
+                        hook_1.apply(vueVim, proxyInfo_1.options);
+                    }
+                };
+                proxyHook[name] = [proxyInfo_1];
+            }
+        };
+        for (var i = 0; i < proxyName.length; i++) {
+            _loop_1(i);
+        }
+    }
+}
+exports.replaceHook = replaceHook;
 
 
 /***/ }),
@@ -1343,13 +1397,14 @@ var mixins_1 = __webpack_require__(/*! ./helpers/mixins */ "./src/helpers/mixins
 var methods_1 = __webpack_require__(/*! ./public/methods */ "./src/public/methods.ts");
 var proxyHook_1 = __webpack_require__(/*! ./H5/proxyHook */ "./src/H5/proxyHook.ts");
 var rewrite_1 = __webpack_require__(/*! ./public/rewrite */ "./src/public/rewrite.ts");
-var proxyHook_2 = __webpack_require__(/*! ./app/proxyHook */ "./src/app/proxyHook.ts");
+var appPatch_1 = __webpack_require__(/*! ./app/appPatch */ "./src/app/appPatch.ts");
 function createRouter(params) {
     var options = utils_1.assertNewOptions(params);
     var router = {
         options: options,
         mount: [],
         appProxyHook: config_1.appProxyHook,
+        appletsProxyHook: config_1.indexProxyHook,
         $route: null,
         $lockStatus: false,
         routesMap: {},
@@ -1369,6 +1424,9 @@ function createRouter(params) {
         back: function (level) {
             if (level === void 0) { level = 1; }
             methods_1.navBack(this, level, 'back');
+        },
+        forceGuardEach: function (navType) {
+            methods_1.forceGuardEach(router, navType);
         },
         beforeEach: function (userGuard) {
             lifeCycle_1.registerEachHooks(router, 'beforeHooks', userGuard);
@@ -1410,7 +1468,7 @@ function RouterMount(Vim, router, el) {
             proxyHook_1.proxyH5Mount(Vim, router);
             break;
         case 'app-plus':
-            proxyHook_2.proxyAppMount(Vim, router);
+            appPatch_1.proxyAppMount(Vim, router);
             break;
     }
 }
@@ -1469,6 +1527,7 @@ var rewriteMethodToggle;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1619,6 +1678,7 @@ exports.loopCallHook = loopCallHook;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1635,7 +1695,7 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createRoute = exports.navBack = exports.navjump = exports.lockNavjump = void 0;
+exports.createRoute = exports.forceGuardEach = exports.navBack = exports.navjump = exports.lockNavjump = void 0;
 var base_1 = __webpack_require__(/*! ../options/base */ "./src/options/base.ts");
 var query_1 = __webpack_require__(/*! ./query */ "./src/public/query.ts");
 var utils_1 = __webpack_require__(/*! ../helpers/utils */ "./src/helpers/utils.ts");
@@ -1700,6 +1760,22 @@ function navBack(router, level, navType) {
     });
 }
 exports.navBack = navBack;
+function forceGuardEach(router, navType) {
+    if (navType === void 0) { navType = 'replace'; }
+    var page = utils_1.getUniCachePage(0);
+    if (Object.keys(page).length === 0) {
+        router.options.routerErrorEach({
+            type: 3,
+            msg: "\u4E0D\u5B58\u5728\u7684\u9875\u9762\u6808\uFF0C\u8BF7\u786E\u4FDD\u6709\u8DB3\u591F\u7684\u9875\u9762\u53EF\u7528\uFF0C\u5F53\u524D level:0"
+        }, router);
+    }
+    var _a = page, route = _a.route, options = _a.options;
+    lockNavjump({
+        path: "/" + route,
+        query: options
+    }, router, navType);
+}
+exports.forceGuardEach = forceGuardEach;
 function createRoute(router, level, orignRule) {
     if (level === void 0) { level = 0; }
     var route = {
@@ -1711,49 +1787,46 @@ function createRoute(router, level, orignRule) {
         query: {},
         params: {}
     };
-    switch (router.options.platform) {
-        case 'h5': {
-            var vueRoute = { path: '' };
-            if (orignRule != null) {
-                var matRouteParams = utils_1.copyData(orignRule.params);
-                delete matRouteParams.__id__;
-                var toQuery = query_1.parseQuery(__assign(__assign({}, matRouteParams), utils_1.copyData(orignRule.query)), router);
-                vueRoute = __assign(__assign({}, orignRule), { query: toQuery });
-            }
-            else {
-                vueRoute = router.$route.currentRoute;
-            }
-            route.path = vueRoute.path;
-            route.fullPath = vueRoute.fullPath || '';
-            route.query = vueRoute.query || {};
-            route.NAVTYPE = base_1.rewriteMethodToggle[vueRoute.type || 'reLaunch'];
-            break;
+    if (router.options.platform === 'h5') {
+        var vueRoute = { path: '' };
+        if (orignRule != null) {
+            var matRouteParams = utils_1.copyData(orignRule.params);
+            delete matRouteParams.__id__;
+            var toQuery = query_1.parseQuery(__assign(__assign({}, matRouteParams), utils_1.copyData(orignRule.query)), router);
+            vueRoute = __assign(__assign({}, orignRule), { query: toQuery });
         }
-        case 'app-plus': {
-            var appPage = {};
-            if (orignRule != null) {
-                appPage = __assign(__assign({}, orignRule), { openType: orignRule.type });
-            }
-            else {
-                var page = utils_1.getUniCachePage(level);
-                if (Object.keys(page).length === 0) {
-                    router.options.routerErrorEach({
-                        type: 3,
-                        msg: "\u4E0D\u5B58\u5728\u7684\u9875\u9762\u6808\uFF0C\u8BF7\u786E\u4FDD\u6709\u8DB3\u591F\u7684\u9875\u9762\u53EF\u7528\uFF0C\u5F53\u524D level:" + level
-                    }, router);
-                    throw new Error("\u4E0D\u5B58\u5728\u7684\u9875\u9762\u6808\uFF0C\u8BF7\u786E\u4FDD\u6709\u8DB3\u591F\u7684\u9875\u9762\u53EF\u7528\uFF0C\u5F53\u524D level:" + level);
-                }
-                appPage = __assign(__assign({}, page.$page), { query: page.options, fullPath: decodeURIComponent(page.$page.fullPath) });
-            }
-            var openType = appPage.openType;
-            route.query = appPage.query;
-            route.path = appPage.path;
-            route.fullPath = appPage.fullPath;
-            route.NAVTYPE = base_1.rewriteMethodToggle[openType || 'reLaunch'];
-            break;
+        else {
+            vueRoute = router.$route.currentRoute;
         }
-        default:
-            break;
+        route.path = vueRoute.path;
+        route.fullPath = vueRoute.fullPath || '';
+        route.query = vueRoute.query || {};
+        route.NAVTYPE = base_1.rewriteMethodToggle[vueRoute.type || 'reLaunch'];
+    }
+    else {
+        var appPage = {};
+        if (orignRule != null) {
+            appPage = __assign(__assign({}, orignRule), { openType: orignRule.type });
+        }
+        else {
+            var page = utils_1.getUniCachePage(level);
+            if (Object.keys(page).length === 0) {
+                router.options.routerErrorEach({
+                    type: 3,
+                    msg: "\u4E0D\u5B58\u5728\u7684\u9875\u9762\u6808\uFF0C\u8BF7\u786E\u4FDD\u6709\u8DB3\u591F\u7684\u9875\u9762\u53EF\u7528\uFF0C\u5F53\u524D level:" + level
+                }, router);
+                throw new Error("\u4E0D\u5B58\u5728\u7684\u9875\u9762\u6808\uFF0C\u8BF7\u786E\u4FDD\u6709\u8DB3\u591F\u7684\u9875\u9762\u53EF\u7528\uFF0C\u5F53\u524D level:" + level);
+            }
+            appPage = __assign(__assign({}, page.$page), { query: page.options, fullPath: decodeURIComponent(page.$page.fullPath) });
+            if (router.options.platform !== 'app-plus') {
+                appPage.path = "/" + page.route;
+            }
+        }
+        var openType = appPage.openType;
+        route.query = appPage.query;
+        route.path = appPage.path;
+        route.fullPath = appPage.fullPath;
+        route.NAVTYPE = base_1.rewriteMethodToggle[openType || 'reLaunch'];
     }
     var tableRoute = utils_1.routesForMapRoute(router, route.path, ['finallyPathMap', 'pathMap']);
     var perfectRoute = __assign(__assign({}, route), tableRoute);
@@ -1773,6 +1846,7 @@ exports.createRoute = createRoute;
 /*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
 /*! export createFullPath [provided] [no usage info] [missing usage info prevents renaming] */
 /*! export createToFrom [provided] [no usage info] [missing usage info prevents renaming] */
+/*! export proxyPageHook [provided] [no usage info] [missing usage info prevents renaming] */
 /*! other exports [not provided] [no usage info] */
 /*! runtime requirements: __webpack_exports__, __webpack_require__ */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
@@ -1780,7 +1854,7 @@ exports.createRoute = createRoute;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createFullPath = exports.createToFrom = void 0;
+exports.proxyPageHook = exports.createFullPath = exports.createToFrom = void 0;
 var utils_1 = __webpack_require__(/*! ../helpers/utils */ "./src/helpers/utils.ts");
 var methods_1 = __webpack_require__(/*! ./methods */ "./src/public/methods.ts");
 var query_1 = __webpack_require__(/*! ./query */ "./src/public/query.ts");
@@ -1807,6 +1881,10 @@ function createFullPath(to, from) {
     }
 }
 exports.createFullPath = createFullPath;
+function proxyPageHook(vueVim, router, proxyHookKey, pageType) {
+    utils_1.replaceHook(router, vueVim, proxyHookKey, pageType);
+}
+exports.proxyPageHook = proxyPageHook;
 
 
 /***/ }),
@@ -2155,14 +2233,19 @@ var query_1 = __webpack_require__(/*! ./query */ "./src/public/query.ts");
 var routerNavCount = 0;
 function uniOriginJump(router, originMethod, funName, options, callOkCb) {
     var _a = formatOriginURLQuery(options), complete = _a.complete, originRule = __rest(_a, ["complete"]);
-    if (funName === 'navigateBack') {
-        callOkCb && callOkCb();
-    }
     if (routerNavCount === 0) { // 还原app。vue下已经重写后的生命周期
-        var app = getApp();
-        for (var _i = 0, _b = Object.entries(router.appProxyHook); _i < _b.length; _i++) {
-            var _c = _b[_i], value = _c[1][0];
-            value.hook.apply(app);
+        var proxyHookKey = 'appletsProxyHook';
+        if (router.options.platform === 'app-plus') {
+            proxyHookKey = 'appProxyHook';
+        }
+        for (var _i = 0, _b = Object.entries(router[proxyHookKey]); _i < _b.length; _i++) {
+            var _c = _b[_i], value = _c[1];
+            for (var _d = 0, _e = Object.entries(value); _d < _e.length; _d++) {
+                var _f = _e[_d], origin = _f[1][0];
+                if (origin) {
+                    origin.hook && origin.hook();
+                }
+            }
         }
     }
     originMethod(__assign(__assign({}, originRule), { complete: function () {
@@ -2172,13 +2255,14 @@ function uniOriginJump(router, originMethod, funName, options, callOkCb) {
                 args[_i] = arguments[_i];
             }
             if (routerNavCount === 0) {
+                routerNavCount++;
                 if (router.options.platform === 'app-plus') {
-                    plus.nativeObj.View.getViewById('router-loadding').close();
+                    var waitPage = plus.nativeObj.View.getViewById('router-loadding');
+                    waitPage && waitPage.close();
                     var launchedHook = (_a = router.options.APP) === null || _a === void 0 ? void 0 : _a.launchedHook;
                     launchedHook && launchedHook();
                 }
             }
-            routerNavCount++;
             complete && complete.apply(null, args);
             callOkCb && callOkCb.apply(null, args);
         } }));
