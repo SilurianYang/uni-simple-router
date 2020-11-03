@@ -1,6 +1,6 @@
-import {H5Config, InstantiateConfig} from '../options/config';
-import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, objectAny, navErrorRule} from '../options/base';
-import {baseConfig} from '../helpers/config';
+import {appVueHookConfig, H5Config, indexVueHookConfig, InstantiateConfig} from '../options/config';
+import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, objectAny, navErrorRule, hookObjectRule, notCallProxyHookRule} from '../options/base';
+import {baseConfig, notCallProxyHook, proxyVueSortHookName} from '../helpers/config';
 import {ERRORHOOK} from '../public/hooks'
 import {warnLock} from '../helpers/warn'
 import { createRoute } from '../public/methods';
@@ -106,7 +106,7 @@ export function getDataType<T>(data:T):string {
     return Object.prototype.toString.call(data)
 }
 
-export function copyData(object:objectAny): objectAny {
+export function copyData<T>(object:T): T {
     return JSON.parse(JSON.stringify(object))
 }
 
@@ -262,3 +262,35 @@ export function lockDetectWarn(
         }
     }
 }
+
+export function replaceHook(
+    router:Router,
+    vueVim:any,
+    proxyHookKey:'appProxyHook'|'appletsProxyHook',
+    pageType:'app'|'index'
+):void{
+    const vueOptions:appVueHookConfig|indexVueHookConfig = vueVim.$options;
+    const proxyHook = router[proxyHookKey][(pageType as 'app')];
+    if (proxyHook != null) {
+        const proxyName = proxyVueSortHookName[pageType];
+        for (let i = 0; i < proxyName.length; i++) {
+            const name = proxyName[i];
+            const originHook = vueOptions[name] as Array<Function>|undefined;
+            if (getDataType<Array<Function>|undefined>(originHook) === '[object Array]') {
+                const proxyInfo:hookObjectRule = {
+                    options: [],
+                    hook: Function
+                };
+                const hook = (originHook as Array<Function>).splice((originHook as Array<Function>).length - 1, 1, (...options:Array<any>) => (proxyInfo.options = options))[0]
+                proxyInfo.hook = function resetHook() {
+                    (originHook as Array<Function>).splice((originHook as Array<Function>).length - 1, 1, hook);
+                    if (!notCallProxyHook.includes(name as notCallProxyHookRule)) {
+                        hook.apply(vueVim, proxyInfo.options)
+                    }
+                }
+                proxyHook[name] = [proxyInfo]
+            }
+        }
+    }
+}
+

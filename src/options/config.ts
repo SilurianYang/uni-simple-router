@@ -46,8 +46,30 @@ export interface LifeCycleConfig{
     routerAfterHooks: hookListRule;
     routerErrorHooks: Array<(error:navErrorRule, router:Router)=>void>;
 }
-export interface appVueHookConfig{
-    onLaunch:Array<hookObjectRule|Function>;
+
+export interface baseAppHookConfig{
+    [key:string]:Array<hookObjectRule|Function>;
+    beforeCreate:Array<hookObjectRule|Function>;
+    created:Array<hookObjectRule|Function>;
+    beforeMount:Array<hookObjectRule|Function>;
+    mounted:Array<hookObjectRule|Function>;
     onShow:Array<hookObjectRule|Function>;
     onHide:Array<hookObjectRule|Function>;
+    beforeDestroy:Array<hookObjectRule|Function>;
+    destroyed:Array<hookObjectRule|Function>;
+}
+
+export interface appVueHookConfig extends baseAppHookConfig{
+    onLaunch:Array<hookObjectRule|Function>;
+}
+export interface indexVueHookConfig extends baseAppHookConfig{
+    onLoad:Array<hookObjectRule|Function>;
+    onReady:Array<hookObjectRule|Function>;
+    onUnload:Array<hookObjectRule|Function>;
+    onResize:Array<hookObjectRule|Function>;
+}
+
+export interface appletsVueHookConfig{
+    app:appVueHookConfig;
+    index:indexVueHookConfig
 }

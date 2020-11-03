@@ -1,4 +1,4 @@
-import { getDataType, getUniCachePage, deepClone} from '../helpers/utils';
+import { getDataType, getUniCachePage, deepClone, replaceHook} from '../helpers/utils';
 import { objectAny, Router, totalNextRoute } from '../options/base';
 import {createRoute} from './methods'
 import { stringifyQuery } from './query';
@@ -29,4 +29,13 @@ export function createFullPath(
         const strQuery = stringifyQuery(from.query as objectAny);
         from.fullPath = from.path + strQuery;
     }
+}
+
+export function proxyPageHook(
+    vueVim:any,
+    router:Router,
+    proxyHookKey:'appProxyHook'|'appletsProxyHook',
+    pageType:'app'|'index'
+):void {
+    replaceHook(router, vueVim, proxyHookKey, pageType);
 }

@@ -1,4 +1,6 @@
-import {appVueHookConfig, InstantiateConfig, LifeCycleConfig} from '../options/config';
+import { type } from 'os';
+import { types } from 'util';
+import {appletsVueHookConfig, appVueHookConfig, InstantiateConfig, LifeCycleConfig} from '../options/config';
 
 export enum hookToggle{
     'beforeHooks'='beforeEach',
@@ -20,7 +22,9 @@ export enum rewriteMethodToggle{
     'switchTab'='pushTab',
     'navigateBack'='back',
 }
-export type appProxyNameRule='onLaunch'|'onShow'|'onHide';
+export type notCallProxyHookRule='onHide'|'beforeDestroy'|'destroyed'|'onUnload'|'onResize';
+export type appVueSortHookRule='beforeCreate'|'created'|'beforeMount'|'mounted'|'onLaunch'|'onShow'|'onHide'|'beforeDestroy'|'destroyed';
+export type indexVueSortHookRule='beforeCreate'|'created'|'beforeMount'|'mounted'|'onLoad'|'onReady'|'onShow'|'onResize'|'onHide'|'beforeDestroy'|'destroyed'|'onUnload';
 export type reNavMethodRule='navigateTo'|'redirectTo'|'reLaunch'|'switchTab';
 export type reNotNavMethodRule='navigateBack';
 export type reloadNavRule=totalNextRoute | false | undefined|string;
@@ -190,7 +194,10 @@ export interface Router {
     readonly options: InstantiateConfig;
     $lockStatus:boolean;
     $route: object | null;
-    appProxyHook:appVueHookConfig;
+    appProxyHook:{
+        app:appVueHookConfig
+    };
+    appletsProxyHook:appletsVueHookConfig;
 	routesMap: routesMapRule|{};
 	mount: Array<{app: any; el: string}>;
 	install(Vue: any): void;
@@ -199,6 +206,7 @@ export interface Router {
 	replaceAll(to: totalNextRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 URL 关闭所有页面，打开到应用内的某个页面
 	pushTab(to: totalNextRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 url 关闭所有页面，打开到应用内的某个tab
     back(level:number|undefined,origin?:uniBackRule|uniBackApiRule):void;
+    forceGuardEach(navType:NAVTYPE|undefined):void;      //强制触发当前守卫
     beforeEach(userGuard:guardHookRule): void; // 添加全局前置路由守卫
     afterEach(userGuard:(to: totalNextRoute, from: totalNextRoute)=>void): void; // 添加全局后置路由守卫
 }

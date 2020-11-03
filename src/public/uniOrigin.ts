@@ -1,4 +1,4 @@
-import { reNavMethodRule, reNotNavMethodRule, Router, uniNavApiRule } from '../options/base';
+import { objectAny, reNavMethodRule, reNotNavMethodRule, Router, uniNavApiRule } from '../options/base';
 import { stringifyQuery } from './query';
 
 let routerNavCount:number = 0;
@@ -11,26 +11,31 @@ export function uniOriginJump(
     callOkCb?:Function
 ):void {
     const {complete, ...originRule} = formatOriginURLQuery(options);
-    if (funName === 'navigateBack') {
-        callOkCb && callOkCb();
-    }
     if (routerNavCount === 0) { // 还原app。vue下已经重写后的生命周期
-        const app = getApp();
-        for (const [, [value]] of Object.entries(router.appProxyHook)) {
-            value.hook.apply(app);
+        let proxyHookKey:'appProxyHook'|'appletsProxyHook' = 'appletsProxyHook';
+        if (router.options.platform === 'app-plus') {
+            proxyHookKey = 'appProxyHook';
+        }
+        for (const [, value] of Object.entries(router[proxyHookKey])) {
+            for (const [, [origin]] of Object.entries(value as objectAny)) {
+                if (origin) {
+                    origin.hook && origin.hook();
+                }
+            }
         }
     }
     originMethod({
         ...originRule,
         complete: function(...args:Array<any>) {
             if (routerNavCount === 0) {
+                routerNavCount++
                 if (router.options.platform === 'app-plus') {
-                    plus.nativeObj.View.getViewById('router-loadding').close();
+                    const waitPage = plus.nativeObj.View.getViewById('router-loadding');
+                    waitPage && waitPage.close();
                     const launchedHook = router.options.APP?.launchedHook;
                     launchedHook && launchedHook();
                 }
             }
-            routerNavCount++
             complete && complete.apply(null, args);
             callOkCb && callOkCb.apply(null, args)
         }

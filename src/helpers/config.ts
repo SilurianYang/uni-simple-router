@@ -1,5 +1,7 @@
 import {err} from './warn'
-import {appVueHookConfig, InstantiateConfig, LifeCycleConfig} from '../options/config'
+import {appletsVueHookConfig, appVueHookConfig, indexVueHookConfig, InstantiateConfig, LifeCycleConfig} from '../options/config'
+import { copyData } from './utils';
+import { appVueSortHookRule, indexVueSortHookRule, notCallProxyHookRule } from '../options/base';
 
 export const mpPlatformReg = /(^mp-weixin$)|(^mp-baidu$)|(^mp-alipay$)|(^mp-toutiao$)|(^mp-qq$)|(^mp-360$)/g;
 
@@ -48,8 +50,45 @@ export const lifeCycle:LifeCycleConfig = {
     routerErrorHooks: []
 };
 
-export const appProxyHook:appVueHookConfig = {
-    onLaunch: [],
-    onShow: [],
-    onHide: []
+export const appProxyHook:{
+    app:appVueHookConfig
+} = {
+    app: {
+        beforeCreate: [],
+        created: [],
+        beforeMount: [],
+        mounted: [],
+        onLaunch: [],
+        onShow: [],
+        onHide: [],
+        beforeDestroy: [],
+        destroyed: []
+    }
 }
+export const indexProxyHook:appletsVueHookConfig = {
+    app: appProxyHook.app,
+    index: (function(
+        appHooks:appVueHookConfig
+    ) :indexVueHookConfig {
+        // eslint-disable-next-line no-unused-vars
+        const {onLaunch, ...otherHooks} = appHooks;
+        return {
+            ...otherHooks,
+            onLoad: [],
+            onReady: [],
+            onUnload: [],
+            onResize: []
+        };
+    })(copyData<appVueHookConfig>(appProxyHook.app))
+}
+
+export const proxyVueSortHookName:{
+    app:Array<appVueSortHookRule>,
+    index:Array<indexVueSortHookRule>
+} = {
+    app: ['beforeCreate', 'created', 'beforeMount', 'mounted', 'onLaunch', 'onShow', 'onHide', 'beforeDestroy', 'destroyed'],
+    index: ['beforeCreate', 'created', 'beforeMount', 'mounted', 'onLoad', 'onReady', 'onShow', 'onResize', 'onHide', 'beforeDestroy', 'destroyed', 'onUnload']
+}
+export const notCallProxyHook:Array<notCallProxyHookRule> = [
+    'onHide', 'beforeDestroy', 'destroyed', 'destroyed', 'onUnload', 'onResize'
+];

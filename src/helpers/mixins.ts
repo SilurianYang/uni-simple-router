@@ -1,11 +1,14 @@
-import {Router, routesMapRule, RoutesRule} from '../options/base';
+import { Router, routesMapRule, RoutesRule} from '../options/base';
 import {createRouteMap} from '../helpers/createRouteMap'
 import {buildVueRoutes, buildVueRouter} from '../H5/buildRouter'
 import {proxyEachHook} from '../H5/proxyHook'
 import {mpPlatformReg} from './config'
-import {proxyLaunchHook, registerLoddingPage} from '../app/proxyHook';
+import {registerLoddingPage} from '../app/appPatch';
+import { proxyPageHook } from '../public/page';
+import { forceGuardEach } from '../public/methods';
 
 let registerRouter:boolean = false;
+let onloadProxyOk:boolean = false;
 
 export function getMixins(router: Router):{
     beforeCreate(this: any): void;
@@ -40,19 +43,24 @@ export function getMixins(router: Router):{
             beforeCreate(this: any): void {
                 if (!registerRouter) {
                     registerRouter = true;
-                    proxyLaunchHook(this.$options, router);
+                    proxyPageHook(this, router, 'appProxyHook', 'app');
                     registerLoddingPage(router);
                 }
             }
         },
         'app-lets': {
-            onLaunch(this: any): void {
+            beforeCreate(this: any): void {
                 if (!registerRouter) {
                     registerRouter = true;
-                    proxyLaunchHook(this.$options, router);
-                    console.log(getCurrentPages())
+                    proxyPageHook(this, router, 'appletsProxyHook', 'app')
                 }
-                console.log('onLaunch----app-lets');
+            },
+            onLoad(this: any):void{
+                if (!onloadProxyOk) {
+                    onloadProxyOk = true;
+                    proxyPageHook(this, router, 'appletsProxyHook', 'index');
+                    forceGuardEach(router);
+                }
             }
         }
     };

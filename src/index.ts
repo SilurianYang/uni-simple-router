@@ -1,13 +1,13 @@
 import {Router} from './options/base';
 import {InstantiateConfig, LifeCycleConfig} from './options/config';
-import {appProxyHook, lifeCycle} from './helpers/config';
+import {appProxyHook, indexProxyHook, lifeCycle} from './helpers/config';
 import {assertNewOptions, getDataType} from './helpers/utils';
 import {registerRouterHooks, registerEachHooks} from './helpers/lifeCycle';
 import {initMixins} from './helpers/mixins'
-import {navBack, createRoute, lockNavjump} from './public/methods'
+import {navBack, createRoute, lockNavjump, forceGuardEach} from './public/methods'
 import {proxyH5Mount} from './H5/proxyHook'
 import {rewriteMethod} from './public/rewrite'
-import { proxyAppMount } from './app/proxyHook';
+import { proxyAppMount } from './app/appPatch';
 
 function createRouter(params: InstantiateConfig):Router {
     const options = assertNewOptions<InstantiateConfig>(params);
@@ -15,6 +15,7 @@ function createRouter(params: InstantiateConfig):Router {
         options,
         mount: [],
         appProxyHook: appProxyHook,
+        appletsProxyHook: indexProxyHook,
         $route: null,
         $lockStatus: false,
         routesMap: {},
@@ -33,6 +34,9 @@ function createRouter(params: InstantiateConfig):Router {
         },
         back(level = 1) {
             navBack(this, level, 'back')
+        },
+        forceGuardEach(navType) {
+            forceGuardEach(router, navType)
         },
         beforeEach(userGuard):void {
             registerEachHooks(router, 'beforeHooks', userGuard);
