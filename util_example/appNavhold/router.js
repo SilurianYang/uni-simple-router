@@ -4,11 +4,7 @@ import Vue from 'vue'
 import {vueDevRoutes} from './common/vueRouterDev_true/vueRouterDev'
 import {namalRoutes} from './common/vueRouterDev_true/nomalRoutes'
 
-import {
-	RouterMount,
-	createRouter
-} from './dist/uni-simple-router.js'
-
+import {RouterMount,createRouter} from './dist/uni-simple-router.js'
 
 const whitelist={
 		'/': 'index',
@@ -55,6 +51,9 @@ const router = createRouter({
 	},
 	debugger:true,
 	keepUniOriginNav:false,
+	detectBeforeLock:(...args)=>{
+		console.log(args)
+	},
 	routes: namalRoutes
 });
 router.beforeEach((to, from, next) => {

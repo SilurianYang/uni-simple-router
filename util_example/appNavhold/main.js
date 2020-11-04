@@ -14,10 +14,10 @@ const app = new Vue({
 	...App
 })
 
-// #ifdef APP-PLUS||H5
-RouterMount(app,router,'#app')
+// #ifdef H5
+	RouterMount(app,router,'#app')
 // #endif
 
-// #ifndef APP-PLUS||H5
-app.$mount();
+// #ifndef H5
+	app.$mount(); //为了兼容小程序及app端必须这样写才有效果
 // #endif

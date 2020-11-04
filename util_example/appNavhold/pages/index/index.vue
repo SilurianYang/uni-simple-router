@@ -44,31 +44,33 @@
 		methods: {
 			gotoPage(){
 				console.log('开始跳转')
-				// this.$Router.push({
-				// 	name:'page2',
-				// 	success:(agrs)=>{
-				// 		console.log(agrs)
-				// 		console.log('跳转成功')
-				// 	},
-				// 		fail: ()=>{
-				// 			console.log('跳转失败')
-				// 		},
-				// 		complete:()=>{
-				// 			console.log('跳转结束')
-				// 		},
-				// 		params:{
-				// 			name:123,
-				// 			ags:10086,
-				// 			list:[
-				// 				{
-				// 					id:1
-				// 				},
-				// 				{
-				// 					id:2
-				// 				}
-				// 			]
-				// 		}
-				// })
+				this.$Router.push({
+					name:'page2',
+					animationType:'slide-in-bottom',
+					animationDuration:1000,
+					success:(agrs)=>{
+						console.log(agrs)
+						console.log('跳转成功')
+					},
+						fail: ()=>{
+							console.log('跳转失败')
+						},
+						complete:()=>{
+							console.log('跳转结束')
+						},
+						params:{
+							name:123,
+							ags:10086,
+							list:[
+								{
+									id:1
+								},
+								{
+									id:2
+								}
+							]
+						}
+				})
 				
 				// console.log('-------------------------------')
 				// this.$Router.push({
