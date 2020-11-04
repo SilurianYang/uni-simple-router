@@ -9,7 +9,7 @@
     "lib": ["ES2015"],
     "outDir": "dist/src",
     "declaration": true,
-    "declarationMap": true
+    "declarationMap": false
   },
   "include": [
     "src/global.d.ts",
