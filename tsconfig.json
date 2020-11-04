@@ -7,6 +7,9 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "lib": ["ES2015"],
+    "outDir": "dist/src",
+    "declaration": true,
+    "declarationMap": true
   },
   "include": [
     "src/global.d.ts",
