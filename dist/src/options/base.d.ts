@@ -172,4 +172,3 @@ export interface Router {
     beforeEach(userGuard: guardHookRule): void;
     afterEach(userGuard: (to: totalNextRoute, from: totalNextRoute) => void): void;
 }
-//# sourceMappingURL=base.d.ts.map

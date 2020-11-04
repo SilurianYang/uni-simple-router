@@ -1,4 +1,4 @@
-import { startAnimationRule, hookListRule, RoutesRule, navtoRule, navErrorRule, Router, objectAny, hookObjectRule } from './base';
+import { startAnimationRule, hookListRule, RoutesRule, navtoRule, navErrorRule, Router, objectAny, hookObjectRule, NAVTYPE, totalNextRoute } from './base';
 export declare type debuggerConfig = boolean | debuggerArrayConfig;
 export interface H5Config {
     paramsToQuery?: boolean;
@@ -34,6 +34,7 @@ export interface InstantiateConfig {
     routerErrorEach?: (error: navErrorRule, router: Router) => void;
     resolveQuery?: (jsonQuery: objectAny) => objectAny;
     parseQuery?: (jsonQuery: objectAny) => objectAny;
+    detectBeforeLock?: (router: Router, to: string | number | totalNextRoute, navType: NAVTYPE) => void;
     routes: RoutesRule[];
 }
 export interface LifeCycleConfig {
@@ -67,4 +68,3 @@ export interface appletsVueHookConfig {
     app: appVueHookConfig;
     index: indexVueHookConfig;
 }
-//# sourceMappingURL=config.d.ts.map

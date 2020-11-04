@@ -1,5 +1,5 @@
 import { InstantiateConfig } from '../options/config';
-import { RoutesRule, routesMapKeysRule, Router, totalNextRoute, objectAny } from '../options/base';
+import { RoutesRule, routesMapKeysRule, Router, totalNextRoute, objectAny, NAVTYPE } from '../options/base';
 export declare function voidFun(): void;
 export declare function mergeConfig<T extends InstantiateConfig>(baseConfig: T, userConfig: T): T;
 export declare function getRoutePath(route: RoutesRule, router: Router): {
@@ -27,6 +27,5 @@ export declare function baseClone<T extends {
     [key: string]: any;
 }, K extends keyof T>(source: T, target: Array<any> | objectAny): void;
 export declare function deepClone<T>(source: T): T;
-export declare function lockDetectWarn(router: Router, next: Function, passiveType?: 'beforeHooks' | 'afterHooks'): void;
+export declare function lockDetectWarn(router: Router, to: string | number | totalNextRoute, navType: NAVTYPE, next: Function, passiveType?: 'beforeHooks' | 'afterHooks'): void;
 export declare function replaceHook(router: Router, vueVim: any, proxyHookKey: 'appProxyHook' | 'appletsProxyHook', pageType: 'app' | 'index'): void;
-//# sourceMappingURL=utils.d.ts.map

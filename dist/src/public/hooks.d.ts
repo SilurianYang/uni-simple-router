@@ -6,4 +6,3 @@ export declare function callHook(hook: Function | undefined, to: totalNextRoute,
 export declare function onTriggerEachHook(to: totalNextRoute, from: totalNextRoute, router: Router, hookType: hookToggle, next: (rule?: navtoRule | false) => void): void;
 export declare function transitionTo(router: Router, to: totalNextRoute, from: totalNextRoute, navType: NAVTYPE, callHookList: hookListRule, hookCB: Function): void;
 export declare function loopCallHook(hooks: hookListRule, index: number, next: Function, router: Router, to: totalNextRoute, from: totalNextRoute, navType: NAVTYPE): void | Function;
-//# sourceMappingURL=hooks.d.ts.map

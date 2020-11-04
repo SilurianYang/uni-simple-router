@@ -7,4 +7,3 @@ export declare function navjump(to: string | totalNextRoute, router: Router, nav
 export declare function navBack(router: Router, level: number, navType: NAVTYPE): void;
 export declare function forceGuardEach(router: Router, navType?: NAVTYPE | undefined): void;
 export declare function createRoute(router: Router, level?: number | undefined, orignRule?: totalNextRoute): routeRule | never;
-//# sourceMappingURL=methods.d.ts.map

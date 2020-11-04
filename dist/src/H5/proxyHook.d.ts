@@ -9,4 +9,3 @@ export declare class MyArray extends Array {
 }
 export declare function proxyEachHook(router: Router, vueRouter: any): void;
 export declare function proxyH5Mount(Vim: any, router: Router): void;
-//# sourceMappingURL=proxyHook.d.ts.map

@@ -7,4 +7,3 @@ export declare function warn(errText: any, router: Router, enforce?: boolean): v
 export declare function log(errText: any, router: Router, enforce?: boolean): void;
 export declare function warnLock(errText: any): void;
 export {};
-//# sourceMappingURL=warn.d.ts.map

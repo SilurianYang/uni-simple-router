@@ -105,6 +105,7 @@ export declare interface InstantiateConfig {
     routerErrorEach?: (error: navErrorRule, router: Router) => void;
     resolveQuery?: (jsonQuery: objectAny) => objectAny;
     parseQuery?: (jsonQuery: objectAny) => objectAny;
+    detectBeforeLock?: (router: Router, to: string | number | totalNextRoute, navType: NAVTYPE) => void;
     routes: RoutesRule[];
 }
 

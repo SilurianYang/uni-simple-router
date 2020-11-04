@@ -12,4 +12,3 @@ export declare const proxyVueSortHookName: {
     index: Array<indexVueSortHookRule>;
 };
 export declare const notCallProxyHook: Array<notCallProxyHookRule>;
-//# sourceMappingURL=config.d.ts.map
