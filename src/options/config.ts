@@ -1,4 +1,4 @@
-import {startAnimationRule, hookListRule, RoutesRule, navtoRule, navErrorRule, Router, objectAny, hookObjectRule} from './base';
+import {startAnimationRule, hookListRule, RoutesRule, navtoRule, navErrorRule, Router, objectAny, hookObjectRule, NAVTYPE, totalNextRoute} from './base';
 
 export type debuggerConfig=boolean|debuggerArrayConfig;
 
@@ -37,6 +37,7 @@ export interface InstantiateConfig {
     routerErrorEach?: (error: navErrorRule, router:Router) => void;
     resolveQuery?:(jsonQuery:objectAny)=>objectAny; // 跳转之前把参数传递给此函数、返回最终的数据！有此函数不走默认方法
     parseQuery?:(jsonQuery:objectAny)=>objectAny; // 读取值之前把参数传递给此函数，返回最终的数据！有此函数不走默认方法
+    detectBeforeLock?:(router:Router, to:string|number|totalNextRoute, navType:NAVTYPE)=>void; // 在检测路由锁之前触发的函数
     routes: RoutesRule[];
 }
 export interface LifeCycleConfig{

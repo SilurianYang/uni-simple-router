@@ -14,7 +14,3 @@ export function registerLoddingPage(
     });
     (loddingPageHook as Function)(view);	// 触发等待页面生命周期
 }
-
-export function proxyAppMount(Vim:any, router:Router) {
-    Vim.$mount()
-}

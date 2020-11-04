@@ -55,7 +55,6 @@ function callRouterMethod(
     funName:reNavMethodRule|reNotNavMethodRule,
     router:Router
 ): void {
-    console.log(option)
     if (router.options.platform === 'app-plus') {
         const openType = (option as uniNavApiRule).openType;
         if (openType != null && openType === 'appLaunch') {

@@ -31,7 +31,7 @@ export function lockNavjump(
     router:Router,
     navType:NAVTYPE,
 ):void{
-    lockDetectWarn(router, () => {
+    lockDetectWarn(router, to, navType, () => {
         if (router.options.platform !== 'h5') {
             router.$lockStatus = true;
         }
@@ -87,7 +87,7 @@ export function navBack(
     level:number,
     navType:NAVTYPE,
 ):void{
-    lockDetectWarn(router, () => {
+    lockDetectWarn(router, level, navType, () => {
         if (router.options.platform === 'h5') {
             (router.$route as any).go(-level);
         } else {
@@ -103,7 +103,7 @@ export function navBack(
 
 export function forceGuardEach(
     router:Router,
-    navType:NAVTYPE|undefined = 'replace',
+    navType:NAVTYPE|undefined = 'replaceAll',
 ):void{
     const page = getUniCachePage<objectAny>(0);
     if (Object.keys(page).length === 0) {

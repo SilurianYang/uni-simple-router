@@ -1,5 +1,5 @@
 import {appVueHookConfig, H5Config, indexVueHookConfig, InstantiateConfig} from '../options/config';
-import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, objectAny, navErrorRule, hookObjectRule, notCallProxyHookRule} from '../options/base';
+import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, objectAny, navErrorRule, hookObjectRule, notCallProxyHookRule, NAVTYPE} from '../options/base';
 import {baseConfig, notCallProxyHook, proxyVueSortHookName} from '../helpers/config';
 import {ERRORHOOK} from '../public/hooks'
 import {warnLock} from '../helpers/warn'
@@ -246,12 +246,16 @@ export function deepClone<T>(source:T):T {
 
 export function lockDetectWarn(
     router:Router,
+    to:string|number|totalNextRoute,
+    navType:NAVTYPE,
     next:Function,
     passiveType?:'beforeHooks'| 'afterHooks'
 ):void{
     if (passiveType === 'afterHooks') {
         next();
     } else {
+        const {detectBeforeLock} = router.options;
+        detectBeforeLock && detectBeforeLock(router, to, navType);
         if (router.$lockStatus) {
             (router.options.routerErrorEach as (error: navErrorRule, router:Router) => void)({
                 type: 2,

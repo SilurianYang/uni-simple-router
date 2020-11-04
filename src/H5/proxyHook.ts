@@ -1,4 +1,4 @@
-import {Router, proxyHookName, totalNextRoute, navtoRule} from '../options/base';
+import {Router, proxyHookName, totalNextRoute, navtoRule, rewriteMethodToggle, reNavMethodRule} from '../options/base';
 import {lockDetectWarn} from '../helpers/utils'
 
 export class MyArray extends Array {
@@ -14,7 +14,7 @@ export class MyArray extends Array {
     push(v:any):any {
         this.vueEachArray.splice(0, 1, v);
         this[this.length] = (to: totalNextRoute, from: totalNextRoute, next:(rule?: navtoRule|false)=>void) => {
-            lockDetectWarn(this.router, () => {
+            lockDetectWarn(this.router, to, rewriteMethodToggle[to.type as reNavMethodRule || 'reLaunch'], () => {
                 if (this.hookName === 'beforeHooks') {
                     this.router.$lockStatus = true;
                 }

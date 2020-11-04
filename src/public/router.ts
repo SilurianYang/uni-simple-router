@@ -7,7 +7,6 @@ import {initMixins} from '../helpers/mixins'
 import {navBack, createRoute, lockNavjump, forceGuardEach} from '../public/methods'
 import {proxyH5Mount} from '../H5/proxyHook'
 import {rewriteMethod} from '../public/rewrite'
-import { proxyAppMount } from '../app/appPatch';
 
 function createRouter(params: InstantiateConfig):Router {
     const options = assertNewOptions<InstantiateConfig>(params);
@@ -71,14 +70,9 @@ function RouterMount(Vim:any, router:Router, el:string | undefined = '#app') :vo
     } else {
         throw new Error(`挂载路由失败，router.app 应该为数组类型。当前类型：${typeof router.mount}`);
     }
-    switch (router.options.platform) {
-    case 'h5':
+    if (router.options.platform === 'h5') {
         proxyH5Mount(Vim, router);
-        break;
-    case 'app-plus':
-        proxyAppMount(Vim, router);
-        break
-    }
+    } // 其他端目前不需要做啥
 }
 
 export {
