@@ -28,7 +28,7 @@
   "scripts": {
     "dev": "webpack --watch  --progress --config webpack/webpack.dev.js",
     "build": "webpack --progress --config webpack/webpack.prod.js",
-    "build:dts":"api-extractor run --local --verbose",
+    "build:dts": "api-extractor run --local --verbose",
     "lint": "eslint --ext .js,.ts src",
     "lintFix": "eslint --ext .js,.ts src --fix",
     "test": "ts-node ./src/index.ts"
