@@ -1,6 +1,6 @@
 /node_modules
-/util_example/*/node_modules
-/util_example/*/unpackage
-/util_example/*/uni-simple-router.js.map
+/examples/*/node_modules
+/examples/*/unpackage
+/examples/*/uni-simple-router.js.map
 /temp
 /dist/src
