@@ -1,0 +1,28 @@
+{
+	"pages": [{
+			"path": "pages/index/index",
+			"aliasPath": "/",
+			"name": "index"
+		},
+		{
+			"path": "pages/page2/page2",
+			"aliasPath": "/page2/:id",
+			"name": "page2"
+		},
+		{
+			"path": "pages/page3/page3",
+			"aliasPath": "/:name/page3/:id",
+			"name": "page3"
+		},
+		{
+            "path" : "pages/404/404",
+			"name": "404"
+        }
+    ],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	}
+}
