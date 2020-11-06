@@ -6,7 +6,7 @@ module.exports = merge(common, {
     mode: 'development',
     devtool: 'source-map',
     output: {
-		path: resolve(__dirname, '../util_example/appNavhold/dist'),
+		path: resolve(__dirname, '../examples/uni-simple-router2.0/dist'),
 		filename: 'uni-simple-router.js',
 	},
 });
