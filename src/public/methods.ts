@@ -136,13 +136,14 @@ export function createRoute(
     if (router.options.platform === 'h5') {
         let vueRoute:totalNextRoute = {path: ''};
         if (orignRule != null) {
-            const matRouteParams = copyData(orignRule.params as objectAny);
-            delete matRouteParams.__id__;
-            const toQuery = parseQuery({...matRouteParams, ...copyData(orignRule.query as objectAny)}, router);
-            vueRoute = {...(orignRule as totalNextRoute), query: toQuery}
+            vueRoute = orignRule;
         } else {
             vueRoute = (router.$route as objectAny).currentRoute;
         }
+        const matRouteParams = copyData(vueRoute.params as objectAny);
+        delete matRouteParams.__id__;
+        const toQuery = parseQuery({...matRouteParams, ...copyData(vueRoute.query as objectAny)}, router);
+        vueRoute = {...vueRoute, query: toQuery}
         route.path = vueRoute.path;
         route.fullPath = vueRoute.fullPath || '';
         route.query = vueRoute.query || {};
