@@ -30,12 +30,13 @@ export function lockNavjump(
     to:string|totalNextRoute,
     router:Router,
     navType:NAVTYPE,
+    forceNav?:boolean
 ):void{
     lockDetectWarn(router, to, navType, () => {
         if (router.options.platform !== 'h5') {
             router.$lockStatus = true;
         }
-        navjump(to, router, navType);
+        navjump(to, router, navType, undefined, forceNav);
     });
 }
 
@@ -46,7 +47,8 @@ export function navjump(
     nextCall?:{
         from:totalNextRoute;
         next:Function;
-    }
+    },
+    forceNav?:boolean
 ) :void{
     const {rule} = queryPageToMap(to, router);
     rule.type = navtypeToggle[navType];
@@ -76,8 +78,8 @@ export function navjump(
         createFullPath(parseToRule, from);
         transitionTo(router, parseToRule, from, navType, HOOKLIST, function(
             callOkCb:Function
-        ):void{
-            uni[navtypeToggle[navType]](parseToRule, true, callOkCb);
+        ):void {
+            uni[navtypeToggle[navType]](parseToRule, true, callOkCb, forceNav);
         })
     }
 }
@@ -104,7 +106,11 @@ export function navBack(
 export function forceGuardEach(
     router:Router,
     navType:NAVTYPE|undefined = 'replaceAll',
-):void{
+    forceNav:undefined|boolean = false
+):void|never {
+    if (router.options.platform === 'h5') {
+        throw new Error(`在h5端上使用：forceGuardEach 是无意义的，目前 forceGuardEach 仅支持在非h5端上使用`);
+    }
     const page = getUniCachePage<objectAny>(0);
     if (Object.keys(page).length === 0) {
         (router.options.routerErrorEach as (error: navErrorRule, router:Router) => void)({
@@ -116,7 +122,7 @@ export function forceGuardEach(
     lockNavjump({
         path: `/${route}`,
         query: options
-    }, router, navType);
+    }, router, navType, forceNav);
 }
 
 export function createRoute(

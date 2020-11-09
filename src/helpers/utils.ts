@@ -298,3 +298,18 @@ export function replaceHook(
     }
 }
 
+export function restPageHook(
+    router:Router
+):void{
+    let proxyHookKey:'appProxyHook'|'appletsProxyHook' = 'appletsProxyHook';
+    if (router.options.platform === 'app-plus') {
+        proxyHookKey = 'appProxyHook';
+    }
+    for (const [, value] of Object.entries(router[proxyHookKey])) {
+        for (const [, [origin]] of Object.entries(value as objectAny)) {
+            if (origin) {
+                origin.hook && origin.hook();
+            }
+        }
+    }
+}

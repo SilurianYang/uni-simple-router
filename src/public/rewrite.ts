@@ -39,10 +39,11 @@ export function rewriteMethod(
             uni[name] = function(
                 params:uniNavApiRule|{from:string}|navtoRule,
                 originCall:boolean = false,
-                callOkCb?:Function
+                callOkCb?:Function,
+                forceNav?:boolean
             ):void {
                 if (originCall) {
-                    uniOriginJump(router, oldMethod, name, (params as uniNavApiRule), callOkCb)
+                    uniOriginJump(router, oldMethod, name, (params as uniNavApiRule), callOkCb, forceNav)
                 } else {
                     callRouterMethod(params as uniNavApiRule, name, router);
                 }

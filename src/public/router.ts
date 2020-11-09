@@ -34,8 +34,8 @@ function createRouter(params: InstantiateConfig):Router {
         back(level = 1) {
             navBack(this, level, 'back')
         },
-        forceGuardEach(navType) {
-            forceGuardEach(router, navType)
+        forceGuardEach(navType, forceNav) {
+            forceGuardEach(router, navType, forceNav)
         },
         beforeEach(userGuard):void {
             registerEachHooks(router, 'beforeHooks', userGuard);

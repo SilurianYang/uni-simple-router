@@ -206,7 +206,7 @@ export interface Router {
 	replaceAll(to: totalNextRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 URL 关闭所有页面，打开到应用内的某个页面
 	pushTab(to: totalNextRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 url 关闭所有页面，打开到应用内的某个tab
     back(level:number|undefined,origin?:uniBackRule|uniBackApiRule):void;
-    forceGuardEach(navType:NAVTYPE|undefined):void;      //强制触发当前守卫
+    forceGuardEach(navType:NAVTYPE|undefined,forceNav:boolean):void;      //强制触发当前守卫
     beforeEach(userGuard:guardHookRule): void; // 添加全局前置路由守卫
     afterEach(userGuard:(to: totalNextRoute, from: totalNextRoute)=>void): void; // 添加全局后置路由守卫
 }
