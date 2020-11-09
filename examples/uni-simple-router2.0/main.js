@@ -5,6 +5,16 @@ Vue.use(router)
 
 App.mpType = 'app'
 
+
+// Vue.mixin({
+// 	onShow(){
+// 		if(this._uid!=0){
+// 			router.forceGuardEach()
+// 		}
+// 	}
+// })
+
+
 const app = new Vue({
     ...App
 })

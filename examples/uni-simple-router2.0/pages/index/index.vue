@@ -5,12 +5,15 @@
 			<text class="title">{{title}}</text>
 		</view>
 		<button type="default" @click="gotoPage">点我去page2</button>
+		<!-- #ifdef MP-WEIXIN -->
+		<button type="default" @click="forceEach">微信小程序看到我，强制触发</button>
+		<!-- #endif -->
 	</view>
 </template>
 
 <script>
 	export default {
-		data() {
+		data() {	
 			return {
 				title: 'Hello'
 			}
@@ -19,6 +22,9 @@
 
 		},
 		methods: {
+			forceEach(){
+				this.$Router.forceGuardEach();
+			},
 			gotoPage(){
 				this.$Router.push({
 					path:'/pages/404/404',

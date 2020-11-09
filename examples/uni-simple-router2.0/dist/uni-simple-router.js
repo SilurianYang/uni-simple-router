@@ -907,7 +907,6 @@ exports.registerEachHooks = registerEachHooks;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1003,9 +1002,6 @@ exports.initMixins = initMixins;
   \******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:14-18 */
-/*! CommonJS bailout: this is used directly at 24:22-26 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1040,7 +1036,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.replaceHook = exports.lockDetectWarn = exports.deepClone = exports.baseClone = exports.assertDeepObject = exports.paramsToQuery = exports.forMatNextToFrom = exports.urlToJson = exports.getUniCachePage = exports.copyData = exports.getDataType = exports.routesForMapRoute = exports.assertNewOptions = exports.getRoutePath = exports.mergeConfig = exports.voidFun = void 0;
+exports.restPageHook = exports.replaceHook = exports.lockDetectWarn = exports.deepClone = exports.baseClone = exports.assertDeepObject = exports.paramsToQuery = exports.forMatNextToFrom = exports.urlToJson = exports.getUniCachePage = exports.copyData = exports.getDataType = exports.routesForMapRoute = exports.assertNewOptions = exports.getRoutePath = exports.mergeConfig = exports.voidFun = void 0;
 var config_1 = __webpack_require__(/*! ../helpers/config */ "./src/helpers/config.ts");
 var hooks_1 = __webpack_require__(/*! ../public/hooks */ "./src/public/hooks.ts");
 var warn_1 = __webpack_require__(/*! ../helpers/warn */ "./src/helpers/warn.ts");
@@ -1311,6 +1307,22 @@ function replaceHook(router, vueVim, proxyHookKey, pageType) {
     }
 }
 exports.replaceHook = replaceHook;
+function restPageHook(router) {
+    var proxyHookKey = 'appletsProxyHook';
+    if (router.options.platform === 'app-plus') {
+        proxyHookKey = 'appProxyHook';
+    }
+    for (var _i = 0, _a = Object.entries(router[proxyHookKey]); _i < _a.length; _i++) {
+        var _b = _a[_i], value = _b[1];
+        for (var _c = 0, _d = Object.entries(value); _c < _d.length; _c++) {
+            var _e = _d[_c], origin = _e[1][0];
+            if (origin) {
+                origin.hook && origin.hook();
+            }
+        }
+    }
+}
+exports.restPageHook = restPageHook;
 
 
 /***/ }),
@@ -1472,7 +1484,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1623,7 +1634,6 @@ exports.loopCallHook = loopCallHook;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1647,16 +1657,16 @@ var utils_1 = __webpack_require__(/*! ../helpers/utils */ "./src/helpers/utils.t
 var hooks_1 = __webpack_require__(/*! ./hooks */ "./src/public/hooks.ts");
 var page_1 = __webpack_require__(/*! ../public/page */ "./src/public/page.ts");
 var hooks_2 = __webpack_require__(/*! ./hooks */ "./src/public/hooks.ts");
-function lockNavjump(to, router, navType) {
+function lockNavjump(to, router, navType, forceNav) {
     utils_1.lockDetectWarn(router, to, navType, function () {
         if (router.options.platform !== 'h5') {
             router.$lockStatus = true;
         }
-        navjump(to, router, navType);
+        navjump(to, router, navType, undefined, forceNav);
     });
 }
 exports.lockNavjump = lockNavjump;
-function navjump(to, router, navType, nextCall) {
+function navjump(to, router, navType, nextCall, forceNav) {
     var rule = query_1.queryPageToMap(to, router).rule;
     rule.type = base_1.navtypeToggle[navType];
     var toRule = utils_1.paramsToQuery(router, rule);
@@ -1684,7 +1694,7 @@ function navjump(to, router, navType, nextCall) {
         }
         page_1.createFullPath(parseToRule, from);
         hooks_1.transitionTo(router, parseToRule, from, navType, hooks_2.HOOKLIST, function (callOkCb) {
-            uni[base_1.navtypeToggle[navType]](parseToRule, true, callOkCb);
+            uni[base_1.navtypeToggle[navType]](parseToRule, true, callOkCb, forceNav);
         });
     }
 }
@@ -1705,8 +1715,12 @@ function navBack(router, level, navType) {
     });
 }
 exports.navBack = navBack;
-function forceGuardEach(router, navType) {
+function forceGuardEach(router, navType, forceNav) {
     if (navType === void 0) { navType = 'replaceAll'; }
+    if (forceNav === void 0) { forceNav = false; }
+    if (router.options.platform === 'h5') {
+        throw new Error("\u5728h5\u7AEF\u4E0A\u4F7F\u7528\uFF1AforceGuardEach \u662F\u65E0\u610F\u4E49\u7684\uFF0C\u76EE\u524D forceGuardEach \u4EC5\u652F\u6301\u5728\u975Eh5\u7AEF\u4E0A\u4F7F\u7528");
+    }
     var page = utils_1.getUniCachePage(0);
     if (Object.keys(page).length === 0) {
         router.options.routerErrorEach({
@@ -1718,7 +1732,7 @@ function forceGuardEach(router, navType) {
     lockNavjump({
         path: "/" + route,
         query: options
-    }, router, navType);
+    }, router, navType, forceNav);
 }
 exports.forceGuardEach = forceGuardEach;
 function createRoute(router, level, orignRule) {
@@ -2076,10 +2090,10 @@ function rewriteMethod(router) {
     if (router.options.keepUniOriginNav === false) {
         rewrite.forEach(function (name) {
             var oldMethod = uni[name];
-            uni[name] = function (params, originCall, callOkCb) {
+            uni[name] = function (params, originCall, callOkCb, forceNav) {
                 if (originCall === void 0) { originCall = false; }
                 if (originCall) {
-                    uniOrigin_1.uniOriginJump(router, oldMethod, name, params, callOkCb);
+                    uniOrigin_1.uniOriginJump(router, oldMethod, name, params, callOkCb, forceNav);
                 }
                 else {
                     callRouterMethod(params, name, router);
@@ -2190,8 +2204,8 @@ function createRouter(params) {
             if (level === void 0) { level = 1; }
             methods_1.navBack(this, level, 'back');
         },
-        forceGuardEach: function (navType) {
-            methods_1.forceGuardEach(router, navType);
+        forceGuardEach: function (navType, forceNav) {
+            methods_1.forceGuardEach(router, navType, forceNav);
         },
         beforeEach: function (userGuard) {
             lifeCycle_1.registerEachHooks(router, 'beforeHooks', userGuard);
@@ -2243,6 +2257,8 @@ exports.RouterMount = RouterMount;
   \*********************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
+/*! CommonJS bailout: this is used directly at 13:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2272,42 +2288,38 @@ var __rest = (this && this.__rest) || function (s, e) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.formatOriginURLQuery = exports.uniOriginJump = void 0;
 var query_1 = __webpack_require__(/*! ./query */ "./src/public/query.ts");
+var utils_1 = __webpack_require__(/*! ../helpers/utils */ "./src/helpers/utils.ts");
 var routerNavCount = 0;
-function uniOriginJump(router, originMethod, funName, options, callOkCb) {
+function uniOriginJump(router, originMethod, funName, options, callOkCb, forceNav) {
     var _a = formatOriginURLQuery(options), complete = _a.complete, originRule = __rest(_a, ["complete"]);
     if (routerNavCount === 0) { // 还原app。vue下已经重写后的生命周期
-        var proxyHookKey = 'appletsProxyHook';
-        if (router.options.platform === 'app-plus') {
-            proxyHookKey = 'appProxyHook';
-        }
-        for (var _i = 0, _b = Object.entries(router[proxyHookKey]); _i < _b.length; _i++) {
-            var _c = _b[_i], value = _c[1];
-            for (var _d = 0, _e = Object.entries(value); _d < _e.length; _d++) {
-                var _f = _e[_d], origin = _f[1][0];
-                if (origin) {
-                    origin.hook && origin.hook();
-                }
-            }
-        }
+        utils_1.restPageHook(router);
     }
-    originMethod(__assign(__assign({}, originRule), { complete: function () {
-            var _a;
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i] = arguments[_i];
-            }
-            if (routerNavCount === 0) {
-                routerNavCount++;
-                if (router.options.platform === 'app-plus') {
-                    var waitPage = plus.nativeObj.View.getViewById('router-loadding');
-                    waitPage && waitPage.close();
-                    var launchedHook = (_a = router.options.APP) === null || _a === void 0 ? void 0 : _a.launchedHook;
-                    launchedHook && launchedHook();
+    if (forceNav != null && forceNav === false) {
+        routerNavCount++;
+        complete && complete.apply(null, { msg: 'forceGuardEach强制触发并且不执行跳转' });
+        callOkCb && callOkCb.apply(null, { msg: 'forceGuardEach强制触发并且不执行跳转' });
+    }
+    else {
+        originMethod(__assign(__assign({}, originRule), { complete: function () {
+                var _a;
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i] = arguments[_i];
                 }
-            }
-            complete && complete.apply(null, args);
-            callOkCb && callOkCb.apply(null, args);
-        } }));
+                if (routerNavCount === 0) {
+                    routerNavCount++;
+                    if (router.options.platform === 'app-plus') {
+                        var waitPage = plus.nativeObj.View.getViewById('router-loadding');
+                        waitPage && waitPage.close();
+                        var launchedHook = (_a = router.options.APP) === null || _a === void 0 ? void 0 : _a.launchedHook;
+                        launchedHook && launchedHook();
+                    }
+                }
+                complete && complete.apply(null, args);
+                callOkCb && callOkCb.apply(null, args);
+            } }));
+    }
 }
 exports.uniOriginJump = uniOriginJump;
 function formatOriginURLQuery(options) {
