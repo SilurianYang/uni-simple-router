@@ -205,7 +205,7 @@ export declare interface Router {
     replaceAll(to: totalNextRoute | string, from?: totalNextRoute): void;
     pushTab(to: totalNextRoute | string, from?: totalNextRoute): void;
     back(level: number | undefined, origin?: uniBackRule | uniBackApiRule): void;
-    forceGuardEach(navType: NAVTYPE | undefined): void;
+    forceGuardEach(navType: NAVTYPE | undefined, forceNav: boolean): void;
     beforeEach(userGuard: guardHookRule): void;
     afterEach(userGuard: (to: totalNextRoute, from: totalNextRoute) => void): void;
 }
