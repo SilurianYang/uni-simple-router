@@ -4,6 +4,9 @@
 		<view class="text-area">
 			<text class="title">{{title}}</text>
 		</view>
+		<div>
+			<com></com>
+		</div>
 		<button type="default" @click="gotoPage">点我去page2</button>
 		<!-- #ifdef MP-WEIXIN -->
 		<button type="default" @click="forceEach">微信小程序看到我，强制触发</button>
@@ -12,14 +15,22 @@
 </template>
 
 <script>
+	import com from '@/common/com/com.vue'
+	console.log(com)
 	export default {
+		components:{
+			com
+		},
 		data() {	
 			return {
 				title: 'Hello'
 			}
 		},
 		onLoad() {
-
+			console.log('index-----onload')
+		},
+		onShow() {
+			console.log('index-----onShow')
 		},
 		methods: {
 			forceEach(){

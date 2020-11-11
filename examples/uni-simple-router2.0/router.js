@@ -26,7 +26,9 @@ console.log(router)
 router.beforeEach((to, from, next) => {
 	console.log(to)
 	console.log(from)
-	next();
+	setTimeout(()=>{
+		next();
+	},2000)
 });
 
 export {
