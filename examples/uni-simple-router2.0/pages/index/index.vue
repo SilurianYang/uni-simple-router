@@ -16,7 +16,6 @@
 
 <script>
 	import com from '@/common/com/com.vue'
-	console.log(com)
 	export default {
 		components:{
 			com
@@ -37,17 +36,17 @@
 				this.$Router.forceGuardEach();
 			},
 			gotoPage(){
-				this.$Router.push({
-					path:'/pages/404/404',
-					query:{
-						status:true,
-						list:[
-							{
-								id:1
-							},
-						]
-					}
-				})
+				// this.$Router.push({
+				// 	path:'/pages/404/404',
+				// 	query:{
+				// 		status:true,
+				// 		list:[
+				// 			{
+				// 				id:1
+				// 			},
+				// 		]
+				// 	}
+				// })
 				// this.$Router.push({
 				// 	success:()=>{
 				// 		console.log('跳转成功')
@@ -63,9 +62,12 @@
 				// 		id:12
 				// 	}
 				// })
-				// uni.navigateTo({
-				// 	url:'/pages/404/404?id=555&name=hhyang'
-				// })
+				uni.navigateTo({
+					url:'/pages/page4/page4?id=555&name=hhyang',
+					success:()=>{
+						console.log('跳转成功')
+					},
+				})
 			}
 		}
 	}

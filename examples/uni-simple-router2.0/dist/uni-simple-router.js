@@ -865,24 +865,19 @@ exports.registerEachHooks = exports.registerRouterHooks = exports.registerHook =
 var base_1 = __webpack_require__(/*! ../options/base */ "./src/options/base.ts");
 var hooks_1 = __webpack_require__(/*! ../public/hooks */ "./src/public/hooks.ts");
 function registerHook(list, fn) {
-    list.push(fn);
-    return function () {
-        var i = list.indexOf(fn);
-        if (i > 0)
-            list.splice(i, 1);
-    };
+    list[0] = fn;
 }
 exports.registerHook = registerHook;
 function registerRouterHooks(cycleHooks, options) {
     registerHook(cycleHooks.routerBeforeHooks, function (to, from, next) {
         options.routerBeforeEach(to, from, next);
-    })();
+    });
     registerHook(cycleHooks.routerAfterHooks, function (to, from) {
         options.routerAfterEach(to, from);
-    })();
+    });
     registerHook(cycleHooks.routerErrorHooks, function (error, router) {
         options.routerErrorEach(error, router);
-    })();
+    });
     return cycleHooks;
 }
 exports.registerRouterHooks = registerRouterHooks;
@@ -1036,7 +1031,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.restPageHook = exports.replaceHook = exports.lockDetectWarn = exports.deepClone = exports.baseClone = exports.assertDeepObject = exports.paramsToQuery = exports.forMatNextToFrom = exports.urlToJson = exports.getUniCachePage = exports.copyData = exports.getDataType = exports.routesForMapRoute = exports.assertNewOptions = exports.getRoutePath = exports.mergeConfig = exports.voidFun = void 0;
+exports.restPageHook = exports.replaceHook = exports.lockDetectWarn = exports.deepClone = exports.baseClone = exports.assertDeepObject = exports.paramsToQuery = exports.forMatNextToFrom = exports.urlToJson = exports.getUniCachePage = exports.copyData = exports.getDataType = exports.routesForMapRoute = exports.assertNewOptions = exports.getRoutePath = exports.notDeepClearNull = exports.mergeConfig = exports.voidFun = void 0;
 var config_1 = __webpack_require__(/*! ../helpers/config */ "./src/helpers/config.ts");
 var hooks_1 = __webpack_require__(/*! ../public/hooks */ "./src/public/hooks.ts");
 var warn_1 = __webpack_require__(/*! ../helpers/warn */ "./src/helpers/warn.ts");
@@ -1067,6 +1062,15 @@ function mergeConfig(baseConfig, userConfig) {
     return config;
 }
 exports.mergeConfig = mergeConfig;
+function notDeepClearNull(object) {
+    for (var key in object) {
+        if (object[key] == null) {
+            delete object[key];
+        }
+    }
+    return object;
+}
+exports.notDeepClearNull = notDeepClearNull;
 function getRoutePath(route, router) {
     var finallyPath = route.aliasPath || route.alias || route.path;
     if (router.options.platform !== 'h5') {
@@ -1103,12 +1107,19 @@ function routesForMapRoute(router, path, mapArrayKey) {
     if ((_a = router.options.h5) === null || _a === void 0 ? void 0 : _a.vueRouterDev) {
         return { path: path };
     }
+    var wildcard = '';
     var routesMap = router.routesMap;
     for (var i = 0; i < mapArrayKey.length; i++) {
         var mapKey = mapArrayKey[i];
         var mapList = routesMap[mapKey];
         for (var _i = 0, _b = Object.entries(mapList); _i < _b.length; _i++) {
             var _c = _b[_i], key = _c[0], value = _c[1];
+            if (key === '*') {
+                if (wildcard === '') {
+                    wildcard = '*';
+                }
+                continue;
+            }
             var route = value;
             var rule = key;
             if (getDataType(mapList) === '[object Array]') {
@@ -1123,6 +1134,9 @@ function routesForMapRoute(router, path, mapArrayKey) {
                 return route;
             }
         }
+    }
+    if (wildcard !== '') {
+        return routesMap.finallyPathMap[wildcard];
     }
     throw new Error(path + " \u8DEF\u5F84\u65E0\u6CD5\u5728\u8DEF\u7531\u8868\u4E2D\u627E\u5230\uFF01\u68C0\u67E5\u8DF3\u8F6C\u8DEF\u5F84\u53CA\u8DEF\u7531\u8868");
 }
@@ -2119,6 +2133,9 @@ function callRouterMethod(option, funName, router) {
     }
     if (funName === 'navigateBack') {
         var level = 1;
+        if (option == null) {
+            option = { delta: 1 };
+        }
         if (utils_1.getDataType(option.delta) === '[object Number]') {
             level = option.delta;
         }
@@ -2130,13 +2147,7 @@ function callRouterMethod(option, funName, router) {
         if (!path.startsWith('/')) {
             warn_1.warn("uni-app \u539F\u751F\u65B9\u6CD5\u88AB\u91CD\u5199\u65F6\uFF0C\u53EA\u80FD\u4F7F\u7528\u7EDD\u5BF9\u8DEF\u5F84\u8FDB\u884C\u8DF3\u8F6C\u3002" + JSON.stringify(option), router, true);
         }
-        // eslint-disable-next-line no-unused-vars
-        // const {url, detail, ...navArgs} = (option as uniNavApiRule);
         if (funName === 'switchTab') {
-            if (router.options.platform === 'h5') {
-                var detail = option.detail;
-                path = '/' + detail.pagePath;
-            }
             var route = utils_1.routesForMapRoute(router, path, ['pathMap', 'finallyPathList']);
             var finallyPath = utils_1.getRoutePath(route, router).finallyPath;
             if (utils_1.getDataType(finallyPath) === '[object Array]') {
@@ -2147,7 +2158,9 @@ function callRouterMethod(option, funName, router) {
             }
             path = finallyPath;
         }
-        router[routerMethodName]({ path: path });
+        var _a = option, events = _a.events, success = _a.success, fail = _a.fail, complete = _a.complete, animationType = _a.animationType, animationDuration = _a.animationDuration;
+        var jumpOptions = { path: path, events: events, success: success, fail: fail, complete: complete, animationDuration: animationDuration, animationType: animationType };
+        router[routerMethodName](utils_1.notDeepClearNull(jumpOptions));
     }
 }
 
@@ -2228,6 +2241,8 @@ function createRouter(params) {
             });
         }
     };
+    router.beforeEach(function (to, from, next) { return next(); });
+    router.afterEach(function () { });
     return router;
 }
 exports.createRouter = createRouter;
@@ -2257,8 +2272,6 @@ exports.RouterMount = RouterMount;
   \*********************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";

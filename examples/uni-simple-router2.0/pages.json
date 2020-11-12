@@ -15,19 +15,40 @@
 			"name": "page3"
 		},
 		{
-            "path" : "pages/404/404",
+			"path": "pages/404/404",
 			"name": "404"
-        }
-        ,{
-            "path" : "common/com/com",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+		}, {
+			"path": "common/com/com",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/page4/page4",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/other/other",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}
+	],
+	  "tabBar": {
+	    "list": [{
+	      "pagePath": "pages/index/index",
+	      "text": "首页"
+	    },{
+	      "pagePath": "pages/other/other",
+	      "text": "其他"
+	    }]
+	  },
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
