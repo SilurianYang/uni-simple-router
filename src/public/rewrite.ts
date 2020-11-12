@@ -7,13 +7,15 @@ import {
     rewriteMethodToggle,
     uniBackRule,
     uniBackApiRule,
-    navtoRule
+    navtoRule,
+    totalNextRoute
 } from '../options/base'
 
 import {
     routesForMapRoute,
     getRoutePath,
-    getDataType
+    getDataType,
+    notDeepClearNull
 } from '../helpers/utils'
 
 import {
@@ -75,6 +77,9 @@ function callRouterMethod(
     }
     if (funName === 'navigateBack') {
         let level:number = 1;
+        if (option == null) {
+            option = {delta: 1};
+        }
         if (getDataType<number|undefined>((option as uniBackApiRule).delta) === '[object Number]') {
             level = ((option as uniBackApiRule).delta as number);
         }
@@ -89,13 +94,7 @@ function callRouterMethod(
                 true
             );
         }
-        // eslint-disable-next-line no-unused-vars
-        // const {url, detail, ...navArgs} = (option as uniNavApiRule);
         if (funName === 'switchTab') {
-            if (router.options.platform === 'h5') {
-                const detail = (option as uniNavApiRule).detail;
-                path = '/' + (detail as {pagePath:string}).pagePath;
-            }
             const route = routesForMapRoute(router, path, ['pathMap', 'finallyPathList'])
             const {finallyPath} = getRoutePath(route, router);
             if (getDataType<string | string[]>(finallyPath) === '[object Array]') {
@@ -114,6 +113,10 @@ function callRouterMethod(
             }
             path = (finallyPath as string);
         }
-        router[routerMethodName]({path})
+        const {events, success, fail, complete, animationType, animationDuration} = option as uniNavApiRule;
+        const jumpOptions:totalNextRoute = {path, events, success, fail, complete, animationDuration, animationType};
+        router[routerMethodName](
+            notDeepClearNull<totalNextRoute>(jumpOptions)
+        )
     }
 }

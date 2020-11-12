@@ -1,6 +1,6 @@
 import {err} from './warn'
 import {appletsVueHookConfig, appVueHookConfig, indexVueHookConfig, InstantiateConfig, LifeCycleConfig} from '../options/config'
-import { copyData } from './utils';
+import { copyData} from './utils';
 import { appVueSortHookRule, indexVueSortHookRule, notCallProxyHookRule } from '../options/base';
 
 export const mpPlatformReg = /(^mp-weixin$)|(^mp-baidu$)|(^mp-alipay$)|(^mp-toutiao$)|(^mp-qq$)|(^mp-360$)/g;

@@ -58,6 +58,8 @@ function createRouter(params: InstantiateConfig):Router {
             });
         }
     }
+    router.beforeEach((to, from, next) => next());
+    router.afterEach(() => {});
     return router;
 }
 

@@ -2,24 +2,20 @@ import { navtoRule, navErrorRule, Router, proxyHookName, guardHookRule, totalNex
 import { LifeCycleConfig, InstantiateConfig} from '../options/config';
 import {onTriggerEachHook} from '../public/hooks'
 
-export function registerHook(list:Array<Function>, fn:Function):Function {
-    list.push(fn);
-    return () => {
-        const i = list.indexOf(fn);
-        if (i > 0) list.splice(i, 1);
-    };
+export function registerHook(list:Array<Function>, fn:Function):void {
+    list[0] = fn;
 }
 
 export function registerRouterHooks<T extends LifeCycleConfig>(cycleHooks:T, options:InstantiateConfig):T {
     registerHook(cycleHooks.routerBeforeHooks, function(to:totalNextRoute, from: totalNextRoute, next:(rule?: navtoRule|false)=>void):void {
         (options.routerBeforeEach as Function)(to, from, next);
-    })();
+    })
     registerHook(cycleHooks.routerAfterHooks, function(to:totalNextRoute, from: totalNextRoute):void {
         (options.routerAfterEach as Function)(to, from);
-    })();
+    })
     registerHook(cycleHooks.routerErrorHooks, function(error:navErrorRule, router:Router):void {
         (options.routerErrorEach as Function)(error, router);
-    })();
+    })
     return cycleHooks;
 }
 

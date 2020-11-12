@@ -34,6 +34,15 @@ export function mergeConfig<T extends InstantiateConfig>(baseConfig: T, userConf
     return config as T;
 }
 
+export function notDeepClearNull<T>(object:T):T {
+    for (const key in object) {
+        if (object[key] == null) {
+            delete object[key];
+        }
+    }
+    return object;
+}
+
 export function getRoutePath(route: RoutesRule, router:Router): {
     finallyPath: string | string[];
     aliasPath: string;
@@ -79,11 +88,18 @@ export function routesForMapRoute(
     if (router.options.h5?.vueRouterDev) {
         return {path}
     }
+    let wildcard = '';
     const routesMap = (router.routesMap as routesMapRule);
     for (let i = 0; i < mapArrayKey.length; i++) {
         const mapKey = mapArrayKey[i];
         const mapList = routesMap[mapKey];
         for (const [key, value] of Object.entries(mapList)) {
+            if (key === '*') {
+                if (wildcard === '') {
+                    wildcard = '*'
+                }
+                continue;
+            }
             const route:string|RoutesRule = value;
             let rule:string = key;
             if (getDataType<Array<string>|objectAny>(mapList) === '[object Array]') {
@@ -98,6 +114,9 @@ export function routesForMapRoute(
                 return (route as RoutesRule);
             }
         }
+    }
+    if (wildcard !== '') {
+        return routesMap.finallyPathMap[wildcard];
     }
     throw new Error(`${path} 路径无法在路由表中找到！检查跳转路径及路由表`);
 }
