@@ -39,7 +39,17 @@
 			}
 
 		}
-	],
+	    ,{
+            "path" : "pages/login/login",
+			"name":"login",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	  "tabBar": {
 	    "list": [{
 	      "pagePath": "pages/index/index",
