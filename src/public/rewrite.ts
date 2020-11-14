@@ -47,6 +47,14 @@ export function rewriteMethod(
                 if (originCall) {
                     uniOriginJump(router, oldMethod, name, (params as uniNavApiRule), callOkCb, forceNav)
                 } else {
+                    if (router.options.platform === 'app-plus') {
+                        if (Object.keys(router.appMain).length === 0) {
+                            router.appMain = {
+                                NAVTYPE: name,
+                                path: (params as uniNavApiRule).url
+                            }
+                        }
+                    }
                     callRouterMethod(params as uniNavApiRule, name, router);
                 }
             };

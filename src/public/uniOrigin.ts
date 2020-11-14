@@ -23,7 +23,7 @@ export function uniOriginJump(
     } else {
         originMethod({
             ...originRule,
-            complete: function(...args:Array<any>) {
+            complete: async function(...args:Array<any>) {
                 if (routerNavCount === 0) {
                     routerNavCount++
                     if (router.options.platform === 'app-plus') {
@@ -38,6 +38,31 @@ export function uniOriginJump(
             }
         });
     }
+}
+
+export function hideTabBar(
+    router:Router,
+    originMethod:Function,
+    originRule:uniNavApiRule
+):Promise<undefined> {
+    return new Promise(resolve => {
+        const appMain = router.appMain
+        if (Object.keys(appMain).length > 0) {
+            const appMainRule = appMain as {
+                NAVTYPE:reNavMethodRule|reNotNavMethodRule,
+                path:string
+            }
+            if (appMainRule.NAVTYPE === 'switchTab') {
+                if (appMainRule.path !== originRule?.url) {
+                    return originMethod({
+                        url: originRule.url,
+                        complete: () => resolve()
+                    })
+                }
+            }
+        }
+        resolve();
+    })
 }
 
 export function formatOriginURLQuery(

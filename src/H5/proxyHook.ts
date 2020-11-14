@@ -1,5 +1,4 @@
-import {Router, proxyHookName, totalNextRoute, navtoRule, rewriteMethodToggle, reNavMethodRule} from '../options/base';
-import {lockDetectWarn} from '../helpers/utils'
+import {Router, proxyHookName, totalNextRoute, navtoRule} from '../options/base';
 
 export class MyArray extends Array {
     constructor(
@@ -14,16 +13,11 @@ export class MyArray extends Array {
     push(v:any):any {
         this.vueEachArray.splice(0, 1, v);
         this[this.length] = (to: totalNextRoute, from: totalNextRoute, next:(rule?: navtoRule|false)=>void) => {
-            lockDetectWarn(this.router, to, rewriteMethodToggle[to.type as reNavMethodRule || 'reLaunch'], () => {
-                if (this.hookName === 'beforeHooks') {
-                    this.router.$lockStatus = true;
-                }
-                this.myEachHook(to, from, (nextTo?:navtoRule|false) => {
-                    this.vueEachArray[0](to, from, (uniNextTo?:navtoRule|false) => {
-                        next(nextTo);
-                    })
-                }, this.router, true);
-            }, this.hookName)
+            this.myEachHook(to, from, (nextTo?:navtoRule|false) => {
+                this.vueEachArray[0](to, from, (uniNextTo?:navtoRule|false) => {
+                    next(nextTo);
+                })
+            }, this.router, true);
         };
     }
 }
@@ -39,13 +33,12 @@ export function proxyEachHook(router:Router, vueRouter:any):void {
         }
     }
 }
-export function proxyH5Mount(Vim:any, router:Router) {
-    const vueRouter = (router.$route as any);
-    vueRouter.replace({
-        path: vueRouter.currentRoute.fullPath
-    }, function(to:totalNextRoute):void {
-        Vim.$mount();
-    }, function(abort:any):void {
-        console.log(abort)
-    });
+export function proxyH5Mount(router:Router):boolean {
+    if (router.mount.length === 0) {
+        return false;
+    }
+    const [{app}] = router.mount;
+    app.$mount();
+    router.mount = [];
+    return true;
 }

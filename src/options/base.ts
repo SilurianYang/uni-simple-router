@@ -197,6 +197,10 @@ export interface Router {
     appProxyHook:{
         app:appVueHookConfig
     };
+    appMain:{
+        NAVTYPE:reNavMethodRule|reNotNavMethodRule,
+        path:string
+    }|{};
     appletsProxyHook:appletsVueHookConfig;
 	routesMap: routesMapRule|{};
 	mount: Array<{app: any; el: string}>;

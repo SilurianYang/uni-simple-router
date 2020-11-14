@@ -18,6 +18,7 @@ import {
     voidFun
 } from '../helpers/utils'
 import { navjump } from './methods';
+import { proxyH5Mount } from '../H5/proxyHook';
 
 export const ERRORHOOK:Array<(error:navErrorRule, router:Router)=>void> = [
     (error, router) => router.lifeCycle.routerErrorHooks[0](error, router)
@@ -30,6 +31,9 @@ export const HOOKLIST: hookListRule = [
     (router, to, from, toRoute) => callHook(router.lifeCycle.afterHooks[0], to, from, router, false),
     (router, to, from, toRoute) => {
         router.$lockStatus = false;
+        if (router.options.platform === 'h5') {
+            proxyH5Mount(router);
+        }
         return callHook(router.lifeCycle.routerAfterHooks[0], to, from, router, false)
     }
 ];

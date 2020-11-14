@@ -5,7 +5,6 @@ import {assertNewOptions, getDataType} from '../helpers/utils';
 import {registerRouterHooks, registerEachHooks} from '../helpers/lifeCycle';
 import {initMixins} from '../helpers/mixins'
 import {navBack, createRoute, lockNavjump, forceGuardEach} from '../public/methods'
-import {proxyH5Mount} from '../H5/proxyHook'
 import {rewriteMethod} from '../public/rewrite'
 
 function createRouter(params: InstantiateConfig):Router {
@@ -15,6 +14,7 @@ function createRouter(params: InstantiateConfig):Router {
         mount: [],
         appProxyHook: appProxyHook,
         appletsProxyHook: indexProxyHook,
+        appMain: {},
         $route: null,
         $lockStatus: false,
         routesMap: {},
@@ -73,7 +73,10 @@ function RouterMount(Vim:any, router:Router, el:string | undefined = '#app') :vo
         throw new Error(`挂载路由失败，router.app 应该为数组类型。当前类型：${typeof router.mount}`);
     }
     if (router.options.platform === 'h5') {
-        proxyH5Mount(Vim, router);
+        const vueRouter = (router.$route as any);
+        vueRouter.replace({
+            path: vueRouter.currentRoute.fullPath
+        });
     } // 其他端目前不需要做啥
 }
 
