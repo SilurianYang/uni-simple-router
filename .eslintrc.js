@@ -9,7 +9,9 @@ module.exports = {
         uni: true,
         plus: true,
         getCurrentPages: true,
-        getApp: true
+        getApp: true,
+        __uniConfig: true,
+        __uniRoutes: true
     },
     parser: '@typescript-eslint/parser',
     extends: ['eslint:recommended'],
