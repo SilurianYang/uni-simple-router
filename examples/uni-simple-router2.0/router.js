@@ -6,9 +6,6 @@ import {
 let first = null;
 const router = createRouter({
 	platform: process.env.VUE_APP_PLATFORM,  
-	// detectBeforeLock: (router, to, navType) => {
-	// 	router.$lockStatus=false;
-	// },
 	routerBeforeEach:(to, from, next) => {
 		console.log('+++++routerBeforeEach++++')
 		next();
@@ -55,14 +52,16 @@ let count=0;
 router.beforeEach((to, from, next) => {
 	console.log(to)
 	console.log(from)
-	if(count==0){
-		next({
-			path:'/pages/login/login',
-			NAVTYPE:'replaceAll'
-		})
-	}else{
-		next();
-	}
+	// if(count==0){
+	// 	next({
+	// 		path:'/pages/login/login',
+	// 		NAVTYPE:'replaceAll'
+	// 	})
+	// }else{
+	// 	next();
+	// }
+	
+	next();
 	count++;
 });
 router.afterEach((to, from, next) => {

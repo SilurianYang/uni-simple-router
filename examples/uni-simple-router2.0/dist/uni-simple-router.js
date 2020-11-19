@@ -595,7 +595,6 @@ var MyArray = /** @class */ (function (_super) {
         var _this = this;
         this.vueEachArray.splice(0, 1, v);
         this[this.length] = function (to, from, next) {
-            debugger;
             _this.myEachHook(to, from, function (nextTo) {
                 _this.vueEachArray[0](to, from, function (uniNextTo) {
                     next(nextTo);
@@ -1573,7 +1572,6 @@ function callHook(hook, to, from, router, hookAwait) {
 }
 exports.callHook = callHook;
 function onTriggerEachHook(to, from, router, hookType, next) {
-    debugger;
     var callHookList = [];
     switch (hookType) {
         case 'beforeEach':
@@ -2281,10 +2279,6 @@ exports.RouterMount = RouterMount;
   \*********************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:17-21 */
-/*! CommonJS bailout: this is used directly at 22:19-23 */
-/*! CommonJS bailout: this is used directly at 49:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
