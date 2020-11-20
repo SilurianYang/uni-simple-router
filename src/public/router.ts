@@ -31,8 +31,8 @@ function createRouter(params: InstantiateConfig):Router {
         pushTab(to) {
             lockNavjump(to, router, 'pushTab');
         },
-        back(level = 1) {
-            navBack(this, level, 'back')
+        back(level = 1, animation) {
+            navBack(this, level, 'back', animation)
         },
         forceGuardEach(navType, forceNav) {
             forceGuardEach(router, navType, forceNav)
