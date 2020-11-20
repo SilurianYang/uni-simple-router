@@ -894,6 +894,7 @@ exports.registerEachHooks = registerEachHooks;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -989,6 +990,9 @@ exports.initMixins = initMixins;
   \******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
+/*! CommonJS bailout: this is used directly at 13:14-18 */
+/*! CommonJS bailout: this is used directly at 24:22-26 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1490,6 +1494,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1644,6 +1649,7 @@ exports.loopCallHook = loopCallHook;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1709,7 +1715,7 @@ function navjump(to, router, navType, nextCall, forceNav) {
     }
 }
 exports.navjump = navjump;
-function navBack(router, level, navType) {
+function navBack(router, level, navType, animation) {
     utils_1.lockDetectWarn(router, level, navType, function () {
         if (router.options.platform === 'h5') {
             router.$route.go(-level);
@@ -1717,10 +1723,20 @@ function navBack(router, level, navType) {
         else {
             router.$lockStatus = true;
             var toRule = createRoute(router, level);
-            navjump({
+            var navjumpRule = {
                 path: toRule.path,
                 query: toRule.query
-            }, router, navType);
+            };
+            if (utils_1.getDataType(animation) === '[object Object]') {
+                var _a = animation, animationDuration = _a.animationDuration, animationType = _a.animationType;
+                if (animationDuration != null) {
+                    navjumpRule.animationDuration = animationDuration;
+                }
+                if (animationType != null) {
+                    navjumpRule.animationType = animationType;
+                }
+            }
+            navjump(navjumpRule, router, navType);
         }
     });
 }
@@ -2123,7 +2139,10 @@ function rewriteMethod(router) {
 exports.rewriteMethod = rewriteMethod;
 function callRouterMethod(option, funName, router) {
     if (router.options.platform === 'app-plus') {
-        var openType = option.openType;
+        var openType = null;
+        if (option) {
+            openType = option.openType;
+        }
         if (openType != null && openType === 'appLaunch') {
             funName = 'reLaunch';
         }
@@ -2217,9 +2236,9 @@ function createRouter(params) {
         pushTab: function (to) {
             methods_1.lockNavjump(to, router, 'pushTab');
         },
-        back: function (level) {
+        back: function (level, animation) {
             if (level === void 0) { level = 1; }
-            methods_1.navBack(this, level, 'back');
+            methods_1.navBack(this, level, 'back', animation);
         },
         forceGuardEach: function (navType, forceNav) {
             methods_1.forceGuardEach(router, navType, forceNav);
