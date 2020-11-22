@@ -1,5 +1,3 @@
-import { type } from 'os';
-import { types } from 'util';
 import {appletsVueHookConfig, appVueHookConfig, InstantiateConfig, LifeCycleConfig} from '../options/config';
 
 export enum hookToggle{
@@ -96,14 +94,6 @@ export interface endAnimationRule {
 	animationType?: endAnimationType; // 窗口关闭的动画效果
 	animationDuration?: number; // 窗口关闭动画的持续时间
 }
-//预加载页面 加载规则
-export interface preloadPageRule{
-    path:string;
-    success?:Function;
-    fail?:Function;
-    complete?:Function;
-}
-
 export interface hookObjectRule {
     options:Array<any>;
     hook:Function;
