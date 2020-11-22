@@ -60,8 +60,11 @@ router.beforeEach((to, from, next) => {
 	// }else{
 	// 	next();
 	// }
-	
-	next();
+	if(to.name=='tabother'){
+		//next()
+	}else{
+		next();
+	}
 	count++;
 });
 router.afterEach((to, from, next) => {

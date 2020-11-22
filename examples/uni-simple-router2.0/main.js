@@ -16,6 +16,13 @@ App.mpType = 'app'
 
 //console.log(__uniRoutes)
 
+setTimeout(()=>{
+	uni.setTabBarBadge({
+	  index: 1,
+	  text: '1'
+	})
+},1000)
+
 const app = new Vue({
     ...App
 })
