@@ -63,7 +63,7 @@
 				// 	}
 				// })
 				uni.navigateTo({
-					url:'/pages/page4/page4?id=555&name=hhyang',
+					url:'/pages/navigate/navigate?id=555&name=hhyang',
 					success:()=>{
 						console.log('跳转成功')
 					},

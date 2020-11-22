@@ -25,7 +25,7 @@
 			}
 
 		}, {
-			"path": "pages/page4/page4",
+			"path": "pages/navigate/navigate",
 			"style": {
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false

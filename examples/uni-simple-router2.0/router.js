@@ -65,7 +65,7 @@ router.beforeEach((to, from, next) => {
 	count++;
 });
 router.afterEach((to, from, next) => {
-	console.log('跳转结束')
+	console.log('afterEach---跳转结束')
 });
 
 export {

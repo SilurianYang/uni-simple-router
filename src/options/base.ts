@@ -64,7 +64,7 @@ export interface navtoRule {
 	name?: string | undefined; // 跳转路径名称
 	query?: objectAny; // 跳转使用path时 query包含需要传递的参数
 	params?: objectAny; // 跳转使用name时 params包含需要传递的参数
-	animationType?: startAnimationType;
+	animationType?: startAnimationType|endAnimationType;
 	animationDuration?: number;
 	events?: objectAny;
 	success?: Function;

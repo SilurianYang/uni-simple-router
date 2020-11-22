@@ -67,7 +67,10 @@ function callRouterMethod(
     router:Router
 ): void {
     if (router.options.platform === 'app-plus') {
-        const openType = (option as uniNavApiRule).openType;
+        let openType = null;
+        if (option) {
+            openType = (option as uniNavApiRule).openType;
+        }
         if (openType != null && openType === 'appLaunch') {
             funName = 'reLaunch'
         }

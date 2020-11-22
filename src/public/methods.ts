@@ -7,7 +7,9 @@ import {
     reNavMethodRule,
     rewriteMethodToggle,
     navtypeToggle,
-    navErrorRule
+    navErrorRule,
+    uniBackApiRule,
+    uniBackRule
 } from '../options/base'
 import {
     queryPageToMap,
@@ -20,7 +22,8 @@ import {
     getUniCachePage,
     routesForMapRoute,
     copyData,
-    lockDetectWarn
+    lockDetectWarn,
+    getDataType
 } from '../helpers/utils'
 import { transitionTo } from './hooks';
 import {createFullPath, createToFrom} from '../public/page'
@@ -88,6 +91,7 @@ export function navBack(
     router:Router,
     level:number,
     navType:NAVTYPE,
+    animation?:uniBackApiRule|uniBackRule,
 ):void{
     lockDetectWarn(router, level, navType, () => {
         if (router.options.platform === 'h5') {
@@ -95,10 +99,20 @@ export function navBack(
         } else {
             router.$lockStatus = true;
             const toRule = createRoute(router, level);
-            navjump({
+            const navjumpRule:totalNextRoute = {
                 path: toRule.path,
                 query: toRule.query
-            }, router, navType);
+            }
+            if (getDataType<any>(animation) === '[object Object]') {
+                const {animationDuration, animationType} = (animation as uniBackApiRule)
+                if (animationDuration != null) {
+                    navjumpRule.animationDuration = animationDuration;
+                }
+                if (animationType != null) {
+                    navjumpRule.animationType = animationType;
+                }
+            }
+            navjump(navjumpRule, router, navType);
         }
     })
 }
