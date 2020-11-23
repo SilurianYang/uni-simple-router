@@ -50,6 +50,7 @@ export function getMixins(router: Router):{
         },
         'app-lets': {
             beforeCreate(this: any): void {
+                console.log('---beforeCreate----app-lets')
                 if (!registerRouter) {
                     registerRouter = true;
                     proxyPageHook(this, router, 'appletsProxyHook', 'app')
