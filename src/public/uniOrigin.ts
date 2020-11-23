@@ -1,6 +1,6 @@
-import { reNavMethodRule, reNotNavMethodRule, Router, uniNavApiRule } from '../options/base';
+import { reNavMethodRule, reNotNavMethodRule, Router, startAnimationRule, uniNavApiRule } from '../options/base';
 import { stringifyQuery } from './query';
-import {restPageHook} from '../helpers/utils'
+import {notDeepClearNull, restPageHook} from '../helpers/utils'
 
 let routerNavCount:number = 0;
 
@@ -12,7 +12,7 @@ export function uniOriginJump(
     callOkCb?:Function,
     forceNav?:boolean
 ):void {
-    const {complete, ...originRule} = formatOriginURLQuery(options);
+    const {complete, ...originRule} = formatOriginURLQuery(router, options, funName);
     if (routerNavCount === 0) { // 还原app。vue下已经重写后的生命周期
         restPageHook(router);
     }
@@ -39,45 +39,27 @@ export function uniOriginJump(
         });
     }
 }
-
-export function hideTabBar(
-    router:Router,
-    originMethod:Function,
-    originRule:uniNavApiRule
-):Promise<undefined> {
-    return new Promise(resolve => {
-        const appMain = router.appMain
-        if (Object.keys(appMain).length > 0) {
-            const appMainRule = appMain as {
-                NAVTYPE:reNavMethodRule|reNotNavMethodRule,
-                path:string
-            }
-            if (appMainRule.NAVTYPE === 'switchTab') {
-                if (appMainRule.path !== originRule?.url) {
-                    return originMethod({
-                        url: originRule.url,
-                        complete: () => resolve()
-                    })
-                }
-            }
-        }
-        resolve();
-    })
-}
-
 export function formatOriginURLQuery(
-    options:uniNavApiRule
+    router:Router,
+    options:uniNavApiRule,
+    funName:reNavMethodRule|reNotNavMethodRule
 ):uniNavApiRule {
     const {url, path, query, animationType, animationDuration, events, success, fail, complete} = options;
     const strQuery = stringifyQuery(query || {});
-    const queryURL = strQuery === '' ? (path || url) : (path || url) + strQuery
-    return {
+    const queryURL = strQuery === '' ? (path || url) : (path || url) + strQuery;
+    let animation:startAnimationRule = {};
+    if (router.options.platform === 'app-plus') {
+        if (funName !== 'navigateBack') {
+            animation = router.options.APP?.animation || {};
+        }
+    }
+    return notDeepClearNull<uniNavApiRule>({
         url: queryURL,
-        animationType,
-        animationDuration,
+        animationType: animationType || animation.animationType,
+        animationDuration: animationDuration || animation.animationDuration,
         events,
         success,
         fail,
         complete
-    }
+    })
 }
