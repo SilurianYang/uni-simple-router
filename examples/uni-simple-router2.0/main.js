@@ -1,7 +1,10 @@
 import Vue from 'vue'
 import App from './App'
+import VConsole from 'vconsole'
 import {router,RouterMount} from './router.js'
 Vue.use(router)
+
+var vConsole = new VConsole();
 
 App.mpType = 'app'
 
@@ -15,13 +18,6 @@ App.mpType = 'app'
 // })
 
 //console.log(__uniRoutes)
-
-setTimeout(()=>{
-	uni.setTabBarBadge({
-	  index: 1,
-	  text: '1'
-	})
-},1000)
 
 const app = new Vue({
     ...App
