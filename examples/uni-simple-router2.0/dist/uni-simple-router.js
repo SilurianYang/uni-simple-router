@@ -628,7 +628,6 @@ function proxyH5Mount(router) {
         if (element.length > 0) {
             return false;
         }
-        alert('重新加载');
         window.location.reload();
         return true;
     }
@@ -989,8 +988,6 @@ function getMixins(router) {
         },
         'app-lets': {
             beforeCreate: function () {
-                debugger;
-                console.log('---beforeCreate----app-lets');
                 if (!registerRouter) {
                     registerRouter = true;
                     page_1.proxyPageHook(this, router, 'appletsProxyHook', 'app');
@@ -1024,9 +1021,6 @@ exports.initMixins = initMixins;
   \******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:14-18 */
-/*! CommonJS bailout: this is used directly at 24:22-26 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1530,7 +1524,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1685,7 +1678,6 @@ exports.loopCallHook = loopCallHook;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";

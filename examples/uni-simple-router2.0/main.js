@@ -1,13 +1,9 @@
 import Vue from 'vue'
 import App from './App'
-import VConsole from 'vconsole'
 import {router,RouterMount} from './router.js'
 Vue.use(router)
 
-var vConsole = new VConsole();
-
 App.mpType = 'app'
-
 
 // Vue.mixin({
 // 	onShow(){

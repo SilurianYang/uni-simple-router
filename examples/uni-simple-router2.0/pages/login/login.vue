@@ -18,7 +18,6 @@
 		},
 		onShow() {
 			console.log('login-----onShow')
-			debugger
 			uni.hideTabBar()
 		},
 		methods: {
