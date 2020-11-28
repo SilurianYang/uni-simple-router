@@ -25,6 +25,15 @@
 				title: 'Hello'
 			}
 		},
+		beforeCreate(){
+			console.log('index-----beforeCreate')
+		},
+		created(){
+			console.log('index-----created')
+		},
+		mounted(){
+			console.log('index-----mounted')
+		},
 		onLoad() {
 			console.log('index-----onload')
 		},

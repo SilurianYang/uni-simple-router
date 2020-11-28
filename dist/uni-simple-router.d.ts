@@ -136,7 +136,7 @@ export declare interface navtoRule {
     name?: string | undefined;
     query?: objectAny;
     params?: objectAny;
-    animationType?: startAnimationType;
+    animationType?: startAnimationType | endAnimationType;
     animationDuration?: number;
     events?: objectAny;
     success?: Function;
@@ -159,13 +159,6 @@ export declare type notCallProxyHookRule = 'onHide' | 'beforeDestroy' | 'destroy
 export declare type objectAny = {
     [propName: string]: any;
 };
-
-export declare interface preloadPageRule {
-    path: string;
-    success?: Function;
-    fail?: Function;
-    complete?: Function;
-}
 
 export declare type proxyHookName = 'beforeHooks' | 'afterHooks';
 
@@ -253,6 +246,8 @@ export declare interface RoutesRule {
     meta?: any;
     [propName: string]: any;
 }
+
+export declare function runtimeQuit(title?: string | undefined): void;
 
 export declare interface startAnimationRule {
     animationType?: startAnimationType;

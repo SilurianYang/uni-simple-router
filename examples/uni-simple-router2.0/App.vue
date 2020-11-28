@@ -1,5 +1,14 @@
 <script>
 	export default {
+		beforeCreate(){
+			console.log('appvue--beforeCreate----onload')
+		},
+		created(){
+			console.log('appvue--created----onload')
+		},
+		mounted(){
+			console.log('appvue--mounted----onload')
+		},
 		onLaunch: function() {
 			console.log('App Launch')
 		},

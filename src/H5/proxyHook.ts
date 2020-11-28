@@ -35,7 +35,17 @@ export function proxyEachHook(router:Router, vueRouter:any):void {
 }
 export function proxyH5Mount(router:Router):boolean {
     if (router.mount.length === 0) {
-        return false;
+        const uAgent = navigator.userAgent;
+        const isIos = !!uAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)
+        if (!isIos) {
+            return false;
+        }
+        const element = document.getElementsByTagName('uni-page');
+        if (element.length > 0) {
+            return false
+        }
+        window.location.reload();
+        return true
     }
     const [{app}] = router.mount;
     app.$mount();

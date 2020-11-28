@@ -619,7 +619,17 @@ function proxyEachHook(router, vueRouter) {
 exports.proxyEachHook = proxyEachHook;
 function proxyH5Mount(router) {
     if (router.mount.length === 0) {
-        return false;
+        var uAgent = navigator.userAgent;
+        var isIos = !!uAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+        if (!isIos) {
+            return false;
+        }
+        var element = document.getElementsByTagName('uni-page');
+        if (element.length > 0) {
+            return false;
+        }
+        window.location.reload();
+        return true;
     }
     var app = router.mount[0].app;
     app.$mount();
@@ -653,13 +663,34 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.registerLoddingPage = void 0;
+exports.runtimeQuit = exports.registerLoddingPage = void 0;
+var quitBefore = null;
 function registerLoddingPage(router) {
     var _a = router.options.APP, loddingPageHook = _a.loddingPageHook, loddingPageStyle = _a.loddingPageStyle; // 获取app所有配置
     var view = new plus.nativeObj.View('router-loadding', __assign({ top: '0px', left: '0px', height: '100%', width: '100%' }, loddingPageStyle()));
     loddingPageHook(view); // 触发等待页面生命周期
 }
 exports.registerLoddingPage = registerLoddingPage;
+function runtimeQuit(title) {
+    if (title === void 0) { title = '再按一次退出应用'; }
+    var nowTime = +new Date();
+    if (!quitBefore) {
+        quitBefore = nowTime;
+        uni.showToast({
+            title: title,
+            icon: 'none',
+            position: 'bottom',
+            duration: 1000
+        });
+        setTimeout(function () { quitBefore = null; }, 1000);
+    }
+    else {
+        if (nowTime - quitBefore < 1000) {
+            plus.runtime.quit();
+        }
+    }
+}
+exports.runtimeQuit = runtimeQuit;
 
 
 /***/ }),
@@ -990,9 +1021,6 @@ exports.initMixins = initMixins;
   \******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:14-18 */
-/*! CommonJS bailout: this is used directly at 24:22-26 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1202,15 +1230,15 @@ function paramsToQuery(router, toRule) {
         return toRule;
     }
     if (getDataType(toRule) === '[object Object]') {
-        var _b = toRule, name = _b.name, params = _b.params, moreToRule = __rest(_b, ["name", "params"]);
+        var _b = toRule, name_1 = _b.name, params = _b.params, moreToRule = __rest(_b, ["name", "params"]);
         var paramsQuery = params;
         if (router.options.platform !== 'h5' && paramsQuery == null) {
             paramsQuery = {};
         }
-        if (name != null && paramsQuery != null) {
-            var route = router.routesMap.nameMap[name];
+        if (name_1 != null && paramsQuery != null) {
+            var route = router.routesMap.nameMap[name_1];
             if (route == null) {
-                hooks_1.ERRORHOOK[0]({ type: 2, msg: "\u547D\u540D\u8DEF\u7531\u4E3A\uFF1A" + name + " \u7684\u8DEF\u7531\uFF0C\u65E0\u6CD5\u5728\u8DEF\u7531\u8868\u4E2D\u627E\u5230\uFF01", toRule: toRule }, router);
+                hooks_1.ERRORHOOK[0]({ type: 2, msg: "\u547D\u540D\u8DEF\u7531\u4E3A\uFF1A" + name_1 + " \u7684\u8DEF\u7531\uFF0C\u65E0\u6CD5\u5728\u8DEF\u7531\u8868\u4E2D\u627E\u5230\uFF01", toRule: toRule }, router);
             }
             var finallyPath = getRoutePath(route, router).finallyPath;
             if (finallyPath.includes(':')) { // 动态路由无法使用 paramsToQuery
@@ -1288,8 +1316,8 @@ function replaceHook(router, vueVim, proxyHookKey, pageType) {
     if (proxyHook != null) {
         var proxyName = config_1.proxyVueSortHookName[pageType];
         var _loop_1 = function (i) {
-            var name = proxyName[i];
-            var originHook = vueOptions[name];
+            var name_2 = proxyName[i];
+            var originHook = vueOptions[name_2];
             if (getDataType(originHook) === '[object Array]') {
                 var proxyInfo_1 = {
                     options: [],
@@ -1304,11 +1332,11 @@ function replaceHook(router, vueVim, proxyHookKey, pageType) {
                 })[0];
                 proxyInfo_1.hook = function resetHook() {
                     originHook.splice(originHook.length - 1, 1, hook_1);
-                    if (!config_1.notCallProxyHook.includes(name)) {
+                    if (!config_1.notCallProxyHook.includes(name_2)) {
                         hook_1.apply(vueVim, proxyInfo_1.options);
                     }
                 };
-                proxyHook[name] = [proxyInfo_1];
+                proxyHook[name_2] = [proxyInfo_1];
             }
         };
         for (var i = 0; i < proxyName.length; i++) {
@@ -1325,9 +1353,9 @@ function restPageHook(router) {
     for (var _i = 0, _a = Object.entries(router[proxyHookKey]); _i < _a.length; _i++) {
         var _b = _a[_i], value = _b[1];
         for (var _c = 0, _d = Object.entries(value); _c < _d.length; _c++) {
-            var _e = _d[_c], origin = _e[1][0];
-            if (origin) {
-                origin.hook && origin.hook();
+            var _e = _d[_c], origin_1 = _e[1][0];
+            if (origin_1) {
+                origin_1.hook && origin_1.hook();
             }
         }
     }
@@ -1417,9 +1445,11 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createRouter = exports.RouterMount = void 0;
+exports.createRouter = exports.RouterMount = exports.runtimeQuit = void 0;
 __exportStar(__webpack_require__(/*! ./options/base */ "./src/options/base.ts"), exports);
 __exportStar(__webpack_require__(/*! ./options/config */ "./src/options/config.ts"), exports);
+var appPatch_1 = __webpack_require__(/*! ./app/appPatch */ "./src/app/appPatch.ts");
+Object.defineProperty(exports, "runtimeQuit", ({ enumerable: true, get: function () { return appPatch_1.runtimeQuit; } }));
 var router_1 = __webpack_require__(/*! ./public/router */ "./src/public/router.ts");
 Object.defineProperty(exports, "RouterMount", ({ enumerable: true, get: function () { return router_1.RouterMount; } }));
 Object.defineProperty(exports, "createRouter", ({ enumerable: true, get: function () { return router_1.createRouter; } }));
@@ -1494,7 +1524,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1649,7 +1678,6 @@ exports.loopCallHook = loopCallHook;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2361,12 +2389,12 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.formatOriginURLQuery = exports.hideTabBar = exports.uniOriginJump = void 0;
+exports.formatOriginURLQuery = exports.uniOriginJump = void 0;
 var query_1 = __webpack_require__(/*! ./query */ "./src/public/query.ts");
 var utils_1 = __webpack_require__(/*! ../helpers/utils */ "./src/helpers/utils.ts");
 var routerNavCount = 0;
 function uniOriginJump(router, originMethod, funName, options, callOkCb, forceNav) {
-    var _a = formatOriginURLQuery(options), complete = _a.complete, originRule = __rest(_a, ["complete"]);
+    var _a = formatOriginURLQuery(router, options, funName), complete = _a.complete, originRule = __rest(_a, ["complete"]);
     if (routerNavCount === 0) { // 还原app。vue下已经重写后的生命周期
         utils_1.restPageHook(router);
     }
@@ -2403,37 +2431,26 @@ function uniOriginJump(router, originMethod, funName, options, callOkCb, forceNa
     }
 }
 exports.uniOriginJump = uniOriginJump;
-function hideTabBar(router, originMethod, originRule) {
-    return new Promise(function (resolve) {
-        var appMain = router.appMain;
-        if (Object.keys(appMain).length > 0) {
-            var appMainRule = appMain;
-            if (appMainRule.NAVTYPE === 'switchTab') {
-                if (appMainRule.path !== (originRule === null || originRule === void 0 ? void 0 : originRule.url)) {
-                    return originMethod({
-                        url: originRule.url,
-                        complete: function () { return resolve(); }
-                    });
-                }
-            }
-        }
-        resolve();
-    });
-}
-exports.hideTabBar = hideTabBar;
-function formatOriginURLQuery(options) {
+function formatOriginURLQuery(router, options, funName) {
+    var _a;
     var url = options.url, path = options.path, query = options.query, animationType = options.animationType, animationDuration = options.animationDuration, events = options.events, success = options.success, fail = options.fail, complete = options.complete;
     var strQuery = query_1.stringifyQuery(query || {});
     var queryURL = strQuery === '' ? (path || url) : (path || url) + strQuery;
-    return {
+    var animation = {};
+    if (router.options.platform === 'app-plus') {
+        if (funName !== 'navigateBack') {
+            animation = ((_a = router.options.APP) === null || _a === void 0 ? void 0 : _a.animation) || {};
+        }
+    }
+    return utils_1.notDeepClearNull({
         url: queryURL,
-        animationType: animationType,
-        animationDuration: animationDuration,
+        animationType: animationType || animation.animationType,
+        animationDuration: animationDuration || animation.animationDuration,
         events: events,
         success: success,
         fail: fail,
         complete: complete
-    };
+    });
 }
 exports.formatOriginURLQuery = formatOriginURLQuery;
 

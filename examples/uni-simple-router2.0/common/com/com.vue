@@ -11,6 +11,9 @@
 				
 			}
 		},
+		beforeCreate(){
+			console.log('index--beforeCreate----onload')
+		},
 		created(){
 			console.log('index--created----onload')
 		},

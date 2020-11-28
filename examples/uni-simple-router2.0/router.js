@@ -1,11 +1,18 @@
 import {
 	RouterMount,
-	createRouter
+	createRouter,
+	runtimeQuit
 } from './dist/uni-simple-router.js';
 
 let first = null;
 const router = createRouter({
 	platform: process.env.VUE_APP_PLATFORM,  
+	APP:{
+		animation:{
+			animationType:'slide-in-top',
+			animationDuration:300
+		}
+	},
 	routerBeforeEach:(to, from, next) => {
 		console.log('+++++routerBeforeEach++++')
 		next();
@@ -18,22 +25,7 @@ const router = createRouter({
 		// #ifdef APP-PLUS
 			if(type===3){
 				router.$lockStatus=false;
-				if (!first) {
-					first = new Date().getTime();  
-					uni.showToast({
-					    title: '再按一次退出应用',
-						icon:'none',
-						position :'bottom',
-						duration: 1000
-					});
-					setTimeout(function() {  
-						first = null;  
-					}, 1000);  
-				} else {  
-					if (new Date().getTime() - first < 1000) {  
-						plus.runtime.quit();  
-					}  
-				} 
+				runtimeQuit();
 			}
 		// #endif
 	},
@@ -60,7 +52,6 @@ router.beforeEach((to, from, next) => {
 	// }else{
 	// 	next();
 	// }
-	
 	next();
 	count++;
 });

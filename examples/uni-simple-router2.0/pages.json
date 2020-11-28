@@ -33,6 +33,7 @@
 
 		}, {
 			"path": "pages/other/other",
+			"name":"tabother",
 			"style": {
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
@@ -53,9 +54,13 @@
 	  "tabBar": {
 	    "list": [{
 	      "pagePath": "pages/index/index",
+		  "iconPath": "static/component.png",
+		  "selectedIconPath": "static/componentHL.png",
 	      "text": "首页"
 	    },{
 	      "pagePath": "pages/other/other",
+		  "iconPath": "static/extui.png",
+		  "selectedIconPath": "static/extuiHL.png",
 	      "text": "其他"
 	    }]
 	  },

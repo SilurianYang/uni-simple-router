@@ -1,6 +1,5 @@
 import {
     uniNavApiRule,
-    preloadPageRule,
     reNavMethodRule,
     reNotNavMethodRule,
     Router,
@@ -62,7 +61,7 @@ export function rewriteMethod(
     }
 }
 function callRouterMethod(
-    option: uniNavApiRule|uniBackRule|preloadPageRule|uniBackApiRule,
+    option: uniNavApiRule|uniBackRule|uniBackApiRule,
     funName:reNavMethodRule|reNotNavMethodRule,
     router:Router
 ): void {
