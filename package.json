@@ -1,6 +1,6 @@
 {
   "name": "uni-simple-router",
-  "version": "2.0.0-alpha.3",
+  "version": "2.0.0-alpha.4",
   "description": "> 一个更为简洁的[Vue-router](https://router.vuejs.org/zh/)，专为 [uni-app](https://uniapp.dcloud.io/) 量身打造",
   "main": "dist/uni-simple-router.js",
   "types": "dist/uni-simple-router.d.ts",
@@ -24,6 +24,7 @@
     "lodash": "^4.17.20",
     "rimraf": "^3.0.2",
     "ts-node": "^9.0.0",
+    "vconsole": "^3.3.4",
     "webpack-merge": "^5.2.0"
   },
   "scripts": {
