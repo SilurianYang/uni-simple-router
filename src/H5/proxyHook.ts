@@ -44,7 +44,6 @@ export function proxyH5Mount(router:Router):boolean {
         if (element.length > 0) {
             return false
         }
-        alert('重新加载')
         window.location.reload();
         return true
     }
