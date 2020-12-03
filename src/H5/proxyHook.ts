@@ -5,19 +5,26 @@ export class MyArray extends Array {
         private router:Router,
         private vueEachArray:Array<Function>,
         private myEachHook:Function,
-        private hookName:'beforeHooks'| 'afterHooks'
+        private hookName:'beforeHooks'| 'afterHooks',
     ) {
         super();
         Object.setPrototypeOf(this, MyArray.prototype)
     }
     push(v:any):any {
-        this.vueEachArray.splice(0, 1, v);
+        this.vueEachArray.push(v);
+        const index = this.length;
         this[this.length] = (to: totalNextRoute, from: totalNextRoute, next:(rule?: navtoRule|false)=>void) => {
-            this.myEachHook(to, from, (nextTo?:navtoRule|false) => {
-                this.vueEachArray[0](to, from, (uniNextTo?:navtoRule|false) => {
-                    next(nextTo);
-                })
-            }, this.router, true);
+            if (index > 0) {
+                this.vueEachArray[index](to, from, () => {
+                    next && next()
+                });
+            } else {
+                this.myEachHook(to, from, (nextTo?:navtoRule|false) => {
+                    this.vueEachArray[index](to, from, (uniNextTo?:navtoRule|false) => {
+                        next(nextTo);
+                    })
+                }, this.router, true);
+            }
         };
     }
 }
