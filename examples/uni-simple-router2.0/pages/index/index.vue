@@ -25,6 +25,14 @@
 				title: 'Hello'
 			}
 		},
+		watch:{
+			$Route:{
+				handler: function(val){
+					console.log(val)
+				},
+				//immediate: true
+			}
+		},
 		beforeCreate(){
 			console.log('index-----beforeCreate')
 		},

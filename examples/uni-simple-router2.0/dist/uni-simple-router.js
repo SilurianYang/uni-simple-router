@@ -561,6 +561,7 @@ exports.buildVueRouter = buildVueRouter;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
+/*! CommonJS bailout: this is used directly at 2:17-21 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -593,13 +594,21 @@ var MyArray = /** @class */ (function (_super) {
     }
     MyArray.prototype.push = function (v) {
         var _this = this;
-        this.vueEachArray.splice(0, 1, v);
+        this.vueEachArray.push(v);
+        var index = this.length;
         this[this.length] = function (to, from, next) {
-            _this.myEachHook(to, from, function (nextTo) {
-                _this.vueEachArray[0](to, from, function (uniNextTo) {
-                    next(nextTo);
+            if (index > 0) {
+                _this.vueEachArray[index](to, from, function () {
+                    next && next();
                 });
-            }, _this.router, true);
+            }
+            else {
+                _this.myEachHook(to, from, function (nextTo) {
+                    _this.vueEachArray[index](to, from, function (uniNextTo) {
+                        next(nextTo);
+                    });
+                }, _this.router, true);
+            }
         };
     };
     return MyArray;
@@ -953,7 +962,7 @@ var page_1 = __webpack_require__(/*! ../public/page */ "./src/public/page.ts");
 var methods_1 = __webpack_require__(/*! ../public/methods */ "./src/public/methods.ts");
 var registerRouter = false;
 var onloadProxyOk = false;
-function getMixins(router) {
+function getMixins(Vue, router) {
     var platform = router.options.platform;
     if (config_1.mpPlatformReg.test(platform)) {
         platform = 'app-lets';
@@ -989,8 +998,6 @@ function getMixins(router) {
         },
         'app-lets': {
             beforeCreate: function () {
-                debugger;
-                console.log('---beforeCreate----app-lets');
                 if (!registerRouter) {
                     registerRouter = true;
                     page_1.proxyPageHook(this, router, 'appletsProxyHook', 'app');
@@ -1011,7 +1018,8 @@ exports.getMixins = getMixins;
 function initMixins(Vue, router) {
     var routesMap = createRouteMap_1.createRouteMap(router, router.options.routes);
     router.routesMap = routesMap; // 挂载自身路由表到路由对象下
-    Vue.mixin(__assign({}, getMixins(router)));
+    Vue.util.defineReactive(router, '_Route', methods_1.createRoute(router, 19970806));
+    Vue.mixin(__assign({}, getMixins(Vue, router)));
 }
 exports.initMixins = initMixins;
 
@@ -1024,9 +1032,6 @@ exports.initMixins = initMixins;
   \******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:14-18 */
-/*! CommonJS bailout: this is used directly at 24:22-26 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1565,6 +1570,7 @@ exports.HOOKLIST = [
         if (router.options.platform === 'h5') {
             proxyHook_1.proxyH5Mount(router);
         }
+        router._Route = methods_1.createRoute(router);
         return callHook(router.lifeCycle.routerAfterHooks[0], to, from, router, false);
     }
 ];
@@ -1685,7 +1691,6 @@ exports.loopCallHook = loopCallHook;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1808,6 +1813,9 @@ function createRoute(router, level, orignRule) {
         query: {},
         params: {}
     };
+    if (level === 19970806) { // 首次构建响应式 页面不存在 直接返回
+        return route;
+    }
     if (router.options.platform === 'h5') {
         var vueRoute = { path: '' };
         if (orignRule != null) {
@@ -2295,7 +2303,7 @@ function createRouter(params) {
             });
             Object.defineProperty(Vue.prototype, '$Route', {
                 get: function () {
-                    return methods_1.createRoute(router);
+                    return router._Route;
                 }
             });
         }
