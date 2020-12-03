@@ -153,6 +153,9 @@ export function createRoute(
         query: {},
         params: {}
     };
+    if (level === 19970806) { // 首次构建响应式 页面不存在 直接返回
+        return route
+    }
     if (router.options.platform === 'h5') {
         let vueRoute:totalNextRoute = {path: ''};
         if (orignRule != null) {

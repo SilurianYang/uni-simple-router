@@ -17,7 +17,7 @@ import {
     getUniCachePage,
     voidFun
 } from '../helpers/utils'
-import { navjump } from './methods';
+import { createRoute, navjump } from './methods';
 import { proxyH5Mount } from '../H5/proxyHook';
 
 export const ERRORHOOK:Array<(error:navErrorRule, router:Router)=>void> = [
@@ -34,6 +34,7 @@ export const HOOKLIST: hookListRule = [
         if (router.options.platform === 'h5') {
             proxyH5Mount(router);
         }
+        router._Route = createRoute(router);
         return callHook(router.lifeCycle.routerAfterHooks[0], to, from, router, false)
     }
 ];
