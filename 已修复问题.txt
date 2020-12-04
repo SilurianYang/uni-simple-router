@@ -1,8 +1,8 @@
-## Add
-* `$Route` 可以被观测，及已添加到响应式数据中
 
 ## Fixes bug
 * `H5` 端 `routerAfterEach`、`afterEach` 重复触发bug
+* 非 `H5` 端 传递中文未自动解码 (#192)
+* 优化 `parseQuery` 调用多次
 
 ## Known Issues
 * `APP` 端启动页为tab时，拦截到其他页面后底部tabbar 还依然存在 bug
