@@ -83,6 +83,9 @@ export interface totalNextRoute extends h5NextRule, navtoRule {
     path:string;
     [propName: string]: any;
 }
+export interface navRoute extends h5NextRule, navtoRule {
+
+}
 
 // 开始切换窗口动画 app端可用
 export interface startAnimationRule {
@@ -195,10 +198,10 @@ export interface Router {
 	routesMap: routesMapRule|{};
 	mount: Array<{app: any; el: string}>;
 	install(Vue: any): void;
-	push(to: totalNextRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 URL 保留浏览历史
-	replace(to: totalNextRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 URL 关闭当前页面，跳转到的某个页面。
-	replaceAll(to: totalNextRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 URL 关闭所有页面，打开到应用内的某个页面
-	pushTab(to: totalNextRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 url 关闭所有页面，打开到应用内的某个tab
+	push(to: totalNextRoute|navRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 URL 保留浏览历史
+	replace(to: totalNextRoute|navRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 URL 关闭当前页面，跳转到的某个页面。
+	replaceAll(to: totalNextRoute|navRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 URL 关闭所有页面，打开到应用内的某个页面
+	pushTab(to: totalNextRoute|navRoute | string,from?:totalNextRoute): void; // 动态的导航到一个新 url 关闭所有页面，打开到应用内的某个tab
     back(level:number|undefined,origin?:uniBackRule|uniBackApiRule):void;
     forceGuardEach(navType:NAVTYPE|undefined,forceNav:boolean):void;      //强制触发当前守卫
     beforeEach(userGuard:guardHookRule): void; // 添加全局前置路由守卫

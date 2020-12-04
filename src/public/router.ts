@@ -4,7 +4,7 @@ import {appProxyHook, indexProxyHook, lifeCycle} from '../helpers/config';
 import {assertNewOptions, getDataType} from '../helpers/utils';
 import {registerRouterHooks, registerEachHooks} from '../helpers/lifeCycle';
 import {initMixins} from '../helpers/mixins'
-import {navBack, lockNavjump, forceGuardEach} from '../public/methods'
+import {navBack, lockNavjump, forceGuardEach, createRoute} from '../public/methods'
 import {rewriteMethod} from '../public/rewrite'
 
 function createRouter(params: InstantiateConfig):Router {
@@ -53,7 +53,7 @@ function createRouter(params: InstantiateConfig):Router {
             });
             Object.defineProperty(Vue.prototype, '$Route', {
                 get() {
-                    return router._Route;
+                    return createRoute(router);
                 }
             });
         }
