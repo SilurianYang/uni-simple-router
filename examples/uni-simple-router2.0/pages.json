@@ -50,6 +50,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/page4/page4",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	  "tabBar": {
 	    "list": [{

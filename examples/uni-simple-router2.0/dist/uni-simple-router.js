@@ -561,7 +561,6 @@ exports.buildVueRouter = buildVueRouter;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
-/*! CommonJS bailout: this is used directly at 2:17-21 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -1018,7 +1017,7 @@ exports.getMixins = getMixins;
 function initMixins(Vue, router) {
     var routesMap = createRouteMap_1.createRouteMap(router, router.options.routes);
     router.routesMap = routesMap; // 挂载自身路由表到路由对象下
-    Vue.util.defineReactive(router, '_Route', methods_1.createRoute(router, 19970806));
+    // Vue.util.defineReactive(router, '_Route', createRoute(router, 19970806))
     Vue.mixin(__assign({}, getMixins(Vue, router)));
 }
 exports.initMixins = initMixins;
@@ -1535,7 +1534,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1570,7 +1568,6 @@ exports.HOOKLIST = [
         if (router.options.platform === 'h5') {
             proxyHook_1.proxyH5Mount(router);
         }
-        router._Route = methods_1.createRoute(router);
         return callHook(router.lifeCycle.routerAfterHooks[0], to, from, router, false);
     }
 ];
@@ -1635,26 +1632,26 @@ function onTriggerEachHook(to, from, router, hookType, next) {
 }
 exports.onTriggerEachHook = onTriggerEachHook;
 function transitionTo(router, to, from, navType, callHookList, hookCB) {
+    var _a = utils_1.forMatNextToFrom(router, to, from), matTo = _a.matTo, matFrom = _a.matFrom;
     if (router.options.platform === 'h5') {
-        loopCallHook(callHookList, 0, hookCB, router, to, from, navType);
+        loopCallHook(callHookList, 0, hookCB, router, matTo, matFrom, navType);
     }
     else {
         loopCallHook(callHookList.slice(0, 4), 0, function () {
             hookCB(function () {
-                loopCallHook(callHookList.slice(4), 0, utils_1.voidFun, router, to, from, navType);
+                loopCallHook(callHookList.slice(4), 0, utils_1.voidFun, router, matTo, matFrom, navType);
             });
-        }, router, to, from, navType);
+        }, router, matTo, matFrom, navType);
     }
 }
 exports.transitionTo = transitionTo;
-function loopCallHook(hooks, index, next, router, to, from, navType) {
-    var toRoute = utils_1.routesForMapRoute(router, to.path, ['finallyPathMap', 'pathMap']);
+function loopCallHook(hooks, index, next, router, matTo, matFrom, navType) {
+    var toRoute = utils_1.routesForMapRoute(router, matTo.path, ['finallyPathMap', 'pathMap']);
     if (hooks.length - 1 < index) {
         return next();
     }
     var hook = hooks[index];
     var errHook = exports.ERRORHOOK[0];
-    var _a = utils_1.forMatNextToFrom(router, to, from), matTo = _a.matTo, matFrom = _a.matFrom;
     hook(router, matTo, matFrom, toRoute).then(function (nextTo) {
         if (nextTo === false) {
             errHook({ type: 0, msg: '管道函数传递 false 导航被终止!', matTo: matTo, matFrom: matFrom, nextTo: nextTo }, router);
@@ -1669,11 +1666,11 @@ function loopCallHook(hooks, index, next, router, to, from, navType) {
                     newNavType = type;
                 }
             }
-            methods_1.navjump(newNextTo, router, newNavType, { from: from, next: next });
+            methods_1.navjump(newNextTo, router, newNavType, { from: matFrom, next: next });
         }
         else if (nextTo == null) {
             index++;
-            loopCallHook(hooks, index, next, router, to, from, navType);
+            loopCallHook(hooks, index, next, router, matTo, matFrom, navType);
         }
         else {
             errHook({ type: 1, msg: '管道函数传递未知类型，无法被识别。导航被终止！', matTo: matTo, matFrom: matFrom, nextTo: nextTo }, router);
@@ -1847,7 +1844,7 @@ function createRoute(router, level, orignRule) {
                 }, router);
                 throw new Error("\u4E0D\u5B58\u5728\u7684\u9875\u9762\u6808\uFF0C\u8BF7\u786E\u4FDD\u6709\u8DB3\u591F\u7684\u9875\u9762\u53EF\u7528\uFF0C\u5F53\u524D level:" + level);
             }
-            appPage = __assign(__assign({}, page.$page), { query: page.options, fullPath: decodeURIComponent(page.$page.fullPath) });
+            appPage = __assign(__assign({}, page.$page), { query: JSON.parse(decodeURIComponent(JSON.stringify(page.options))), fullPath: decodeURIComponent(page.$page.fullPath) });
             if (router.options.platform !== 'app-plus') {
                 appPage.path = "/" + page.route;
             }
@@ -2303,7 +2300,7 @@ function createRouter(params) {
             });
             Object.defineProperty(Vue.prototype, '$Route', {
                 get: function () {
-                    return router._Route;
+                    return methods_1.createRoute(router);
                 }
             });
         }
