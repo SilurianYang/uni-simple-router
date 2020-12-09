@@ -69,14 +69,12 @@ export declare interface h5NextRule {
     type?: undefined | string;
 }
 
-export declare type hookListRule = Array<(router: Router, to: totalNextRoute, from: totalNextRoute, toRoute: RoutesRule) => hooksReturnRule>;
+export declare type hookListRule = Array<(router: Router, to: totalNextRoute, from: totalNextRoute, toRoute: RoutesRule, next: Function) => void>;
 
 export declare interface hookObjectRule {
     options: Array<any>;
     hook: Function;
 }
-
-export declare type hooksReturnRule = Promise<reloadNavRule>;
 
 export declare enum hookToggle {
     'beforeHooks' = "beforeEach",
@@ -95,7 +93,7 @@ export declare type indexVueSortHookRule = 'beforeCreate' | 'created' | 'beforeM
 
 export declare interface InstantiateConfig {
     [key: string]: any;
-    keepUniOriginNav: boolean;
+    keepUniOriginNav?: boolean;
     platform: 'h5' | 'app-plus' | 'app-lets' | 'mp-weixin' | 'mp-baidu' | 'mp-alipay' | 'mp-toutiao' | 'mp-qq' | 'mp-360';
     h5?: H5Config;
     APP?: AppConfig;
@@ -105,7 +103,7 @@ export declare interface InstantiateConfig {
     routerErrorEach?: (error: navErrorRule, router: Router) => void;
     resolveQuery?: (jsonQuery: objectAny) => objectAny;
     parseQuery?: (jsonQuery: objectAny) => objectAny;
-    detectBeforeLock?: (router: Router, to: string | number | totalNextRoute, navType: NAVTYPE) => void;
+    detectBeforeLock?: (router: Router, to: string | number | totalNextRoute | navRoute, navType: NAVTYPE) => void;
     routes: RoutesRule[];
 }
 
@@ -128,6 +126,9 @@ export declare interface navErrorRule {
 
 export declare type navMethodRule = Promise<void | undefined | navRuleStatus>;
 
+export declare interface navRoute extends h5NextRule, navtoRule {
+}
+
 export declare type navRuleStatus = 0 | 1 | 2 | 3;
 
 export declare interface navtoRule {
@@ -136,7 +137,7 @@ export declare interface navtoRule {
     name?: string | undefined;
     query?: objectAny;
     params?: objectAny;
-    animationType?: startAnimationType;
+    animationType?: startAnimationType | endAnimationType;
     animationDuration?: number;
     events?: objectAny;
     success?: Function;
@@ -159,13 +160,6 @@ export declare type notCallProxyHookRule = 'onHide' | 'beforeDestroy' | 'destroy
 export declare type objectAny = {
     [propName: string]: any;
 };
-
-export declare interface preloadPageRule {
-    path: string;
-    success?: Function;
-    fail?: Function;
-    complete?: Function;
-}
 
 export declare type proxyHookName = 'beforeHooks' | 'afterHooks';
 
@@ -193,6 +187,10 @@ export declare interface Router {
     appProxyHook: {
         app: appVueHookConfig;
     };
+    appMain: {
+        NAVTYPE: reNavMethodRule | reNotNavMethodRule;
+        path: string;
+    } | {};
     appletsProxyHook: appletsVueHookConfig;
     routesMap: routesMapRule | {};
     mount: Array<{
@@ -200,10 +198,10 @@ export declare interface Router {
         el: string;
     }>;
     install(Vue: any): void;
-    push(to: totalNextRoute | string, from?: totalNextRoute): void;
-    replace(to: totalNextRoute | string, from?: totalNextRoute): void;
-    replaceAll(to: totalNextRoute | string, from?: totalNextRoute): void;
-    pushTab(to: totalNextRoute | string, from?: totalNextRoute): void;
+    push(to: totalNextRoute | navRoute | string, from?: totalNextRoute): void;
+    replace(to: totalNextRoute | navRoute | string, from?: totalNextRoute): void;
+    replaceAll(to: totalNextRoute | navRoute | string, from?: totalNextRoute): void;
+    pushTab(to: totalNextRoute | navRoute | string, from?: totalNextRoute): void;
     back(level: number | undefined, origin?: uniBackRule | uniBackApiRule): void;
     forceGuardEach(navType: NAVTYPE | undefined, forceNav: boolean): void;
     beforeEach(userGuard: guardHookRule): void;
@@ -249,6 +247,8 @@ export declare interface RoutesRule {
     meta?: any;
     [propName: string]: any;
 }
+
+export declare function runtimeQuit(title?: string | undefined): void;
 
 export declare interface startAnimationRule {
     animationType?: startAnimationType;
