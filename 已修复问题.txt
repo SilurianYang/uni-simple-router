@@ -1,6 +1,7 @@
 
 ## Fixes bug
 * `H5` 端 `routerAfterEach`、`afterEach` 重复触发bug
+* `H5` 端 重复进入同一个页面时，`onShow` 触发两次的bug
 * 非 `H5` 端 传递中文未自动解码 (#192)
 * 优化 `parseQuery` 调用多次
 
