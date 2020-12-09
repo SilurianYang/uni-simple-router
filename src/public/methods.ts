@@ -9,7 +9,8 @@ import {
     navtypeToggle,
     navErrorRule,
     uniBackApiRule,
-    uniBackRule
+    uniBackRule,
+    navRoute
 } from '../options/base'
 import {
     queryPageToMap,
@@ -30,7 +31,7 @@ import {createFullPath, createToFrom} from '../public/page'
 import {HOOKLIST} from './hooks'
 
 export function lockNavjump(
-    to:string|totalNextRoute,
+    to:string|totalNextRoute|navRoute,
     router:Router,
     navType:NAVTYPE,
     forceNav?:boolean
@@ -39,7 +40,7 @@ export function lockNavjump(
         if (router.options.platform !== 'h5') {
             router.$lockStatus = true;
         }
-        navjump(to, router, navType, undefined, forceNav);
+        navjump(to as totalNextRoute, router, navType, undefined, forceNav);
     });
 }
 
@@ -153,6 +154,9 @@ export function createRoute(
         query: {},
         params: {}
     };
+    if (level === 19970806) { // 首次构建响应式 页面不存在 直接返回
+        return route
+    }
     if (router.options.platform === 'h5') {
         let vueRoute:totalNextRoute = {path: ''};
         if (orignRule != null) {
@@ -183,7 +187,7 @@ export function createRoute(
             }
             appPage = {
                 ...(page as objectAny).$page,
-                query: (page as objectAny).options,
+                query: JSON.parse(decodeURIComponent(JSON.stringify((page as objectAny).options))),
                 fullPath: decodeURIComponent((page as objectAny).$page.fullPath)
             }
             if (router.options.platform !== 'app-plus') {

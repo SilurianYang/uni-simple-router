@@ -1,10 +1,9 @@
-## Fixes bug
-* 原生跳转返回 api 无法使用关闭动画的问题
-* `APP` 端 路由构建参数 `animation` 可用
-* ios端跳转到第三方网址后返回应用不渲染组件（#109）
 
-## Add
-* runtimeQuit 函数，可通过此函数退出app
+## Fixes bug
+* `H5` 端 `routerAfterEach`、`afterEach` 重复触发bug
+* `H5` 端 重复进入同一个页面时，`onShow` 触发两次的bug
+* 非 `H5` 端 传递中文未自动解码 (#192)
+* 优化 `parseQuery` 调用多次
 
 ## Known Issues
 * `APP` 端启动页为tab时，拦截到其他页面后底部tabbar 还依然存在 bug

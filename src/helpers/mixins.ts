@@ -10,7 +10,7 @@ import { forceGuardEach } from '../public/methods';
 let registerRouter:boolean = false;
 let onloadProxyOk:boolean = false;
 
-export function getMixins(router: Router):{
+export function getMixins(Vue:any, router: Router):{
     beforeCreate(this: any): void;
 } | {
     beforeCreate(): void;
@@ -69,7 +69,8 @@ export function getMixins(router: Router):{
 export function initMixins(Vue: any, router: Router) {
     const routesMap = createRouteMap(router, router.options.routes);
     router.routesMap = routesMap; // 挂载自身路由表到路由对象下
+    // Vue.util.defineReactive(router, '_Route', createRoute(router, 19970806))
     Vue.mixin({
-        ...getMixins(router)
+        ...getMixins(Vue, router)
     });
 }

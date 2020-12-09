@@ -1,4 +1,4 @@
-import {startAnimationRule, hookListRule, RoutesRule, navtoRule, navErrorRule, Router, objectAny, hookObjectRule, NAVTYPE, totalNextRoute} from './base';
+import {startAnimationRule, hookListRule, RoutesRule, navtoRule, navErrorRule, Router, objectAny, hookObjectRule, NAVTYPE, totalNextRoute, navRoute} from './base';
 
 export type debuggerConfig=boolean|debuggerArrayConfig;
 
@@ -27,7 +27,7 @@ export interface debuggerArrayConfig{
 
 export interface InstantiateConfig {
     [key:string]:any;
-    keepUniOriginNav:boolean; // 重写uni-app的跳转方法；关闭后使用uni-app的原始方法跳转和插件api跳转等同
+    keepUniOriginNav?:boolean; // 重写uni-app的跳转方法；关闭后使用uni-app的原始方法跳转和插件api跳转等同
     platform:'h5'|'app-plus'|'app-lets'|'mp-weixin'|'mp-baidu'|'mp-alipay'|'mp-toutiao'|'mp-qq'|'mp-360'; // 当前运行平台
     h5?: H5Config;
 	APP?: AppConfig;
@@ -37,7 +37,7 @@ export interface InstantiateConfig {
     routerErrorEach?: (error: navErrorRule, router:Router) => void;
     resolveQuery?:(jsonQuery:objectAny)=>objectAny; // 跳转之前把参数传递给此函数、返回最终的数据！有此函数不走默认方法
     parseQuery?:(jsonQuery:objectAny)=>objectAny; // 读取值之前把参数传递给此函数，返回最终的数据！有此函数不走默认方法
-    detectBeforeLock?:(router:Router, to:string|number|totalNextRoute, navType:NAVTYPE)=>void; // 在检测路由锁之前触发的函数
+    detectBeforeLock?:(router:Router, to:string|number|totalNextRoute|navRoute, navType:NAVTYPE)=>void; // 在检测路由锁之前触发的函数
     routes: RoutesRule[];
 }
 export interface LifeCycleConfig{

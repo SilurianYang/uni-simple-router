@@ -48,6 +48,12 @@
 				
 			}
 		},
+		onShow(){
+			console.log('navigate-----onShow')
+		},
+		onLoad(){
+			console.log('navigate-----onLoad')
+		},
 		methods: {
 			navigateTo(type){
 				switch (type){

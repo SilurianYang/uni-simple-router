@@ -8,6 +8,7 @@
 			<com></com>
 		</div>
 		<button type="default" @click="gotoPage">点我去page2</button>
+		<button type="primary" @click="gotoPage1">传递中文</button>
 		<!-- #ifdef MP-WEIXIN -->
 		<button type="default" @click="forceEach">微信小程序看到我，强制触发</button>
 		<!-- #endif -->
@@ -43,6 +44,14 @@
 		methods: {
 			forceEach(){
 				this.$Router.forceGuardEach();
+			},
+			gotoPage1(){
+				uni.navigateTo({
+					url:'/pages/page4/page4?msg=的挥洒U盾好撒第三大厦发的撒321312*（￥#%4',
+					success:()=>{
+						console.log('跳转成功')
+					},
+				})
 			},
 			gotoPage(){
 				// this.$Router.push({

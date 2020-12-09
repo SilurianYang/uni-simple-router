@@ -470,6 +470,7 @@ module.exports = Array.isArray || function (arr) {
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -593,13 +594,21 @@ var MyArray = /** @class */ (function (_super) {
     }
     MyArray.prototype.push = function (v) {
         var _this = this;
-        this.vueEachArray.splice(0, 1, v);
+        this.vueEachArray.push(v);
+        var index = this.length;
         this[this.length] = function (to, from, next) {
-            _this.myEachHook(to, from, function (nextTo) {
-                _this.vueEachArray[0](to, from, function (uniNextTo) {
-                    next(nextTo);
+            if (index > 0) {
+                _this.vueEachArray[index](to, from, function () {
+                    next && next();
                 });
-            }, _this.router, true);
+            }
+            else {
+                _this.myEachHook(to, from, function (nextTo) {
+                    _this.vueEachArray[index](to, from, function (uniNextTo) {
+                        next(nextTo);
+                    });
+                }, _this.router, true);
+            }
         };
     };
     return MyArray;
@@ -925,7 +934,6 @@ exports.registerEachHooks = registerEachHooks;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -952,7 +960,7 @@ var page_1 = __webpack_require__(/*! ../public/page */ "./src/public/page.ts");
 var methods_1 = __webpack_require__(/*! ../public/methods */ "./src/public/methods.ts");
 var registerRouter = false;
 var onloadProxyOk = false;
-function getMixins(router) {
+function getMixins(Vue, router) {
     var platform = router.options.platform;
     if (config_1.mpPlatformReg.test(platform)) {
         platform = 'app-lets';
@@ -1008,7 +1016,8 @@ exports.getMixins = getMixins;
 function initMixins(Vue, router) {
     var routesMap = createRouteMap_1.createRouteMap(router, router.options.routes);
     router.routesMap = routesMap; // 挂载自身路由表到路由对象下
-    Vue.mixin(__assign({}, getMixins(router)));
+    // Vue.util.defineReactive(router, '_Route', createRoute(router, 19970806))
+    Vue.mixin(__assign({}, getMixins(Vue, router)));
 }
 exports.initMixins = initMixins;
 
@@ -1548,20 +1557,20 @@ exports.ERRORHOOK = [
     function (error, router) { return router.lifeCycle.routerErrorHooks[0](error, router); }
 ];
 exports.HOOKLIST = [
-    function (router, to, from, toRoute) { return callHook(router.lifeCycle.routerBeforeHooks[0], to, from, router); },
-    function (router, to, from, toRoute) { return callBeforeRouteLeave(router, to, from); },
-    function (router, to, from, toRoute) { return callHook(router.lifeCycle.beforeHooks[0], to, from, router); },
-    function (router, to, from, toRoute) { return callHook(toRoute.beforeEnter, to, from, router); },
-    function (router, to, from, toRoute) { return callHook(router.lifeCycle.afterHooks[0], to, from, router, false); },
-    function (router, to, from, toRoute) {
+    function (router, to, from, toRoute, next) { return callHook(router.lifeCycle.routerBeforeHooks[0], to, from, router, next); },
+    function (router, to, from, toRoute, next) { return callBeforeRouteLeave(router, to, from, next); },
+    function (router, to, from, toRoute, next) { return callHook(router.lifeCycle.beforeHooks[0], to, from, router, next); },
+    function (router, to, from, toRoute, next) { return callHook(toRoute.beforeEnter, to, from, router, next); },
+    function (router, to, from, toRoute, next) { return callHook(router.lifeCycle.afterHooks[0], to, from, router, next, false); },
+    function (router, to, from, toRoute, next) {
         router.$lockStatus = false;
         if (router.options.platform === 'h5') {
             proxyHook_1.proxyH5Mount(router);
         }
-        return callHook(router.lifeCycle.routerAfterHooks[0], to, from, router, false);
+        return callHook(router.lifeCycle.routerAfterHooks[0], to, from, router, next, false);
     }
 ];
-function callBeforeRouteLeave(router, to, from) {
+function callBeforeRouteLeave(router, to, from, resolve) {
     var page = utils_1.getUniCachePage(0);
     var beforeRouteLeave;
     if (Object.keys(page).length > 0) {
@@ -1584,25 +1593,23 @@ function callBeforeRouteLeave(router, to, from) {
                 break;
         }
     }
-    return callHook(beforeRouteLeave, to, from, router);
+    return callHook(beforeRouteLeave, to, from, router, resolve);
 }
 exports.callBeforeRouteLeave = callBeforeRouteLeave;
-function callHook(hook, to, from, router, hookAwait) {
+function callHook(hook, to, from, router, resolve, hookAwait) {
     if (hookAwait === void 0) { hookAwait = true; }
-    return new Promise(function (resolve) {
-        if (hook != null && hook instanceof Function) {
-            if (hookAwait === true) {
-                hook(to, from, resolve, router, false);
-            }
-            else {
-                hook(to, from, function () { }, router, false);
-                resolve();
-            }
+    if (hook != null && hook instanceof Function) {
+        if (hookAwait === true) {
+            hook(to, from, resolve, router, false);
         }
         else {
+            hook(to, from, function () { }, router, false);
             resolve();
         }
-    });
+    }
+    else {
+        resolve();
+    }
 }
 exports.callHook = callHook;
 function onTriggerEachHook(to, from, router, hookType, next) {
@@ -1622,27 +1629,27 @@ function onTriggerEachHook(to, from, router, hookType, next) {
 }
 exports.onTriggerEachHook = onTriggerEachHook;
 function transitionTo(router, to, from, navType, callHookList, hookCB) {
+    var _a = utils_1.forMatNextToFrom(router, to, from), matTo = _a.matTo, matFrom = _a.matFrom;
     if (router.options.platform === 'h5') {
-        loopCallHook(callHookList, 0, hookCB, router, to, from, navType);
+        loopCallHook(callHookList, 0, hookCB, router, matTo, matFrom, navType);
     }
     else {
         loopCallHook(callHookList.slice(0, 4), 0, function () {
             hookCB(function () {
-                loopCallHook(callHookList.slice(4), 0, utils_1.voidFun, router, to, from, navType);
+                loopCallHook(callHookList.slice(4), 0, utils_1.voidFun, router, matTo, matFrom, navType);
             });
-        }, router, to, from, navType);
+        }, router, matTo, matFrom, navType);
     }
 }
 exports.transitionTo = transitionTo;
-function loopCallHook(hooks, index, next, router, to, from, navType) {
-    var toRoute = utils_1.routesForMapRoute(router, to.path, ['finallyPathMap', 'pathMap']);
+function loopCallHook(hooks, index, next, router, matTo, matFrom, navType) {
+    var toRoute = utils_1.routesForMapRoute(router, matTo.path, ['finallyPathMap', 'pathMap']);
     if (hooks.length - 1 < index) {
         return next();
     }
     var hook = hooks[index];
     var errHook = exports.ERRORHOOK[0];
-    var _a = utils_1.forMatNextToFrom(router, to, from), matTo = _a.matTo, matFrom = _a.matFrom;
-    hook(router, matTo, matFrom, toRoute).then(function (nextTo) {
+    hook(router, matTo, matFrom, toRoute, function (nextTo) {
         if (nextTo === false) {
             errHook({ type: 0, msg: '管道函数传递 false 导航被终止!', matTo: matTo, matFrom: matFrom, nextTo: nextTo }, router);
         }
@@ -1656,11 +1663,11 @@ function loopCallHook(hooks, index, next, router, to, from, navType) {
                     newNavType = type;
                 }
             }
-            methods_1.navjump(newNextTo, router, newNavType, { from: from, next: next });
+            methods_1.navjump(newNextTo, router, newNavType, { from: matFrom, next: next });
         }
         else if (nextTo == null) {
             index++;
-            loopCallHook(hooks, index, next, router, to, from, navType);
+            loopCallHook(hooks, index, next, router, matTo, matFrom, navType);
         }
         else {
             errHook({ type: 1, msg: '管道函数传递未知类型，无法被识别。导航被终止！', matTo: matTo, matFrom: matFrom, nextTo: nextTo }, router);
@@ -1800,6 +1807,9 @@ function createRoute(router, level, orignRule) {
         query: {},
         params: {}
     };
+    if (level === 19970806) { // 首次构建响应式 页面不存在 直接返回
+        return route;
+    }
     if (router.options.platform === 'h5') {
         var vueRoute = { path: '' };
         if (orignRule != null) {
@@ -1831,7 +1841,7 @@ function createRoute(router, level, orignRule) {
                 }, router);
                 throw new Error("\u4E0D\u5B58\u5728\u7684\u9875\u9762\u6808\uFF0C\u8BF7\u786E\u4FDD\u6709\u8DB3\u591F\u7684\u9875\u9762\u53EF\u7528\uFF0C\u5F53\u524D level:" + level);
             }
-            appPage = __assign(__assign({}, page.$page), { query: page.options, fullPath: decodeURIComponent(page.$page.fullPath) });
+            appPage = __assign(__assign({}, page.$page), { query: JSON.parse(decodeURIComponent(JSON.stringify(page.options))), fullPath: decodeURIComponent(page.$page.fullPath) });
             if (router.options.platform !== 'app-plus') {
                 appPage.path = "/" + page.route;
             }
@@ -1909,6 +1919,7 @@ exports.proxyPageHook = proxyPageHook;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
