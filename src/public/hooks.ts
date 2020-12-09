@@ -1,6 +1,5 @@
 import {
     Router,
-    hooksReturnRule,
     hookListRule,
     navtoRule,
     reloadNavRule,
@@ -24,25 +23,26 @@ export const ERRORHOOK:Array<(error:navErrorRule, router:Router)=>void> = [
     (error, router) => router.lifeCycle.routerErrorHooks[0](error, router)
 ]
 export const HOOKLIST: hookListRule = [
-    (router, to, from, toRoute) => callHook(router.lifeCycle.routerBeforeHooks[0], to, from, router),
-    (router, to, from, toRoute) => callBeforeRouteLeave(router, to, from),
-    (router, to, from, toRoute) => callHook(router.lifeCycle.beforeHooks[0], to, from, router),
-    (router, to, from, toRoute) => callHook(toRoute.beforeEnter, to, from, router),
-    (router, to, from, toRoute) => callHook(router.lifeCycle.afterHooks[0], to, from, router, false),
-    (router, to, from, toRoute) => {
+    (router, to, from, toRoute, next) => callHook(router.lifeCycle.routerBeforeHooks[0], to, from, router, next),
+    (router, to, from, toRoute, next) => callBeforeRouteLeave(router, to, from, next),
+    (router, to, from, toRoute, next) => callHook(router.lifeCycle.beforeHooks[0], to, from, router, next),
+    (router, to, from, toRoute, next) => callHook(toRoute.beforeEnter, to, from, router, next),
+    (router, to, from, toRoute, next) => callHook(router.lifeCycle.afterHooks[0], to, from, router, next, false),
+    (router, to, from, toRoute, next) => {
         router.$lockStatus = false;
         if (router.options.platform === 'h5') {
             proxyH5Mount(router);
         }
-        return callHook(router.lifeCycle.routerAfterHooks[0], to, from, router, false)
+        return callHook(router.lifeCycle.routerAfterHooks[0], to, from, router, next, false)
     }
 ];
 
 export function callBeforeRouteLeave(
     router:Router,
     to:totalNextRoute,
-    from:totalNextRoute
-):hooksReturnRule {
+    from:totalNextRoute,
+    resolve:Function
+):void {
     const page = getUniCachePage<objectAny>(0);
     let beforeRouteLeave;
     if (Object.keys(page).length > 0) {
@@ -64,7 +64,7 @@ export function callBeforeRouteLeave(
             break
         }
     }
-    return callHook(beforeRouteLeave, to, from, router);
+    return callHook(beforeRouteLeave, to, from, router, resolve);
 }
 
 export function callHook(
@@ -72,20 +72,19 @@ export function callHook(
     to:totalNextRoute,
     from: totalNextRoute,
     router:Router,
+    resolve:Function,
     hookAwait:boolean|undefined = true
-):hooksReturnRule {
-    return new Promise(resolve => {
-        if (hook != null && hook instanceof Function) {
-            if (hookAwait === true) {
-                hook(to, from, resolve, router, false);
-            } else {
-                hook(to, from, () => {}, router, false);
-                resolve();
-            }
+):void {
+    if (hook != null && hook instanceof Function) {
+        if (hookAwait === true) {
+            hook(to, from, resolve, router, false);
         } else {
+            hook(to, from, () => {}, router, false);
             resolve();
         }
-    })
+    } else {
+        resolve();
+    }
 }
 
 export function onTriggerEachHook(
@@ -145,7 +144,7 @@ export function loopCallHook(
     }
     const hook = hooks[index];
     const errHook = ERRORHOOK[0];
-    hook(router, matTo, matFrom, toRoute).then((nextTo:reloadNavRule):void => {
+    hook(router, matTo, matFrom, toRoute, (nextTo:reloadNavRule) => {
         if (nextTo === false) {
             errHook({ type: 0, msg: '管道函数传递 false 导航被终止!', matTo, matFrom, nextTo }, router)
         } else if (typeof nextTo === 'string' || typeof nextTo === 'object') {
