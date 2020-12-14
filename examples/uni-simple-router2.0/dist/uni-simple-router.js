@@ -470,7 +470,6 @@ module.exports = Array.isArray || function (arr) {
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -934,6 +933,7 @@ exports.registerEachHooks = registerEachHooks;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1846,7 +1846,14 @@ function createRoute(router, level, orignRule) {
                 }, router);
                 throw new Error("\u4E0D\u5B58\u5728\u7684\u9875\u9762\u6808\uFF0C\u8BF7\u786E\u4FDD\u6709\u8DB3\u591F\u7684\u9875\u9762\u53EF\u7528\uFF0C\u5F53\u524D level:" + level);
             }
-            appPage = __assign(__assign({}, page.$page), { query: JSON.parse(decodeURIComponent(JSON.stringify(page.options))), fullPath: decodeURIComponent(page.$page.fullPath) });
+            // Fixes: https://github.com/SilurianYang/uni-simple-router/issues/196
+            var pageOptions = page.options;
+            var originQuery = pageOptions.query;
+            if (originQuery != null && Object.keys(pageOptions).length === 1) {
+                pageOptions = JSON.parse(decodeURIComponent(originQuery));
+            }
+            var pageQuery = JSON.parse(decodeURIComponent(JSON.stringify(pageOptions)));
+            appPage = __assign(__assign({}, page.$page), { query: pageQuery, fullPath: decodeURIComponent(page.$page.fullPath) });
             if (router.options.platform !== 'app-plus') {
                 appPage.path = "/" + page.route;
             }
@@ -1924,7 +1931,6 @@ exports.proxyPageHook = proxyPageHook;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
