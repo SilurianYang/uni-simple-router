@@ -15,7 +15,6 @@ function createRouter(params: InstantiateConfig):Router {
         appProxyHook: appProxyHook,
         appletsProxyHook: indexProxyHook,
         appMain: {},
-        keyword,
         $route: null,
         $lockStatus: false,
         routesMap: {},

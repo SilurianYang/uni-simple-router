@@ -184,7 +184,6 @@ export interface Router {
     [key:string]:any;
 	readonly lifeCycle: LifeCycleConfig;
     readonly options: InstantiateConfig;
-    readonly keyword:Array<string>;
     $lockStatus:boolean;
     $route: object | null;
     appProxyHook:{
