@@ -1,6 +1,6 @@
 import {Router} from '../options/base';
 import {InstantiateConfig, LifeCycleConfig} from '../options/config';
-import {appProxyHook, indexProxyHook, lifeCycle} from '../helpers/config';
+import {appProxyHook, indexProxyHook, lifeCycle, keyword} from '../helpers/config';
 import {assertNewOptions, getDataType} from '../helpers/utils';
 import {registerRouterHooks, registerEachHooks} from '../helpers/lifeCycle';
 import {initMixins} from '../helpers/mixins'
@@ -15,6 +15,7 @@ function createRouter(params: InstantiateConfig):Router {
         appProxyHook: appProxyHook,
         appletsProxyHook: indexProxyHook,
         appMain: {},
+        keyword,
         $route: null,
         $lockStatus: false,
         routesMap: {},
@@ -58,6 +59,11 @@ function createRouter(params: InstantiateConfig):Router {
             });
         }
     }
+    Object.defineProperty(router, 'keyword', {
+        get() {
+            return keyword;
+        }
+    })
     router.beforeEach((to, from, next) => next());
     router.afterEach(() => {});
     return router;

@@ -24,11 +24,14 @@ import {
     routesForMapRoute,
     copyData,
     lockDetectWarn,
-    getDataType
+    getDataType,
+    reservedWord
 } from '../helpers/utils'
 import { transitionTo } from './hooks';
 import {createFullPath, createToFrom} from '../public/page'
 import {HOOKLIST} from './hooks'
+
+
 
 export function lockNavjump(
     to:string|totalNextRoute|navRoute,
@@ -54,6 +57,7 @@ export function navjump(
     },
     forceNav?:boolean
 ) :void{
+    to=reservedWord(to);
     const {rule} = queryPageToMap(to, router);
     rule.type = navtypeToggle[navType];
     const toRule = paramsToQuery(router, rule);

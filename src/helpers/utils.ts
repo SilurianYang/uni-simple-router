@@ -1,6 +1,6 @@
 import {appVueHookConfig, H5Config, indexVueHookConfig, InstantiateConfig} from '../options/config';
 import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, objectAny, navErrorRule, hookObjectRule, notCallProxyHookRule, NAVTYPE, navRoute} from '../options/base';
-import {baseConfig, notCallProxyHook, proxyVueSortHookName} from '../helpers/config';
+import {baseConfig, notCallProxyHook, proxyVueSortHookName, keyword} from '../helpers/config';
 import {ERRORHOOK} from '../public/hooks'
 import {warnLock} from '../helpers/warn'
 import { createRoute } from '../public/methods';
@@ -331,4 +331,31 @@ export function restPageHook(
             }
         }
     }
+}
+
+export function reservedWord(
+    params:string|totalNextRoute
+):string|totalNextRoute {
+    if (typeof params === 'string') {
+        return params
+    }
+
+    const query = {
+        ...(copyData(params.params || {}) as object),
+        ...(copyData(params.query || {}) as object)
+    };
+    for (let i = 0; i < keyword.length; i++) {
+        const hasKey = keyword[i];
+        if (Reflect.has(query, hasKey)) {
+            if (getDataType(params.query) === '[object Object]') {
+                delete (params.query as objectAny)[hasKey];
+            }
+            if (getDataType(params.params) === '[object Object]') {
+                delete (params.params as objectAny)[hasKey];
+            }
+            warnLock(`${JSON.stringify(keyword)} 作为插件的保留字，在参数传递中不允许使用。已自动被过滤掉！换个参数名试试吧！ `)
+        }
+    }
+
+    return params
 }
