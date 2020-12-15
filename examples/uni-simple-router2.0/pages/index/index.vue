@@ -65,6 +65,19 @@
 				// 		]
 				// 	}
 				// })
+				
+				this.$Router.push({
+					name:'404',
+					params:{
+						status:true,
+						list:[
+							{
+								id:1
+							},
+						]
+					}
+				})
+				
 				// this.$Router.push({
 				// 	success:()=>{
 				// 		console.log('跳转成功')
@@ -80,12 +93,12 @@
 				// 		id:12
 				// 	}
 				// })
-				uni.navigateTo({
-					url:'/pages/navigate/navigate?id=555&name=hhyang',
-					success:()=>{
-						console.log('跳转成功')
-					},
-				})
+				// uni.navigateTo({
+				// 	url:'/pages/navigate/navigate?id=555&name=hhyang',
+				// 	success:()=>{
+				// 		console.log('跳转成功')
+				// 	},
+				// })
 			}
 		}
 	}
