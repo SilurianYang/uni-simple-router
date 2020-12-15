@@ -2,6 +2,9 @@
 ## Fixes bug
 * (#196)
 
+## Add
+* 新增保留字 `['query']`，解决开发者使用时和插件冲突的问题
+
 ## Known Issues
 * `APP` 端启动页为tab时，拦截到其他页面后底部tabbar 还依然存在 bug
 * `APP` 端 tab 拦截后无法自动还原 选中区域，现需要开发者自行设置
