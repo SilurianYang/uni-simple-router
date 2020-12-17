@@ -24,11 +24,14 @@ import {
     routesForMapRoute,
     copyData,
     lockDetectWarn,
-    getDataType
+    getDataType,
+    reservedWord
 } from '../helpers/utils'
 import { transitionTo } from './hooks';
 import {createFullPath, createToFrom} from '../public/page'
 import {HOOKLIST} from './hooks'
+
+
 
 export function lockNavjump(
     to:string|totalNextRoute|navRoute,
@@ -54,6 +57,7 @@ export function navjump(
     },
     forceNav?:boolean
 ) :void{
+    to=reservedWord(to);
     const {rule} = queryPageToMap(to, router);
     rule.type = navtypeToggle[navType];
     const toRule = paramsToQuery(router, rule);
@@ -185,9 +189,16 @@ export function createRoute(
                 }, router);
                 throw new Error(`不存在的页面栈，请确保有足够的页面可用，当前 level:${level}`)
             }
+            // Fixes: https://github.com/SilurianYang/uni-simple-router/issues/196
+            let pageOptions = (page as objectAny).options;
+            const originQuery = pageOptions.query;
+            if (originQuery != null && Object.keys(pageOptions).length === 1) {
+                pageOptions = JSON.parse(decodeURIComponent(originQuery))
+            }
+            const pageQuery = JSON.parse(decodeURIComponent(JSON.stringify(pageOptions)))
             appPage = {
                 ...(page as objectAny).$page,
-                query: JSON.parse(decodeURIComponent(JSON.stringify((page as objectAny).options))),
+                query: pageQuery,
                 fullPath: decodeURIComponent((page as objectAny).$page.fullPath)
             }
             if (router.options.platform !== 'app-plus') {

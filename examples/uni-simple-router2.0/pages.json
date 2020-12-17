@@ -59,6 +59,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/builtIn/builtIn",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	  "tabBar": {
 	    "list": [{

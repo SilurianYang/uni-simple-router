@@ -470,7 +470,6 @@ module.exports = Array.isArray || function (arr) {
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -562,6 +561,7 @@ exports.buildVueRouter = buildVueRouter;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
+/*! CommonJS bailout: this is used directly at 2:17-21 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -737,10 +737,11 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.notCallProxyHook = exports.proxyVueSortHookName = exports.indexProxyHook = exports.appProxyHook = exports.lifeCycle = exports.baseConfig = exports.mpPlatformReg = void 0;
+exports.notCallProxyHook = exports.proxyVueSortHookName = exports.indexProxyHook = exports.appProxyHook = exports.lifeCycle = exports.baseConfig = exports.keyword = exports.mpPlatformReg = void 0;
 var warn_1 = __webpack_require__(/*! ./warn */ "./src/helpers/warn.ts");
 var utils_1 = __webpack_require__(/*! ./utils */ "./src/helpers/utils.ts");
 exports.mpPlatformReg = /(^mp-weixin$)|(^mp-baidu$)|(^mp-alipay$)|(^mp-toutiao$)|(^mp-qq$)|(^mp-360$)/g;
+exports.keyword = ['query'];
 exports.baseConfig = {
     h5: {
         paramsToQuery: false,
@@ -934,6 +935,7 @@ exports.registerEachHooks = registerEachHooks;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1064,7 +1066,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.restPageHook = exports.replaceHook = exports.lockDetectWarn = exports.deepClone = exports.baseClone = exports.assertDeepObject = exports.paramsToQuery = exports.forMatNextToFrom = exports.urlToJson = exports.getUniCachePage = exports.copyData = exports.getDataType = exports.routesForMapRoute = exports.assertNewOptions = exports.getRoutePath = exports.notDeepClearNull = exports.mergeConfig = exports.voidFun = void 0;
+exports.reservedWord = exports.restPageHook = exports.replaceHook = exports.lockDetectWarn = exports.deepClone = exports.baseClone = exports.assertDeepObject = exports.paramsToQuery = exports.forMatNextToFrom = exports.urlToJson = exports.getUniCachePage = exports.copyData = exports.getDataType = exports.routesForMapRoute = exports.assertNewOptions = exports.getRoutePath = exports.notDeepClearNull = exports.mergeConfig = exports.voidFun = void 0;
 var config_1 = __webpack_require__(/*! ../helpers/config */ "./src/helpers/config.ts");
 var hooks_1 = __webpack_require__(/*! ../public/hooks */ "./src/public/hooks.ts");
 var warn_1 = __webpack_require__(/*! ../helpers/warn */ "./src/helpers/warn.ts");
@@ -1370,6 +1372,26 @@ function restPageHook(router) {
     }
 }
 exports.restPageHook = restPageHook;
+function reservedWord(params) {
+    if (typeof params === 'string') {
+        return params;
+    }
+    var query = __assign(__assign({}, copyData(params.params || {})), copyData(params.query || {}));
+    for (var i = 0; i < config_1.keyword.length; i++) {
+        var hasKey = config_1.keyword[i];
+        if (Reflect.has(query, hasKey)) {
+            if (getDataType(params.query) === '[object Object]') {
+                delete params.query[hasKey];
+            }
+            if (getDataType(params.params) === '[object Object]') {
+                delete params.params[hasKey];
+            }
+            warn_1.warnLock(JSON.stringify(config_1.keyword) + " \u4F5C\u4E3A\u63D2\u4EF6\u7684\u4FDD\u7559\u5B57\uFF0C\u5728\u53C2\u6570\u4F20\u9012\u4E2D\u4E0D\u5141\u8BB8\u4F7F\u7528\u3002\u5DF2\u81EA\u52A8\u88AB\u8FC7\u6EE4\u6389\uFF01\u6362\u4E2A\u53C2\u6570\u540D\u8BD5\u8BD5\u5427\uFF01 ");
+        }
+    }
+    return params;
+}
+exports.reservedWord = reservedWord;
 
 
 /***/ }),
@@ -1718,6 +1740,7 @@ function lockNavjump(to, router, navType, forceNav) {
 }
 exports.lockNavjump = lockNavjump;
 function navjump(to, router, navType, nextCall, forceNav) {
+    to = utils_1.reservedWord(to);
     var rule = query_1.queryPageToMap(to, router).rule;
     rule.type = base_1.navtypeToggle[navType];
     var toRule = utils_1.paramsToQuery(router, rule);
@@ -1841,7 +1864,14 @@ function createRoute(router, level, orignRule) {
                 }, router);
                 throw new Error("\u4E0D\u5B58\u5728\u7684\u9875\u9762\u6808\uFF0C\u8BF7\u786E\u4FDD\u6709\u8DB3\u591F\u7684\u9875\u9762\u53EF\u7528\uFF0C\u5F53\u524D level:" + level);
             }
-            appPage = __assign(__assign({}, page.$page), { query: JSON.parse(decodeURIComponent(JSON.stringify(page.options))), fullPath: decodeURIComponent(page.$page.fullPath) });
+            // Fixes: https://github.com/SilurianYang/uni-simple-router/issues/196
+            var pageOptions = page.options;
+            var originQuery = pageOptions.query;
+            if (originQuery != null && Object.keys(pageOptions).length === 1) {
+                pageOptions = JSON.parse(decodeURIComponent(originQuery));
+            }
+            var pageQuery = JSON.parse(decodeURIComponent(JSON.stringify(pageOptions)));
+            appPage = __assign(__assign({}, page.$page), { query: pageQuery, fullPath: decodeURIComponent(page.$page.fullPath) });
             if (router.options.platform !== 'app-plus') {
                 appPage.path = "/" + page.route;
             }
@@ -1919,7 +1949,6 @@ exports.proxyPageHook = proxyPageHook;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2259,6 +2288,7 @@ function createRouter(params) {
         appProxyHook: config_1.appProxyHook,
         appletsProxyHook: config_1.indexProxyHook,
         appMain: {},
+        keyword: config_1.keyword,
         $route: null,
         $lockStatus: false,
         routesMap: {},
@@ -2303,6 +2333,11 @@ function createRouter(params) {
             });
         }
     };
+    Object.defineProperty(router, 'keyword', {
+        get: function () {
+            return config_1.keyword;
+        }
+    });
     router.beforeEach(function (to, from, next) { return next(); });
     router.afterEach(function () { });
     return router;

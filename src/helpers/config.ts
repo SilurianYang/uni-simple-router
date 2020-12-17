@@ -4,6 +4,7 @@ import { copyData} from './utils';
 import { appVueSortHookRule, indexVueSortHookRule, notCallProxyHookRule } from '../options/base';
 
 export const mpPlatformReg = /(^mp-weixin$)|(^mp-baidu$)|(^mp-alipay$)|(^mp-toutiao$)|(^mp-qq$)|(^mp-360$)/g;
+export const keyword = ['query'];
 
 export const baseConfig:InstantiateConfig = {
     h5: {

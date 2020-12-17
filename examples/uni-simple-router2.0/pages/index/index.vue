@@ -9,6 +9,7 @@
 		</div>
 		<button type="default" @click="gotoPage">点我去page2</button>
 		<button type="primary" @click="gotoPage1">传递中文</button>
+		<button type="warn" @click="gotoPage1('/pages/builtIn/builtIn')">点我去获取内置地址</button>
 		<!-- #ifdef MP-WEIXIN -->
 		<button type="default" @click="forceEach">微信小程序看到我，强制触发</button>
 		<!-- #endif -->
@@ -45,9 +46,9 @@
 			forceEach(){
 				this.$Router.forceGuardEach();
 			},
-			gotoPage1(){
+			gotoPage1(url='/pages/page4/page4'){
 				uni.navigateTo({
-					url:'/pages/page4/page4?msg=的挥洒U盾好撒第三大厦发的撒321312*（￥#%4',
+					url:`${url}?msg=的挥洒U盾好撒第三大厦发的撒321312*（￥#%4`,
 					success:()=>{
 						console.log('跳转成功')
 					},
@@ -65,6 +66,19 @@
 				// 		]
 				// 	}
 				// })
+				
+				this.$Router.push({
+					name:'404',
+					params:{
+						status:true,
+						list:[
+							{
+								id:1
+							},
+						]
+					}
+				})
+				
 				// this.$Router.push({
 				// 	success:()=>{
 				// 		console.log('跳转成功')
@@ -80,12 +94,12 @@
 				// 		id:12
 				// 	}
 				// })
-				uni.navigateTo({
-					url:'/pages/navigate/navigate?id=555&name=hhyang',
-					success:()=>{
-						console.log('跳转成功')
-					},
-				})
+				// uni.navigateTo({
+				// 	url:'/pages/navigate/navigate?id=555&name=hhyang',
+				// 	success:()=>{
+				// 		console.log('跳转成功')
+				// 	},
+				// })
 			}
 		}
 	}
