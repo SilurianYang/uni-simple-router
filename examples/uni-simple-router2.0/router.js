@@ -44,7 +44,8 @@ let count=0;
 router.beforeEach((to, from, next) => {
 	console.log(to)
 	console.log(from)
-	// if(count==0){
+	count++;
+	// if(count==1){
 	// 	next({
 	// 		path:'/pages/login/login',
 	// 		NAVTYPE:'replaceAll'
@@ -52,8 +53,8 @@ router.beforeEach((to, from, next) => {
 	// }else{
 	// 	next();
 	// }
+	
 	next();
-	count++;
 });
 router.afterEach((to, from, next) => {
 	console.log('afterEach---跳转结束')
