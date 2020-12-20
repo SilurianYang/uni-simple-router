@@ -1,4 +1,4 @@
-import { Router, routesMapRule, RoutesRule} from '../options/base';
+import { Router, routesMapRule, RoutesRule, pageTypeRule} from '../options/base';
 import {createRouteMap} from '../helpers/createRouteMap'
 import {buildVueRoutes, buildVueRouter} from '../H5/buildRouter'
 import {proxyEachHook} from '../H5/proxyHook'
@@ -6,9 +6,17 @@ import {mpPlatformReg} from './config'
 import {registerLoddingPage} from '../app/appPatch';
 import { proxyPageHook } from '../public/page';
 import { forceGuardEach } from '../public/methods';
+import { assertParentChild } from './utils';
 
 let registerRouter:boolean = false;
 let onloadProxyOk:boolean = false;
+const appletProxy:{
+    app:boolean;
+    page:string;
+} = {
+    app: false,
+    page: ''
+}
 
 export function getMixins(Vue:any, router: Router):{
     beforeCreate(this: any): void;
@@ -50,15 +58,27 @@ export function getMixins(Vue:any, router: Router):{
         },
         'app-lets': {
             beforeCreate(this: any): void {
-                if (!registerRouter) {
-                    registerRouter = true;
-                    proxyPageHook(this, router, 'appletsProxyHook', 'app')
+                const pageType:pageTypeRule = this.$options.mpType;
+                if (pageType === 'component' && !onloadProxyOk) {
+                    const isProxy = assertParentChild(appletProxy['page'], this);
+                    if (isProxy) {
+                        proxyPageHook(this, router, 'appletsProxyHook', pageType)
+                    }
+                } else if (pageType !== 'component') {
+                    if (!appletProxy[pageType]) { // 没有处理
+                        if (pageType === 'page') {
+                            appletProxy[pageType] = this.$options.mpInstance.route;
+                            router.enterPath = appletProxy[pageType];
+                        } else {
+                            appletProxy[pageType] = true;
+                        }
+                        proxyPageHook(this, router, 'appletsProxyHook', pageType)
+                    }
                 }
             },
             onLoad(this: any):void{
-                if (!onloadProxyOk) {
+                if (!onloadProxyOk && assertParentChild(appletProxy['page'], this)) {
                     onloadProxyOk = true;
-                    proxyPageHook(this, router, 'appletsProxyHook', 'index');
                     forceGuardEach(router);
                 }
             }

@@ -54,16 +54,18 @@ export interface baseAppHookConfig{
     created:Array<hookObjectRule|Function>;
     beforeMount:Array<hookObjectRule|Function>;
     mounted:Array<hookObjectRule|Function>;
-    onShow:Array<hookObjectRule|Function>;
-    onHide:Array<hookObjectRule|Function>;
     beforeDestroy:Array<hookObjectRule|Function>;
     destroyed:Array<hookObjectRule|Function>;
 }
 
 export interface appVueHookConfig extends baseAppHookConfig{
     onLaunch:Array<hookObjectRule|Function>;
+    onShow:Array<hookObjectRule|Function>;
+    onHide:Array<hookObjectRule|Function>;
 }
-export interface indexVueHookConfig extends baseAppHookConfig{
+export interface pageVueHookConfig extends baseAppHookConfig{
+    onShow:Array<hookObjectRule|Function>;
+    onHide:Array<hookObjectRule|Function>;
     onLoad:Array<hookObjectRule|Function>;
     onReady:Array<hookObjectRule|Function>;
     onUnload:Array<hookObjectRule|Function>;
@@ -72,5 +74,6 @@ export interface indexVueHookConfig extends baseAppHookConfig{
 
 export interface appletsVueHookConfig{
     app:appVueHookConfig;
-    index:indexVueHookConfig
+    page:pageVueHookConfig,
+    component:baseAppHookConfig[]
 }

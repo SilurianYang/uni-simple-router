@@ -13,8 +13,8 @@ export function uniOriginJump(
     forceNav?:boolean
 ):void {
     const {complete, ...originRule} = formatOriginURLQuery(router, options, funName);
-    if (routerNavCount === 0) { // 还原app。vue下已经重写后的生命周期
-        restPageHook(router);
+    if (routerNavCount === 0) { // 还原app.vue下已经重写后的生命周期
+        restPageHook(router, originRule.url)
     }
     if (forceNav != null && forceNav === false) {
         routerNavCount++
