@@ -410,13 +410,18 @@ export function assertParentChild(
     vueVim:any,
 ):boolean {
     while (vueVim.$parent != null) {
-        if (vueVim.$parent.__route__ === parentPath) {
+        const mpPage = vueVim.$parent.$mp;
+        if (mpPage.page && mpPage.page.is === parentPath) {
             return true;
         }
         vueVim = vueVim.$parent;
     }
-    if (vueVim.__route__ === parentPath) {
-        return true
+    try {
+        if (vueVim.$mp.page.is === parentPath || vueVim.$mp.page.route === parentPath) {
+            return true
+        }
+    } catch (error) {
+        return false
     }
     return false
 }

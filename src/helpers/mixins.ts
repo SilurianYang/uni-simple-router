@@ -7,6 +7,7 @@ import {registerLoddingPage} from '../app/appPatch';
 import { proxyPageHook } from '../public/page';
 import { forceGuardEach } from '../public/methods';
 import { assertParentChild } from './utils';
+import { getEnterPath } from '../applets/appletPatch';
 
 let registerRouter:boolean = false;
 let onloadProxyOk:boolean = false;
@@ -67,7 +68,7 @@ export function getMixins(Vue:any, router: Router):{
                 } else if (pageType !== 'component') {
                     if (!appletProxy[pageType]) { // 没有处理
                         if (pageType === 'page') {
-                            appletProxy[pageType] = this.$options.mpInstance.route;
+                            appletProxy[pageType] = getEnterPath(this, router);
                             router.enterPath = appletProxy[pageType];
                         } else {
                             appletProxy[pageType] = true;
