@@ -5,7 +5,7 @@
 			<text class="title">{{title}}</text>
 		</view>
 		<div>
-			<com></com>
+			<childComponent></childComponent>
 		</div>
 		<button type="default" @click="gotoPage">点我去page2</button>
 		<button type="primary" @click="gotoPage1">传递中文</button>
@@ -17,10 +17,10 @@
 </template>
 
 <script>
-	import com from '@/common/com/com.vue'
+	import childComponent from '../../common/com/com.vue'
 	export default {
 		components:{
-			com
+			childComponent
 		},
 		data() {	
 			return {

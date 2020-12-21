@@ -29,7 +29,7 @@
 			console.log('index-child-----onload')
 		},
 		onShow() {
-			console.log('index-child-----onShow')
+			console.log('index-child-----onShow');
 		},
 		methods: {
 			

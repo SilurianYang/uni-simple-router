@@ -18,13 +18,6 @@
 			"path": "pages/404/404",
 			"name": "404"
 		}, {
-			"path": "common/com/com",
-			"style": {
-				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
 			"path": "pages/navigate/navigate",
 			"style": {
 				"navigationBarTitleText": "",

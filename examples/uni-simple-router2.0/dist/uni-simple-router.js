@@ -470,7 +470,6 @@ module.exports = Array.isArray || function (arr) {
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -562,6 +561,7 @@ exports.buildVueRouter = buildVueRouter;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
+/*! CommonJS bailout: this is used directly at 2:17-21 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -704,14 +704,44 @@ exports.runtimeQuit = runtimeQuit;
 
 /***/ }),
 
+/***/ "./src/applets/appletPatch.ts":
+/*!************************************!*\
+  !*** ./src/applets/appletPatch.ts ***!
+  \************************************/
+/*! flagged exports */
+/*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
+/*! export getEnterPath [provided] [no usage info] [missing usage info prevents renaming] */
+/*! other exports [not provided] [no usage info] */
+/*! runtime requirements: __webpack_exports__ */
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getEnterPath = void 0;
+function getEnterPath(vueVim, router) {
+    switch (router.options.platform) {
+        case 'mp-alipay':
+        case 'mp-weixin':
+        case 'mp-toutiao':
+        case 'mp-qq':
+            return vueVim.$options.mpInstance.route;
+        case 'mp-baidu':
+            return vueVim.$options.mpInstance.is;
+    }
+    return vueVim.$options.mpInstance.route; // 这是暂时的 因为除了以上的小程序 其他没测试 先这样写
+}
+exports.getEnterPath = getEnterPath;
+
+
+/***/ }),
+
 /***/ "./src/helpers/config.ts":
 /*!*******************************!*\
   !*** ./src/helpers/config.ts ***!
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -965,6 +995,7 @@ var appPatch_1 = __webpack_require__(/*! ../app/appPatch */ "./src/app/appPatch.
 var page_1 = __webpack_require__(/*! ../public/page */ "./src/public/page.ts");
 var methods_1 = __webpack_require__(/*! ../public/methods */ "./src/public/methods.ts");
 var utils_1 = __webpack_require__(/*! ./utils */ "./src/helpers/utils.ts");
+var appletPatch_1 = __webpack_require__(/*! ../applets/appletPatch */ "./src/applets/appletPatch.ts");
 var registerRouter = false;
 var onloadProxyOk = false;
 var appletProxy = {
@@ -1017,7 +1048,7 @@ function getMixins(Vue, router) {
                 else if (pageType !== 'component') {
                     if (!appletProxy[pageType]) { // 没有处理
                         if (pageType === 'page') {
-                            appletProxy[pageType] = this.$options.mpInstance.route;
+                            appletProxy[pageType] = appletPatch_1.getEnterPath(this, router);
                             router.enterPath = appletProxy[pageType];
                         }
                         else {
@@ -1055,9 +1086,6 @@ exports.initMixins = initMixins;
   \******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:14-18 */
-/*! CommonJS bailout: this is used directly at 24:22-26 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1465,13 +1493,19 @@ function reservedWord(params) {
 exports.reservedWord = reservedWord;
 function assertParentChild(parentPath, vueVim) {
     while (vueVim.$parent != null) {
-        if (vueVim.$parent.__route__ === parentPath) {
+        var mpPage = vueVim.$parent.$mp;
+        if (mpPage.page && mpPage.page.is === parentPath) {
             return true;
         }
         vueVim = vueVim.$parent;
     }
-    if (vueVim.__route__ === parentPath) {
-        return true;
+    try {
+        if (vueVim.$mp.page.is === parentPath || vueVim.$mp.page.route === parentPath) {
+            return true;
+        }
+    }
+    catch (error) {
+        return false;
     }
     return false;
 }
@@ -1792,7 +1826,6 @@ exports.loopCallHook = loopCallHook;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2035,7 +2068,6 @@ exports.proxyPageHook = proxyPageHook;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2459,10 +2491,6 @@ exports.RouterMount = RouterMount;
   \*********************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:17-21 */
-/*! CommonJS bailout: this is used directly at 22:19-23 */
-/*! CommonJS bailout: this is used directly at 49:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
