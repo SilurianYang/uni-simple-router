@@ -14,7 +14,8 @@ import {
     routesForMapRoute,
     getRoutePath,
     getDataType,
-    notDeepClearNull
+    notDeepClearNull,
+    resolveAbsolutePath
 } from '../helpers/utils'
 
 import {
@@ -98,11 +99,9 @@ function callRouterMethod(
         const routerMethodName = rewriteMethodToggle[(funName as reNavMethodRule)]
         let path = (option as uniNavApiRule).url;
         if (!path.startsWith('/')) {
-            warn(
-                `uni-app 原生方法被重写时，只能使用绝对路径进行跳转。${JSON.stringify(option)}`,
-                router,
-                true
-            );
+            const absolutePath = resolveAbsolutePath(path, router);
+            path = absolutePath;
+            (option as uniNavApiRule).url = absolutePath;
         }
         if (funName === 'switchTab') {
             const route = routesForMapRoute(router, path, ['pathMap', 'finallyPathList'])
