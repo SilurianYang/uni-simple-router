@@ -561,7 +561,6 @@ exports.buildVueRouter = buildVueRouter;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
-/*! CommonJS bailout: this is used directly at 2:17-21 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -969,7 +968,6 @@ exports.registerEachHooks = registerEachHooks;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1120,7 +1118,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.assertParentChild = exports.reservedWord = exports.restPageHook = exports.callHook = exports.replaceHook = exports.lockDetectWarn = exports.deepClone = exports.baseClone = exports.assertDeepObject = exports.paramsToQuery = exports.forMatNextToFrom = exports.urlToJson = exports.getUniCachePage = exports.copyData = exports.getDataType = exports.routesForMapRoute = exports.assertNewOptions = exports.getRoutePath = exports.notDeepClearNull = exports.mergeConfig = exports.voidFun = void 0;
+exports.resolveAbsolutePath = exports.assertParentChild = exports.reservedWord = exports.restPageHook = exports.callHook = exports.replaceHook = exports.lockDetectWarn = exports.deepClone = exports.baseClone = exports.assertDeepObject = exports.paramsToQuery = exports.forMatNextToFrom = exports.urlToJson = exports.getUniCachePage = exports.copyData = exports.getDataType = exports.routesForMapRoute = exports.assertNewOptions = exports.getRoutePath = exports.notDeepClearNull = exports.mergeConfig = exports.voidFun = void 0;
 var config_1 = __webpack_require__(/*! ../helpers/config */ "./src/helpers/config.ts");
 var hooks_1 = __webpack_require__(/*! ../public/hooks */ "./src/public/hooks.ts");
 var warn_1 = __webpack_require__(/*! ../helpers/warn */ "./src/helpers/warn.ts");
@@ -1510,6 +1508,24 @@ function assertParentChild(parentPath, vueVim) {
     return false;
 }
 exports.assertParentChild = assertParentChild;
+function resolveAbsolutePath(path, router) {
+    var reg = /^\/?([^\?]+)(\?.+)?/;
+    if (!reg.test(path)) {
+        throw new Error(path + " \u8DEF\u5F84\u9519\u8BEF\uFF0C\u8BF7\u63D0\u4F9B\u5B8C\u6574\u7684\u8DEF\u5F84(10001)\u3002");
+    }
+    var paramsArray = path.match(reg);
+    if (paramsArray == null) {
+        throw new Error(path + " \u8DEF\u5F84\u9519\u8BEF\uFF0C\u8BF7\u63D0\u4F9B\u5B8C\u6574\u7684\u8DEF\u5F84(10002)\u3002");
+    }
+    var relative = paramsArray[1].replace(/\//g, "\\/").replace(/\.\./g, "[^\\/]+");
+    var relativeReg = new RegExp("^\\/" + relative + "$");
+    var route = router.options.routes.filter(function (it) { return relativeReg.test(it.path); });
+    if (route.length !== 1) {
+        throw new Error(path + " \u8DEF\u5F84\u9519\u8BEF\uFF0C\u5C1D\u8BD5\u8F6C\u6210\u7EDD\u5BF9\u8DEF\u5F84\u5931\u8D25\uFF0C\u8BF7\u624B\u52A8\u8F6C\u6210\u7EDD\u5BF9\u8DEF\u5F84(10003)\u3002");
+    }
+    return route[0].path + paramsArray[2];
+}
+exports.resolveAbsolutePath = resolveAbsolutePath;
 
 
 /***/ }),
@@ -1673,7 +1689,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2355,7 +2370,9 @@ function callRouterMethod(option, funName, router) {
         var routerMethodName = base_1.rewriteMethodToggle[funName];
         var path = option.url;
         if (!path.startsWith('/')) {
-            warn_1.warn("uni-app \u539F\u751F\u65B9\u6CD5\u88AB\u91CD\u5199\u65F6\uFF0C\u53EA\u80FD\u4F7F\u7528\u7EDD\u5BF9\u8DEF\u5F84\u8FDB\u884C\u8DF3\u8F6C\u3002" + JSON.stringify(option), router, true);
+            var absolutePath = utils_1.resolveAbsolutePath(path, router);
+            path = absolutePath;
+            option.url = absolutePath;
         }
         if (funName === 'switchTab') {
             var route = utils_1.routesForMapRoute(router, path, ['pathMap', 'finallyPathList']);
