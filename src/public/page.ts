@@ -1,5 +1,5 @@
 import { getDataType, getUniCachePage, deepClone, replaceHook} from '../helpers/utils';
-import { objectAny, Router, totalNextRoute } from '../options/base';
+import { objectAny, pageTypeRule, Router, totalNextRoute } from '../options/base';
 import {createRoute} from './methods'
 import { stringifyQuery } from './query';
 
@@ -35,7 +35,7 @@ export function proxyPageHook(
     vueVim:any,
     router:Router,
     proxyHookKey:'appProxyHook'|'appletsProxyHook',
-    pageType:'app'|'index'
+    pageType:pageTypeRule,
 ):void {
     replaceHook(router, vueVim, proxyHookKey, pageType);
 }

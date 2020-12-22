@@ -1,3 +1,4 @@
+import { type } from 'os';
 import {appletsVueHookConfig, appVueHookConfig, InstantiateConfig, LifeCycleConfig} from '../options/config';
 
 export enum hookToggle{
@@ -20,9 +21,11 @@ export enum rewriteMethodToggle{
     'switchTab'='pushTab',
     'navigateBack'='back',
 }
+export type pageTypeRule='app'|'page'|'component';
 export type notCallProxyHookRule='onHide'|'beforeDestroy'|'destroyed'|'onUnload'|'onResize';
 export type appVueSortHookRule='beforeCreate'|'created'|'beforeMount'|'mounted'|'onLaunch'|'onShow'|'onHide'|'beforeDestroy'|'destroyed';
-export type indexVueSortHookRule='beforeCreate'|'created'|'beforeMount'|'mounted'|'onLoad'|'onReady'|'onShow'|'onResize'|'onHide'|'beforeDestroy'|'destroyed'|'onUnload';
+export type pageVueSortHookRule='beforeCreate'|'created'|'beforeMount'|'mounted'|'onLoad'|'onReady'|'onShow'|'onResize'|'onHide'|'beforeDestroy'|'destroyed'|'onUnload';
+export type comVueSortHookRule= 'beforeCreate'|'created'| 'beforeMount'| 'mounted'|'beforeDestroy'| 'destroyed';
 export type reNavMethodRule='navigateTo'|'redirectTo'|'reLaunch'|'switchTab';
 export type reNotNavMethodRule='navigateBack';
 export type reloadNavRule=totalNextRoute | false | undefined|string;
@@ -186,6 +189,7 @@ export interface Router {
     readonly options: InstantiateConfig;
     $lockStatus:boolean;
     $route: object | null;
+    enterPath:string;
     appProxyHook:{
         app:appVueHookConfig
     };

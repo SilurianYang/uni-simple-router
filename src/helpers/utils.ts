@@ -1,5 +1,5 @@
-import {appVueHookConfig, H5Config, indexVueHookConfig, InstantiateConfig} from '../options/config';
-import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, objectAny, navErrorRule, hookObjectRule, notCallProxyHookRule, NAVTYPE, navRoute} from '../options/base';
+import {appVueHookConfig, H5Config, pageVueHookConfig, InstantiateConfig, appletsVueHookConfig, baseAppHookConfig} from '../options/config';
+import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, objectAny, navErrorRule, hookObjectRule, notCallProxyHookRule, NAVTYPE, navRoute, pageTypeRule} from '../options/base';
 import {baseConfig, notCallProxyHook, proxyVueSortHookName, keyword} from '../helpers/config';
 import {ERRORHOOK} from '../public/hooks'
 import {warnLock} from '../helpers/warn'
@@ -290,47 +290,92 @@ export function replaceHook(
     router:Router,
     vueVim:any,
     proxyHookKey:'appProxyHook'|'appletsProxyHook',
-    pageType:'app'|'index'
+    pageType:pageTypeRule,
 ):void{
-    const vueOptions:appVueHookConfig|indexVueHookConfig = vueVim.$options;
+    const vueOptions:appVueHookConfig|pageVueHookConfig = vueVim.$options;
     const proxyHook = router[proxyHookKey][(pageType as 'app')];
+    let proxyHookChild:baseAppHookConfig|objectAny = {};
+    if (getDataType(proxyHook) === '[object Array]') {
+        proxyHookChild = {
+            beforeCreate: [],
+            created: [],
+            beforeMount: [],
+            mounted: [],
+            beforeDestroy: [],
+            destroyed: []
+        }
+    }
     if (proxyHook != null) {
         const proxyName = proxyVueSortHookName[pageType];
         for (let i = 0; i < proxyName.length; i++) {
-            const name = proxyName[i];
-            const originHook = vueOptions[name] as Array<Function>|undefined;
+            const keyName = proxyName[i];
+            const originHook = vueOptions[keyName] as Array<Function>|undefined;
             if (getDataType<Array<Function>|undefined>(originHook) === '[object Array]') {
                 const proxyInfo:hookObjectRule = {
                     options: [],
                     hook: Function
                 };
                 const hook = (originHook as Array<Function>).splice((originHook as Array<Function>).length - 1, 1, (...options:Array<any>) => (proxyInfo.options = options))[0]
-                proxyInfo.hook = function resetHook() {
-                    (originHook as Array<Function>).splice((originHook as Array<Function>).length - 1, 1, hook);
-                    if (!notCallProxyHook.includes(name as notCallProxyHookRule)) {
+                proxyInfo.hook = function resetHook(enterPath:string):Function {
+                    if (router.enterPath !== enterPath && pageType !== 'app') {
+                        return () => {};
+                    }
+                    if (!notCallProxyHook.includes(keyName as notCallProxyHookRule)) {
                         hook.apply(vueVim, proxyInfo.options)
                     }
+                    return () => {
+                        (originHook as Array<Function>).splice((originHook as Array<Function>).length - 1, 1, hook);
+                    };
                 }
-                proxyHook[name] = [proxyInfo]
+                if (Object.keys(proxyHookChild).length > 0) {
+                    proxyHookChild[(keyName as string)] = [proxyInfo];
+                } else {
+                    proxyHook[keyName] = [proxyInfo]
+                }
             }
+        }
+        if (Object.keys(proxyHookChild).length > 0) {
+            // @ts-ignore
+            (proxyHook as appletsVueHookConfig['component']).push(proxyHookChild);
         }
     }
 }
-
+export function callHook(
+    value:objectAny,
+    enterPath:string
+):Array<Function> {
+    const resetHookFun:Array<Function> = [];
+    for (const [, [origin]] of Object.entries(value as objectAny)) {
+        if (origin && origin.hook) {
+            resetHookFun.push(origin.hook(enterPath))
+        }
+    }
+    return resetHookFun;
+}
 export function restPageHook(
-    router:Router
+    router:Router,
+    enterPath:string
 ):void{
+    enterPath = enterPath.replace(/^\/?([^\?]+)/, '$1');
     let proxyHookKey:'appProxyHook'|'appletsProxyHook' = 'appletsProxyHook';
     if (router.options.platform === 'app-plus') {
         proxyHookKey = 'appProxyHook';
     }
+    let resetHookFun:Array<Function> = [];
     for (const [, value] of Object.entries(router[proxyHookKey])) {
-        for (const [, [origin]] of Object.entries(value as objectAny)) {
-            if (origin) {
-                origin.hook && origin.hook();
+        if (getDataType(value) === '[object Array]') {
+            for (let i = 0; i < value.length; i++) {
+                resetHookFun = resetHookFun.concat(callHook(value[i], enterPath));
             }
+        } else {
+            resetHookFun = resetHookFun.concat(callHook(value, enterPath));
         }
     }
+    setTimeout(() => {
+        for (let i = 0; i < resetHookFun.length; i++) {
+            resetHookFun[i]();
+        }
+    }, 500)
 }
 
 export function reservedWord(
@@ -358,4 +403,46 @@ export function reservedWord(
     }
 
     return params
+}
+
+export function assertParentChild(
+    parentPath:string,
+    vueVim:any,
+):boolean {
+    while (vueVim.$parent != null) {
+        const mpPage = vueVim.$parent.$mp;
+        if (mpPage.page && mpPage.page.is === parentPath) {
+            return true;
+        }
+        vueVim = vueVim.$parent;
+    }
+    try {
+        if (vueVim.$mp.page.is === parentPath || vueVim.$mp.page.route === parentPath) {
+            return true
+        }
+    } catch (error) {
+        return false
+    }
+    return false
+}
+
+export function resolveAbsolutePath(
+    path:string,
+    router:Router
+):string|never {
+    const reg = /^\/?([^\?]+)(\?.+)?/;
+    if (!reg.test(path)) {
+        throw new Error(`【${path}】 路径错误，请提供完整的路径(10001)。`);
+    }
+    const paramsArray = path.match(reg);
+    if (paramsArray == null) {
+        throw new Error(`【${path}】 路径错误，请提供完整的路径(10002)。`);
+    }
+    const relative = paramsArray[1].replace(/\//g, `\\/`).replace(/\.\./g, `[^\\/]+`).replace(/\./g, '\\.');
+    const relativeReg = new RegExp(`^\\/${relative}$`);
+    const route = router.options.routes.filter(it => relativeReg.test(it.path));
+    if (route.length !== 1) {
+        throw new Error(`【${path}】 路径错误，尝试转成绝对路径失败，请手动转成绝对路径(10003)。`);
+    }
+    return route[0].path + paramsArray[2];
 }
