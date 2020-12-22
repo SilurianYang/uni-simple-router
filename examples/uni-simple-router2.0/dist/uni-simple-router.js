@@ -470,6 +470,7 @@ module.exports = Array.isArray || function (arr) {
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -741,6 +742,8 @@ exports.getEnterPath = getEnterPath;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
+/*! CommonJS bailout: this is used directly at 13:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -968,6 +971,7 @@ exports.registerEachHooks = registerEachHooks;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1084,6 +1088,9 @@ exports.initMixins = initMixins;
   \******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
+/*! CommonJS bailout: this is used directly at 13:14-18 */
+/*! CommonJS bailout: this is used directly at 24:22-26 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1511,17 +1518,17 @@ exports.assertParentChild = assertParentChild;
 function resolveAbsolutePath(path, router) {
     var reg = /^\/?([^\?]+)(\?.+)?/;
     if (!reg.test(path)) {
-        throw new Error(path + " \u8DEF\u5F84\u9519\u8BEF\uFF0C\u8BF7\u63D0\u4F9B\u5B8C\u6574\u7684\u8DEF\u5F84(10001)\u3002");
+        throw new Error("\u3010" + path + "\u3011 \u8DEF\u5F84\u9519\u8BEF\uFF0C\u8BF7\u63D0\u4F9B\u5B8C\u6574\u7684\u8DEF\u5F84(10001)\u3002");
     }
     var paramsArray = path.match(reg);
     if (paramsArray == null) {
-        throw new Error(path + " \u8DEF\u5F84\u9519\u8BEF\uFF0C\u8BF7\u63D0\u4F9B\u5B8C\u6574\u7684\u8DEF\u5F84(10002)\u3002");
+        throw new Error("\u3010" + path + "\u3011 \u8DEF\u5F84\u9519\u8BEF\uFF0C\u8BF7\u63D0\u4F9B\u5B8C\u6574\u7684\u8DEF\u5F84(10002)\u3002");
     }
-    var relative = paramsArray[1].replace(/\//g, "\\/").replace(/\.\./g, "[^\\/]+");
+    var relative = paramsArray[1].replace(/\//g, "\\/").replace(/\.\./g, "[^\\/]+").replace(/\./g, '\\.');
     var relativeReg = new RegExp("^\\/" + relative + "$");
     var route = router.options.routes.filter(function (it) { return relativeReg.test(it.path); });
     if (route.length !== 1) {
-        throw new Error(path + " \u8DEF\u5F84\u9519\u8BEF\uFF0C\u5C1D\u8BD5\u8F6C\u6210\u7EDD\u5BF9\u8DEF\u5F84\u5931\u8D25\uFF0C\u8BF7\u624B\u52A8\u8F6C\u6210\u7EDD\u5BF9\u8DEF\u5F84(10003)\u3002");
+        throw new Error("\u3010" + path + "\u3011 \u8DEF\u5F84\u9519\u8BEF\uFF0C\u5C1D\u8BD5\u8F6C\u6210\u7EDD\u5BF9\u8DEF\u5F84\u5931\u8D25\uFF0C\u8BF7\u624B\u52A8\u8F6C\u6210\u7EDD\u5BF9\u8DEF\u5F84(10003)\u3002");
     }
     return route[0].path + paramsArray[2];
 }
@@ -1689,6 +1696,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1841,6 +1849,7 @@ exports.loopCallHook = loopCallHook;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2083,6 +2092,7 @@ exports.proxyPageHook = proxyPageHook;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2508,6 +2518,10 @@ exports.RouterMount = RouterMount;
   \*********************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
+/*! CommonJS bailout: this is used directly at 13:17-21 */
+/*! CommonJS bailout: this is used directly at 22:19-23 */
+/*! CommonJS bailout: this is used directly at 49:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
