@@ -50,7 +50,6 @@ export interface LifeCycleConfig{
 
 export interface baseAppHookConfig{
     [key:string]:Array<hookObjectRule|Function>;
-    beforeCreate:Array<hookObjectRule|Function>;
     created:Array<hookObjectRule|Function>;
     beforeMount:Array<hookObjectRule|Function>;
     mounted:Array<hookObjectRule|Function>;

@@ -56,7 +56,6 @@ export const appProxyHook:{
     app:appVueHookConfig
 } = {
     app: {
-        beforeCreate: [],
         created: [],
         beforeMount: [],
         mounted: [],
@@ -90,9 +89,9 @@ export const proxyVueSortHookName:{
     page:Array<pageVueSortHookRule>,
     component:Array<comVueSortHookRule>
 } = {
-    app: ['beforeCreate', 'created', 'beforeMount', 'mounted', 'onLaunch', 'onShow', 'onHide', 'beforeDestroy', 'destroyed'],
-    page: ['beforeCreate', 'created', 'beforeMount', 'mounted', 'onLoad', 'onReady', 'onShow', 'onResize', 'onHide', 'beforeDestroy', 'destroyed', 'onUnload'],
-    component: ['beforeCreate', 'created', 'beforeMount', 'mounted', 'beforeDestroy', 'destroyed']
+    app: ['created', 'beforeMount', 'mounted', 'onLaunch', 'onShow', 'onHide', 'beforeDestroy', 'destroyed'],
+    page: ['created', 'beforeMount', 'mounted', 'onLoad', 'onReady', 'onShow', 'onResize', 'onHide', 'beforeDestroy', 'destroyed', 'onUnload'],
+    component: ['created', 'beforeMount', 'mounted', 'beforeDestroy', 'destroyed']
 }
 export const notCallProxyHook:Array<notCallProxyHookRule> = [
     'onHide', 'beforeDestroy', 'destroyed', 'destroyed', 'onUnload', 'onResize'
