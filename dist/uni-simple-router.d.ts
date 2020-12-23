@@ -22,7 +22,6 @@ export declare type appVueSortHookRule = 'beforeCreate' | 'created' | 'beforeMou
 
 export declare interface baseAppHookConfig {
     [key: string]: Array<hookObjectRule | Function>;
-    beforeCreate: Array<hookObjectRule | Function>;
     created: Array<hookObjectRule | Function>;
     beforeMount: Array<hookObjectRule | Function>;
     mounted: Array<hookObjectRule | Function>;
