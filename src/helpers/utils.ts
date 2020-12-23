@@ -311,6 +311,9 @@ export function replaceHook(
             const keyName = proxyName[i];
             const originHook = vueOptions[keyName] as Array<Function>|undefined;
             if (getDataType<Array<Function>|undefined>(originHook) === '[object Array]') {
+                if (pageType === 'page' && keyName === 'beforeCreate' && (originHook as Array<Function>).length < 3) {
+                    continue
+                }
                 const proxyInfo:hookObjectRule = {
                     options: [],
                     hook: Function
