@@ -438,11 +438,12 @@ export function resolveAbsolutePath(
     if (paramsArray == null) {
         throw new Error(`【${path}】 路径错误，请提供完整的路径(10002)。`);
     }
+    const query:string = paramsArray[2] || '';
     const relative = paramsArray[1].replace(/\//g, `\\/`).replace(/\.\./g, `[^\\/]+`).replace(/\./g, '\\.');
     const relativeReg = new RegExp(`^\\/${relative}$`);
     const route = router.options.routes.filter(it => relativeReg.test(it.path));
     if (route.length !== 1) {
         throw new Error(`【${path}】 路径错误，尝试转成绝对路径失败，请手动转成绝对路径(10003)。`);
     }
-    return route[0].path + paramsArray[2];
+    return route[0].path + query;
 }

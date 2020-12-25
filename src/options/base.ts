@@ -1,4 +1,3 @@
-import { type } from 'os';
 import {appletsVueHookConfig, appVueHookConfig, InstantiateConfig, LifeCycleConfig} from '../options/config';
 
 export enum hookToggle{
@@ -209,4 +208,11 @@ export interface Router {
     forceGuardEach(navType:NAVTYPE|undefined,forceNav:boolean):void;      //强制触发当前守卫
     beforeEach(userGuard:guardHookRule): void; // 添加全局前置路由守卫
     afterEach(userGuard:(to: totalNextRoute, from: totalNextRoute)=>void): void; // 添加全局后置路由守卫
+}
+// @ts-ignore
+declare module 'vue/types/vue' {
+	interface Vue {
+		$Router: Router;
+		$Route: routeRule;
+	}
 }
