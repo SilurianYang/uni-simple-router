@@ -1,8 +1,5 @@
 <script>
 	export default {
-		beforeCreate(){
-			console.log('appvue--beforeCreate----beforeCreate')
-		},
 		created(){
 			console.log('appvue--created----created')
 		},

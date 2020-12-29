@@ -16,9 +16,6 @@
 				
 			}
 		},
-		beforeCreate(){
-			console.log('index--beforeCreate----beforeCreate')
-		},
 		created(){
 			console.log('index--created----created')
 		},

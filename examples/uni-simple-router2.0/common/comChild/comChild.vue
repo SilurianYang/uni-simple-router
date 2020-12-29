@@ -11,9 +11,6 @@
 				
 			}
 		},
-		beforeCreate(){
-			console.log('comChild--beforeCreate----beforeCreate')
-		},
 		created(){
 			console.log('comChild--created----created')
 		},

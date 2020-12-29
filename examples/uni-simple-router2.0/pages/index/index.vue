@@ -27,9 +27,6 @@
 				title: 'Hello'
 			}
 		},
-		beforeCreate(){
-			console.log('index-----beforeCreate')
-		},
 		created(){
 			console.log('index-----created')
 		},
