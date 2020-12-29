@@ -69,7 +69,7 @@ export function getMixins(Vue:any, router: Router):{
                     if (!appletProxy[pageType]) { // 没有处理
                         if (pageType === 'page') {
                             appletProxy[pageType] = getEnterPath(this, router);
-                            router.enterPath = appletProxy[pageType];
+                            router.enterPath = appletProxy[pageType]; // 我不确定在不同端是否都是同样的变现？可能有的为非绝对路径？
                         } else {
                             appletProxy[pageType] = true;
                         }

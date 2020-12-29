@@ -1,6 +1,6 @@
 import { reNavMethodRule, reNotNavMethodRule, Router, startAnimationRule, uniNavApiRule } from '../options/base';
 import { stringifyQuery } from './query';
-import {notDeepClearNull, restPageHook} from '../helpers/utils'
+import {notDeepClearNull, resetPageHook} from '../helpers/utils'
 
 let routerNavCount:number = 0;
 
@@ -14,7 +14,7 @@ export function uniOriginJump(
 ):void {
     const {complete, ...originRule} = formatOriginURLQuery(router, options, funName);
     if (routerNavCount === 0) { // 还原app.vue下已经重写后的生命周期
-        restPageHook(router, originRule.url)
+        resetPageHook(router, originRule.url)
     }
     if (forceNav != null && forceNav === false) {
         routerNavCount++

@@ -317,7 +317,7 @@ export function replaceHook(
                 };
                 const hook = (originHook as Array<Function>).splice((originHook as Array<Function>).length - 1, 1, (...options:Array<any>) => (proxyInfo.options = options))[0]
                 proxyInfo.hook = function resetHook(enterPath:string):Function {
-                    if (router.enterPath !== enterPath && pageType !== 'app') {
+                    if (router.enterPath.replace(/^\//, '') !== enterPath.replace(/^\//, '') && pageType !== 'app') {
                         return () => {};
                     }
                     if (!notCallProxyHook.includes(keyName as notCallProxyHookRule)) {
@@ -352,11 +352,16 @@ export function callHook(
     }
     return resetHookFun;
 }
-export function restPageHook(
+export function resetPageHook(
     router:Router,
     enterPath:string
 ):void{
-    enterPath = enterPath.replace(/^\/?([^\?]+)/, '$1');
+    // Fixe: https://github.com/SilurianYang/uni-simple-router/issues/206
+    const pathInfo = enterPath.trim().match(/^(\/?[^\?\s]+)(\?[\s\S]*$)?$/);
+    if (pathInfo == null) {
+        throw new Error(`还原hook失败。请检查 【${enterPath}】 路径是否正确。`);
+    }
+    enterPath = pathInfo[1];
     let proxyHookKey:'appProxyHook'|'appletsProxyHook' = 'appletsProxyHook';
     if (router.options.platform === 'app-plus') {
         proxyHookKey = 'appProxyHook';
