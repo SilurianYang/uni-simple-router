@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import App from './App'
 import {router,RouterMount} from './router.js'
+import routerLInk from './dist/link.vue'
+Vue.component('RouterLink1', routerLInk)
+
 Vue.use(router)
 
 // import VConsole from 'vconsole'

@@ -61,6 +61,16 @@
             }
             
         }
+        ,{
+            "path" : "pages/routerlink/routerlink",
+			"name":"routerLink",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	  "tabBar": {
 	    "list": [{
