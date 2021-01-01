@@ -1,6 +1,6 @@
 {
   "name": "uni-simple-router",
-  "version": "2.0.0-beta.6",
+  "version": "2.0.0-beta.7",
   "description": "> 一个更为简洁的[Vue-router](https://router.vuejs.org/zh/)，专为 [uni-app](https://uniapp.dcloud.io/) 量身打造",
   "main": "dist/uni-simple-router.js",
   "types": "dist/uni-simple-router.d.ts",
@@ -9,6 +9,7 @@
     "@types/node": "^14.14.2",
     "@types/webpack": "^4.41.23",
     "@types/webpack-env": "^1.15.3",
+    "copy-webpack-plugin": "^5.1.1",
     "lodash.merge": "^4.6.2",
     "path-to-regexp": "^1.8.0",
     "ts-loader": "^8.0.5",
