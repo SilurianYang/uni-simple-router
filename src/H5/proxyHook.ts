@@ -40,22 +40,23 @@ export function proxyEachHook(router:Router, vueRouter:any):void {
         }
     }
 }
-export function proxyH5Mount(router:Router):boolean {
+export function proxyH5Mount(router:Router):void {
     if (router.mount.length === 0) {
         const uAgent = navigator.userAgent;
         const isIos = !!uAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)
-        if (!isIos) {
-            return false;
+        if (isIos) {
+            // 【Fixe】 https://github.com/SilurianYang/uni-simple-router/issues/109
+            setTimeout(() => {
+                const element = document.getElementsByTagName('uni-page');
+                if (element.length > 0) {
+                    return false
+                }
+                window.location.reload();
+            }, 0);
         }
-        const element = document.getElementsByTagName('uni-page');
-        if (element.length > 0) {
-            return false
-        }
-        window.location.reload();
-        return true
+    } else {
+        const [{app}] = router.mount;
+        app.$mount();
+        router.mount = [];
     }
-    const [{app}] = router.mount;
-    app.$mount();
-    router.mount = [];
-    return true;
 }

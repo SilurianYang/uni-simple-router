@@ -8,6 +8,18 @@ const Regexp = require('path-to-regexp');
 
 export function voidFun():void{}
 
+export function def(
+    defObject:objectAny,
+    key:string,
+    getValue:Function
+) {
+    Object.defineProperty(defObject, key, {
+        get() {
+            return getValue();
+        }
+    })
+}
+
 export function mergeConfig<T extends InstantiateConfig>(baseConfig: T, userConfig: T): T {
     const config: {[key: string]: any} = Object.create(null);
     const baseConfigKeys: Array<string> = Object.keys(baseConfig).concat(['resolveQuery', 'parseQuery']);
@@ -435,15 +447,29 @@ export function resolveAbsolutePath(
     path:string,
     router:Router
 ):string|never {
-    const reg = /^\/?([^\?]+)(\?.+)?/;
-    if (!reg.test(path)) {
+    const reg = /^\/?([^\?\s]+)(\?.+)?$/;
+    const trimPath = path.trim();
+    if (!reg.test(trimPath)) {
         throw new Error(`【${path}】 路径错误，请提供完整的路径(10001)。`);
     }
-    const paramsArray = path.match(reg);
+    const paramsArray = trimPath.match(reg);
     if (paramsArray == null) {
         throw new Error(`【${path}】 路径错误，请提供完整的路径(10002)。`);
     }
     const query:string = paramsArray[2] || '';
+    if (/^\.\/[^\.]+/.test(trimPath)) { // 当前路径下
+        const navArray = trimPath.split('/').reverse();
+        const navPath = router.currentRoute.path.split('/').reverse().map((it:string, i:number) => {
+            if (navArray[i] === '.') {
+                return it
+            }
+            if (navArray[i]) {
+                return navArray[i]
+            }
+            return it
+        }).reverse().join('/');
+        return navPath + query;
+    }
     const relative = paramsArray[1].replace(/\//g, `\\/`).replace(/\.\./g, `[^\\/]+`).replace(/\./g, '\\.');
     const relativeReg = new RegExp(`^\\/${relative}$`);
     const route = router.options.routes.filter(it => relativeReg.test(it.path));

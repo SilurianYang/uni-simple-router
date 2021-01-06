@@ -1,7 +1,7 @@
 import {Router} from '../options/base';
 import {InstantiateConfig, LifeCycleConfig} from '../options/config';
 import {appProxyHook, indexProxyHook, lifeCycle, keyword} from '../helpers/config';
-import {assertNewOptions, getDataType} from '../helpers/utils';
+import {assertNewOptions, def, getDataType} from '../helpers/utils';
 import {registerRouterHooks, registerEachHooks} from '../helpers/lifeCycle';
 import {initMixins} from '../helpers/mixins'
 import {navBack, lockNavjump, forceGuardEach, createRoute} from '../public/methods'
@@ -59,11 +59,9 @@ function createRouter(params: InstantiateConfig):Router {
             });
         }
     }
-    Object.defineProperty(router, 'keyword', {
-        get() {
-            return keyword;
-        }
-    })
+    def(router, 'keyword', () => keyword);
+    def(router, 'currentRoute', () => createRoute(router));
+
     router.beforeEach((to, from, next) => next());
     router.afterEach(() => {});
     return router;
