@@ -19,8 +19,6 @@ App.mpType = 'app'
 // 	}
 // })
 
-//console.log(__uniRoutes)
-
 const app = new Vue({
     ...App
 })

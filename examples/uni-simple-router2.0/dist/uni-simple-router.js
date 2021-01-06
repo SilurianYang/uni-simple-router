@@ -17,7 +17,6 @@ return /******/ (() => { // webpackBootstrap
   \**********************************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: module, __webpack_require__ */
-/*! CommonJS bailout: module.exports is used directly at 6:0-14 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var isarray = __webpack_require__(/*! isarray */ "./node_modules/path-to-regexp/node_modules/isarray/index.js")
@@ -456,7 +455,6 @@ function pathToRegexp (path, keys, options) {
   \*******************************************************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: module */
-/*! CommonJS bailout: module.exports is used directly at 1:0-14 */
 /***/ ((module) => {
 
 module.exports = Array.isArray || function (arr) {
@@ -564,7 +562,6 @@ exports.buildVueRouter = buildVueRouter;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
-/*! CommonJS bailout: this is used directly at 2:17-21 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -633,20 +630,21 @@ function proxyH5Mount(router) {
     if (router.mount.length === 0) {
         var uAgent = navigator.userAgent;
         var isIos = !!uAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
-        if (!isIos) {
-            return false;
+        if (isIos) {
+            setTimeout(function () {
+                var element = document.getElementsByTagName('uni-page');
+                if (element.length > 0) {
+                    return false;
+                }
+                window.location.reload();
+            }, 0);
         }
-        var element = document.getElementsByTagName('uni-page');
-        if (element.length > 0) {
-            return false;
-        }
-        window.location.reload();
-        return true;
     }
-    var app = router.mount[0].app;
-    app.$mount();
-    router.mount = [];
-    return true;
+    else {
+        var app = router.mount[0].app;
+        app.$mount();
+        router.mount = [];
+    }
 }
 exports.proxyH5Mount = proxyH5Mount;
 
@@ -659,7 +657,6 @@ exports.proxyH5Mount = proxyH5Mount;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -1128,7 +1125,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.resolveAbsolutePath = exports.assertParentChild = exports.reservedWord = exports.resetPageHook = exports.callHook = exports.replaceHook = exports.lockDetectWarn = exports.deepClone = exports.baseClone = exports.assertDeepObject = exports.paramsToQuery = exports.forMatNextToFrom = exports.urlToJson = exports.getUniCachePage = exports.copyData = exports.getDataType = exports.routesForMapRoute = exports.assertNewOptions = exports.getRoutePath = exports.notDeepClearNull = exports.mergeConfig = exports.voidFun = void 0;
+exports.resolveAbsolutePath = exports.assertParentChild = exports.reservedWord = exports.resetPageHook = exports.callHook = exports.replaceHook = exports.lockDetectWarn = exports.deepClone = exports.baseClone = exports.assertDeepObject = exports.paramsToQuery = exports.forMatNextToFrom = exports.urlToJson = exports.getUniCachePage = exports.copyData = exports.getDataType = exports.routesForMapRoute = exports.assertNewOptions = exports.getRoutePath = exports.notDeepClearNull = exports.mergeConfig = exports.def = exports.voidFun = void 0;
 var config_1 = __webpack_require__(/*! ../helpers/config */ "./src/helpers/config.ts");
 var hooks_1 = __webpack_require__(/*! ../public/hooks */ "./src/public/hooks.ts");
 var warn_1 = __webpack_require__(/*! ../helpers/warn */ "./src/helpers/warn.ts");
@@ -1136,6 +1133,14 @@ var methods_1 = __webpack_require__(/*! ../public/methods */ "./src/public/metho
 var Regexp = __webpack_require__(/*! path-to-regexp */ "./node_modules/path-to-regexp/index.js");
 function voidFun() { }
 exports.voidFun = voidFun;
+function def(defObject, key, getValue) {
+    Object.defineProperty(defObject, key, {
+        get: function () {
+            return getValue();
+        }
+    });
+}
+exports.def = def;
 function mergeConfig(baseConfig, userConfig) {
     var config = Object.create(null);
     var baseConfigKeys = Object.keys(baseConfig).concat(['resolveQuery', 'parseQuery']);
@@ -1524,15 +1529,29 @@ function assertParentChild(parentPath, vueVim) {
 }
 exports.assertParentChild = assertParentChild;
 function resolveAbsolutePath(path, router) {
-    var reg = /^\/?([^\?]+)(\?.+)?/;
-    if (!reg.test(path)) {
+    var reg = /^\/?([^\?\s]+)(\?.+)?$/;
+    var trimPath = path.trim();
+    if (!reg.test(trimPath)) {
         throw new Error("\u3010" + path + "\u3011 \u8DEF\u5F84\u9519\u8BEF\uFF0C\u8BF7\u63D0\u4F9B\u5B8C\u6574\u7684\u8DEF\u5F84(10001)\u3002");
     }
-    var paramsArray = path.match(reg);
+    var paramsArray = trimPath.match(reg);
     if (paramsArray == null) {
         throw new Error("\u3010" + path + "\u3011 \u8DEF\u5F84\u9519\u8BEF\uFF0C\u8BF7\u63D0\u4F9B\u5B8C\u6574\u7684\u8DEF\u5F84(10002)\u3002");
     }
     var query = paramsArray[2] || '';
+    if (/^\.\/[^\.]+/.test(trimPath)) { // 当前路径下
+        var navArray_1 = trimPath.split('/').reverse();
+        var navPath = router.currentRoute.path.split('/').reverse().map(function (it, i) {
+            if (navArray_1[i] === '.') {
+                return it;
+            }
+            if (navArray_1[i]) {
+                return navArray_1[i];
+            }
+            return it;
+        }).reverse().join('/');
+        return navPath + query;
+    }
     var relative = paramsArray[1].replace(/\//g, "\\/").replace(/\.\./g, "[^\\/]+").replace(/\./g, '\\.');
     var relativeReg = new RegExp("^\\/" + relative + "$");
     var route = router.options.routes.filter(function (it) { return relativeReg.test(it.path); });
@@ -1611,10 +1630,6 @@ exports.warnLock = warnLock;
   \**********************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:23-27 */
-/*! CommonJS bailout: this is used directly at 9:20-24 */
-/*! CommonJS bailout: exports is used directly at 14:40-47 */
-/*! CommonJS bailout: exports is used directly at 15:42-49 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2492,11 +2507,8 @@ function createRouter(params) {
             });
         }
     };
-    Object.defineProperty(router, 'keyword', {
-        get: function () {
-            return config_1.keyword;
-        }
-    });
+    utils_1.def(router, 'keyword', function () { return config_1.keyword; });
+    utils_1.def(router, 'currentRoute', function () { return methods_1.createRoute(router); });
     router.beforeEach(function (to, from, next) { return next(); });
     router.afterEach(function () { });
     return router;
