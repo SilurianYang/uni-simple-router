@@ -65,14 +65,9 @@
 				// })
 				
 				this.$Router.push({
-					name:'404',
+					name:'page2',
 					params:{
-						status:true,
-						list:[
-							{
-								id:1
-							},
-						]
+						id:6666
 					}
 				})
 				

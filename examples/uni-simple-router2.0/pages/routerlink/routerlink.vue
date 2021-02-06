@@ -40,9 +40,19 @@
 		
 		<h1>----------分割线--------</h1>
 		
+		
+		<router-link1 to="{name:'relativePath2',params:{tags:'1599,1624',on_sale:true,orderby:'rand'}}" >
+		  <button type="default">bug参数跳转测试</button>
+		</router-link1>
+		
+		
+		<h1>----------分割线--------</h1>
+		
 		<router-link1 to="/pages/404/404"  :stopNavto="true">
 		  <button type="default">阻止组件事件,不会跳转</button>
 		</router-link1>
+		
+		
 	</view>
 </template>
 

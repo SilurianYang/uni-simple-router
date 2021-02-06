@@ -21,22 +21,29 @@ export function uniOriginJump(
         complete && complete.apply(null, {msg: 'forceGuardEach强制触发并且不执行跳转'});
         callOkCb && callOkCb.apply(null, {msg: 'forceGuardEach强制触发并且不执行跳转'})
     } else {
-        originMethod({
-            ...originRule,
-            complete: async function(...args:Array<any>) {
-                if (routerNavCount === 0) {
-                    routerNavCount++
-                    if (router.options.platform === 'app-plus') {
-                        const waitPage = plus.nativeObj.View.getViewById('router-loadding');
-                        waitPage && waitPage.close();
-                        const launchedHook = router.options.APP?.launchedHook;
-                        launchedHook && launchedHook();
+        if (funName === 'navigateBack') {
+            originMethod({
+                ...originRule
+            });
+            callOkCb && callOkCb.apply(null)
+        } else {
+            originMethod({
+                ...originRule,
+                complete: async function(...args:Array<any>) {
+                    if (routerNavCount === 0) {
+                        routerNavCount++
+                        if (router.options.platform === 'app-plus') {
+                            const waitPage = plus.nativeObj.View.getViewById('router-loadding');
+                            waitPage && waitPage.close();
+                            const launchedHook = router.options.APP?.launchedHook;
+                            launchedHook && launchedHook();
+                        }
                     }
+                    complete && complete.apply(null, args);
+                    callOkCb && callOkCb.apply(null, args)
                 }
-                complete && complete.apply(null, args);
-                callOkCb && callOkCb.apply(null, args)
-            }
-        });
+            });
+        }
     }
 }
 export function formatOriginURLQuery(
@@ -44,7 +51,7 @@ export function formatOriginURLQuery(
     options:uniNavApiRule,
     funName:reNavMethodRule|reNotNavMethodRule
 ):uniNavApiRule {
-    const {url, path, query, animationType, animationDuration, events, success, fail, complete} = options;
+    const {url, path, query, animationType, animationDuration, events, success, fail, complete, delta} = options;
     const strQuery = stringifyQuery(query || {});
     const queryURL = strQuery === '' ? (path || url) : (path || url) + strQuery;
     let animation:startAnimationRule = {};
@@ -54,6 +61,7 @@ export function formatOriginURLQuery(
         }
     }
     return notDeepClearNull<uniNavApiRule>({
+        delta,
         url: queryURL,
         animationType: animationType || animation.animationType,
         animationDuration: animationDuration || animation.animationDuration,

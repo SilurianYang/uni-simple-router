@@ -4,7 +4,7 @@ import {appProxyHook, indexProxyHook, lifeCycle, keyword} from '../helpers/confi
 import {assertNewOptions, def, getDataType} from '../helpers/utils';
 import {registerRouterHooks, registerEachHooks} from '../helpers/lifeCycle';
 import {initMixins} from '../helpers/mixins'
-import {navBack, lockNavjump, forceGuardEach, createRoute} from '../public/methods'
+import {lockNavjump, forceGuardEach, createRoute} from '../public/methods'
 import {rewriteMethod} from '../public/rewrite'
 
 function createRouter(params: InstantiateConfig):Router {
@@ -33,7 +33,7 @@ function createRouter(params: InstantiateConfig):Router {
             lockNavjump(to, router, 'pushTab');
         },
         back(level = 1, animation) {
-            navBack(this, level, 'back', animation)
+            lockNavjump(level + '', router, 'back', undefined, animation)
         },
         forceGuardEach(navType, forceNav) {
             forceGuardEach(router, navType, forceNav)
