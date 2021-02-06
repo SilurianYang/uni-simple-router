@@ -29,7 +29,7 @@ export const baseConfig:InstantiateConfig = {
     debugger: false,
     routerBeforeEach: (to, from, next) => { next() },
     routerAfterEach: (to, from) => {},
-    routerErrorEach: (error, router) => { err(error, router, true) },
+    routerErrorEach: (error, router) => { router.$lockStatus = false; err(error, router, true); },
     detectBeforeLock: (router, to, navType) => {},
     routes: [
         {

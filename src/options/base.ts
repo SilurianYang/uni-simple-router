@@ -82,6 +82,7 @@ export interface h5NextRule {
 
 export interface totalNextRoute extends h5NextRule, navtoRule {
     path:string;
+    delta?:number;
     [propName: string]: any;
 }
 export interface navRoute extends h5NextRule, navtoRule {
@@ -118,6 +119,7 @@ export interface uniNavApiRule {
     openType?:'appLaunch',
     query?:objectAny;
     path?:string;
+    delta?:number;
     detail?:{[propName:string]:any};
     animationType?:startAnimationType;
     animationDuration?:number;

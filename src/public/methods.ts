@@ -35,16 +35,16 @@ export function lockNavjump(
     to:string|totalNextRoute|navRoute,
     router:Router,
     navType:NAVTYPE,
-    forceNav?:boolean
+    forceNav?:boolean,
+    animation?:uniBackApiRule|uniBackRule
 ):void{
     lockDetectWarn(router, to, navType, () => {
         if (router.options.platform !== 'h5') {
             router.$lockStatus = true;
         }
-        navjump(to as totalNextRoute, router, navType, undefined, forceNav);
+        navjump(to as totalNextRoute, router, navType, undefined, forceNav, animation);
     });
 }
-
 export function navjump(
     to:string|totalNextRoute,
     router:Router,
@@ -53,8 +53,23 @@ export function navjump(
         from:totalNextRoute;
         next:Function;
     },
-    forceNav?:boolean
+    forceNav?:boolean,
+    animation?:uniBackApiRule|uniBackRule
 ) :void{
+    if (navType === 'back') {
+        let level:number = 1;
+        if (typeof to === 'string') {
+            level = +to;
+        } else {
+            level = to.delta || 1;
+        }
+        if (router.options.platform === 'h5') {
+            (router.$route as any).go(-level);
+            return;
+        } else {
+            to = backOptionsBuild(router, level, animation);
+        }
+    }
     to = reservedWord(to);
     const {rule} = queryPageToMap(to, router);
     rule.type = navtypeToggle[navType];
@@ -90,34 +105,27 @@ export function navjump(
     }
 }
 
-export function navBack(
+export function backOptionsBuild(
     router:Router,
     level:number,
-    navType:NAVTYPE,
     animation?:uniBackApiRule|uniBackRule,
-):void{
-    lockDetectWarn(router, level, navType, () => {
-        if (router.options.platform === 'h5') {
-            (router.$route as any).go(-level);
-        } else {
-            router.$lockStatus = true;
-            const toRule = createRoute(router, level);
-            const navjumpRule:totalNextRoute = {
-                path: toRule.path,
-                query: toRule.query
-            }
-            if (getDataType<any>(animation) === '[object Object]') {
-                const {animationDuration, animationType} = (animation as uniBackApiRule)
-                if (animationDuration != null) {
-                    navjumpRule.animationDuration = animationDuration;
-                }
-                if (animationType != null) {
-                    navjumpRule.animationType = animationType;
-                }
-            }
-            navjump(navjumpRule, router, navType);
+):totalNextRoute {
+    const toRule = createRoute(router, level);
+    const navjumpRule:totalNextRoute = {
+        path: toRule.path,
+        query: toRule.query,
+        delta: level
+    }
+    if (getDataType<any>(animation) === '[object Object]') {
+        const {animationDuration, animationType} = (animation as uniBackApiRule)
+        if (animationDuration != null) {
+            navjumpRule.animationDuration = animationDuration;
         }
-    })
+        if (animationType != null) {
+            navjumpRule.animationType = animationType;
+        }
+    }
+    return navjumpRule;
 }
 
 export function forceGuardEach(
