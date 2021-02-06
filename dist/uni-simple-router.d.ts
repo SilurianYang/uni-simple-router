@@ -266,6 +266,7 @@ export declare type startAnimationType = 'slide-in-right' | 'slide-in-left' | 's
 
 export declare interface totalNextRoute extends h5NextRule, navtoRule {
     path: string;
+    delta?: number;
     [propName: string]: any;
 }
 
@@ -284,6 +285,7 @@ export declare interface uniNavApiRule {
     openType?: 'appLaunch';
     query?: objectAny;
     path?: string;
+    delta?: number;
     detail?: {
         [propName: string]: any;
     };
@@ -296,7 +298,6 @@ export declare interface uniNavApiRule {
     fail?: Function;
     complete?: Function;
 }
-
 // @ts-ignore
 declare module 'vue/types/vue' {
 	interface Vue {
