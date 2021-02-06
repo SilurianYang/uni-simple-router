@@ -3,6 +3,7 @@
 		<button type="default" @click="chooseLocation">选择地理位置</button>
 		<button type="primary" @click="getLocation">打开地图</button>
 		<button type="warn" @click="previewImage">预览图片</button>
+		<button type="default" @click="back">返回上两级路径</button>
 	</view>
 </template>
 
@@ -14,6 +15,11 @@
 			}
 		},
 		methods: {
+			back(){
+				this.$Router.back(2);
+				
+				//uni.navigateBack();
+			},
 			chooseLocation(){
 				uni.chooseLocation({
 				    success: function (res) {

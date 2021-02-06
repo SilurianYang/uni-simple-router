@@ -1,7 +1,17 @@
 {
-	"pages": [{
-			"path": "pages/index/index",
+	"pages": [
+		{
+		    "path" : "pages/login/login",
 			"aliasPath": "/",
+			"name":"login",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},{
+			"path": "pages/index/index",
 			"name": "index"
 		},
 		{
@@ -33,16 +43,6 @@
 			}
 
 		}
-	    ,{
-            "path" : "pages/login/login",
-			"name":"login",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
         ,{
             "path" : "pages/page4/page4",
             "style" :                                                                                    
@@ -82,6 +82,17 @@
         }
         ,{
             "path" : "pages/relativePath/relativePath2",
+			"name":"relativePath2",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/dynamicPage/dynamicPage",
+			"name":"dynamicPage",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",

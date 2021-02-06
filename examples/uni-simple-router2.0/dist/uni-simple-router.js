@@ -562,6 +562,7 @@ exports.buildVueRouter = buildVueRouter;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
+/*! CommonJS bailout: this is used directly at 2:17-21 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -631,6 +632,7 @@ function proxyH5Mount(router) {
         var uAgent = navigator.userAgent;
         var isIos = !!uAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
         if (isIos) {
+            // 【Fixe】 https://github.com/SilurianYang/uni-simple-router/issues/109
             setTimeout(function () {
                 var element = document.getElementsByTagName('uni-page');
                 if (element.length > 0) {
@@ -657,6 +659,7 @@ exports.proxyH5Mount = proxyH5Mount;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -800,7 +803,7 @@ exports.baseConfig = {
     debugger: false,
     routerBeforeEach: function (to, from, next) { next(); },
     routerAfterEach: function (to, from) { },
-    routerErrorEach: function (error, router) { warn_1.err(error, router, true); },
+    routerErrorEach: function (error, router) { router.$lockStatus = false; warn_1.err(error, router, true); },
     detectBeforeLock: function (router, to, navType) { },
     routes: [
         {
@@ -1630,6 +1633,10 @@ exports.warnLock = warnLock;
   \**********************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:23-27 */
+/*! CommonJS bailout: this is used directly at 9:20-24 */
+/*! CommonJS bailout: exports is used directly at 14:40-47 */
+/*! CommonJS bailout: exports is used directly at 15:42-49 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1894,23 +1901,39 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createRoute = exports.forceGuardEach = exports.navBack = exports.navjump = exports.lockNavjump = void 0;
+exports.createRoute = exports.forceGuardEach = exports.backOptionsBuild = exports.navjump = exports.lockNavjump = void 0;
 var base_1 = __webpack_require__(/*! ../options/base */ "./src/options/base.ts");
 var query_1 = __webpack_require__(/*! ./query */ "./src/public/query.ts");
 var utils_1 = __webpack_require__(/*! ../helpers/utils */ "./src/helpers/utils.ts");
 var hooks_1 = __webpack_require__(/*! ./hooks */ "./src/public/hooks.ts");
 var page_1 = __webpack_require__(/*! ../public/page */ "./src/public/page.ts");
 var hooks_2 = __webpack_require__(/*! ./hooks */ "./src/public/hooks.ts");
-function lockNavjump(to, router, navType, forceNav) {
+function lockNavjump(to, router, navType, forceNav, animation) {
     utils_1.lockDetectWarn(router, to, navType, function () {
         if (router.options.platform !== 'h5') {
             router.$lockStatus = true;
         }
-        navjump(to, router, navType, undefined, forceNav);
+        navjump(to, router, navType, undefined, forceNav, animation);
     });
 }
 exports.lockNavjump = lockNavjump;
-function navjump(to, router, navType, nextCall, forceNav) {
+function navjump(to, router, navType, nextCall, forceNav, animation) {
+    if (navType === 'back') {
+        var level = 1;
+        if (typeof to === 'string') {
+            level = +to;
+        }
+        else {
+            level = to.delta || 1;
+        }
+        if (router.options.platform === 'h5') {
+            router.$route.go(-level);
+            return;
+        }
+        else {
+            to = backOptionsBuild(router, level, animation);
+        }
+    }
     to = utils_1.reservedWord(to);
     var rule = query_1.queryPageToMap(to, router).rule;
     rule.type = base_1.navtypeToggle[navType];
@@ -1944,32 +1967,25 @@ function navjump(to, router, navType, nextCall, forceNav) {
     }
 }
 exports.navjump = navjump;
-function navBack(router, level, navType, animation) {
-    utils_1.lockDetectWarn(router, level, navType, function () {
-        if (router.options.platform === 'h5') {
-            router.$route.go(-level);
+function backOptionsBuild(router, level, animation) {
+    var toRule = createRoute(router, level);
+    var navjumpRule = {
+        path: toRule.path,
+        query: toRule.query,
+        delta: level
+    };
+    if (utils_1.getDataType(animation) === '[object Object]') {
+        var _a = animation, animationDuration = _a.animationDuration, animationType = _a.animationType;
+        if (animationDuration != null) {
+            navjumpRule.animationDuration = animationDuration;
         }
-        else {
-            router.$lockStatus = true;
-            var toRule = createRoute(router, level);
-            var navjumpRule = {
-                path: toRule.path,
-                query: toRule.query
-            };
-            if (utils_1.getDataType(animation) === '[object Object]') {
-                var _a = animation, animationDuration = _a.animationDuration, animationType = _a.animationType;
-                if (animationDuration != null) {
-                    navjumpRule.animationDuration = animationDuration;
-                }
-                if (animationType != null) {
-                    navjumpRule.animationType = animationType;
-                }
-            }
-            navjump(navjumpRule, router, navType);
+        if (animationType != null) {
+            navjumpRule.animationType = animationType;
         }
-    });
+    }
+    return navjumpRule;
 }
-exports.navBack = navBack;
+exports.backOptionsBuild = backOptionsBuild;
 function forceGuardEach(router, navType, forceNav) {
     if (navType === void 0) { navType = 'replaceAll'; }
     if (forceNav === void 0) { forceNav = false; }
@@ -2481,7 +2497,7 @@ function createRouter(params) {
         },
         back: function (level, animation) {
             if (level === void 0) { level = 1; }
-            methods_1.navBack(this, level, 'back', animation);
+            methods_1.lockNavjump(level + '', router, 'back', undefined, animation);
         },
         forceGuardEach: function (navType, forceNav) {
             methods_1.forceGuardEach(router, navType, forceNav);
@@ -2625,36 +2641,42 @@ function uniOriginJump(router, originMethod, funName, options, callOkCb, forceNa
         callOkCb && callOkCb.apply(null, { msg: 'forceGuardEach强制触发并且不执行跳转' });
     }
     else {
-        originMethod(__assign(__assign({}, originRule), { complete: function () {
-                var _a;
-                var args = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    args[_i] = arguments[_i];
-                }
-                return __awaiter(this, void 0, void 0, function () {
-                    var waitPage, launchedHook;
-                    return __generator(this, function (_b) {
-                        if (routerNavCount === 0) {
-                            routerNavCount++;
-                            if (router.options.platform === 'app-plus') {
-                                waitPage = plus.nativeObj.View.getViewById('router-loadding');
-                                waitPage && waitPage.close();
-                                launchedHook = (_a = router.options.APP) === null || _a === void 0 ? void 0 : _a.launchedHook;
-                                launchedHook && launchedHook();
+        if (funName === 'navigateBack') {
+            originMethod(__assign({}, originRule));
+            callOkCb && callOkCb.apply(null);
+        }
+        else {
+            originMethod(__assign(__assign({}, originRule), { complete: function () {
+                    var _a;
+                    var args = [];
+                    for (var _i = 0; _i < arguments.length; _i++) {
+                        args[_i] = arguments[_i];
+                    }
+                    return __awaiter(this, void 0, void 0, function () {
+                        var waitPage, launchedHook;
+                        return __generator(this, function (_b) {
+                            if (routerNavCount === 0) {
+                                routerNavCount++;
+                                if (router.options.platform === 'app-plus') {
+                                    waitPage = plus.nativeObj.View.getViewById('router-loadding');
+                                    waitPage && waitPage.close();
+                                    launchedHook = (_a = router.options.APP) === null || _a === void 0 ? void 0 : _a.launchedHook;
+                                    launchedHook && launchedHook();
+                                }
                             }
-                        }
-                        complete && complete.apply(null, args);
-                        callOkCb && callOkCb.apply(null, args);
-                        return [2 /*return*/];
+                            complete && complete.apply(null, args);
+                            callOkCb && callOkCb.apply(null, args);
+                            return [2 /*return*/];
+                        });
                     });
-                });
-            } }));
+                } }));
+        }
     }
 }
 exports.uniOriginJump = uniOriginJump;
 function formatOriginURLQuery(router, options, funName) {
     var _a;
-    var url = options.url, path = options.path, query = options.query, animationType = options.animationType, animationDuration = options.animationDuration, events = options.events, success = options.success, fail = options.fail, complete = options.complete;
+    var url = options.url, path = options.path, query = options.query, animationType = options.animationType, animationDuration = options.animationDuration, events = options.events, success = options.success, fail = options.fail, complete = options.complete, delta = options.delta;
     var strQuery = query_1.stringifyQuery(query || {});
     var queryURL = strQuery === '' ? (path || url) : (path || url) + strQuery;
     var animation = {};
@@ -2664,6 +2686,7 @@ function formatOriginURLQuery(router, options, funName) {
         }
     }
     return utils_1.notDeepClearNull({
+        delta: delta,
         url: queryURL,
         animationType: animationType || animation.animationType,
         animationDuration: animationDuration || animation.animationDuration,

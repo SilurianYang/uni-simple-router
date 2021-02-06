@@ -5,8 +5,10 @@
 		<router-link1 to="{name:'routerLink'}"><button type="primary">去内置link组件页面</button></router-link1>
 		<router-link1 to="{path:'/pages/relativePath/relativePath'}">
 				<button type="warn">link组件去相对路径跳转页</button>
-			</router-link1>
-		
+		</router-link1>
+		<router-link1 to="{name:'dynamicPage'}">
+			<button type="primary">去动态路由跳转页面</button>
+		</router-link1>
 	</view>
 </template>
 

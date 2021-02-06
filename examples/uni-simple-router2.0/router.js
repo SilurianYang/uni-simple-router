@@ -21,10 +21,10 @@ const router = createRouter({
 	   console.log('--------routerAfterEach----')
 	},
 	routerErrorEach:({type,msg})=>{
-		console.log({type,msg})
+		console.log({type,msg});
+		router.$lockStatus=false;
 		// #ifdef APP-PLUS
 			if(type===3){
-				router.$lockStatus=false;
 				runtimeQuit();
 			}
 		// #endif
@@ -53,7 +53,6 @@ router.beforeEach((to, from, next) => {
 	// }else{
 	// 	next();
 	// }
-	
 	next();
 });
 router.afterEach((to, from, next) => {
