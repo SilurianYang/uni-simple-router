@@ -44,7 +44,7 @@ let count=0;
 router.beforeEach((to, from, next) => {
 	console.log(to)
 	console.log(from)
-	count++;
+	count++
 	// if(count==1){
 	// 	next({
 	// 		path:'/pages/login/login',

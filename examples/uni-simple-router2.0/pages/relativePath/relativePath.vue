@@ -16,6 +16,10 @@
 			type="primary" 
 			@click="gotoPage('./relativePath2?id=5')"
 		>./relativePath2?id=5</button>
+		<button
+			type="primary" 
+			@click="gotoPage('../relativePathP?id=3')"
+		>../relativePathP?id=3</button>
 	</view>
 </template>
 

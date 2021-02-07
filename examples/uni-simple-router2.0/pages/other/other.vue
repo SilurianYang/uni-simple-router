@@ -9,6 +9,9 @@
 		<router-link1 to="{name:'dynamicPage'}">
 			<button type="primary">去动态路由跳转页面</button>
 		</router-link1>
+		<router-link1 to="{name:'guard'}">
+			<button type="primary">去路由守卫页面</button>
+		</router-link1>
 	</view>
 </template>
 

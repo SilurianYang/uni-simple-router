@@ -562,7 +562,6 @@ exports.buildVueRouter = buildVueRouter;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
-/*! CommonJS bailout: this is used directly at 2:17-21 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -659,7 +658,6 @@ exports.proxyH5Mount = proxyH5Mount;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -1543,17 +1541,8 @@ function resolveAbsolutePath(path, router) {
     }
     var query = paramsArray[2] || '';
     if (/^\.\/[^\.]+/.test(trimPath)) { // 当前路径下
-        var navArray_1 = trimPath.split('/').reverse();
-        var navPath = router.currentRoute.path.split('/').reverse().map(function (it, i) {
-            if (navArray_1[i] === '.') {
-                return it;
-            }
-            if (navArray_1[i]) {
-                return navArray_1[i];
-            }
-            return it;
-        }).reverse().join('/');
-        return navPath + query;
+        var navPath = router.currentRoute.path + path;
+        return navPath.replace(/[^\/]+\.\//, '');
     }
     var relative = paramsArray[1].replace(/\//g, "\\/").replace(/\.\./g, "[^\\/]+").replace(/\./g, '\\.');
     var relativeReg = new RegExp("^\\/" + relative + "$");
@@ -1633,10 +1622,6 @@ exports.warnLock = warnLock;
   \**********************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:23-27 */
-/*! CommonJS bailout: this is used directly at 9:20-24 */
-/*! CommonJS bailout: exports is used directly at 14:40-47 */
-/*! CommonJS bailout: exports is used directly at 15:42-49 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1850,6 +1835,9 @@ function loopCallHook(hooks, index, next, router, matTo, matFrom, navType) {
     var errHook = exports.ERRORHOOK[0];
     hook(router, matTo, matFrom, toRoute, function (nextTo) {
         if (nextTo === false) {
+            if (router.options.platform === 'h5') {
+                next(false);
+            }
             errHook({ type: 0, msg: '管道函数传递 false 导航被终止!', matTo: matTo, matFrom: matFrom, nextTo: nextTo }, router);
         }
         else if (typeof nextTo === 'string' || typeof nextTo === 'object') {
