@@ -146,6 +146,9 @@ export function loopCallHook(
     const errHook = ERRORHOOK[0];
     hook(router, matTo, matFrom, toRoute, (nextTo:reloadNavRule) => {
         if (nextTo === false) {
+            if (router.options.platform === 'h5') {
+                next(false);
+            }
             errHook({ type: 0, msg: '管道函数传递 false 导航被终止!', matTo, matFrom, nextTo }, router)
         } else if (typeof nextTo === 'string' || typeof nextTo === 'object') {
             let newNavType = navType;

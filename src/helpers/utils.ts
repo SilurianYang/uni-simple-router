@@ -458,17 +458,8 @@ export function resolveAbsolutePath(
     }
     const query:string = paramsArray[2] || '';
     if (/^\.\/[^\.]+/.test(trimPath)) { // 当前路径下
-        const navArray = trimPath.split('/').reverse();
-        const navPath = router.currentRoute.path.split('/').reverse().map((it:string, i:number) => {
-            if (navArray[i] === '.') {
-                return it
-            }
-            if (navArray[i]) {
-                return navArray[i]
-            }
-            return it
-        }).reverse().join('/');
-        return navPath + query;
+        const navPath:string = router.currentRoute.path + path;
+        return navPath.replace(/[^\/]+\.\//, '');
     }
     const relative = paramsArray[1].replace(/\//g, `\\/`).replace(/\.\./g, `[^\\/]+`).replace(/\./g, '\\.');
     const relativeReg = new RegExp(`^\\/${relative}$`);
