@@ -298,6 +298,7 @@ export declare interface uniNavApiRule {
     fail?: Function;
     complete?: Function;
 }
+
 // @ts-ignore
 declare module 'vue/types/vue' {
 	interface Vue {
@@ -305,4 +306,5 @@ declare module 'vue/types/vue' {
 		$Route: routeRule;
 	}
 }
+
 export { }
