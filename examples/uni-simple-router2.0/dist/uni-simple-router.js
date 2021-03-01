@@ -470,7 +470,6 @@ module.exports = Array.isArray || function (arr) {
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -744,8 +743,6 @@ exports.getEnterPath = getEnterPath;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -794,7 +791,7 @@ exports.baseConfig = {
         loddingPageStyle: function () { return JSON.parse('{"backgroundColor":"#FFF"}'); },
         loddingPageHook: function (view) { view.show(); },
         launchedHook: function () { plus.navigator.closeSplashscreen(); },
-        animation: { animationType: 'pop-in', animationDuration: 300 }
+        animation: {}
     },
     platform: 'h5',
     keepUniOriginNav: false,
@@ -972,7 +969,6 @@ exports.registerEachHooks = registerEachHooks;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1089,9 +1085,6 @@ exports.initMixins = initMixins;
   \******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:14-18 */
-/*! CommonJS bailout: this is used directly at 24:22-26 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1716,7 +1709,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1872,7 +1864,6 @@ exports.loopCallHook = loopCallHook;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2124,7 +2115,6 @@ exports.proxyPageHook = proxyPageHook;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2664,20 +2654,21 @@ function uniOriginJump(router, originMethod, funName, options, callOkCb, forceNa
 exports.uniOriginJump = uniOriginJump;
 function formatOriginURLQuery(router, options, funName) {
     var _a;
-    var url = options.url, path = options.path, query = options.query, animationType = options.animationType, animationDuration = options.animationDuration, events = options.events, success = options.success, fail = options.fail, complete = options.complete, delta = options.delta;
+    var url = options.url, path = options.path, query = options.query, animationType = options.animationType, animationDuration = options.animationDuration, events = options.events, success = options.success, fail = options.fail, complete = options.complete, delta = options.delta, animation = options.animation;
     var strQuery = query_1.stringifyQuery(query || {});
     var queryURL = strQuery === '' ? (path || url) : (path || url) + strQuery;
-    var animation = {};
+    var animationRule = {};
     if (router.options.platform === 'app-plus') {
         if (funName !== 'navigateBack') {
-            animation = ((_a = router.options.APP) === null || _a === void 0 ? void 0 : _a.animation) || {};
+            animationRule = ((_a = router.options.APP) === null || _a === void 0 ? void 0 : _a.animation) || {};
+            animationRule = __assign(__assign({}, animationRule), animation || {});
         }
     }
     return utils_1.notDeepClearNull({
         delta: delta,
         url: queryURL,
-        animationType: animationType || animation.animationType,
-        animationDuration: animationDuration || animation.animationDuration,
+        animationType: animationType || animationRule.animationType,
+        animationDuration: animationDuration || animationRule.animationDuration,
         events: events,
         success: success,
         fail: fail,

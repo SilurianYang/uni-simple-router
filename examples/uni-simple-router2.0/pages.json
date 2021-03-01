@@ -33,7 +33,6 @@
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
 			}
-
 		}, {
 			"path": "pages/other/other",
 			"name":"tabother",
@@ -117,6 +116,24 @@
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
+            
+        }
+        ,{
+            "path" : "pages/animation/animation",
+			"name":"animation",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false,
+				"app-plus":{
+					"animationType":"slide-in-bottom",
+					"animationDuration":600
+				}
+            },
+			"animation":{
+				"animationType":"zoom-fade-out",
+				"animationDuration":500
+			}
             
         }
     ],

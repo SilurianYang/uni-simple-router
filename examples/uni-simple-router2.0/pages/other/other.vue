@@ -12,6 +12,9 @@
 		<router-link1 to="{name:'guard'}">
 			<button type="primary">去路由守卫页面</button>
 		</router-link1>
+		<router-link1 to="{name:'animation'}">
+			<button type="warn">去跳转动画页面</button>
+		</router-link1>
 	</view>
 </template>
 
