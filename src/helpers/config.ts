@@ -22,7 +22,7 @@ export const baseConfig:InstantiateConfig = {
         loddingPageStyle: () => JSON.parse('{"backgroundColor":"#FFF"}'),
         loddingPageHook: (view:any) => { view.show(); },
         launchedHook: () => { plus.navigator.closeSplashscreen(); },
-        animation: { animationType: 'pop-in', animationDuration: 300 }
+        animation: {}
     },
     platform: 'h5',
     keepUniOriginNav: false,
