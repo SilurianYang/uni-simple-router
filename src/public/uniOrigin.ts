@@ -51,20 +51,21 @@ export function formatOriginURLQuery(
     options:uniNavApiRule,
     funName:reNavMethodRule|reNotNavMethodRule
 ):uniNavApiRule {
-    const {url, path, query, animationType, animationDuration, events, success, fail, complete, delta} = options;
+    const {url, path, query, animationType, animationDuration, events, success, fail, complete, delta, animation} = options;
     const strQuery = stringifyQuery(query || {});
     const queryURL = strQuery === '' ? (path || url) : (path || url) + strQuery;
-    let animation:startAnimationRule = {};
+    let animationRule:startAnimationRule = {};
     if (router.options.platform === 'app-plus') {
         if (funName !== 'navigateBack') {
-            animation = router.options.APP?.animation || {};
+            animationRule = router.options.APP?.animation || {};
+            animationRule = {...animationRule, ...animation || {}};
         }
     }
     return notDeepClearNull<uniNavApiRule>({
         delta,
         url: queryURL,
-        animationType: animationType || animation.animationType,
-        animationDuration: animationDuration || animation.animationDuration,
+        animationType: animationType || animationRule.animationType,
+        animationDuration: animationDuration || animationRule.animationDuration,
         events,
         success,
         fail,

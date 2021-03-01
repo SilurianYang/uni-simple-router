@@ -127,6 +127,10 @@ export interface uniNavApiRule {
     success?:Function;
     fail?:Function;
     complete?:Function;
+    animation?:{
+        animationType?:startAnimationType;
+        animationDuration?:number;
+    }
 }
 // uni-app 原始返回api 回调参数
 export interface uniBackRule{
