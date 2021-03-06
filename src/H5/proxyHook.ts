@@ -20,9 +20,15 @@ export class MyArray extends Array {
                 });
             } else {
                 this.myEachHook(to, from, (nextTo?:navtoRule|false) => {
-                    this.vueEachArray[index](to, from, (uniNextTo?:navtoRule|false) => {
-                        next(nextTo);
-                    })
+                    // Fixe https://github.com/SilurianYang/uni-simple-router/issues/241 2021年3月6日22:15:27
+                    // 目前不调用uni-app的守卫函数，因为会丢失页面栈信息
+                    if (nextTo === false) {
+                        next(false);
+                    } else {
+                        this.vueEachArray[index](to, from, (uniNextTo?:navtoRule|false) => {
+                            next(nextTo);
+                        })
+                    }
                 }, this.router, true);
             }
         };
