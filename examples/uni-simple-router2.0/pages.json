@@ -136,6 +136,16 @@
 			}
             
         }
+        ,{
+            "path" : "pages/beforeRouteLeave/beforeRouteLeave",
+			"name":"beforeRouteLeave",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	  "tabBar": {
 	    "list": [{

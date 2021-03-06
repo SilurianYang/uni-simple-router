@@ -561,6 +561,7 @@ exports.buildVueRouter = buildVueRouter;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
+/*! CommonJS bailout: this is used directly at 2:17-21 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -603,9 +604,16 @@ var MyArray = /** @class */ (function (_super) {
             }
             else {
                 _this.myEachHook(to, from, function (nextTo) {
-                    _this.vueEachArray[index](to, from, function (uniNextTo) {
-                        next(nextTo);
-                    });
+                    // Fixe https://github.com/SilurianYang/uni-simple-router/issues/241 2021年3月6日22:15:27
+                    // 目前不调用uni-app的守卫函数，因为会丢失页面栈信息
+                    if (nextTo === false) {
+                        next(false);
+                    }
+                    else {
+                        _this.vueEachArray[index](to, from, function (uniNextTo) {
+                            next(nextTo);
+                        });
+                    }
                 }, _this.router, true);
             }
         };
@@ -969,6 +977,7 @@ exports.registerEachHooks = registerEachHooks;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1709,6 +1718,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2537,10 +2547,6 @@ exports.RouterMount = RouterMount;
   \*********************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:17-21 */
-/*! CommonJS bailout: this is used directly at 22:19-23 */
-/*! CommonJS bailout: this is used directly at 49:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";

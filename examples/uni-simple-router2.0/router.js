@@ -29,6 +29,7 @@ const router = createRouter({
 			}
 		// #endif
 	},
+	debugger:true,
 	routes: [
 		...ROUTES,
 		{
