@@ -297,7 +297,13 @@ export declare interface uniNavApiRule {
     success?: Function;
     fail?: Function;
     complete?: Function;
+    animation?: {
+        animationType?: startAnimationType;
+        animationDuration?: number;
+    };
 }
+
+export { }
 
 // @ts-ignore
 declare module 'vue/types/vue' {
@@ -306,5 +312,3 @@ declare module 'vue/types/vue' {
 		$Route: routeRule;
 	}
 }
-
-export { }
