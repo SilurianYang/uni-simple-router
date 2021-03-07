@@ -18,6 +18,9 @@
 		<router-link1 to="{name:'beforeRouteLeave'}">
 			<button type="primary">去beforeRouteLeave页面</button>
 		</router-link1>
+		<router-link1 to="{name:'events'}">
+			<button type="primary">去events页面</button>
+		</router-link1>
 	</view>
 </template>
 

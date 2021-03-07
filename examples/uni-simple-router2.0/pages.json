@@ -146,6 +146,26 @@
             }
             
         }
+        ,{
+            "path" : "pages/events/events",
+			"name":"events",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/eventsEmit/eventsEmit",
+			"name":"eventsEmit",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	  "tabBar": {
 	    "list": [{

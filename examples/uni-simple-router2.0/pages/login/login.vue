@@ -23,7 +23,13 @@
 		methods: {
 			gotoPage(){
 				this.$Router.pushTab({
-					path:'/pages/index/index'
+					path:'/pages/index/index',
+					success:(res)=>{
+						console.log(res)
+					},
+					fail:err=>{
+						console.log(err)
+					}
 				})
 			}
 		}
