@@ -13,7 +13,7 @@ export function uniOriginJump(
     forceNav?:boolean
 ):void {
     const {complete, ...originRule} = formatOriginURLQuery(router, options, funName);
-    if (routerNavCount === 0) { // 还原app.vue下已经重写后的生命周期
+    if (routerNavCount === 0 && router.options.platform !== 'h5') { // 还原app.vue下已经重写后的生命周期
         resetPageHook(router, originRule.url)
     }
     if (forceNav != null && forceNav === false) {
@@ -29,7 +29,7 @@ export function uniOriginJump(
         } else {
             originMethod({
                 ...originRule,
-                complete: async function(...args:Array<any>) {
+                complete: function(...args:Array<any>) {
                     if (routerNavCount === 0) {
                         routerNavCount++
                         if (router.options.platform === 'app-plus') {

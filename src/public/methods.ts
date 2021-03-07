@@ -55,7 +55,7 @@ export function navjump(
     },
     forceNav?:boolean,
     animation?:uniBackApiRule|uniBackRule
-) :void{
+) :void|never {
     if (navType === 'back') {
         let level:number = 1;
         if (typeof to === 'string') {
@@ -85,7 +85,16 @@ export function navjump(
                 ...parseToRule
             })
         } else {
-            (router.$route as any)[navType](parseToRule, (parseToRule as totalNextRoute).success || voidFun, (parseToRule as totalNextRoute).fail || voidFun)
+            // Fixe  https://github.com/SilurianYang/uni-simple-router/issues/240   2021年3月7日14:45:36
+            if (navType === 'push' && Reflect.has(parseToRule, 'events')) {
+                if (Reflect.has(parseToRule, 'name')) {
+                    throw new Error(`在h5端上使用 'push'、'navigateTo' 跳转时，如果包含 events 不允许使用 name 跳转，因为 name 实现了动态路由。请更换为 path 或者 url 跳转！`);
+                } else {
+                    uni['navigateTo'](parseToRule, true, voidFun, forceNav);
+                }
+            } else {
+                (router.$route as any)[navType](parseToRule, (parseToRule as totalNextRoute).success || voidFun, (parseToRule as totalNextRoute).fail || voidFun)
+            }
         }
     } else {
         let from:totalNextRoute = {path: ''};
