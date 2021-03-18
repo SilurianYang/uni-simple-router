@@ -48,6 +48,9 @@ export function proxyEachHook(router:Router, vueRouter:any):void {
 }
 export function proxyH5Mount(router:Router):void {
     if (router.mount.length === 0) {
+        if (router.options.h5?.vueRouterDev) {
+            return
+        }
         const uAgent = navigator.userAgent;
         const isIos = !!uAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)
         if (isIos) {
