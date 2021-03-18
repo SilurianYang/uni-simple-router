@@ -1,0 +1,2 @@
+## Fixes bug
+* H5端 `vueRouterDev：true` 完全模式下，每次跳转都会 reload
