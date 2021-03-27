@@ -305,6 +305,7 @@ export declare interface uniNavApiRule {
 
 export { }
 
+
 // @ts-ignore
 declare module 'vue/types/vue' {
 	interface Vue {
