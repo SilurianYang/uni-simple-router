@@ -1,0 +1,86 @@
+{
+  "pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+    {
+      "path": "pages/tabBar/index/index",
+      "name": "index",
+      "aliasPath": "/index",
+      "style": {
+        "navigationStyle": "custom",
+        "app-plus": {
+          "bounce": "none"
+        }
+      }
+    },
+    {
+      "path": "pages/tabBar/post/post",
+      "name": "post",
+      "redirect": "/post",
+      "style": {
+        "navigationStyle": "custom",
+        "app-plus": {
+          "bounce": "none"
+        }
+      }
+    },
+    {
+      "path": "pages/tabBar/mine/mine",
+      "name": "mine",
+      "aliasPath": "/mine",
+      "style": {
+        "app-plus": {
+          "bounce": "none"
+        }
+      }
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "pages/subPackage/post",
+      "pages": [
+        {
+          "path": "post/post",
+          "aliasPath": "/post",
+          "style": {
+            "navigationBarTitleText": "添加"
+          }
+        }
+      ]
+    }
+  ],
+  "lazyCodeLoading": "requiredComponents",
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "router-test",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#ffffff"
+  },
+  "tabBar": {
+    "color": "#777",
+    "selectedColor": "red",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/tabBar/index/index",
+        "iconPath": "static/images/tabBar/home.png",
+        "selectedIconPath": "static/images/tabBar/home-sel.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/tabBar/post/post",
+        "iconPath": "static/images/tabBar/post.png",
+        "selectedIconPath": "static/images/tabBar/post.png",
+        "text": "添加"
+      },
+      {
+        "pagePath": "pages/tabBar/mine/mine",
+        "iconPath": "static/images/tabBar/mine.png",
+        "selectedIconPath": "static/images/tabBar/mine-sel.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "easycom": {
+    "autoscan": false
+  }
+}

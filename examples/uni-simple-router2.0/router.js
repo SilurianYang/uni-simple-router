@@ -40,7 +40,7 @@ const router = createRouter({
 		},
 	]
 });
-console.log(router)
+
 let count=0;
 router.beforeEach((to, from, next) => {
 	console.log(to)
@@ -54,7 +54,10 @@ router.beforeEach((to, from, next) => {
 	// }else{
 	// 	next();
 	// }
-	next();
+	setTimeout(()=>{
+		next();
+	},2000)
+	
 });
 router.afterEach((to, from, next) => {
 	console.log('afterEach---跳转结束')

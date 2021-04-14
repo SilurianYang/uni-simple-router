@@ -8,8 +8,10 @@
 		},
 		onLaunch: function() {
 			console.log('App Launch')
+			console.log(this.$Route)
 		},
 		onShow: function() {
+			console.log(this.$Route)
 			console.log('App Show')
 		},
 		onHide: function() {

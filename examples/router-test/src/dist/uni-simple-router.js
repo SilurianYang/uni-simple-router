@@ -981,7 +981,6 @@ exports.registerEachHooks = registerEachHooks;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2396,6 +2395,7 @@ function rewriteMethod(router) {
 }
 exports.rewriteMethod = rewriteMethod;
 function callRouterMethod(option, funName, router) {
+    debugger;
     if (router.options.platform === 'app-plus') {
         var openType = null;
         if (option) {

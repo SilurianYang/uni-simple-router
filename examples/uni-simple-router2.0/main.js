@@ -6,6 +6,8 @@ Vue.component('RouterLink1', routerLInk)
 
 Vue.use(router)
 
+
+
 // import VConsole from 'vconsole'
 // var vConsole = new VConsole();
 

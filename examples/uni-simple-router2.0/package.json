@@ -8,6 +8,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "uni-read-pages": "^1.0.5",
     "vconsole": "^3.3.4"
   },
   "devDependencies": {},
