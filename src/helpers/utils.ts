@@ -97,6 +97,9 @@ export function routesForMapRoute(
     path: string,
     mapArrayKey:Array<routesMapKeysRule>
 ):RoutesRule|never {
+    if (path === '/pages/tabBar/index/index?a=hello') {
+        debugger
+    }
     if (router.options.h5?.vueRouterDev) {
         return {path}
     }
@@ -117,7 +120,8 @@ export function routesForMapRoute(
             if (getDataType<Array<string>|objectAny>(mapList) === '[object Array]') {
                 rule = (route as string);
             }
-            const pathRule:RegExp = Regexp(rule);
+            // 【Fixe】 https://github.com/SilurianYang/uni-simple-router/issues/252
+            const pathRule:RegExp = Regexp(`${rule}(\\?[^?]+)?`);
             const result = pathRule.exec(path);
             if (result != null) {
                 if (getDataType<string|RoutesRule>(route) === '[object String]') {

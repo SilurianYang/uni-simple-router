@@ -66,7 +66,6 @@ function callRouterMethod(
     funName:reNavMethodRule|reNotNavMethodRule,
     router:Router
 ): void {
-    debugger
     if (router.options.platform === 'app-plus') {
         let openType = null;
         if (option) {
