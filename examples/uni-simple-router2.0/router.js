@@ -54,9 +54,7 @@ router.beforeEach((to, from, next) => {
 	// }else{
 	// 	next();
 	// }
-	setTimeout(()=>{
-		next();
-	},2000)
+	next();
 	
 });
 router.afterEach((to, from, next) => {
