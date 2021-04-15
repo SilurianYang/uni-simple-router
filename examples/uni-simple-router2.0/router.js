@@ -41,6 +41,8 @@ const router = createRouter({
 	]
 });
 
+console.log(router)
+
 let count=0;
 router.beforeEach((to, from, next) => {
 	console.log(to)
@@ -48,12 +50,14 @@ router.beforeEach((to, from, next) => {
 	count++
 	// if(count==1){
 	// 	next({
-	// 		path:'/pages/login/login',
+	// 		path:'/pages/index/index',
 	// 		NAVTYPE:'replaceAll'
 	// 	})
 	// }else{
 	// 	next();
 	// }
+	
+	
 	next();
 	
 });

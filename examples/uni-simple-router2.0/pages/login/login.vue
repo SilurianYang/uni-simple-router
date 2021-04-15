@@ -15,6 +15,7 @@
 		onLoad() {
 			console.log('login-----onload')
 			console.log(this.$route)
+			console.log(this.$Route)
 		},
 		onShow() {
 			console.log('login-----onShow')

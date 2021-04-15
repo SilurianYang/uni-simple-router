@@ -1219,9 +1219,6 @@ function assertNewOptions(options) {
 exports.assertNewOptions = assertNewOptions;
 function routesForMapRoute(router, path, mapArrayKey) {
     var _a;
-    if (path === '/pages/tabBar/index/index?a=hello') {
-        debugger;
-    }
     if ((_a = router.options.h5) === null || _a === void 0 ? void 0 : _a.vueRouterDev) {
         return { path: path };
     }
@@ -2485,11 +2482,14 @@ var lifeCycle_1 = __webpack_require__(/*! ../helpers/lifeCycle */ "./src/helpers
 var mixins_1 = __webpack_require__(/*! ../helpers/mixins */ "./src/helpers/mixins.ts");
 var methods_1 = __webpack_require__(/*! ../public/methods */ "./src/public/methods.ts");
 var rewrite_1 = __webpack_require__(/*! ../public/rewrite */ "./src/public/rewrite.ts");
+var AppReadyResolve = function () { };
+var AppReady = new Promise(function (resolve) { return (AppReadyResolve = resolve); });
 function createRouter(params) {
     var options = utils_1.assertNewOptions(params);
     var router = {
         options: options,
         mount: [],
+        Vue: null,
         appProxyHook: config_1.appProxyHook,
         appletsProxyHook: config_1.indexProxyHook,
         appMain: {},
@@ -2524,6 +2524,7 @@ function createRouter(params) {
             lifeCycle_1.registerEachHooks(router, 'afterHooks', userGuard);
         },
         install: function (Vue) {
+            router.Vue = Vue;
             rewrite_1.rewriteMethod(this);
             mixins_1.initMixins(Vue, this);
             Object.defineProperty(Vue.prototype, '$Router', {
@@ -2534,6 +2535,20 @@ function createRouter(params) {
             Object.defineProperty(Vue.prototype, '$Route', {
                 get: function () {
                     return methods_1.createRoute(router);
+                }
+            });
+            // 【Fixe】  https://github.com/SilurianYang/uni-simple-router/issues/254
+            Object.defineProperty(Vue.prototype, '$AppReady', {
+                get: function () {
+                    if (router.options.platform === 'h5') {
+                        return Promise.resolve();
+                    }
+                    return AppReady;
+                },
+                set: function (value) {
+                    if (value === true) {
+                        AppReadyResolve();
+                    }
                 }
             });
         }
@@ -2613,7 +2628,14 @@ function uniOriginJump(router, originMethod, funName, options, callOkCb, forceNa
         utils_1.resetPageHook(router, originRule.url);
     }
     if (forceNav != null && forceNav === false) {
-        routerNavCount++;
+        if (routerNavCount === 0) {
+            routerNavCount++;
+            // 【Fixe】  https://github.com/SilurianYang/uni-simple-router/issues/254
+            // 在小程序端  next 直接放行会执行这个
+            if (router.options.platform !== 'h5') {
+                router.Vue.prototype.$AppReady = true;
+            }
+        }
         complete && complete.apply(null, { msg: 'forceGuardEach强制触发并且不执行跳转' });
         callOkCb && callOkCb.apply(null, { msg: 'forceGuardEach强制触发并且不执行跳转' });
     }
@@ -2631,6 +2653,11 @@ function uniOriginJump(router, originMethod, funName, options, callOkCb, forceNa
                     }
                     if (routerNavCount === 0) {
                         routerNavCount++;
+                        // 【Fixe】  https://github.com/SilurianYang/uni-simple-router/issues/254
+                        // 在小程序端 第一次 next 做跳转  会触发这个 、在app端首次必定会触发这个
+                        if (router.options.platform !== 'h5') {
+                            router.Vue.prototype.$AppReady = true;
+                        }
                         if (router.options.platform === 'app-plus') {
                             var waitPage = plus.nativeObj.View.getViewById('router-loadding');
                             waitPage && waitPage.close();

@@ -53,6 +53,10 @@
 		</router-link1>
 		
 		
+		<h1>----------分割线--------</h1>
+		
+		 <button type="warn" @click="back">返回两级页面</button>
+		
 	</view>
 </template>
 
@@ -78,7 +82,11 @@
 			}
 		},
 		methods: {
-			
+			back(){
+				uni.navigateBack({
+					delta:2
+				})
+			}
 		}
 	}
 </script>
