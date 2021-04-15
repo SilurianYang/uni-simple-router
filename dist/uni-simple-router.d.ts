@@ -167,6 +167,8 @@ export declare interface pageVueHookConfig extends baseAppHookConfig {
 
 export declare type pageVueSortHookRule = 'beforeCreate' | 'created' | 'beforeMount' | 'mounted' | 'onLoad' | 'onReady' | 'onShow' | 'onResize' | 'onHide' | 'beforeDestroy' | 'destroyed' | 'onUnload';
 
+export declare type PromiseResolve = (value?: void | PromiseLike<void> | undefined) => void;
+
 export declare type proxyHookName = 'beforeHooks' | 'afterHooks';
 
 export declare type reloadNavRule = totalNextRoute | false | undefined | string;
@@ -191,6 +193,7 @@ export declare interface Router {
     $lockStatus: boolean;
     $route: object | null;
     enterPath: string;
+    Vue: any;
     appProxyHook: {
         app: appVueHookConfig;
     };
@@ -304,7 +307,6 @@ export declare interface uniNavApiRule {
 }
 
 export { }
-
 
 // @ts-ignore
 declare module 'vue/types/vue' {
