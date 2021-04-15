@@ -97,9 +97,6 @@ export function routesForMapRoute(
     path: string,
     mapArrayKey:Array<routesMapKeysRule>
 ):RoutesRule|never {
-    if (path === '/pages/tabBar/index/index?a=hello') {
-        debugger
-    }
     if (router.options.h5?.vueRouterDev) {
         return {path}
     }

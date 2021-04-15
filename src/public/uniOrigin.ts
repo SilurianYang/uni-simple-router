@@ -13,11 +13,19 @@ export function uniOriginJump(
     forceNav?:boolean
 ):void {
     const {complete, ...originRule} = formatOriginURLQuery(router, options, funName);
+
     if (routerNavCount === 0 && router.options.platform !== 'h5') { // 还原app.vue下已经重写后的生命周期
         resetPageHook(router, originRule.url)
     }
     if (forceNav != null && forceNav === false) {
-        routerNavCount++
+        if (routerNavCount === 0) {
+            routerNavCount++
+            // 【Fixe】  https://github.com/SilurianYang/uni-simple-router/issues/254
+            // 在小程序端  next 直接放行会执行这个
+            if (router.options.platform !== 'h5') {
+                router.Vue.prototype.$AppReady = true;
+            }
+        }
         complete && complete.apply(null, {msg: 'forceGuardEach强制触发并且不执行跳转'});
         callOkCb && callOkCb.apply(null, {msg: 'forceGuardEach强制触发并且不执行跳转'})
     } else {
@@ -32,6 +40,13 @@ export function uniOriginJump(
                 complete: function(...args:Array<any>) {
                     if (routerNavCount === 0) {
                         routerNavCount++
+
+                        // 【Fixe】  https://github.com/SilurianYang/uni-simple-router/issues/254
+                        // 在小程序端 第一次 next 做跳转  会触发这个 、在app端首次必定会触发这个
+                        if (router.options.platform !== 'h5') {
+                            router.Vue.prototype.$AppReady = true;
+                        }
+
                         if (router.options.platform === 'app-plus') {
                             const waitPage = plus.nativeObj.View.getViewById('router-loadding');
                             waitPage && waitPage.close();

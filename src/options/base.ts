@@ -195,6 +195,7 @@ export interface Router {
     $lockStatus:boolean;
     $route: object | null;
     enterPath:string;
+    Vue:any;
     appProxyHook:{
         app:appVueHookConfig
     };
@@ -215,6 +216,10 @@ export interface Router {
     beforeEach(userGuard:guardHookRule): void; // 添加全局前置路由守卫
     afterEach(userGuard:(to: totalNextRoute, from: totalNextRoute)=>void): void; // 添加全局后置路由守卫
 }
+
+
+export type PromiseResolve=(value?: void | PromiseLike<void> | undefined) => void;
+
 // @ts-ignore
 declare module 'vue/types/vue' {
 	interface Vue {
