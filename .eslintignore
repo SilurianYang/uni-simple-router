@@ -2,3 +2,5 @@ dist
 /node_modules
 /webpack
 /src/global.d.ts
+/test
+/jest.config.js

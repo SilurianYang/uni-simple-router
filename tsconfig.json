@@ -1,22 +1,19 @@
 {
-  "compilerOptions": {
-    "target": "es5",
-    "module": "CommonJS",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "lib": ["ES2015","DOM"],
-    "outDir": "dist/src",
-    "declaration": true,
-    "declarationMap": false
-  },
-  "include": [
-    "src/global.d.ts",
-    "src/*",
-  ],
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts"
-  ]
+	"compilerOptions": {
+		"target": "es5",
+		"module": "CommonJS",
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"lib": ["ES2015", "DOM"],
+		"outDir": "dist/src",
+		"declaration": true,
+		"declarationMap": false,
+		"rootDir": "./src",
+		"baseUrl": ".",
+		"paths": {}
+	},
+	"include": ["./src/global.d.ts", "./src/*"],
+	"exclude": ["node_modules", "**/*.spec.ts"]
 }
