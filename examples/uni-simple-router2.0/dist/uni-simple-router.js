@@ -1222,6 +1222,8 @@ function routesForMapRoute(router, path, mapArrayKey) {
     if ((_a = router.options.h5) === null || _a === void 0 ? void 0 : _a.vueRouterDev) {
         return { path: path };
     }
+    // 【Fixe】 https://github.com/SilurianYang/uni-simple-router/issues/252
+    var startPath = path.split('?')[0];
     var wildcard = '';
     var routesMap = router.routesMap;
     for (var i = 0; i < mapArrayKey.length; i++) {
@@ -1240,9 +1242,8 @@ function routesForMapRoute(router, path, mapArrayKey) {
             if (getDataType(mapList) === '[object Array]') {
                 rule = route;
             }
-            // 【Fixe】 https://github.com/SilurianYang/uni-simple-router/issues/252
-            var pathRule = Regexp(rule + "(\\?[^?]+)?");
-            var result = pathRule.exec(path);
+            var pathRule = Regexp(rule);
+            var result = pathRule.exec(startPath);
             if (result != null) {
                 if (getDataType(route) === '[object String]') {
                     return routesMap.finallyPathMap[route];
@@ -2451,8 +2452,8 @@ function callRouterMethod(option, funName, router) {
             }
             path = finallyPath;
         }
-        var _a = option, events = _a.events, success = _a.success, fail = _a.fail, complete = _a.complete, animationType = _a.animationType, animationDuration = _a.animationDuration;
-        var jumpOptions = { path: path, events: events, success: success, fail: fail, complete: complete, animationDuration: animationDuration, animationType: animationType };
+        var _a = option, events = _a.events, success = _a.success, fail_1 = _a.fail, complete = _a.complete, animationType = _a.animationType, animationDuration = _a.animationDuration;
+        var jumpOptions = { path: path, events: events, success: success, fail: fail_1, complete: complete, animationDuration: animationDuration, animationType: animationType };
         router[routerMethodName](utils_1.notDeepClearNull(jumpOptions));
     }
 }
