@@ -100,6 +100,8 @@ export function routesForMapRoute(
     if (router.options.h5?.vueRouterDev) {
         return {path}
     }
+    // 【Fixe】 https://github.com/SilurianYang/uni-simple-router/issues/252
+    const startPath = path.split('?')[0];
     let wildcard = '';
     const routesMap = (router.routesMap as routesMapRule);
     for (let i = 0; i < mapArrayKey.length; i++) {
@@ -117,9 +119,8 @@ export function routesForMapRoute(
             if (getDataType<Array<string>|objectAny>(mapList) === '[object Array]') {
                 rule = (route as string);
             }
-            // 【Fixe】 https://github.com/SilurianYang/uni-simple-router/issues/252
-            const pathRule:RegExp = Regexp(`${rule}(\\?[^?]+)?`);
-            const result = pathRule.exec(path);
+            const pathRule:RegExp = Regexp(rule);
+            const result = pathRule.exec(startPath);
             if (result != null) {
                 if (getDataType<string|RoutesRule>(route) === '[object String]') {
                     return routesMap.finallyPathMap[(route as string)];
