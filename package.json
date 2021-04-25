@@ -1,6 +1,6 @@
 {
   "name": "uni-simple-router",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "> 一个更为简洁的[Vue-router](https://router.vuejs.org/zh/)，专为 [uni-app](https://uniapp.dcloud.io/) 量身打造",
   "main": "dist/uni-simple-router.js",
   "types": "dist/uni-simple-router.d.ts",
@@ -10,6 +10,7 @@
     "@types/webpack": "^4.41.23",
     "@types/webpack-env": "^1.15.3",
     "copy-webpack-plugin": "^5.1.2",
+    "jest-cli": "^26.6.3",
     "lodash.merge": "^4.6.2",
     "path-to-regexp": "^1.8.0",
     "ts-loader": "^8.0.5",
@@ -18,11 +19,14 @@
     "webpack-cli": "^4.0.0"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.22",
     "@typescript-eslint/eslint-plugin": "^4.4.1",
     "@typescript-eslint/parser": "^4.4.1",
     "eslint": "^7.11.0",
+    "jest": "^26.6.3",
     "lodash": "^4.17.20",
     "rimraf": "^3.0.2",
+    "ts-jest": "^26.5.5",
     "ts-node": "^9.0.0",
     "vconsole": "^3.3.4",
     "webpack-merge": "^5.2.0"
@@ -33,7 +37,7 @@
     "build:dts": "api-extractor run --local --verbose",
     "lint": "eslint --ext .js,.ts src",
     "lintFix": "eslint --ext .js,.ts src --fix",
-    "test": "ts-node ./src/index.ts"
+    "test": "jest test/path-to-regexp.spec.ts"
   },
   "repository": {
     "type": "git",
