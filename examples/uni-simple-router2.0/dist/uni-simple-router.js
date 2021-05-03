@@ -470,7 +470,6 @@ module.exports = Array.isArray || function (arr) {
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -756,8 +755,6 @@ exports.getEnterPath = getEnterPath;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -984,7 +981,6 @@ exports.registerEachHooks = registerEachHooks;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1101,9 +1097,6 @@ exports.initMixins = initMixins;
   \******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:14-18 */
-/*! CommonJS bailout: this is used directly at 24:22-26 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1730,7 +1723,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1886,7 +1878,6 @@ exports.loopCallHook = loopCallHook;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1995,6 +1986,10 @@ function backOptionsBuild(router, level, animation) {
         if (animationType != null) {
             navjumpRule.animationType = animationType;
         }
+        var from = animation.from;
+        if (from != null) {
+            navjumpRule.BACKTYPE = from;
+        }
     }
     return navjumpRule;
 }
@@ -2028,7 +2023,8 @@ function createRoute(router, level, orignRule) {
         fullPath: '',
         NAVTYPE: '',
         query: {},
-        params: {}
+        params: {},
+        BACKTYPE: (orignRule || { BACKTYPE: '' }).BACKTYPE || '' // v2.0.5 +
     };
     if (level === 19970806) { // 首次构建响应式 页面不存在 直接返回
         return route;
@@ -2149,7 +2145,6 @@ exports.proxyPageHook = proxyPageHook;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2452,8 +2447,8 @@ function callRouterMethod(option, funName, router) {
             }
             path = finallyPath;
         }
-        var _a = option, events = _a.events, success = _a.success, fail_1 = _a.fail, complete = _a.complete, animationType = _a.animationType, animationDuration = _a.animationDuration;
-        var jumpOptions = { path: path, events: events, success: success, fail: fail_1, complete: complete, animationDuration: animationDuration, animationType: animationType };
+        var _a = option, events = _a.events, success = _a.success, fail = _a.fail, complete = _a.complete, animationType = _a.animationType, animationDuration = _a.animationDuration;
+        var jumpOptions = { path: path, events: events, success: success, fail: fail, complete: complete, animationDuration: animationDuration, animationType: animationType };
         router[routerMethodName](utils_1.notDeepClearNull(jumpOptions));
     }
 }
@@ -2465,16 +2460,24 @@ function callRouterMethod(option, funName, router) {
 /*!******************************!*\
   !*** ./src/public/router.ts ***!
   \******************************/
-/*! flagged exports */
-/*! export RouterMount [provided] [no usage info] [missing usage info prevents renaming] */
-/*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
-/*! export createRouter [provided] [no usage info] [missing usage info prevents renaming] */
-/*! other exports [not provided] [no usage info] */
-/*! runtime requirements: __webpack_exports__, __webpack_require__ */
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/*! unknown exports (runtime-defined) */
+/*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createRouter = exports.RouterMount = void 0;
 var config_1 = __webpack_require__(/*! ../helpers/config */ "./src/helpers/config.ts");
@@ -2513,6 +2516,17 @@ function createRouter(params) {
         },
         back: function (level, animation) {
             if (level === void 0) { level = 1; }
+            if (utils_1.getDataType(animation) !== '[object Object]') {
+                var backRule = {
+                    from: 'navigateBack'
+                };
+                animation = backRule;
+            }
+            else {
+                if (!Reflect.has(animation, 'from')) {
+                    animation = __assign(__assign({}, animation), { from: 'navigateBack' });
+                }
+            }
             methods_1.lockNavjump(level + '', router, 'back', undefined, animation);
         },
         forceGuardEach: function (navType, forceNav) {
@@ -2590,8 +2604,6 @@ exports.RouterMount = RouterMount;
   \*********************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2642,7 +2654,7 @@ function uniOriginJump(router, originMethod, funName, options, callOkCb, forceNa
     }
     else {
         if (funName === 'navigateBack') {
-            originMethod(__assign({}, originRule));
+            originMethod(__assign(__assign({}, originRule), { from: options.BACKTYPE }));
             callOkCb && callOkCb.apply(null);
         }
         else {

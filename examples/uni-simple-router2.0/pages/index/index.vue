@@ -27,6 +27,9 @@
 				title: 'Hello'
 			}
 		},
+		onTabItemTap(){
+			console.log('onTabItemTap')
+		},
 		created(){
 			console.log('index-----created')
 		},
