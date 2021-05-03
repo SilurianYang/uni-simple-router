@@ -1,4 +1,4 @@
-import {PromiseResolve, Router} from '../options/base';
+import {PromiseResolve, Router, uniBackApiRule, uniBackRule} from '../options/base';
 import {InstantiateConfig, LifeCycleConfig} from '../options/config';
 import {appProxyHook, indexProxyHook, lifeCycle, keyword} from '../helpers/config';
 import {assertNewOptions, def, getDataType} from '../helpers/utils';
@@ -37,6 +37,19 @@ function createRouter(params: InstantiateConfig):Router {
             lockNavjump(to, router, 'pushTab');
         },
         back(level = 1, animation) {
+            if (getDataType(animation) !== '[object Object]') {
+                const backRule:uniBackRule = {
+                    from: 'navigateBack'
+                }
+                animation = backRule;
+            } else {
+                if (!Reflect.has((animation as uniBackRule | uniBackApiRule), 'from')) {
+                    animation = {
+                        ...animation,
+                        from: 'navigateBack'
+                    };
+                }
+            }
             lockNavjump(level + '', router, 'back', undefined, animation)
         },
         forceGuardEach(navType, forceNav) {

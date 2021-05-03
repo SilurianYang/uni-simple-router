@@ -7,7 +7,8 @@ import {
     uniBackRule,
     uniBackApiRule,
     navtoRule,
-    totalNextRoute
+    totalNextRoute,
+    originMixins
 } from '../options/base'
 
 import {
@@ -39,13 +40,13 @@ export function rewriteMethod(
         rewrite.forEach(name => {
             const oldMethod: Function = uni[name];
             uni[name] = function(
-                params:uniNavApiRule|{from:string}|navtoRule,
+                params:originMixins|{from:string}|navtoRule,
                 originCall:boolean = false,
                 callOkCb?:Function,
                 forceNav?:boolean
             ):void {
                 if (originCall) {
-                    uniOriginJump(router, oldMethod, name, (params as uniNavApiRule), callOkCb, forceNav)
+                    uniOriginJump(router, oldMethod, name, params as originMixins, callOkCb, forceNav)
                 } else {
                     if (router.options.platform === 'app-plus') {
                         if (Object.keys(router.appMain).length === 0) {

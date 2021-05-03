@@ -133,6 +133,11 @@ export function backOptionsBuild(
         if (animationType != null) {
             navjumpRule.animationType = animationType;
         }
+
+        const {from} = (animation as uniBackRule)
+        if (from != null) {
+            navjumpRule.BACKTYPE = from;
+        }
     }
     return navjumpRule;
 }
@@ -171,8 +176,10 @@ export function createRoute(
         fullPath: '',
         NAVTYPE: '',
         query: {},
-        params: {}
+        params: {},
+        BACKTYPE: (orignRule || {BACKTYPE: ''}).BACKTYPE || '' // v2.0.5 +
     };
+
     if (level === 19970806) { // 首次构建响应式 页面不存在 直接返回
         return route
     }
@@ -220,7 +227,7 @@ export function createRoute(
                 appPage.path = `/${(page as objectAny).route}`
             }
         }
-        const openType:reNavMethodRule = appPage.openType;
+        const openType:reNavMethodRule|'navigateBack' = appPage.openType;
         route.query = appPage.query;
         route.path = appPage.path;
         route.fullPath = appPage.fullPath;

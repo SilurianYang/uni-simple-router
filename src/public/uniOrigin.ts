@@ -1,4 +1,4 @@
-import { reNavMethodRule, reNotNavMethodRule, Router, startAnimationRule, uniNavApiRule } from '../options/base';
+import { originMixins, reNavMethodRule, reNotNavMethodRule, Router, startAnimationRule, uniNavApiRule } from '../options/base';
 import { stringifyQuery } from './query';
 import {notDeepClearNull, resetPageHook} from '../helpers/utils'
 
@@ -8,7 +8,7 @@ export function uniOriginJump(
     router:Router,
     originMethod:Function,
     funName:reNavMethodRule|reNotNavMethodRule,
-    options:uniNavApiRule,
+    options: originMixins,
     callOkCb?:Function,
     forceNav?:boolean
 ):void {
@@ -31,7 +31,8 @@ export function uniOriginJump(
     } else {
         if (funName === 'navigateBack') {
             originMethod({
-                ...originRule
+                ...originRule,
+                from: options.BACKTYPE
             });
             callOkCb && callOkCb.apply(null)
         } else {

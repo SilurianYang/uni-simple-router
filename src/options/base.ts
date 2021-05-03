@@ -20,6 +20,7 @@ export enum rewriteMethodToggle{
     'switchTab'='pushTab',
     'navigateBack'='back',
 }
+export type backTypeRule='backbutton'|'navigateBack'
 export type pageTypeRule='app'|'page'|'component';
 export type notCallProxyHookRule='onHide'|'beforeDestroy'|'destroyed'|'onUnload'|'onResize';
 export type appVueSortHookRule='beforeCreate'|'created'|'beforeMount'|'mounted'|'onLaunch'|'onShow'|'onHide'|'beforeDestroy'|'destroyed';
@@ -132,9 +133,14 @@ export interface uniNavApiRule {
         animationDuration?:number;
     }
 }
+
+export interface originMixins extends uniNavApiRule{
+    BACKTYPE:''|backTypeRule
+}
+
 // uni-app 原始返回api 回调参数
 export interface uniBackRule{
-    from:string;
+    from:backTypeRule;
 }
 
 export interface uniBackApiRule{
@@ -169,6 +175,7 @@ export interface routeRule{
     params:objectAny;
     fullPath:string;
     NAVTYPE:NAVTYPE|'';
+    BACKTYPE?:backTypeRule|'';    // v2.0.5 +
     [propName: string]: any;
 }
 
