@@ -37,7 +37,8 @@
     "build:dts": "api-extractor run --local --verbose",
     "lint": "eslint --ext .js,.ts src",
     "lintFix": "eslint --ext .js,.ts src --fix",
-    "test": "jest test/path-to-regexp.spec.ts"
+    "test": "jest test/path-to-regexp.spec.ts",
+    "publish": "node ./publish/index.js"
   },
   "repository": {
     "type": "git",
