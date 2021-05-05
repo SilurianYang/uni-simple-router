@@ -20,6 +20,8 @@ export declare interface appVueHookConfig extends baseAppHookConfig {
 
 export declare type appVueSortHookRule = 'beforeCreate' | 'created' | 'beforeMount' | 'mounted' | 'onLaunch' | 'onShow' | 'onHide' | 'beforeDestroy' | 'destroyed';
 
+export declare type backTypeRule = 'backbutton' | 'navigateBack';
+
 export declare interface baseAppHookConfig {
     [key: string]: Array<hookObjectRule | Function>;
     created: Array<hookObjectRule | Function>;
@@ -154,6 +156,10 @@ export declare type objectAny = {
     [propName: string]: any;
 };
 
+export declare interface originMixins extends uniNavApiRule {
+    BACKTYPE: '' | backTypeRule;
+}
+
 export declare type pageTypeRule = 'app' | 'page' | 'component';
 
 export declare interface pageVueHookConfig extends baseAppHookConfig {
@@ -228,6 +234,7 @@ export declare interface routeRule {
     params: objectAny;
     fullPath: string;
     NAVTYPE: NAVTYPE | '';
+    BACKTYPE?: backTypeRule | '';
     [propName: string]: any;
 }
 
@@ -280,7 +287,7 @@ export declare interface uniBackApiRule {
 }
 
 export declare interface uniBackRule {
-    from: string;
+    from: backTypeRule;
 }
 
 export declare interface uniNavApiRule {
