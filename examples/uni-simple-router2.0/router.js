@@ -11,6 +11,9 @@ const router = createRouter({
 		animation:{
 			animationType:'slide-in-top',
 			animationDuration:300
+		},
+		loddingPageHook:(view)=>{
+			view.hide()
 		}
 	},
 	routerBeforeEach:(to, from, next) => {
@@ -47,7 +50,14 @@ let count=0;
 router.beforeEach((to, from, next) => {
 	console.log(to)
 	console.log(from)
+	
+	
 	count++
+	if(to.name=='index' && to.BACKTYPE=='navigateBack'){
+		next(false);
+	}else{
+		next();
+	}
 	// if(count==1){
 	// 	next({
 	// 		path:'/pages/index/index',
@@ -56,9 +66,6 @@ router.beforeEach((to, from, next) => {
 	// }else{
 	// 	next();
 	// }
-	
-	
-	next();
 	
 });
 router.afterEach((to, from, next) => {

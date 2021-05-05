@@ -166,6 +166,16 @@
             }
             
         }
+        ,{
+            "path" : "pages/nvue1/nvue1",
+			"name":"nvue1",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	  "tabBar": {
 	    "list": [{

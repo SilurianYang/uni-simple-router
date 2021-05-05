@@ -13,6 +13,9 @@
 		<!-- #ifdef MP-WEIXIN -->
 		<button type="default" @click="forceEach">微信小程序看到我，强制触发</button>
 		<!-- #endif -->
+		
+		
+		<button type="primary" @click="$Router.push({name:'nvue1'})">去nvue1测试页</button>
 	</view>
 </template>
 
