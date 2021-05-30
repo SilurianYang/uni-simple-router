@@ -11,7 +11,8 @@ import {
     routesForMapRoute,
     getRoutePath,
     assertDeepObject,
-    copyData
+    copyData,
+    getWildcardRule
 } from '../helpers/utils'
 import {ERRORHOOK} from './hooks'
 import {warn} from '../helpers/warn'
@@ -49,13 +50,13 @@ export function queryPageToMap(
         } else if (objNavRule.name != null) {
             route = (router.routesMap as routesMapRule).nameMap[objNavRule.name];
             if (route == null) {
-                ERRORHOOK[0]({ type: 2, msg: `命名路由为：${objNavRule.name} 的路由，无法在路由表中找到！`, toRule}, router)
+                route = getWildcardRule(router, { type: 2, msg: `命名路由为：${objNavRule.name} 的路由，无法在路由表中找到！`, toRule});
             } else {
                 query = (toRule as totalNextRoute).params || {};
                 delete (toRule as totalNextRoute).query;
             }
         } else {
-            ERRORHOOK[0]({ type: 2, msg: `${toRule} 解析失败，请检测当前路由表下是否有包含。`, toRule}, router)
+            route = getWildcardRule(router, { type: 2, msg: `${toRule} 解析失败，请检测当前路由表下是否有包含。`, toRule});
         }
     } else {
         toRule = urlToJson((toRule as string)) as totalNextRoute;

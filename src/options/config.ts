@@ -19,6 +19,10 @@ export interface AppConfig {
     launchedHook?:()=>void; // 首次启动app完成
     animation?: startAnimationRule; // 页面切换动画
 }
+export interface appletConfig {
+    animationDuration?:number; // 页面切换时间，有助于路由锁精准解锁
+}
+
 export interface debuggerArrayConfig{
     error?:boolean;
     warn?:boolean;
@@ -31,6 +35,7 @@ export interface InstantiateConfig {
     platform:'h5'|'app-plus'|'app-lets'|'mp-weixin'|'mp-baidu'|'mp-alipay'|'mp-toutiao'|'mp-qq'|'mp-360'; // 当前运行平台
     h5?: H5Config;
 	APP?: AppConfig;
+    applet?:appletConfig;
 	debugger?: debuggerConfig; // 是否处于开发阶段 设置为true则打印日志
 	routerBeforeEach?: (to:navtoRule, from:navtoRule, next:(rule?: navtoRule|false)=>void) => void; // router 前置路由函数 每次触发跳转前先会触发此函数
 	routerAfterEach?: (to:navtoRule, from:navtoRule, next?: Function) => void; // router 后置路由函数 每次触发跳转后会触发此函数
