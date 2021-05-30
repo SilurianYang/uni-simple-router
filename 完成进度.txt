@@ -1,0 +1,15 @@
+## Fixes bug
+* 小程序端因切页面动画原因导致路由锁提前解锁，可重复跳转bug
+
+
+## Add
+* app `navigateBack` 跳转锁有效
+* 小程序端新增切页面时间 `animationDuration`, 默认 `300ms`。路由锁可捕捉到页面完全切换完成，设置为 `0` 则只捕捉跳转 `api`下的`complete` 函数。  
+* 跨端可用 `*` 通配符 配合 `redirect` 错误页面捕捉
+
+## Revise
+* 小程序端 `$Route` 在计算属性中可用。**注意：在计算属性中获取的 query、fullPath 均不可取，它不是最终的数据。因为在计算属性中访问 `$Route` 时，其他参数均为注入。无法获取最终的参数，仅获取基本骨架参数 `name`、`path`、`aliasPath`、`meta`**
+
+## Known Issues
+* `APP` 端启动页为tab时，拦截到其他页面后底部tabbar 还依然存在，请避免把原生 `tabbar` 页设置成启动页。你可以在 `beforeEach` 中使用 next 到tabbar页效果一致
+* `APP` 端 tab 拦截后无法自动还原 选中区域，现需要开发者自行设置。
