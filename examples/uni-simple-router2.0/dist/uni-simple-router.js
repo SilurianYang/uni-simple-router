@@ -17,7 +17,6 @@ return /******/ (() => { // webpackBootstrap
   \**********************************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: module, __webpack_require__ */
-/*! CommonJS bailout: module.exports is used directly at 6:0-14 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var isarray = __webpack_require__(/*! isarray */ "./node_modules/path-to-regexp/node_modules/isarray/index.js")
@@ -456,7 +455,6 @@ function pathToRegexp (path, keys, options) {
   \*******************************************************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: module */
-/*! CommonJS bailout: module.exports is used directly at 1:0-14 */
 /***/ ((module) => {
 
 module.exports = Array.isArray || function (arr) {
@@ -564,7 +562,6 @@ exports.buildVueRouter = buildVueRouter;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
-/*! CommonJS bailout: this is used directly at 2:17-21 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -672,7 +669,6 @@ exports.proxyH5Mount = proxyH5Mount;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -789,11 +785,11 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.notCallProxyHook = exports.proxyVueSortHookName = exports.indexProxyHook = exports.appProxyHook = exports.lifeCycle = exports.baseConfig = exports.keyword = exports.mpPlatformReg = void 0;
+exports.notCallProxyHook = exports.proxyVueSortHookName = exports.indexProxyHook = exports.appProxyHook = exports.lifeCycle = exports.baseConfig = exports.mpPlatformReg = exports.keyword = void 0;
 var warn_1 = __webpack_require__(/*! ./warn */ "./src/helpers/warn.ts");
 var utils_1 = __webpack_require__(/*! ./utils */ "./src/helpers/utils.ts");
-exports.mpPlatformReg = /(^mp-weixin$)|(^mp-baidu$)|(^mp-alipay$)|(^mp-toutiao$)|(^mp-qq$)|(^mp-360$)/g;
 exports.keyword = ['query'];
+exports.mpPlatformReg = '(^mp-weixin$)|(^mp-baidu$)|(^mp-alipay$)|(^mp-toutiao$)|(^mp-qq$)|(^mp-360$)'; // 小程序下不能直接导出正则 需要重新组装成正则 不然bug一推 诡异
 exports.baseConfig = {
     h5: {
         paramsToQuery: false,
@@ -811,6 +807,9 @@ exports.baseConfig = {
         loddingPageHook: function (view) { view.show(); },
         launchedHook: function () { plus.navigator.closeSplashscreen(); },
         animation: {}
+    },
+    applet: {
+        animationDuration: 300
     },
     platform: 'h5',
     keepUniOriginNav: false,
@@ -1009,12 +1008,12 @@ exports.initMixins = exports.getMixins = void 0;
 var createRouteMap_1 = __webpack_require__(/*! ../helpers/createRouteMap */ "./src/helpers/createRouteMap.ts");
 var buildRouter_1 = __webpack_require__(/*! ../H5/buildRouter */ "./src/H5/buildRouter.ts");
 var proxyHook_1 = __webpack_require__(/*! ../H5/proxyHook */ "./src/H5/proxyHook.ts");
-var config_1 = __webpack_require__(/*! ./config */ "./src/helpers/config.ts");
 var appPatch_1 = __webpack_require__(/*! ../app/appPatch */ "./src/app/appPatch.ts");
 var page_1 = __webpack_require__(/*! ../public/page */ "./src/public/page.ts");
 var methods_1 = __webpack_require__(/*! ../public/methods */ "./src/public/methods.ts");
 var utils_1 = __webpack_require__(/*! ./utils */ "./src/helpers/utils.ts");
 var appletPatch_1 = __webpack_require__(/*! ../applets/appletPatch */ "./src/applets/appletPatch.ts");
+var config_1 = __webpack_require__(/*! ./config */ "./src/helpers/config.ts");
 var registerRouter = false;
 var onloadProxyOk = false;
 var appletProxy = {
@@ -1023,7 +1022,7 @@ var appletProxy = {
 };
 function getMixins(Vue, router) {
     var platform = router.options.platform;
-    if (config_1.mpPlatformReg.test(platform)) {
+    if (new RegExp(config_1.mpPlatformReg, 'g').test(platform)) {
         platform = 'app-lets';
     }
     var toggleHooks = {
@@ -1142,7 +1141,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.resolveAbsolutePath = exports.assertParentChild = exports.reservedWord = exports.resetPageHook = exports.callHook = exports.replaceHook = exports.lockDetectWarn = exports.deepClone = exports.baseClone = exports.assertDeepObject = exports.paramsToQuery = exports.forMatNextToFrom = exports.urlToJson = exports.getUniCachePage = exports.copyData = exports.getDataType = exports.routesForMapRoute = exports.assertNewOptions = exports.getRoutePath = exports.notDeepClearNull = exports.mergeConfig = exports.def = exports.voidFun = void 0;
+exports.resolveAbsolutePath = exports.assertParentChild = exports.reservedWord = exports.resetPageHook = exports.callHook = exports.replaceHook = exports.lockDetectWarn = exports.deepClone = exports.baseClone = exports.assertDeepObject = exports.paramsToQuery = exports.forMatNextToFrom = exports.urlToJson = exports.getUniCachePage = exports.copyData = exports.getDataType = exports.routesForMapRoute = exports.notRouteTo404 = exports.getWildcardRule = exports.assertNewOptions = exports.getRoutePath = exports.notDeepClearNull = exports.mergeConfig = exports.timeOut = exports.def = exports.voidFun = void 0;
 var config_1 = __webpack_require__(/*! ../helpers/config */ "./src/helpers/config.ts");
 var hooks_1 = __webpack_require__(/*! ../public/hooks */ "./src/public/hooks.ts");
 var warn_1 = __webpack_require__(/*! ../helpers/warn */ "./src/helpers/warn.ts");
@@ -1158,6 +1157,14 @@ function def(defObject, key, getValue) {
     });
 }
 exports.def = def;
+function timeOut(time) {
+    return new Promise(function (resolve) {
+        setTimeout(function () {
+            resolve();
+        }, time);
+    });
+}
+exports.timeOut = timeOut;
 function mergeConfig(baseConfig, userConfig) {
     var config = Object.create(null);
     var baseConfigKeys = Object.keys(baseConfig).concat(['resolveQuery', 'parseQuery']);
@@ -1221,6 +1228,34 @@ function assertNewOptions(options) {
     return mergeOptions;
 }
 exports.assertNewOptions = assertNewOptions;
+function getWildcardRule(router, msg) {
+    var routesMap = router.routesMap;
+    var route = routesMap.finallyPathMap['*'];
+    if (route) { // 有写通配符
+        return route;
+    }
+    if (msg) {
+        hooks_1.ERRORHOOK[0](msg, router);
+    }
+    throw new Error("\u5F53\u524D\u8DEF\u7531\u8868\u5339\u914D\u89C4\u5219\u5DF2\u5168\u90E8\u5339\u914D\u5B8C\u6210\uFF0C\u672A\u627E\u5230\u6EE1\u8DB3\u7684\u5339\u914D\u89C4\u5219\u3002\u4F60\u53EF\u4EE5\u4F7F\u7528 '*' \u901A\u914D\u7B26\u6355\u6349\u6700\u540E\u7684\u5F02\u5E38");
+}
+exports.getWildcardRule = getWildcardRule;
+function notRouteTo404(router, toRoute, parseToRule, navType) {
+    if (toRoute.path !== '*') { // 不是通配符  正常匹配成功
+        return toRoute;
+    }
+    var redirect = toRoute.redirect;
+    if (typeof redirect === 'undefined') {
+        throw new Error(" *  \u901A\u914D\u7B26\u5FC5\u987B\u914D\u5408 redirect \u4F7F\u7528\u3002redirect: string | Location | Function");
+    }
+    var newRoute = redirect;
+    if (typeof newRoute === 'function') {
+        newRoute = newRoute(parseToRule);
+    }
+    var redirectRule = methods_1.navjump(newRoute, router, navType, undefined, undefined, undefined, false);
+    return redirectRule;
+}
+exports.notRouteTo404 = notRouteTo404;
 function routesForMapRoute(router, path, mapArrayKey) {
     var _a;
     if ((_a = router.options.h5) === null || _a === void 0 ? void 0 : _a.vueRouterDev) {
@@ -1257,7 +1292,7 @@ function routesForMapRoute(router, path, mapArrayKey) {
         }
     }
     if (wildcard !== '') {
-        return routesMap.finallyPathMap[wildcard];
+        return getWildcardRule(router);
     }
     throw new Error(path + " \u8DEF\u5F84\u65E0\u6CD5\u5728\u8DEF\u7531\u8868\u4E2D\u627E\u5230\uFF01\u68C0\u67E5\u8DF3\u8F6C\u8DEF\u5F84\u53CA\u8DEF\u7531\u8868");
 }
@@ -1335,7 +1370,7 @@ function paramsToQuery(router, toRule) {
         if (name_1 != null && paramsQuery != null) {
             var route = router.routesMap.nameMap[name_1];
             if (route == null) {
-                hooks_1.ERRORHOOK[0]({ type: 2, msg: "\u547D\u540D\u8DEF\u7531\u4E3A\uFF1A" + name_1 + " \u7684\u8DEF\u7531\uFF0C\u65E0\u6CD5\u5728\u8DEF\u7531\u8868\u4E2D\u627E\u5230\uFF01", toRule: toRule }, router);
+                route = getWildcardRule(router, { type: 2, msg: "\u547D\u540D\u8DEF\u7531\u4E3A\uFF1A" + name_1 + " \u7684\u8DEF\u7531\uFF0C\u65E0\u6CD5\u5728\u8DEF\u7531\u8868\u4E2D\u627E\u5230\uFF01", toRule: toRule });
             }
             var finallyPath = getRoutePath(route, router).finallyPath;
             if (finallyPath.includes(':')) { // 动态路由无法使用 paramsToQuery
@@ -1640,10 +1675,6 @@ exports.warnLock = warnLock;
   \**********************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:23-27 */
-/*! CommonJS bailout: this is used directly at 9:20-24 */
-/*! CommonJS bailout: exports is used directly at 14:40-47 */
-/*! CommonJS bailout: exports is used directly at 15:42-49 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1927,7 +1958,8 @@ function lockNavjump(to, router, navType, forceNav, animation) {
     });
 }
 exports.lockNavjump = lockNavjump;
-function navjump(to, router, navType, nextCall, forceNav, animation) {
+function navjump(to, router, navType, nextCall, forceNav, animation, callHook) {
+    if (callHook === void 0) { callHook = true; }
     if (navType === 'back') {
         var level = 1;
         if (typeof to === 'string') {
@@ -1975,13 +2007,17 @@ function navjump(to, router, navType, nextCall, forceNav, animation) {
         var from = { path: '' };
         if (nextCall == null) {
             var toRoute = utils_1.routesForMapRoute(router, parseToRule.path, ['finallyPathMap', 'pathMap']);
-            parseToRule = __assign(__assign(__assign({}, toRoute), { params: {} }), parseToRule);
+            toRoute = utils_1.notRouteTo404(router, toRoute, parseToRule, navType);
+            parseToRule = __assign(__assign(__assign(__assign({}, toRoute), { params: {} }), parseToRule), { path: toRoute.path });
             from = page_1.createToFrom(parseToRule, router);
         }
         else {
             from = nextCall.from;
         }
         page_1.createFullPath(parseToRule, from);
+        if (callHook === false) {
+            return parseToRule;
+        }
         hooks_1.transitionTo(router, parseToRule, from, navType, hooks_2.HOOKLIST, function (callOkCb) {
             uni[base_1.navtypeToggle[navType]](parseToRule, true, callOkCb, forceNav);
         });
@@ -2078,13 +2114,13 @@ function createRoute(router, level, orignRule) {
                 throw new Error("\u4E0D\u5B58\u5728\u7684\u9875\u9762\u6808\uFF0C\u8BF7\u786E\u4FDD\u6709\u8DB3\u591F\u7684\u9875\u9762\u53EF\u7528\uFF0C\u5F53\u524D level:" + level);
             }
             // Fixes: https://github.com/SilurianYang/uni-simple-router/issues/196
-            var pageOptions = page.options;
+            var pageOptions = page.options || {};
             var originQuery = pageOptions.query;
             if (originQuery != null && Object.keys(pageOptions).length === 1) {
                 pageOptions = JSON.parse(decodeURIComponent(originQuery));
             }
             var pageQuery = JSON.parse(decodeURIComponent(JSON.stringify(pageOptions)));
-            appPage = __assign(__assign({}, page.$page), { query: pageQuery, fullPath: decodeURIComponent(page.$page.fullPath) });
+            appPage = __assign(__assign({}, page.$page || {}), { query: pageQuery, fullPath: decodeURIComponent((page.$page || {}).fullPath || '/' + page.route) });
             if (router.options.platform !== 'app-plus') {
                 appPage.path = "/" + page.route;
             }
@@ -2209,7 +2245,7 @@ function queryPageToMap(toRule, router) {
         else if (objNavRule.name != null) {
             route = router.routesMap.nameMap[objNavRule.name];
             if (route == null) {
-                hooks_1.ERRORHOOK[0]({ type: 2, msg: "\u547D\u540D\u8DEF\u7531\u4E3A\uFF1A" + objNavRule.name + " \u7684\u8DEF\u7531\uFF0C\u65E0\u6CD5\u5728\u8DEF\u7531\u8868\u4E2D\u627E\u5230\uFF01", toRule: toRule }, router);
+                route = utils_1.getWildcardRule(router, { type: 2, msg: "\u547D\u540D\u8DEF\u7531\u4E3A\uFF1A" + objNavRule.name + " \u7684\u8DEF\u7531\uFF0C\u65E0\u6CD5\u5728\u8DEF\u7531\u8868\u4E2D\u627E\u5230\uFF01", toRule: toRule });
             }
             else {
                 query = toRule.params || {};
@@ -2217,7 +2253,7 @@ function queryPageToMap(toRule, router) {
             }
         }
         else {
-            hooks_1.ERRORHOOK[0]({ type: 2, msg: toRule + " \u89E3\u6790\u5931\u8D25\uFF0C\u8BF7\u68C0\u6D4B\u5F53\u524D\u8DEF\u7531\u8868\u4E0B\u662F\u5426\u6709\u5305\u542B\u3002", toRule: toRule }, router);
+            route = utils_1.getWildcardRule(router, { type: 2, msg: toRule + " \u89E3\u6790\u5931\u8D25\uFF0C\u8BF7\u68C0\u6D4B\u5F53\u524D\u8DEF\u7531\u8868\u4E0B\u662F\u5426\u6709\u5305\u542B\u3002", toRule: toRule });
         }
     }
     else {
@@ -2465,8 +2501,8 @@ function callRouterMethod(option, funName, router) {
             }
             path = finallyPath;
         }
-        var _a = option, events = _a.events, success = _a.success, fail = _a.fail, complete = _a.complete, animationType = _a.animationType, animationDuration = _a.animationDuration;
-        var jumpOptions = { path: path, events: events, success: success, fail: fail, complete: complete, animationDuration: animationDuration, animationType: animationType };
+        var _a = option, events = _a.events, success = _a.success, fail_1 = _a.fail, complete = _a.complete, animationType = _a.animationType, animationDuration = _a.animationDuration;
+        var jumpOptions = { path: path, events: events, success: success, fail: fail_1, complete: complete, animationDuration: animationDuration, animationType: animationType };
         router[routerMethodName](utils_1.notDeepClearNull(jumpOptions));
     }
 }
@@ -2623,7 +2659,9 @@ exports.RouterMount = RouterMount;
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
 /*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:14-18 */
+/*! CommonJS bailout: this is used directly at 13:17-21 */
+/*! CommonJS bailout: this is used directly at 22:19-23 */
+/*! CommonJS bailout: this is used directly at 49:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2638,6 +2676,42 @@ var __assign = (this && this.__assign) || function () {
         return t;
     };
     return __assign.apply(this, arguments);
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
 };
 var __rest = (this && this.__rest) || function (s, e) {
     var t = {};
@@ -2654,10 +2728,13 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.formatOriginURLQuery = exports.uniOriginJump = void 0;
 var query_1 = __webpack_require__(/*! ./query */ "./src/public/query.ts");
 var utils_1 = __webpack_require__(/*! ../helpers/utils */ "./src/helpers/utils.ts");
+var config_1 = __webpack_require__(/*! ../helpers/config */ "./src/helpers/config.ts");
 var routerNavCount = 0;
+var lastNavType = 'reLaunch';
 function uniOriginJump(router, originMethod, funName, options, callOkCb, forceNav) {
     var _a = formatOriginURLQuery(router, options, funName), complete = _a.complete, originRule = __rest(_a, ["complete"]);
-    if (routerNavCount === 0 && router.options.platform !== 'h5') { // 还原app.vue下已经重写后的生命周期
+    var platform = router.options.platform.trim();
+    if (routerNavCount === 0 && platform !== 'h5') { // 还原app.vue下已经重写后的生命周期
         utils_1.resetPageHook(router, originRule.url);
     }
     if (forceNav != null && forceNav === false) {
@@ -2665,7 +2742,7 @@ function uniOriginJump(router, originMethod, funName, options, callOkCb, forceNa
             routerNavCount++;
             // 【Fixe】  https://github.com/SilurianYang/uni-simple-router/issues/254
             // 在小程序端  next 直接放行会执行这个
-            if (router.options.platform !== 'h5') {
+            if (platform !== 'h5') {
                 router.Vue.prototype.$AppReady = true;
             }
         }
@@ -2673,35 +2750,55 @@ function uniOriginJump(router, originMethod, funName, options, callOkCb, forceNa
         callOkCb && callOkCb.apply(null, { msg: 'forceGuardEach强制触发并且不执行跳转' });
     }
     else {
-        if (funName === 'navigateBack') {
-            originMethod(__assign(__assign({}, originRule), { from: options.BACKTYPE }));
-            callOkCb && callOkCb.apply(null);
-        }
-        else {
-            originMethod(__assign(__assign({}, originRule), { complete: function () {
-                    var _a;
-                    var args = [];
-                    for (var _i = 0; _i < arguments.length; _i++) {
-                        args[_i] = arguments[_i];
-                    }
-                    if (routerNavCount === 0) {
-                        routerNavCount++;
-                        // 【Fixe】  https://github.com/SilurianYang/uni-simple-router/issues/254
-                        // 在小程序端 第一次 next 做跳转  会触发这个 、在app端首次必定会触发这个
-                        if (router.options.platform !== 'h5') {
-                            router.Vue.prototype.$AppReady = true;
+        originMethod(__assign(__assign({}, originRule), { from: options.BACKTYPE, complete: function () {
+                var _a, _b, _c, _d;
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i] = arguments[_i];
+                }
+                return __awaiter(this, void 0, void 0, function () {
+                    var waitPage, launchedHook, time;
+                    return __generator(this, function (_e) {
+                        switch (_e.label) {
+                            case 0:
+                                if (routerNavCount === 0) {
+                                    routerNavCount++;
+                                    // 【Fixe】  https://github.com/SilurianYang/uni-simple-router/issues/254
+                                    // 在小程序端 第一次 next 做跳转  会触发这个 、在app端首次必定会触发这个
+                                    if (platform !== 'h5') {
+                                        router.Vue.prototype.$AppReady = true;
+                                    }
+                                    if (platform === 'app-plus') {
+                                        waitPage = plus.nativeObj.View.getViewById('router-loadding');
+                                        waitPage && waitPage.close();
+                                        launchedHook = (_a = router.options.APP) === null || _a === void 0 ? void 0 : _a.launchedHook;
+                                        launchedHook && launchedHook();
+                                    }
+                                }
+                                time = 0;
+                                if (new RegExp(config_1.mpPlatformReg, 'g').test(platform)) {
+                                    time = ((_b = router.options.applet) === null || _b === void 0 ? void 0 : _b.animationDuration);
+                                }
+                                else if (platform === 'app-plus') {
+                                    if (funName === 'navigateBack' && lastNavType === 'navigateTo') {
+                                        time = ((_d = (_c = router.options.APP) === null || _c === void 0 ? void 0 : _c.animation) === null || _d === void 0 ? void 0 : _d.animationDuration);
+                                    }
+                                }
+                                if (!(funName === 'navigateTo' || funName === 'navigateBack')) return [3 /*break*/, 2];
+                                if (!(time !== 0)) return [3 /*break*/, 2];
+                                return [4 /*yield*/, utils_1.timeOut(time)];
+                            case 1:
+                                _e.sent();
+                                _e.label = 2;
+                            case 2:
+                                lastNavType = funName;
+                                complete && complete.apply(null, args);
+                                callOkCb && callOkCb.apply(null, args);
+                                return [2 /*return*/];
                         }
-                        if (router.options.platform === 'app-plus') {
-                            var waitPage = plus.nativeObj.View.getViewById('router-loadding');
-                            waitPage && waitPage.close();
-                            var launchedHook = (_a = router.options.APP) === null || _a === void 0 ? void 0 : _a.launchedHook;
-                            launchedHook && launchedHook();
-                        }
-                    }
-                    complete && complete.apply(null, args);
-                    callOkCb && callOkCb.apply(null, args);
-                } }));
-        }
+                    });
+                });
+            } }));
     }
 }
 exports.uniOriginJump = uniOriginJump;

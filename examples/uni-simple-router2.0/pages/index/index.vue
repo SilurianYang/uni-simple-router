@@ -41,9 +41,15 @@
 		},
 		onLoad() {
 			console.log('index-----onload')
+			console.log(this.Route)
 		},
 		onShow() {
 			console.log('index-----onShow')
+		},
+		computed:{
+			Route(){
+				return this.$Route
+			}
 		},
 		methods: {
 			forceEach(){
@@ -59,7 +65,7 @@
 			},
 			gotoPage(){
 				// this.$Router.push({
-				// 	path:'/pages/404/404',
+				// 	path:'/pages/404/404/666/444',
 				// 	query:{
 				// 		status:true,
 				// 		list:[
@@ -70,12 +76,15 @@
 				// 	}
 				// })
 				
+				
 				this.$Router.push({
 					name:'page2',
 					params:{
 						id:6666
 					}
 				})
+				
+				
 				
 				// this.$Router.push({
 				// 	success:()=>{

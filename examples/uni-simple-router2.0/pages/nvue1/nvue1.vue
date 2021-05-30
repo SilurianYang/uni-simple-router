@@ -12,9 +12,6 @@
 				
 			}
 		},
-		onBackPress(...e){
-			console.log(e)
-		},
 		methods: {
 			back(){
 				uni.navigateBack();

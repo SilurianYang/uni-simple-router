@@ -21,7 +21,15 @@
 		},
 		onBackPress(...e){
 			console.log(e)
-			return true
+		},
+		onShow() {
+			console.log('index-----onShow')
+			console.log(this.Route)
+		},
+		computed:{
+			Route(){
+				return this.$Route
+			}
 		},
 		methods: {
 			goOtherWeb(){
