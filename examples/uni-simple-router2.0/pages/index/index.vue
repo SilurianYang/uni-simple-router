@@ -31,7 +31,7 @@
 			}
 		},
 		onTabItemTap(){
-			console.log('onTabItemTap')
+			console.log('@@@@@@@@@@@@@-----tab1页面被点击------@@@@@@@@@@@@')
 		},
 		created(){
 			console.log('index-----created')
@@ -77,30 +77,35 @@
 				// })
 				
 				
+				// this.$Router.push({
+				// 	name:'page2',
+				// 	params:{
+				// 		id:6666
+				// 	}
+				// })
+				
+				
+				
 				this.$Router.push({
+					success:(...args)=>{
+						console.log(args)
+						console.log('跳转成功')
+						console.log(this.title)
+					},
+					complete:()=>{
+						console.log('跳转结束');
+						console.log(this.title)
+					},
+					fail:()=>{
+						console.log('跳转失败')
+					},
 					name:'page2',
 					params:{
-						id:6666
+						id:12
 					}
 				})
 				
 				
-				
-				// this.$Router.push({
-				// 	success:()=>{
-				// 		console.log('跳转成功')
-				// 	},
-				// 	complete:()=>{
-				// 		console.log('跳转结束')
-				// 	},
-				// 	fail:()=>{
-				// 		console.log('跳转失败')
-				// 	},
-				// 	name:'page2',
-				// 	params:{
-				// 		id:12
-				// 	}
-				// })
 				// uni.navigateTo({
 				// 	url:'/pages/navigate/navigate?id=555&name=hhyang',
 				// 	success:()=>{

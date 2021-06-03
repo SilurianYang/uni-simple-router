@@ -41,10 +41,29 @@
 				})
 			},
 			goBack1(){
-				this.$Router.back()
+				this.$Router.back(1,{
+					success:(...arg)=>{
+						console.log(arg)
+						console.log('$Router.back-page2返回成功')
+					},
+					fail:(...err)=>{
+						console.log(err)
+						console.log('$Router.back-page2返回成功')
+					}
+				})
 			},
 			goBack2(){
-				uni.navigateBack()
+				uni.navigateBack({
+					delta:1,
+					success:(...arg)=>{
+						console.log(arg)
+						console.log('navigateBack-page2返回成功')
+					},
+					fail:(...err)=>{
+						console.log(err)
+						console.log('navigateBack-page2返回成功')
+					}
+				})
 			}
 		}
 	}

@@ -470,7 +470,6 @@ module.exports = Array.isArray || function (arr) {
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -756,8 +755,6 @@ exports.getEnterPath = getEnterPath;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1141,7 +1138,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.resolveAbsolutePath = exports.assertParentChild = exports.reservedWord = exports.resetPageHook = exports.callHook = exports.replaceHook = exports.lockDetectWarn = exports.deepClone = exports.baseClone = exports.assertDeepObject = exports.paramsToQuery = exports.forMatNextToFrom = exports.urlToJson = exports.getUniCachePage = exports.copyData = exports.getDataType = exports.routesForMapRoute = exports.notRouteTo404 = exports.getWildcardRule = exports.assertNewOptions = exports.getRoutePath = exports.notDeepClearNull = exports.mergeConfig = exports.timeOut = exports.def = exports.voidFun = void 0;
+exports.resolveAbsolutePath = exports.assertParentChild = exports.reservedWord = exports.resetPageHook = exports.callHook = exports.replaceHook = exports.lockDetectWarn = exports.deepClone = exports.baseClone = exports.assertDeepObject = exports.paramsToQuery = exports.forMatNextToFrom = exports.urlToJson = exports.getUniCachePage = exports.copyData = exports.getDataType = exports.routesForMapRoute = exports.notRouteTo404 = exports.getWildcardRule = exports.assertNewOptions = exports.getRoutePath = exports.notDeepClearNull = exports.mergeConfig = exports.callOnTabItemTap = exports.timeOut = exports.def = exports.voidFun = void 0;
 var config_1 = __webpack_require__(/*! ../helpers/config */ "./src/helpers/config.ts");
 var hooks_1 = __webpack_require__(/*! ../public/hooks */ "./src/public/hooks.ts");
 var warn_1 = __webpack_require__(/*! ../helpers/warn */ "./src/helpers/warn.ts");
@@ -1165,6 +1162,31 @@ function timeOut(time) {
     });
 }
 exports.timeOut = timeOut;
+function callOnTabItemTap(path) {
+    var tabBar = __uniConfig.tabBar;
+    if (tabBar == null || tabBar.list == null) {
+        return false;
+    }
+    for (var i = 0; i < tabBar.list.length; i++) {
+        var it_1 = tabBar.list[i];
+        if ('/' + it_1.pagePath.trim() === path.trim()) {
+            var cachePage = getUniCachePage(0);
+            if (Object.keys(cachePage).length === 0) {
+                return false;
+            }
+            var page = cachePage;
+            var hooks = page.$options.onTabItemTap;
+            if (hooks) {
+                for (var j = 0; j < hooks.length; j++) {
+                    hooks[j].call(page, __assign(__assign({}, it_1), { index: i }));
+                }
+                return true;
+            }
+        }
+    }
+    return false;
+}
+exports.callOnTabItemTap = callOnTabItemTap;
 function mergeConfig(baseConfig, userConfig) {
     var config = Object.create(null);
     var baseConfigKeys = Object.keys(baseConfig).concat(['resolveQuery', 'parseQuery']);
@@ -1970,6 +1992,13 @@ function navjump(to, router, navType, nextCall, forceNav, animation, callHook) {
         }
         if (router.options.platform === 'h5') {
             router.$route.go(-level);
+            // Fixe  https://github.com/SilurianYang/uni-simple-router/issues/266   2021年6月3日11:14:38
+            // @ts-ignore
+            var success = (animation || { success: utils_1.voidFun }).success || utils_1.voidFun;
+            // @ts-ignore
+            var complete = (animation || { complete: utils_1.voidFun }).complete || utils_1.voidFun;
+            success({ errMsg: 'navigateBack:ok' });
+            complete({ errMsg: 'navigateBack:ok' });
             return;
         }
         else {
@@ -2026,11 +2055,7 @@ function navjump(to, router, navType, nextCall, forceNav, animation, callHook) {
 exports.navjump = navjump;
 function backOptionsBuild(router, level, animation) {
     var toRule = createRoute(router, level);
-    var navjumpRule = {
-        path: toRule.path,
-        query: toRule.query,
-        delta: level
-    };
+    var navjumpRule = __assign(__assign({}, animation || {}), { path: toRule.path, query: toRule.query, delta: level });
     if (utils_1.getDataType(animation) === '[object Object]') {
         var _a = animation, animationDuration = _a.animationDuration, animationType = _a.animationType;
         if (animationDuration != null) {
@@ -2198,7 +2223,6 @@ exports.proxyPageHook = proxyPageHook;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2658,10 +2682,6 @@ exports.RouterMount = RouterMount;
   \*********************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:17-21 */
-/*! CommonJS bailout: this is used directly at 22:19-23 */
-/*! CommonJS bailout: this is used directly at 49:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";

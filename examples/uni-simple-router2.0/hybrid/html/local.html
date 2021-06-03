@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title></title>
+		<script type="text/javascript" src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js">
+		</script>
+	</head>
+	<body>
+		<div>
+			<h1>这是加载的本地html页面</h1>
+			<button type="button" id="btn">点我去events页面</button>
+		</div>
+		<script type="text/javascript">
+			document.addEventListener('UniAppJSBridgeReady', function() {
+				alert('本地页面')
+				document.querySelector('#btn').onclick=function(){
+					uni.webView.navigateTo({
+						url:'/pages/events/events'
+					})
+				}
+			});
+		</script>
+	</body>
+</html>
