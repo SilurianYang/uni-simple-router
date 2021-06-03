@@ -67,6 +67,14 @@ export function navjump(
         }
         if (router.options.platform === 'h5') {
             (router.$route as any).go(-level);
+
+            // Fixe  https://github.com/SilurianYang/uni-simple-router/issues/266   2021年6月3日11:14:38
+            // @ts-ignore
+            const success = (animation || {success: voidFun}).success || voidFun;
+            // @ts-ignore
+            const complete = (animation || {complete: voidFun}).complete || voidFun;
+            success({errMsg: 'navigateBack:ok'});
+            complete({errMsg: 'navigateBack:ok'});
             return;
         } else {
             to = backOptionsBuild(router, level, animation);
@@ -127,6 +135,7 @@ export function backOptionsBuild(
 ):totalNextRoute {
     const toRule = createRoute(router, level);
     const navjumpRule:totalNextRoute = {
+        ...animation || {},
         path: toRule.path,
         query: toRule.query,
         delta: level
