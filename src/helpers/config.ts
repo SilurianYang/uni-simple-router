@@ -19,8 +19,9 @@ export const baseConfig:InstantiateConfig = {
         fallback: true
     },
     APP: {
-        loddingPageStyle: () => JSON.parse('{"backgroundColor":"#FFF"}'),
-        loddingPageHook: (view:any) => { view.show(); },
+        registerLoadingPage: true,
+        loadingPageStyle: () => JSON.parse('{"backgroundColor":"#FFF"}'),
+        loadingPageHook: (view:any) => { view.show(); },
         launchedHook: () => { plus.navigator.closeSplashscreen(); },
         animation: {}
     },

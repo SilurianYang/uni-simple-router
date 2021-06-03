@@ -14,8 +14,9 @@ export interface H5Config {
 	fallback?: boolean;
 }
 export interface AppConfig {
-	loddingPageStyle?: () => object; // 当前等待页面的样式 必须返回一个json
-    loddingPageHook?: (view:any)=>void; // 刚刚打开页面处于等待状态,会触发此函数
+    registerLoadingPage?:boolean; // 是否注册过渡加载页  +v2.0.6
+	loadingPageStyle?: () => object; // 当前等待页面的样式 必须返回一个json
+    loadingPageHook?: (view:any)=>void; // 刚刚打开页面处于等待状态,会触发此函数
     launchedHook?:()=>void; // 首次启动app完成
     animation?: startAnimationRule; // 页面切换动画
 }

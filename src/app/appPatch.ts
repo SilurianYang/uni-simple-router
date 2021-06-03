@@ -6,15 +6,17 @@ let quitBefore:number|null = null;
 export function registerLoddingPage(
     router:Router,
 ):void{
-    const { loddingPageHook, loddingPageStyle } = router.options.APP as AppConfig;	// 获取app所有配置
-    const view = new plus.nativeObj.View('router-loadding', {
-        top: '0px',
-        left: '0px',
-        height: '100%',
-        width: '100%',
-        ...(loddingPageStyle as Function)()
-    });
-    (loddingPageHook as Function)(view);	// 触发等待页面生命周期
+    if (router.options.registerLoadingPage) {
+        const { loadingPageHook, loadingPageStyle } = router.options.APP as AppConfig;	// 获取app所有配置
+        const view = new plus.nativeObj.View('router-loadding', {
+            top: '0px',
+            left: '0px',
+            height: '100%',
+            width: '100%',
+            ...(loadingPageStyle as Function)()
+        });
+        (loadingPageHook as Function)(view);	// 触发等待页面生命周期
+    }
 }
 
 export function runtimeQuit(
