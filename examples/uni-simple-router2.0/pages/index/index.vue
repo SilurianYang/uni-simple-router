@@ -16,6 +16,8 @@
 		
 		
 		<button type="primary" @click="$Router.push({name:'nvue1'})">去nvue1测试页</button>
+		
+		<button type="primary" @click="gotoTabPage">去tab2测试页面</button>
 	</view>
 </template>
 
@@ -52,6 +54,22 @@
 			}
 		},
 		methods: {
+			gotoTabPage(){
+				this.$Router.pushTab({
+					path:'/pages/other/other',
+					success:(...args)=>{
+						console.log(args)
+						console.log('tab2跳转成功')
+					},
+					complete:()=>{
+						console.log('tab2跳转结束');
+						console.log(this.title)
+					},
+					fail:()=>{
+						console.log('tab2跳转失败')
+					},
+				})
+			},
 			forceEach(){
 				this.$Router.forceGuardEach();
 			},

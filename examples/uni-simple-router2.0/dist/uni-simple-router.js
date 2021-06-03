@@ -668,6 +668,7 @@ exports.proxyH5Mount = proxyH5Mount;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -687,9 +688,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.runtimeQuit = exports.registerLoddingPage = void 0;
 var quitBefore = null;
 function registerLoddingPage(router) {
-    var _a = router.options.APP, loddingPageHook = _a.loddingPageHook, loddingPageStyle = _a.loddingPageStyle; // 获取app所有配置
-    var view = new plus.nativeObj.View('router-loadding', __assign({ top: '0px', left: '0px', height: '100%', width: '100%' }, loddingPageStyle()));
-    loddingPageHook(view); // 触发等待页面生命周期
+    if (router.options.registerLoadingPage) {
+        var _a = router.options.APP, loadingPageHook = _a.loadingPageHook, loadingPageStyle = _a.loadingPageStyle; // 获取app所有配置
+        var view = new plus.nativeObj.View('router-loadding', __assign({ top: '0px', left: '0px', height: '100%', width: '100%' }, loadingPageStyle()));
+        loadingPageHook(view); // 触发等待页面生命周期
+    }
 }
 exports.registerLoddingPage = registerLoddingPage;
 function runtimeQuit(title) {
@@ -800,8 +803,9 @@ exports.baseConfig = {
         fallback: true
     },
     APP: {
-        loddingPageStyle: function () { return JSON.parse('{"backgroundColor":"#FFF"}'); },
-        loddingPageHook: function (view) { view.show(); },
+        registerLoadingPage: true,
+        loadingPageStyle: function () { return JSON.parse('{"backgroundColor":"#FFF"}'); },
+        loadingPageHook: function (view) { view.show(); },
         launchedHook: function () { plus.navigator.closeSplashscreen(); },
         animation: {}
     },
@@ -1101,9 +1105,6 @@ exports.initMixins = initMixins;
   \******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:14-18 */
-/*! CommonJS bailout: this is used directly at 24:22-26 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1138,7 +1139,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.resolveAbsolutePath = exports.assertParentChild = exports.reservedWord = exports.resetPageHook = exports.callHook = exports.replaceHook = exports.lockDetectWarn = exports.deepClone = exports.baseClone = exports.assertDeepObject = exports.paramsToQuery = exports.forMatNextToFrom = exports.urlToJson = exports.getUniCachePage = exports.copyData = exports.getDataType = exports.routesForMapRoute = exports.notRouteTo404 = exports.getWildcardRule = exports.assertNewOptions = exports.getRoutePath = exports.notDeepClearNull = exports.mergeConfig = exports.callOnTabItemTap = exports.timeOut = exports.def = exports.voidFun = void 0;
+exports.resolveAbsolutePath = exports.assertParentChild = exports.reservedWord = exports.resetPageHook = exports.callHook = exports.replaceHook = exports.lockDetectWarn = exports.deepClone = exports.baseClone = exports.assertDeepObject = exports.paramsToQuery = exports.forMatNextToFrom = exports.urlToJson = exports.getUniCachePage = exports.copyData = exports.getDataType = exports.routesForMapRoute = exports.notRouteTo404 = exports.getWildcardRule = exports.assertNewOptions = exports.getRoutePath = exports.notDeepClearNull = exports.mergeConfig = exports.timeOut = exports.def = exports.voidFun = void 0;
 var config_1 = __webpack_require__(/*! ../helpers/config */ "./src/helpers/config.ts");
 var hooks_1 = __webpack_require__(/*! ../public/hooks */ "./src/public/hooks.ts");
 var warn_1 = __webpack_require__(/*! ../helpers/warn */ "./src/helpers/warn.ts");
@@ -1162,31 +1163,6 @@ function timeOut(time) {
     });
 }
 exports.timeOut = timeOut;
-function callOnTabItemTap(path) {
-    var tabBar = __uniConfig.tabBar;
-    if (tabBar == null || tabBar.list == null) {
-        return false;
-    }
-    for (var i = 0; i < tabBar.list.length; i++) {
-        var it_1 = tabBar.list[i];
-        if ('/' + it_1.pagePath.trim() === path.trim()) {
-            var cachePage = getUniCachePage(0);
-            if (Object.keys(cachePage).length === 0) {
-                return false;
-            }
-            var page = cachePage;
-            var hooks = page.$options.onTabItemTap;
-            if (hooks) {
-                for (var j = 0; j < hooks.length; j++) {
-                    hooks[j].call(page, __assign(__assign({}, it_1), { index: i }));
-                }
-                return true;
-            }
-        }
-    }
-    return false;
-}
-exports.callOnTabItemTap = callOnTabItemTap;
 function mergeConfig(baseConfig, userConfig) {
     var config = Object.create(null);
     var baseConfigKeys = Object.keys(baseConfig).concat(['resolveQuery', 'parseQuery']);
@@ -1697,6 +1673,10 @@ exports.warnLock = warnLock;
   \**********************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:23-27 */
+/*! CommonJS bailout: this is used directly at 9:20-24 */
+/*! CommonJS bailout: exports is used directly at 14:40-47 */
+/*! CommonJS bailout: exports is used directly at 15:42-49 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1791,7 +1771,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1947,7 +1926,6 @@ exports.loopCallHook = loopCallHook;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2523,6 +2501,33 @@ function callRouterMethod(option, funName, router) {
             if (finallyPath === '*') {
                 warn_1.warn("uni-app \u539F\u751F\u65B9\u6CD5\u8DF3\u8F6C\u8DEF\u5F84\u4E3A\uFF1A" + path + "\u3002\u5728\u8DEF\u7531\u8868\u4E2D\u627E\u4E0D\u5230\u76F8\u5173\u8DEF\u7531\u8868\uFF01\u5F53\u7136\u4F60\u53EF\u4EE5\u901A\u8FC7\u901A\u914D\u7B26*\u89E3\u51B3\uFF01", router, true);
             }
+            // Fixe h5 端无法触发 onTabItemTap hook  2021年6月3日17:26:47
+            if (router.options.platform === 'h5') {
+                var userSuccess_1 = option.success;
+                option.success = function () {
+                    var args = [];
+                    for (var _i = 0; _i < arguments.length; _i++) {
+                        args[_i] = arguments[_i];
+                    }
+                    userSuccess_1 === null || userSuccess_1 === void 0 ? void 0 : userSuccess_1.apply(null, args);
+                    utils_1.timeOut(150).then(function () {
+                        var cbArgs = option.detail || {};
+                        if (Object.keys(cbArgs).length > 0 && Reflect.has(cbArgs, 'index')) {
+                            var cachePage = utils_1.getUniCachePage(0);
+                            if (Object.keys(cachePage).length === 0) {
+                                return false;
+                            }
+                            var page = cachePage;
+                            var hooks = page.$options.onTabItemTap;
+                            if (hooks) {
+                                for (var j = 0; j < hooks.length; j++) {
+                                    hooks[j].call(page, cbArgs);
+                                }
+                            }
+                        }
+                    });
+                };
+            }
             path = finallyPath;
         }
         var _a = option, events = _a.events, success = _a.success, fail_1 = _a.fail, complete = _a.complete, animationType = _a.animationType, animationDuration = _a.animationDuration;
@@ -2540,7 +2545,6 @@ function callRouterMethod(option, funName, router) {
   \******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";

@@ -12,7 +12,7 @@ const router = createRouter({
 			animationType:'slide-in-top',
 			animationDuration:300
 		},
-		loddingPageHook:(view)=>{
+		loadingPageHook:(view)=>{
 			view.hide()
 		}
 	},
