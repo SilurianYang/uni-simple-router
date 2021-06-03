@@ -8,7 +8,8 @@ import {
     uniBackApiRule,
     navtoRule,
     totalNextRoute,
-    originMixins
+    originMixins,
+    objectAny
 } from '../options/base'
 
 import {
@@ -16,7 +17,9 @@ import {
     getRoutePath,
     getDataType,
     notDeepClearNull,
-    resolveAbsolutePath
+    resolveAbsolutePath,
+    getUniCachePage,
+    timeOut
 } from '../helpers/utils'
 
 import {
@@ -120,6 +123,29 @@ function callRouterMethod(
                     router,
                     true
                 );
+            }
+            // Fixe h5 端无法触发 onTabItemTap hook  2021年6月3日17:26:47
+            if (router.options.platform === 'h5') {
+                const {success: userSuccess} = option as uniNavApiRule;
+                (option as uniNavApiRule).success = (...args:Array<any>) => {
+                    userSuccess?.apply(null, args);
+                    timeOut(150).then(() => {
+                        const cbArgs = (option as uniNavApiRule).detail || {};
+                        if (Object.keys(cbArgs).length > 0 && Reflect.has(cbArgs, 'index')) {
+                            const cachePage = getUniCachePage(0);
+                            if (Object.keys(cachePage).length === 0) {
+                                return false
+                            }
+                            const page = cachePage as objectAny;
+                            const hooks = page.$options.onTabItemTap;
+                            if (hooks) {
+                                for (let j = 0; j < hooks.length; j++) {
+                                    hooks[j].call(page, cbArgs)
+                                }
+                            }
+                        }
+                    });
+                }
             }
             path = (finallyPath as string);
         }

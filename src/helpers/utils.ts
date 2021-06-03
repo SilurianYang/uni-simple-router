@@ -28,34 +28,6 @@ export function timeOut(time:number):Promise<void> {
     })
 }
 
-export function callOnTabItemTap(path:string):boolean {
-    const {tabBar} = __uniConfig;
-    if (tabBar == null || tabBar.list == null) {
-        return false;
-    }
-    for (let i = 0; i < tabBar.list.length; i++) {
-        const it = tabBar.list[i];
-        if ('/' + it.pagePath.trim() === path.trim()) {
-            const cachePage = getUniCachePage(0);
-            if (Object.keys(cachePage).length === 0) {
-                return false
-            }
-            const page = cachePage as objectAny;
-            const hooks = page.$options.onTabItemTap;
-            if (hooks) {
-                for (let j = 0; j < hooks.length; j++) {
-                    hooks[j].call(page, {
-                        ...it,
-                        index: i
-                    })
-                }
-                return true
-            }
-        }
-    }
-    return false
-}
-
 export function mergeConfig<T extends InstantiateConfig>(baseConfig: T, userConfig: T): T {
     const config: {[key: string]: any} = Object.create(null);
     const baseConfigKeys: Array<string> = Object.keys(baseConfig).concat(['resolveQuery', 'parseQuery']);
