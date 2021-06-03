@@ -1,9 +1,14 @@
 
 export declare interface AppConfig {
-    loddingPageStyle?: () => object;
-    loddingPageHook?: (view: any) => void;
+    registerLoadingPage?: boolean;
+    loadingPageStyle?: () => object;
+    loadingPageHook?: (view: any) => void;
     launchedHook?: () => void;
     animation?: startAnimationRule;
+}
+
+export declare interface appletConfig {
+    animationDuration?: number;
 }
 
 export declare interface appletsVueHookConfig {
@@ -92,6 +97,7 @@ export declare interface InstantiateConfig {
     platform: 'h5' | 'app-plus' | 'app-lets' | 'mp-weixin' | 'mp-baidu' | 'mp-alipay' | 'mp-toutiao' | 'mp-qq' | 'mp-360';
     h5?: H5Config;
     APP?: AppConfig;
+    applet?: appletConfig;
     debugger?: debuggerConfig;
     routerBeforeEach?: (to: navtoRule, from: navtoRule, next: (rule?: navtoRule | false) => void) => void;
     routerAfterEach?: (to: navtoRule, from: navtoRule, next?: Function) => void;
@@ -313,8 +319,6 @@ export declare interface uniNavApiRule {
     };
 }
 
-export { }
-
 // @ts-ignore
 declare module 'vue/types/vue' {
 	interface Vue {
@@ -322,3 +326,5 @@ declare module 'vue/types/vue' {
 		$Route: routeRule;
 	}
 }
+
+export { }
