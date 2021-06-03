@@ -1,5 +1,6 @@
 ## Fixes bug
 * 小程序端因切页面动画原因导致路由锁提前解锁，可重复跳转bug
+* H5 端 navigateBack 无法使用 `success` `complete` 回调 
 
 
 ## Add
