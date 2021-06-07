@@ -3,8 +3,8 @@ import {appletsVueHookConfig, appVueHookConfig, pageVueHookConfig, InstantiateCo
 import { copyData} from './utils';
 import { appVueSortHookRule, pageVueSortHookRule, notCallProxyHookRule, comVueSortHookRule } from '../options/base';
 
-export const mpPlatformReg = /(^mp-weixin$)|(^mp-baidu$)|(^mp-alipay$)|(^mp-toutiao$)|(^mp-qq$)|(^mp-360$)/g;
 export const keyword = ['query'];
+export const mpPlatformReg = '(^mp-weixin$)|(^mp-baidu$)|(^mp-alipay$)|(^mp-toutiao$)|(^mp-qq$)|(^mp-360$)' // 小程序下不能直接导出正则 需要重新组装成正则 不然bug一推 诡异
 
 export const baseConfig:InstantiateConfig = {
     h5: {
@@ -19,10 +19,14 @@ export const baseConfig:InstantiateConfig = {
         fallback: true
     },
     APP: {
-        loddingPageStyle: () => JSON.parse('{"backgroundColor":"#FFF"}'),
-        loddingPageHook: (view:any) => { view.show(); },
+        registerLoadingPage: true,
+        loadingPageStyle: () => JSON.parse('{"backgroundColor":"#FFF"}'),
+        loadingPageHook: (view:any) => { view.show(); },
         launchedHook: () => { plus.navigator.closeSplashscreen(); },
         animation: {}
+    },
+    applet: {
+        animationDuration: 300
     },
     platform: 'h5',
     keepUniOriginNav: false,

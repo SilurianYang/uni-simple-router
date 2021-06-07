@@ -3,7 +3,7 @@ import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, ob
 import {baseConfig, notCallProxyHook, proxyVueSortHookName, keyword} from '../helpers/config';
 import {ERRORHOOK} from '../public/hooks'
 import {warnLock} from '../helpers/warn'
-import { createRoute } from '../public/methods';
+import { createRoute, navjump } from '../public/methods';
 const Regexp = require('path-to-regexp');
 
 export function voidFun():void{}
@@ -17,6 +17,14 @@ export function def(
         get() {
             return getValue();
         }
+    })
+}
+
+export function timeOut(time:number):Promise<void> {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve();
+        }, time)
     })
 }
 
@@ -92,6 +100,48 @@ export function assertNewOptions<T extends InstantiateConfig>(
     return mergeOptions;
 }
 
+export function getWildcardRule(
+    router:Router,
+    msg?:navErrorRule
+):RoutesRule|never {
+    const routesMap = (router.routesMap as routesMapRule);
+    const route = routesMap.finallyPathMap['*'];
+    if (route) { // 有写通配符
+        return route
+    }
+    if (msg) {
+        ERRORHOOK[0](msg, router);
+    }
+    throw new Error(`当前路由表匹配规则已全部匹配完成，未找到满足的匹配规则。你可以使用 '*' 通配符捕捉最后的异常`);
+}
+
+export function notRouteTo404(
+    router:Router,
+    toRoute:RoutesRule|{
+        redirect:any;
+        path:string
+    },
+    parseToRule:totalNextRoute,
+    navType:NAVTYPE
+):RoutesRule|totalNextRoute|never {
+    if (toRoute.path !== '*') { // 不是通配符  正常匹配成功
+        return (toRoute as RoutesRule);
+    }
+
+    const redirect = toRoute.redirect;
+
+    if (typeof redirect === 'undefined') {
+        throw new Error(` *  通配符必须配合 redirect 使用。redirect: string | Location | Function`);
+    }
+
+    let newRoute = redirect;
+    if (typeof newRoute === 'function') {
+        newRoute = newRoute(parseToRule) as totalNextRoute;
+    }
+    const redirectRule = navjump(newRoute as totalNextRoute, router, navType, undefined, undefined, undefined, false);
+    return (redirectRule as totalNextRoute);
+}
+
 export function routesForMapRoute(
     router: Router,
     path: string,
@@ -130,7 +180,7 @@ export function routesForMapRoute(
         }
     }
     if (wildcard !== '') {
-        return routesMap.finallyPathMap[wildcard];
+        return getWildcardRule(router);
     }
     throw new Error(`${path} 路径无法在路由表中找到！检查跳转路径及路由表`);
 }
@@ -216,9 +266,9 @@ export function paramsToQuery(
             paramsQuery = {};
         }
         if (name != null && paramsQuery != null) {
-            const route = (router.routesMap as routesMapRule).nameMap[name];
+            let route = (router.routesMap as routesMapRule).nameMap[name];
             if (route == null) {
-                ERRORHOOK[0]({ type: 2, msg: `命名路由为：${name} 的路由，无法在路由表中找到！`, toRule}, router)
+                route = getWildcardRule(router, { type: 2, msg: `命名路由为：${name} 的路由，无法在路由表中找到！`, toRule});
             }
             const {finallyPath} = getRoutePath(route, router);
             if (finallyPath.includes(':')) { // 动态路由无法使用 paramsToQuery

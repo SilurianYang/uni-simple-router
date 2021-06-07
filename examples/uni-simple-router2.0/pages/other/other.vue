@@ -21,6 +21,9 @@
 		<router-link1 to="{name:'events'}">
 			<button type="primary">去events页面</button>
 		</router-link1>
+		<router-link1 to="{name:'webView'}">
+			<button type="warn">内置web-view组件页</button>
+		</router-link1>
 	</view>
 </template>
 
@@ -28,6 +31,13 @@
 export default {
 	data() {
 		return {};
+	},
+	onTabItemTap(...e){
+		console.log(e);
+		console.log('@@@@@@@@@@@@@-----tab2页面被点击------@@@@@@@@@@@@')
+	},
+	onShow() {
+		console.log('other-----onShow')
 	},
 	methods: {
 		gotoPage() {

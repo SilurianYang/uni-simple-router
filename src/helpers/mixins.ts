@@ -2,12 +2,12 @@ import { Router, routesMapRule, RoutesRule, pageTypeRule} from '../options/base'
 import {createRouteMap} from '../helpers/createRouteMap'
 import {buildVueRoutes, buildVueRouter} from '../H5/buildRouter'
 import {proxyEachHook} from '../H5/proxyHook'
-import {mpPlatformReg} from './config'
 import {registerLoddingPage} from '../app/appPatch';
 import { proxyPageHook } from '../public/page';
 import { forceGuardEach } from '../public/methods';
 import { assertParentChild } from './utils';
 import { getEnterPath } from '../applets/appletPatch';
+import { mpPlatformReg } from './config';
 
 let registerRouter:boolean = false;
 let onloadProxyOk:boolean = false;
@@ -27,7 +27,7 @@ export function getMixins(Vue:any, router: Router):{
     onLaunch(): void;
 } {
     let platform = router.options.platform;
-    if (mpPlatformReg.test(platform)) {
+    if (new RegExp(mpPlatformReg, 'g').test(platform)) {
         platform = 'app-lets';
     }
     const toggleHooks = {

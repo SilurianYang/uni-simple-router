@@ -12,9 +12,12 @@ const router = createRouter({
 			animationType:'slide-in-top',
 			animationDuration:300
 		},
-		loddingPageHook:(view)=>{
+		loadingPageHook:(view)=>{
 			view.hide()
 		}
+	},
+	applet:{
+		animationDuration:300
 	},
 	routerBeforeEach:(to, from, next) => {
 		console.log('+++++routerBeforeEach++++')
@@ -25,7 +28,9 @@ const router = createRouter({
 	},
 	routerErrorEach:({type,msg})=>{
 		console.log({type,msg});
-		router.$lockStatus=false;
+		if(type!==2){
+			router.$lockStatus=false;
+		}
 		// #ifdef APP-PLUS
 			if(type===3){
 				runtimeQuit();
@@ -35,12 +40,13 @@ const router = createRouter({
 	debugger:true,
 	routes: [
 		...ROUTES,
-		{
-		  path: '*',
-		  redirect:(to)=>{
-			  return {name:'404'}
-		  }
-		},
+		// {
+		//   path: '*',
+		//   redirect:(...args)=>{
+		// 	  console.log(args)
+		// 	  return {name:'404'}
+		//   }
+		// },
 	]
 });
 
@@ -53,11 +59,13 @@ router.beforeEach((to, from, next) => {
 	
 	
 	count++
-	if(to.name=='index' && to.BACKTYPE=='navigateBack'){
-		next(false);
-	}else{
-		next();
-	}
+	// if(to.name=='index' && to.BACKTYPE=='navigateBack'){
+	// 	next(false);
+	// }else{
+	// 	next();
+	// }
+	next();
+	
 	// if(count==1){
 	// 	next({
 	// 		path:'/pages/index/index',

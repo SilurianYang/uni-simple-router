@@ -16,6 +16,8 @@
 		
 		
 		<button type="primary" @click="$Router.push({name:'nvue1'})">去nvue1测试页</button>
+		
+		<button type="primary" @click="gotoTabPage">去tab2测试页面</button>
 	</view>
 </template>
 
@@ -31,7 +33,7 @@
 			}
 		},
 		onTabItemTap(){
-			console.log('onTabItemTap')
+			console.log('@@@@@@@@@@@@@-----tab1页面被点击------@@@@@@@@@@@@')
 		},
 		created(){
 			console.log('index-----created')
@@ -41,11 +43,33 @@
 		},
 		onLoad() {
 			console.log('index-----onload')
+			console.log(this.Route)
 		},
 		onShow() {
 			console.log('index-----onShow')
 		},
+		computed:{
+			Route(){
+				return this.$Route
+			}
+		},
 		methods: {
+			gotoTabPage(){
+				this.$Router.pushTab({
+					path:'/pages/other/other',
+					success:(...args)=>{
+						console.log(args)
+						console.log('tab2跳转成功')
+					},
+					complete:()=>{
+						console.log('tab2跳转结束');
+						console.log(this.title)
+					},
+					fail:()=>{
+						console.log('tab2跳转失败')
+					},
+				})
+			},
 			forceEach(){
 				this.$Router.forceGuardEach();
 			},
@@ -59,7 +83,7 @@
 			},
 			gotoPage(){
 				// this.$Router.push({
-				// 	path:'/pages/404/404',
+				// 	path:'/pages/404/404/666/444',
 				// 	query:{
 				// 		status:true,
 				// 		list:[
@@ -70,28 +94,36 @@
 				// 	}
 				// })
 				
+				
+				// this.$Router.push({
+				// 	name:'page2',
+				// 	params:{
+				// 		id:6666
+				// 	}
+				// })
+				
+				
+				
 				this.$Router.push({
+					success:(...args)=>{
+						console.log(args)
+						console.log('跳转成功')
+						console.log(this.title)
+					},
+					complete:()=>{
+						console.log('跳转结束');
+						console.log(this.title)
+					},
+					fail:()=>{
+						console.log('跳转失败')
+					},
 					name:'page2',
 					params:{
-						id:6666
+						id:12
 					}
 				})
 				
-				// this.$Router.push({
-				// 	success:()=>{
-				// 		console.log('跳转成功')
-				// 	},
-				// 	complete:()=>{
-				// 		console.log('跳转结束')
-				// 	},
-				// 	fail:()=>{
-				// 		console.log('跳转失败')
-				// 	},
-				// 	name:'page2',
-				// 	params:{
-				// 		id:12
-				// 	}
-				// })
+				
 				// uni.navigateTo({
 				// 	url:'/pages/navigate/navigate?id=555&name=hhyang',
 				// 	success:()=>{

@@ -176,6 +176,17 @@
             }
             
         }
+        ,{
+            "path" : "pages/webView/webView",
+			"name":"webView",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+		
     ],
 	  "tabBar": {
 	    "list": [{

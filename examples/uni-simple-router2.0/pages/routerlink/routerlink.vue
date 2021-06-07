@@ -18,12 +18,12 @@
 		
 		<h1>----------分割线--------</h1>
 		<router-link1
-			to="{name:'404',params:{id:'1'}}" 
+			to="{name:'guard',params:{id:'1'}}" 
 		>
 		  <button type="primary">纯name跳转字符串</button>
 		</router-link1>
 		<router-link1
-			to="{path:'/pages/404/404',query:{id:'1'}}" 
+			to="{path:'/pages/guard/guard',query:{id:'1'}}" 
 		>
 		  <button type="primary">纯path跳转字符串(绝对路径)</button>
 		</router-link1>
@@ -31,7 +31,7 @@
 		
 		
 		<router-link1 
-			to="/404/404" 
+			to="/guard/guard" 
 			:level="2" 
 			:append="true"
 		>
@@ -42,13 +42,13 @@
 		
 		
 		<router-link1 to="{name:'relativePath2',params:{tags:'1599,1624',on_sale:true,orderby:'rand'}}" >
-		  <button type="default">bug参数跳转测试</button>
+		  <button type="default">bug参数跳转测试,会跳404</button>
 		</router-link1>
 		
 		
 		<h1>----------分割线--------</h1>
 		
-		<router-link1 to="/pages/404/404"  :stopNavto="true">
+		<router-link1 to="/pages/guard/guard"  :stopNavto="true">
 		  <button type="default">阻止组件事件,不会跳转</button>
 		</router-link1>
 		
@@ -66,14 +66,14 @@
 			return {
 				navlist:[
 					{
-						name:'404',
+						name:'guard',
 						params:{
 							name:'hhyang',
 							id:1
 						}
 					},
 					{
-						name:'404',
+						name:'guard',
 						params:{
 							id:1
 						}

@@ -14,11 +14,16 @@ export interface H5Config {
 	fallback?: boolean;
 }
 export interface AppConfig {
-	loddingPageStyle?: () => object; // 当前等待页面的样式 必须返回一个json
-    loddingPageHook?: (view:any)=>void; // 刚刚打开页面处于等待状态,会触发此函数
+    registerLoadingPage?:boolean; // 是否注册过渡加载页  +v2.0.6
+	loadingPageStyle?: () => object; // 当前等待页面的样式 必须返回一个json
+    loadingPageHook?: (view:any)=>void; // 刚刚打开页面处于等待状态,会触发此函数
     launchedHook?:()=>void; // 首次启动app完成
     animation?: startAnimationRule; // 页面切换动画
 }
+export interface appletConfig {
+    animationDuration?:number; // 页面切换时间，有助于路由锁精准解锁
+}
+
 export interface debuggerArrayConfig{
     error?:boolean;
     warn?:boolean;
@@ -31,6 +36,7 @@ export interface InstantiateConfig {
     platform:'h5'|'app-plus'|'app-lets'|'mp-weixin'|'mp-baidu'|'mp-alipay'|'mp-toutiao'|'mp-qq'|'mp-360'; // 当前运行平台
     h5?: H5Config;
 	APP?: AppConfig;
+    applet?:appletConfig;
 	debugger?: debuggerConfig; // 是否处于开发阶段 设置为true则打印日志
 	routerBeforeEach?: (to:navtoRule, from:navtoRule, next:(rule?: navtoRule|false)=>void) => void; // router 前置路由函数 每次触发跳转前先会触发此函数
 	routerAfterEach?: (to:navtoRule, from:navtoRule, next?: Function) => void; // router 后置路由函数 每次触发跳转后会触发此函数

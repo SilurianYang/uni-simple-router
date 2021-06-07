@@ -25,7 +25,8 @@ import {
     copyData,
     lockDetectWarn,
     getDataType,
-    reservedWord
+    reservedWord,
+    notRouteTo404
 } from '../helpers/utils'
 import { transitionTo } from './hooks';
 import {createFullPath, createToFrom} from '../public/page'
@@ -54,8 +55,9 @@ export function navjump(
         next:Function;
     },
     forceNav?:boolean,
-    animation?:uniBackApiRule|uniBackRule
-) :void|never {
+    animation?:uniBackApiRule|uniBackRule,
+    callHook:boolean|undefined = true
+) :void|never|totalNextRoute {
     if (navType === 'back') {
         let level:number = 1;
         if (typeof to === 'string') {
@@ -65,6 +67,14 @@ export function navjump(
         }
         if (router.options.platform === 'h5') {
             (router.$route as any).go(-level);
+
+            // Fixe  https://github.com/SilurianYang/uni-simple-router/issues/266   2021年6月3日11:14:38
+            // @ts-ignore
+            const success = (animation || {success: voidFun}).success || voidFun;
+            // @ts-ignore
+            const complete = (animation || {complete: voidFun}).complete || voidFun;
+            success({errMsg: 'navigateBack:ok'});
+            complete({errMsg: 'navigateBack:ok'});
             return;
         } else {
             to = backOptionsBuild(router, level, animation);
@@ -99,13 +109,17 @@ export function navjump(
     } else {
         let from:totalNextRoute = {path: ''};
         if (nextCall == null) {
-            const toRoute = routesForMapRoute(router, parseToRule.path, ['finallyPathMap', 'pathMap']);
-            parseToRule = { ...toRoute, ...{params: {}}, ...parseToRule }
+            let toRoute = routesForMapRoute(router, parseToRule.path, ['finallyPathMap', 'pathMap']);
+            toRoute = notRouteTo404(router, toRoute, parseToRule, navType);
+            parseToRule = { ...toRoute, ...{params: {}}, ...parseToRule, ...{path: toRoute.path} }
             from = createToFrom(parseToRule, router);
         } else {
             from = nextCall.from;
         }
         createFullPath(parseToRule, from);
+        if (callHook === false) {
+            return parseToRule;
+        }
         transitionTo(router, parseToRule, from, navType, HOOKLIST, function(
             callOkCb:Function
         ):void {
@@ -121,6 +135,7 @@ export function backOptionsBuild(
 ):totalNextRoute {
     const toRule = createRoute(router, level);
     const navjumpRule:totalNextRoute = {
+        ...animation || {},
         path: toRule.path,
         query: toRule.query,
         delta: level
@@ -212,16 +227,16 @@ export function createRoute(
                 throw new Error(`不存在的页面栈，请确保有足够的页面可用，当前 level:${level}`)
             }
             // Fixes: https://github.com/SilurianYang/uni-simple-router/issues/196
-            let pageOptions = (page as objectAny).options;
+            let pageOptions = (page as objectAny).options || {};
             const originQuery = pageOptions.query;
             if (originQuery != null && Object.keys(pageOptions).length === 1) {
                 pageOptions = JSON.parse(decodeURIComponent(originQuery))
             }
             const pageQuery = JSON.parse(decodeURIComponent(JSON.stringify(pageOptions)))
             appPage = {
-                ...(page as objectAny).$page,
+                ...(page as objectAny).$page || {},
                 query: pageQuery,
-                fullPath: decodeURIComponent((page as objectAny).$page.fullPath)
+                fullPath: decodeURIComponent(((page as objectAny).$page || {}).fullPath || '/' + (page as objectAny).route)
             }
             if (router.options.platform !== 'app-plus') {
                 appPage.path = `/${(page as objectAny).route}`
