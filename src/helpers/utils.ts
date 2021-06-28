@@ -409,7 +409,7 @@ export function callHook(
     enterPath:string
 ):Array<Function> {
     const resetHookFun:Array<Function> = [];
-    for (const [, [origin]] of Object.entries(value as objectAny)) {
+    for (const [, [origin]] of Object.entries(value as objectAny).sort()) {
         if (origin && origin.hook) {
             resetHookFun.push(origin.hook(enterPath))
         }
