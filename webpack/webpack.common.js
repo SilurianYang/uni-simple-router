@@ -1,5 +1,6 @@
 const {resolve} = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
+const webpack =require('webpack');
 
 module.exports = {
 	entry: './src/index.ts',
@@ -31,5 +32,10 @@ module.exports = {
 				to: resolve(__dirname, '../dist'),
 			},
 		]),
+        new webpack.DefinePlugin({
+            $npm_package_name: webpack.DefinePlugin.runtimeValue(() => {
+                return JSON.stringify(process.env.npm_package_name.toLocaleUpperCase())
+            }, true )
+        })
 	],
 };
