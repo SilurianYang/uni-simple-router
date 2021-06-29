@@ -12,16 +12,16 @@
 			}
 		},
 		created(){
-			console.log('comChild--created----created')
+			console.log('comChild----created')
 		},
 		mounted(){
-			console.log('comChild--mounted----mounted')
+			console.log('comChild----mounted')
 		},
 		onLoad() {
-			console.log('comChild-onLoad-----onload')
+			console.log('comChild-----onload')
 		},
 		onShow() {
-			console.log('comChild-onLoad-----onShow')
+			console.log('comChild-----onShow')
 		},
 		methods: {
 			

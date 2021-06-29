@@ -17,7 +17,6 @@ return /******/ (() => { // webpackBootstrap
   \**********************************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: module, __webpack_require__ */
-/*! CommonJS bailout: module.exports is used directly at 6:0-14 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var isarray = __webpack_require__(/*! isarray */ "./node_modules/path-to-regexp/node_modules/isarray/index.js")
@@ -456,7 +455,6 @@ function pathToRegexp (path, keys, options) {
   \*******************************************************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: module */
-/*! CommonJS bailout: module.exports is used directly at 1:0-14 */
 /***/ ((module) => {
 
 module.exports = Array.isArray || function (arr) {
@@ -564,7 +562,6 @@ exports.buildVueRouter = buildVueRouter;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
-/*! CommonJS bailout: this is used directly at 2:17-21 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -672,7 +669,6 @@ exports.proxyH5Mount = proxyH5Mount;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -1084,6 +1080,11 @@ function getMixins(Vue, router) {
                 }
             },
             onLoad: function () {
+                // 保证这个函数不会被重写，否则必须在启动页写onLoad
+                // eslint-disable-next-line
+                var pluginMark = "UNI-SIMPLE-ROUTER";
+                if (pluginMark)
+                    utils_1.voidFun(pluginMark);
                 if (!onloadProxyOk && utils_1.assertParentChild(appletProxy['page'], this)) {
                     onloadProxyOk = true;
                     methods_1.forceGuardEach(router);
@@ -1154,7 +1155,12 @@ var hooks_1 = __webpack_require__(/*! ../public/hooks */ "./src/public/hooks.ts"
 var warn_1 = __webpack_require__(/*! ../helpers/warn */ "./src/helpers/warn.ts");
 var methods_1 = __webpack_require__(/*! ../public/methods */ "./src/public/methods.ts");
 var Regexp = __webpack_require__(/*! path-to-regexp */ "./node_modules/path-to-regexp/index.js");
-function voidFun() { }
+function voidFun() {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+}
 exports.voidFun = voidFun;
 function def(defObject, key, getValue) {
     Object.defineProperty(defObject, key, {
@@ -1409,19 +1415,27 @@ function assertDeepObject(object) {
 }
 exports.assertDeepObject = assertDeepObject;
 function baseClone(source, target) {
-    for (var _i = 0, _a = Object.keys(source); _i < _a.length; _i++) {
-        var key = _a[_i];
-        var dyKey = key;
-        if (source[key] === source)
-            continue;
-        if (typeof source[key] === 'object') {
-            target[dyKey] = getDataType(source[key]) === '[object Array]' ? [] : {};
-            baseClone(source[key], target[dyKey]);
-        }
-        else {
-            target[dyKey] = source[key];
+    // 【Fixe】 https://github.com/SilurianYang/uni-simple-router/issues/292
+    // 小程序会将null解析为字符串 undefined 建议不要在参数中传递 null
+    if (source == null) {
+        target = source;
+    }
+    else {
+        for (var _i = 0, _a = Object.keys(source); _i < _a.length; _i++) {
+            var key = _a[_i];
+            var dyKey = key;
+            if (source[key] === source)
+                continue;
+            if (typeof source[key] === 'object') {
+                target[dyKey] = getDataType(source[key]) === '[object Array]' ? [] : {};
+                target[dyKey] = baseClone(source[key], target[dyKey]);
+            }
+            else {
+                target[dyKey] = source[key];
+            }
         }
     }
+    return target;
 }
 exports.baseClone = baseClone;
 function deepClone(source) {
@@ -1469,6 +1483,9 @@ function replaceHook(router, vueVim, proxyHookKey, pageType) {
             var keyName = proxyName[i];
             var originHook = vueOptions[keyName];
             if (getDataType(originHook) === '[object Array]') {
+                if (originHook.length === 1 && originHook.toString().includes("UNI-SIMPLE-ROUTER")) {
+                    return "continue";
+                }
                 var proxyInfo_1 = {
                     options: [],
                     hook: Function
@@ -1509,10 +1526,13 @@ function replaceHook(router, vueVim, proxyHookKey, pageType) {
     }
 }
 exports.replaceHook = replaceHook;
-function callHook(value, enterPath) {
+function callHook(key, value, enterPath) {
     var resetHookFun = [];
-    for (var _i = 0, _a = Object.entries(value); _i < _a.length; _i++) {
-        var _b = _a[_i], origin_1 = _b[1][0];
+    // Fixe: https://github.com/SilurianYang/uni-simple-router/issues/206
+    // Fixe: https://github.com/SilurianYang/uni-simple-router/issues/224
+    var hookList = config_1.proxyVueSortHookName[key];
+    for (var i = 0; i < hookList.length; i++) {
+        var origin_1 = value[hookList[i]][0];
         if (origin_1 && origin_1.hook) {
             resetHookFun.push(origin_1.hook(enterPath));
         }
@@ -1533,14 +1553,15 @@ function resetPageHook(router, enterPath) {
     }
     var resetHookFun = [];
     for (var _i = 0, _a = Object.entries(router[proxyHookKey]); _i < _a.length; _i++) {
-        var _b = _a[_i], value = _b[1];
+        var _b = _a[_i], name_2 = _b[0], value = _b[1];
+        var key = name_2;
         if (getDataType(value) === '[object Array]') {
             for (var i = 0; i < value.length; i++) {
-                resetHookFun = resetHookFun.concat(callHook(value[i], enterPath));
+                resetHookFun = resetHookFun.concat(callHook(key, value[i], enterPath));
             }
         }
         else {
-            resetHookFun = resetHookFun.concat(callHook(value, enterPath));
+            resetHookFun = resetHookFun.concat(callHook(key, value, enterPath));
         }
     }
     setTimeout(function () {
@@ -1682,10 +1703,6 @@ exports.warnLock = warnLock;
   \**********************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:23-27 */
-/*! CommonJS bailout: this is used directly at 9:20-24 */
-/*! CommonJS bailout: exports is used directly at 14:40-47 */
-/*! CommonJS bailout: exports is used directly at 15:42-49 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";

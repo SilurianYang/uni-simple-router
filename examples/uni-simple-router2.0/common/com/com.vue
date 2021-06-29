@@ -17,10 +17,10 @@
 			}
 		},
 		created(){
-			console.log('index--created----created')
+			console.log('index-child----created')
 		},
 		mounted(){
-			console.log('index--mounted----mounted')
+			console.log('index-child----mounted')
 		},
 		onLoad() {
 			console.log('index-child-----onload')

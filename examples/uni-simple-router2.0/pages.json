@@ -1,8 +1,12 @@
 {
 	"pages": [
 		{
+			"path": "pages/index/index",
+			"name": "index",
+			"aliasPath": "/"
+		},
+		{
 		    "path" : "pages/login/login",
-			"aliasPath": "/",
 			"name":"login",
 		    "style" :                                                                                    
 		    {
@@ -10,9 +14,6 @@
 		        "enablePullDownRefresh": false
 		    }
 		    
-		},{
-			"path": "pages/index/index",
-			"name": "index"
 		},
 		{
 			"path": "pages/page2/page2",
