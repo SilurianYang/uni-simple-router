@@ -11,7 +11,8 @@ module.exports = {
         getCurrentPages: true,
         getApp: true,
         __uniConfig: true,
-        __uniRoutes: true
+        __uniRoutes: true,
+        $npm_package_name: true
     },
     parser: '@typescript-eslint/parser',
     extends: ['eslint:recommended'],
