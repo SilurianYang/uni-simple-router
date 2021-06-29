@@ -6,7 +6,7 @@ import {warnLock} from '../helpers/warn'
 import { createRoute, navjump } from '../public/methods';
 const Regexp = require('path-to-regexp');
 
-export function voidFun():void{}
+export function voidFun(...args:any):void{}
 
 export function def(
     defObject:objectAny,
@@ -308,17 +308,24 @@ T extends {
 >(
     source:T,
     target:Array<any>|objectAny
-):void {
-    for (const key of Object.keys(source)) {
-        const dyKey = key as T[K];
-        if (source[key] === source) continue
-        if (typeof source[key] === 'object') {
-            target[dyKey] = getDataType<T>(source[key]) === '[object Array]' ? ([] as Array<any>) : ({} as objectAny)
-            baseClone(source[key], target[dyKey])
-        } else {
-            target[dyKey] = source[key]
+):Array<any>|objectAny|null {
+    // 【Fixe】 https://github.com/SilurianYang/uni-simple-router/issues/292
+    // 小程序会将null解析为字符串 undefined 建议不要在参数中传递 null
+    if (source == null) {
+        target = source;
+    } else {
+        for (const key of Object.keys(source)) {
+            const dyKey = key as T[K];
+            if (source[key] === source) continue
+            if (typeof source[key] === 'object') {
+                target[dyKey] = getDataType<T>(source[key]) === '[object Array]' ? ([] as Array<any>) : ({} as objectAny)
+                target[dyKey] = baseClone(source[key], target[dyKey])
+            } else {
+                target[dyKey] = source[key]
+            }
         }
     }
+    return target;
 }
 
 export function deepClone<T>(source:T):T {
@@ -375,6 +382,9 @@ export function replaceHook(
             const keyName = proxyName[i];
             const originHook = vueOptions[keyName] as Array<Function>|undefined;
             if (getDataType<Array<Function>|undefined>(originHook) === '[object Array]') {
+                if ((originHook as Array<Function>).length === 1 && (originHook as Array<Function>).toString().includes($npm_package_name)) {
+                    continue;
+                }
                 const proxyInfo:hookObjectRule = {
                     options: [],
                     hook: Function
@@ -405,11 +415,16 @@ export function replaceHook(
     }
 }
 export function callHook(
+    key:pageTypeRule,
     value:objectAny,
     enterPath:string
 ):Array<Function> {
     const resetHookFun:Array<Function> = [];
-    for (const [, [origin]] of Object.entries(value as objectAny)) {
+    // Fixe: https://github.com/SilurianYang/uni-simple-router/issues/206
+    // Fixe: https://github.com/SilurianYang/uni-simple-router/issues/224
+    const hookList = proxyVueSortHookName[key];
+    for (let i = 0; i < hookList.length; i++) {
+        const [origin] = value[hookList[i]];
         if (origin && origin.hook) {
             resetHookFun.push(origin.hook(enterPath))
         }
@@ -431,13 +446,14 @@ export function resetPageHook(
         proxyHookKey = 'appProxyHook';
     }
     let resetHookFun:Array<Function> = [];
-    for (const [, value] of Object.entries(router[proxyHookKey])) {
+    for (const [name, value] of Object.entries(router[proxyHookKey])) {
+        const key = name as pageTypeRule;
         if (getDataType(value) === '[object Array]') {
             for (let i = 0; i < value.length; i++) {
-                resetHookFun = resetHookFun.concat(callHook(value[i], enterPath));
+                resetHookFun = resetHookFun.concat(callHook(key, value[i], enterPath));
             }
         } else {
-            resetHookFun = resetHookFun.concat(callHook(value, enterPath));
+            resetHookFun = resetHookFun.concat(callHook(key, value, enterPath));
         }
     }
     setTimeout(() => {

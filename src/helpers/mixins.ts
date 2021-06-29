@@ -5,7 +5,7 @@ import {proxyEachHook} from '../H5/proxyHook'
 import {registerLoddingPage} from '../app/appPatch';
 import { proxyPageHook } from '../public/page';
 import { forceGuardEach } from '../public/methods';
-import { assertParentChild } from './utils';
+import { assertParentChild, voidFun } from './utils';
 import { getEnterPath } from '../applets/appletPatch';
 import { mpPlatformReg } from './config';
 
@@ -78,6 +78,11 @@ export function getMixins(Vue:any, router: Router):{
                 }
             },
             onLoad(this: any):void{
+                // 保证这个函数不会被重写，否则必须在启动页写onLoad
+                // eslint-disable-next-line
+                const pluginMark = $npm_package_name;
+                if (pluginMark)voidFun(pluginMark);
+
                 if (!onloadProxyOk && assertParentChild(appletProxy['page'], this)) {
                     onloadProxyOk = true;
                     forceGuardEach(router);
