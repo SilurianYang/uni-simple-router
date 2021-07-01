@@ -1,5 +1,5 @@
 import {appVueHookConfig, H5Config, pageVueHookConfig, InstantiateConfig, appletsVueHookConfig, baseAppHookConfig} from '../options/config';
-import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, objectAny, navErrorRule, hookObjectRule, notCallProxyHookRule, NAVTYPE, navRoute, pageTypeRule} from '../options/base';
+import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, objectAny, navErrorRule, hookObjectRule, notCallProxyHookRule, NAVTYPE, navRoute, pageTypeRule, routeRule} from '../options/base';
 import {baseConfig, notCallProxyHook, proxyVueSortHookName, keyword} from '../helpers/config';
 import {ERRORHOOK} from '../public/hooks'
 import {warnLock} from '../helpers/warn'
@@ -416,6 +416,7 @@ export function replaceHook(
 }
 export function callHook(
     key:pageTypeRule,
+    router: Router,
     value:objectAny,
     enterPath:string
 ):Array<Function> {
@@ -426,6 +427,11 @@ export function callHook(
     for (let i = 0; i < hookList.length; i++) {
         const [origin] = value[hookList[i]];
         if (origin && origin.hook) {
+            // Fixe: onLoad中option不带页面传递的数据问题。
+            if (key === 'page') {
+                const pageRoute = createRoute(router);
+                origin.options = [pageRoute.query];
+            }
             resetHookFun.push(origin.hook(enterPath))
         }
     }
@@ -450,10 +456,10 @@ export function resetPageHook(
         const key = name as pageTypeRule;
         if (getDataType(value) === '[object Array]') {
             for (let i = 0; i < value.length; i++) {
-                resetHookFun = resetHookFun.concat(callHook(key, value[i], enterPath));
+                resetHookFun = resetHookFun.concat(callHook(key, router, value[i], enterPath));
             }
         } else {
-            resetHookFun = resetHookFun.concat(callHook(key, value, enterPath));
+            resetHookFun = resetHookFun.concat(callHook(key, router, value, enterPath));
         }
     }
     setTimeout(() => {
