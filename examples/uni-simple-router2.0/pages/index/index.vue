@@ -42,7 +42,7 @@
 			console.log('index-----mounted')
 		},
 		onLoad() {
-			console.log('index-----onload')
+			console.log('index-----onload')	
 			console.log(this.Route)
 		},
 		onShow() {
