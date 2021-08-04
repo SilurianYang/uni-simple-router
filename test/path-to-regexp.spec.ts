@@ -9,11 +9,12 @@ const routes = [
 	{path: '/pages/animation/animation', aliasPath: '/an-(\\d+)-on'},
     {path: '/static/1/1', aliasPath: '/static/(.*)'},
     {path: '/dynamic/1/1', aliasPath: '/dynamic-*'},
+    {path: '/dynamic/3/3', aliasPath: '/dynamic3'},
     {path: '*'}
 ];
 
 const router = createRouter({
-	platform: 'h5',
+	platform: 'app-plus',
 	keepUniOriginNav: true,
 	routes,
 });
@@ -25,7 +26,15 @@ router.install(Vue);
 
 const rules: routesMapKeysRule[] = ['finallyPathMap', 'pathMap'];
 
-it('匹配路由', () => {
+it('别名路径匹配',()=>{
+    const toRoute1 = routesForMapRoute(router, '/dynamic3', rules);
+	expect(toRoute1).toEqual(routes[6]);
+
+    const toRoute2 = routesForMapRoute(router, '/dynamic/3/3', rules);
+	expect(toRoute2).toEqual(routes[6]);
+})
+
+it('全局匹配', () => {
 	const toRoute1 = routesForMapRoute(router, '/pages/login/login', rules);
 	expect(toRoute1).toEqual(routes[0]);
 
@@ -54,8 +63,8 @@ it('匹配路由', () => {
 	expect(toRoute9).toEqual(routes[5]);
 
     const toRoute10 = routesForMapRoute(router, '/aaaaaa', rules);
-	expect(toRoute10).toEqual(routes[6]);
+	expect(toRoute10).toEqual(routes[7]);
 
     const toRoute11 = routesForMapRoute(router, '---48848--14545', rules);
-	expect(toRoute11).toEqual(routes[6]);
+	expect(toRoute11).toEqual(routes[7]);
 });
