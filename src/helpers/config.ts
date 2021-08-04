@@ -1,9 +1,7 @@
 import {err} from './warn'
 import {appletsVueHookConfig, appVueHookConfig, pageVueHookConfig, InstantiateConfig, LifeCycleConfig} from '../options/config'
-import { copyData} from './utils';
 import { appVueSortHookRule, pageVueSortHookRule, notCallProxyHookRule, comVueSortHookRule } from '../options/base';
 
-export const keyword = ['query'];
 export const mpPlatformReg = '(^mp-weixin$)|(^mp-baidu$)|(^mp-alipay$)|(^mp-toutiao$)|(^mp-qq$)|(^mp-360$)' // 小程序下不能直接导出正则 需要重新组装成正则 不然bug一推 诡异
 
 export const baseConfig:InstantiateConfig = {
@@ -84,7 +82,7 @@ export const indexProxyHook:appletsVueHookConfig = {
             onUnload: [],
             onResize: []
         };
-    })(copyData<appVueHookConfig>(appProxyHook.app)),
+    })(JSON.parse(JSON.stringify(appProxyHook.app))),
     component: []
 }
 

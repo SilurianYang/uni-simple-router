@@ -1,6 +1,6 @@
 import {appVueHookConfig, H5Config, pageVueHookConfig, InstantiateConfig, appletsVueHookConfig, baseAppHookConfig} from '../options/config';
 import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, objectAny, navErrorRule, hookObjectRule, notCallProxyHookRule, NAVTYPE, navRoute, pageTypeRule} from '../options/base';
-import {baseConfig, notCallProxyHook, proxyVueSortHookName, keyword} from '../helpers/config';
+import {baseConfig, notCallProxyHook, proxyVueSortHookName} from '../helpers/config';
 import {ERRORHOOK} from '../public/hooks'
 import {warnLock} from '../helpers/warn'
 import { createRoute, navjump } from '../public/methods';
@@ -145,7 +145,8 @@ export function notRouteTo404(
 export function routesForMapRoute(
     router: Router,
     path: string,
-    mapArrayKey:Array<routesMapKeysRule>
+    mapArrayKey:Array<routesMapKeysRule>,
+    deepFind:boolean|undefined = false
 ):RoutesRule|never {
     if (router.options.h5?.vueRouterDev) {
         return {path}
@@ -177,6 +178,16 @@ export function routesForMapRoute(
                 }
                 return (route as RoutesRule);
             }
+        }
+    }
+    // 【Fixe】 https://github.com/SilurianYang/uni-simple-router/issues/302    2021-8-4 16:38:44
+    if (deepFind) {
+        return ({} as RoutesRule);
+    }
+    if (routesMap['aliasPathMap']) {
+        const results = routesForMapRoute(router, path, ['aliasPathMap'], true);
+        if (Object.keys(results).length > 0) {
+            return results;
         }
     }
     if (wildcard !== '') {
@@ -462,34 +473,6 @@ export function resetPageHook(
         }
     }, 500)
 }
-
-export function reservedWord(
-    params:string|totalNextRoute
-):string|totalNextRoute {
-    if (typeof params === 'string') {
-        return params
-    }
-
-    const query = {
-        ...(copyData(params.params || {}) as object),
-        ...(copyData(params.query || {}) as object)
-    };
-    for (let i = 0; i < keyword.length; i++) {
-        const hasKey = keyword[i];
-        if (Reflect.has(query, hasKey)) {
-            if (getDataType(params.query) === '[object Object]') {
-                delete (params.query as objectAny)[hasKey];
-            }
-            if (getDataType(params.params) === '[object Object]') {
-                delete (params.params as objectAny)[hasKey];
-            }
-            warnLock(`${JSON.stringify(keyword)} 作为插件的保留字，在参数传递中不允许使用。已自动被过滤掉！换个参数名试试吧！ `)
-        }
-    }
-
-    return params
-}
-
 export function assertParentChild(
     parentPath:string,
     vueVim:any,
@@ -536,4 +519,36 @@ export function resolveAbsolutePath(
         throw new Error(`【${path}】 路径错误，尝试转成绝对路径失败，请手动转成绝对路径(10003)。`);
     }
     return route[0].path + query;
+}
+
+export function deepDecodeQuery(
+    query:objectAny
+):objectAny {
+    const formatQuery:objectAny = getDataType<objectAny>(query) === '[object Array]' ? [] : {};
+    const keys = Object.keys(query);
+    for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        const it = query[key];
+        if (typeof it === 'string') {
+            try {
+                let json = JSON.parse(decodeURIComponent(it));
+                if (typeof json !== 'object') {
+                    json = it;
+                }
+                formatQuery[key] = json;
+            } catch (error) {
+                try {
+                    formatQuery[key] = decodeURIComponent(it)
+                } catch (error) {
+                    formatQuery[key] = it
+                }
+            }
+        } else if (typeof it === 'object') {
+            const childQuery = deepDecodeQuery(it);
+            formatQuery[key] = childQuery
+        } else {
+            formatQuery[key] = it
+        }
+    }
+    return formatQuery
 }

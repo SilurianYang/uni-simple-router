@@ -1,6 +1,6 @@
 import {PromiseResolve, Router, uniBackApiRule, uniBackRule} from '../options/base';
 import {InstantiateConfig, LifeCycleConfig} from '../options/config';
-import {appProxyHook, indexProxyHook, lifeCycle, keyword} from '../helpers/config';
+import {appProxyHook, indexProxyHook, lifeCycle} from '../helpers/config';
 import {assertNewOptions, def, getDataType} from '../helpers/utils';
 import {registerRouterHooks, registerEachHooks} from '../helpers/lifeCycle';
 import {initMixins} from '../helpers/mixins'
@@ -91,7 +91,6 @@ function createRouter(params: InstantiateConfig):Router {
             });
         }
     }
-    def(router, 'keyword', () => keyword);
     def(router, 'currentRoute', () => createRoute(router));
 
     router.beforeEach((to, from, next) => next());
