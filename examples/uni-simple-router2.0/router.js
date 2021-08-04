@@ -40,13 +40,13 @@ const router = createRouter({
 	debugger:true,
 	routes: [
 		...ROUTES,
-		// {
-		//   path: '*',
-		//   redirect:(...args)=>{
-		// 	  console.log(args)
-		// 	  return {name:'404'}
-		//   }
-		// },
+		{
+		  path: '*',
+		  redirect:(...args)=>{
+			  console.log(args)
+			  return {name:'404'}
+		  }
+		},
 	]
 });
 

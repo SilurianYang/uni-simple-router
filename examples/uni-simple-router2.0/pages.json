@@ -1,19 +1,17 @@
 {
-	"pages": [
-		{
+	"pages": [{
 			"path": "pages/index/index",
 			"name": "index",
 			"aliasPath": "/"
 		},
 		{
-		    "path" : "pages/login/login",
-			"name":"login",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "",
-		        "enablePullDownRefresh": false
-		    }
-		    
+			"path": "pages/login/login",
+			"name": "login",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
 		},
 		{
 			"path": "pages/page2/page2",
@@ -36,172 +34,145 @@
 			}
 		}, {
 			"path": "pages/other/other",
-			"name":"tabother",
+			"name": "tabother",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/page4/page4",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/builtIn/builtIn",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/routerlink/routerlink",
+			"name": "routerLink",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/relativePath/relativePath",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/relativePath/relativePath2",
+			"name": "relativePath2",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/dynamicPage/dynamicPage",
+			"name": "dynamicPage",
+			"aliasPath": "/dynamicPage",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/guard/guard",
+			"name": "guard",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/relativePathP",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/animation/animation",
+			"name": "animation",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false,
+				"app-plus": {
+					"animationType": "slide-in-bottom",
+					"animationDuration": 600
+				}
+			},
+			"animation": {
+				"animationType": "zoom-fade-out",
+				"animationDuration": 500
+			}
+
+		}, {
+			"path": "pages/beforeRouteLeave/beforeRouteLeave",
+			"name": "beforeRouteLeave",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/events/events",
+			"name": "events",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/eventsEmit/eventsEmit",
+			"name": "eventsEmit",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/nvue1/nvue1",
+			"name": "nvue1",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/webView/webView",
+			"name": "webView",
 			"style": {
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
 			}
 
 		}
-        ,{
-            "path" : "pages/page4/page4",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/builtIn/builtIn",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/routerlink/routerlink",
-			"name":"routerLink",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/relativePath/relativePath",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/relativePath/relativePath2",
-			"name":"relativePath2",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/dynamicPage/dynamicPage",
-			"name":"dynamicPage",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/guard/guard",
-			"name":"guard",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/relativePathP",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/animation/animation",
-			"name":"animation",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false,
-				"app-plus":{
-					"animationType":"slide-in-bottom",
-					"animationDuration":600
-				}
-            },
-			"animation":{
-				"animationType":"zoom-fade-out",
-				"animationDuration":500
-			}
-            
-        }
-        ,{
-            "path" : "pages/beforeRouteLeave/beforeRouteLeave",
-			"name":"beforeRouteLeave",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/events/events",
-			"name":"events",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/eventsEmit/eventsEmit",
-			"name":"eventsEmit",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/nvue1/nvue1",
-			"name":"nvue1",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/webView/webView",
-			"name":"webView",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-		
-    ],
-	  "tabBar": {
-	    "list": [{
-	      "pagePath": "pages/index/index",
-		  "iconPath": "static/component.png",
-		  "selectedIconPath": "static/componentHL.png",
-	      "text": "首页"
-	    },{
-	      "pagePath": "pages/other/other",
-		  "iconPath": "static/extui.png",
-		  "selectedIconPath": "static/extuiHL.png",
-	      "text": "其他"
-	    }]
-	  },
+
+	],
+	"tabBar": {
+		"list": [{
+			"pagePath": "pages/index/index",
+			"iconPath": "static/component.png",
+			"selectedIconPath": "static/componentHL.png",
+			"text": "首页"
+		}, {
+			"pagePath": "pages/other/other",
+			"iconPath": "static/extui.png",
+			"selectedIconPath": "static/extuiHL.png",
+			"text": "其他"
+		}]
+	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",

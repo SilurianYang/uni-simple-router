@@ -24,6 +24,8 @@
 		<router-link1 to="{name:'webView'}">
 			<button type="warn">内置web-view组件页</button>
 		</router-link1>
+		<button type="warn" @click="$Router.push({path:'/dynamicPage'})">跳转H5-path别名</button>
+		<button type="warn" @click="$Router.push({name:'dynamicPage'})">跳转H5-name别名</button>
 	</view>
 </template>
 
