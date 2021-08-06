@@ -470,6 +470,7 @@ module.exports = Array.isArray || function (arr) {
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -684,8 +685,9 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.runtimeQuit = exports.registerLoddingPage = void 0;
+exports.tabIndexSelect = exports.runtimeQuit = exports.registerLoddingPage = void 0;
 var quitBefore = null;
+var TABBAR = null;
 function registerLoddingPage(router) {
     if (router.options.registerLoadingPage) {
         var _a = router.options.APP, loadingPageHook = _a.loadingPageHook, loadingPageStyle = _a.loadingPageStyle; // 获取app所有配置
@@ -714,6 +716,37 @@ function runtimeQuit(title) {
     }
 }
 exports.runtimeQuit = runtimeQuit;
+function tabIndexSelect(to, from) {
+    if (!(__uniConfig.tabBar && Array.isArray(__uniConfig.tabBar.list))) {
+        return false;
+    }
+    var tabBarList = __uniConfig.tabBar.list;
+    var routes = [];
+    var activeIndex = 0;
+    for (var i = 0; i < tabBarList.length; i++) {
+        var route = tabBarList[i];
+        if ('/' + route.pagePath === to.path || '/' + route.pagePath === from.path) {
+            if (route.pagePath === from.path) {
+                activeIndex = i;
+            }
+            routes.push(route);
+        }
+        if (routes.length === 2) {
+            break;
+        }
+    }
+    if (routes.length !== 2) {
+        return false;
+    }
+    if (TABBAR == null) {
+        TABBAR = uni.requireNativePlugin('uni-tabview');
+    }
+    TABBAR.switchSelect({
+        index: activeIndex
+    });
+    return true;
+}
+exports.tabIndexSelect = tabIndexSelect;
 
 
 /***/ }),
@@ -1817,6 +1850,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1837,6 +1871,7 @@ exports.loopCallHook = exports.transitionTo = exports.onTriggerEachHook = export
 var utils_1 = __webpack_require__(/*! ../helpers/utils */ "./src/helpers/utils.ts");
 var methods_1 = __webpack_require__(/*! ./methods */ "./src/public/methods.ts");
 var proxyHook_1 = __webpack_require__(/*! ../H5/proxyHook */ "./src/H5/proxyHook.ts");
+var appPatch_1 = __webpack_require__(/*! ../app/appPatch */ "./src/app/appPatch.ts");
 exports.ERRORHOOK = [
     function (error, router) { return router.lifeCycle.routerErrorHooks[0](error, router); }
 ];
@@ -1938,6 +1973,9 @@ function loopCallHook(hooks, index, next, router, matTo, matFrom, navType) {
             if (router.options.platform === 'h5') {
                 next(false);
             }
+            if (router.options.platform === 'app-plus') {
+                appPatch_1.tabIndexSelect(matTo, matFrom);
+            }
             errHook({ type: 0, msg: '管道函数传递 false 导航被终止!', matTo: matTo, matFrom: matFrom, nextTo: nextTo }, router);
         }
         else if (typeof nextTo === 'string' || typeof nextTo === 'object') {
@@ -1972,6 +2010,7 @@ exports.loopCallHook = loopCallHook;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2241,6 +2280,7 @@ exports.proxyPageHook = proxyPageHook;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2584,7 +2624,6 @@ function callRouterMethod(option, funName, router) {
   \******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
