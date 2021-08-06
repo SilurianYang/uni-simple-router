@@ -1,6 +1,7 @@
 ## Fixes bug
-* `小程序` 端 `onLoad`、`onShow` 执行不标准的问题。(#206,#224,#291)
-* `小程序` 端 启动页必须写 `onLoad` 才会执行的问题
+* `小程序` 端 `onLoad`、`onShow` 执行不标准的BUG。(#206,#224,#291)
+* `小程序` 端 启动页必须写 `onLoad` 才会执行的BUG。
+* `APP` 端 tab 拦截后无法自动还原选中区域现在已修复。
 * H5端设置 `aliasPath` 后，无法使用 `aliasPath` 跨端跳转 (#302)
 
 ## Revise
@@ -10,4 +11,3 @@
 
 ## Known Issues
 * `APP` 端启动页为tab时，拦截到其他页面后底部tabbar 还依然存在，请避免把原生 `tabbar` 页设置成启动页。你可以在 `beforeEach` 中使用 next 到tabbar页效果一致
-* `APP` 端 tab 拦截后无法自动还原 选中区域，现需要开发者自行设置。
