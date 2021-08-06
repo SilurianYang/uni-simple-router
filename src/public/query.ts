@@ -12,7 +12,8 @@ import {
     getRoutePath,
     assertDeepObject,
     copyData,
-    getWildcardRule
+    getWildcardRule,
+    deepDecodeQuery
 } from '../helpers/utils'
 import {ERRORHOOK} from './hooks'
 import {warn} from '../helpers/warn'
@@ -145,17 +146,16 @@ export function parseQuery(
         }
     } else {
         if (Reflect.get(query, 'query')) { // 验证一下是不是深度对象
-            const deepQuery = Reflect.get(query, 'query');
-            let jsonQuery:objectAny = {
-                query: decodeURIComponent(deepQuery)
-            };
-            try {
-                jsonQuery = JSON.parse(jsonQuery.query);
-                if (typeof jsonQuery === 'object') {
-                    return jsonQuery;
+            let deepQuery = Reflect.get(query, 'query');
+            if (typeof deepQuery === 'string') {
+                try {
+                    deepQuery = JSON.parse(deepQuery);
+                } catch (error) {
+                    warn('尝试解析深度对象失败，按原样输出。' + error, router)
                 }
-            } catch (error) {
-                warn('尝试解析深度对象失败，按原样输出。' + error, router)
+            }
+            if (typeof deepQuery === 'object') {
+                return deepDecodeQuery(deepQuery);
             }
         }
     }
