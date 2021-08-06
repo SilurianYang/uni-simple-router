@@ -1,7 +1,8 @@
-import { Router } from '../options/base';
+import { objectAny, Router, totalNextRoute } from '../options/base';
 import { AppConfig } from '../options/config';
 
 let quitBefore:number|null = null;
+let TABBAR:objectAny|null = null;
 
 export function registerLoddingPage(
     router:Router,
@@ -37,4 +38,39 @@ export function runtimeQuit(
             plus.runtime.quit();
         }
     }
+}
+
+export function tabIndexSelect(
+    to:totalNextRoute,
+    from:totalNextRoute
+):boolean {
+    if (!(__uniConfig.tabBar && Array.isArray(__uniConfig.tabBar.list))) {
+        return false
+    }
+    const tabBarList = __uniConfig.tabBar.list;
+
+    const routes:Array<totalNextRoute> = [];
+    let activeIndex:number = 0;
+    for (let i = 0; i < tabBarList.length; i++) {
+        const route:totalNextRoute = tabBarList[i];
+        if ('/' + route.pagePath === to.path || '/' + route.pagePath === from.path) {
+            if (route.pagePath === from.path) {
+                activeIndex = i;
+            }
+            routes.push(route);
+        }
+        if (routes.length === 2) {
+            break
+        }
+    }
+    if (routes.length !== 2) {
+        return false
+    }
+    if (TABBAR == null) {
+        TABBAR = uni.requireNativePlugin('uni-tabview')
+    }
+    (TABBAR as objectAny).switchSelect({
+        index: activeIndex
+    })
+    return true
 }

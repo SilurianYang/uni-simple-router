@@ -18,6 +18,7 @@ import {
 } from '../helpers/utils'
 import { navjump } from './methods';
 import { proxyH5Mount } from '../H5/proxyHook';
+import { tabIndexSelect } from '../app/appPatch';
 
 export const ERRORHOOK:Array<(error:navErrorRule, router:Router)=>void> = [
     (error, router) => router.lifeCycle.routerErrorHooks[0](error, router)
@@ -148,6 +149,9 @@ export function loopCallHook(
         if (nextTo === false) {
             if (router.options.platform === 'h5') {
                 next(false);
+            }
+            if (router.options.platform === 'app-plus') {
+                tabIndexSelect(matTo, matFrom);
             }
             errHook({ type: 0, msg: '管道函数传递 false 导航被终止!', matTo, matFrom, nextTo }, router)
         } else if (typeof nextTo === 'string' || typeof nextTo === 'object') {
