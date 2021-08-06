@@ -50,8 +50,6 @@ const router = createRouter({
 	]
 });
 
-console.log(router)
-
 let count=0;
 router.beforeEach((to, from, next) => {
 	console.log(to)

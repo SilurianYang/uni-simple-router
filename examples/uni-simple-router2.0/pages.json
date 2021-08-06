@@ -119,6 +119,7 @@
 
 		}, {
 			"path": "pages/beforeRouteLeave/beforeRouteLeave",
+			"aliasPath": "/beforeRouteLeave",
 			"name": "beforeRouteLeave",
 			"style": {
 				"navigationBarTitleText": "",

@@ -2393,17 +2393,16 @@ function parseQuery(query, router) {
     else {
         if (Reflect.get(query, 'query')) { // 验证一下是不是深度对象
             var deepQuery = Reflect.get(query, 'query');
-            var jsonQuery = {
-                query: decodeURIComponent(deepQuery)
-            };
-            try {
-                jsonQuery = JSON.parse(jsonQuery.query);
-                if (typeof jsonQuery === 'object') {
-                    return jsonQuery;
+            if (typeof deepQuery === 'string') {
+                try {
+                    deepQuery = JSON.parse(deepQuery);
+                }
+                catch (error) {
+                    warn_1.warn('尝试解析深度对象失败，按原样输出。' + error, router);
                 }
             }
-            catch (error) {
-                warn_1.warn('尝试解析深度对象失败，按原样输出。' + error, router);
+            if (typeof deepQuery === 'object') {
+                return utils_1.deepDecodeQuery(deepQuery);
             }
         }
     }

@@ -18,6 +18,7 @@
 		<button type="primary" @click="$Router.push({name:'nvue1'})">去nvue1测试页</button>
 		
 		<button type="primary" @click="gotoTabPage">去tab2测试页面</button>
+		<button type="default" @click="gotoPage2">深度传参</button>
 	</view>
 </template>
 
@@ -45,6 +46,7 @@
 			console.log(e)
 			console.log('index-----onload')	
 			console.log(this.Route)
+			console.log(this.$Route)
 		},
 		onShow() {
 			console.log('index-----onShow')
@@ -76,25 +78,27 @@
 			},
 			gotoPage1(url='/pages/page4/page4'){
 				uni.navigateTo({
-					url:`${url}?msg=的挥洒U盾好撒第三大厦发的撒321312*（￥#%4`,
+					url:`${url}?msg=的挥洒U盾好撒第三大厦发的撒321312*（￥#4`,
 					success:()=>{
 						console.log('跳转成功')
 					},
 				})
 			},
+			gotoPage2(){
+				this.$Router.push({
+					path:'/beforeRouteLeave',
+					query:{
+						status:true,
+						list:[
+							{
+								id:1,
+								name:333
+							},
+						]
+					}
+				})
+			},
 			gotoPage(){
-				// this.$Router.push({
-				// 	path:'/pages/404/404/666/444',
-				// 	query:{
-				// 		status:true,
-				// 		list:[
-				// 			{
-				// 				id:1
-				// 			},
-				// 		]
-				// 	}
-				// })
-				
 				
 				// this.$Router.push({
 				// 	name:'page2',
