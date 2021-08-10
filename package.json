@@ -33,12 +33,13 @@
   },
   "scripts": {
     "dev": "webpack --watch  --progress --config webpack/webpack.dev.js",
-    "build": "webpack --progress --config webpack/webpack.prod.js",
-    "build:dts": "api-extractor run --local --verbose",
+    "dist": "webpack --progress --config webpack/webpack.prod.js",
+    "dist:dts": "api-extractor run --local --verbose",
     "lint": "eslint --ext .js,.ts src",
     "lintFix": "eslint --ext .js,.ts src --fix",
     "test": "jest test/query-toggle.spec.ts",
-    "publish": "node ./publish/index.js"
+    "publish": "node ./publish/index.js",
+    "build":"node ./publish/build.js"
   },
   "repository": {
     "type": "git",
