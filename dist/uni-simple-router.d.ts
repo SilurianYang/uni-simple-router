@@ -323,8 +323,9 @@ export { }
 
 // @ts-ignore
 declare module 'vue/types/vue' {
-	interface Vue {
-		$Router: Router;
-		$Route: routeRule;
-	}
+    interface Vue {
+        $Router: Router;
+        $Route: routeRule;
+    }
 }
+    
