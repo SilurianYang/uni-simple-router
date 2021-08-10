@@ -67,7 +67,16 @@ function createRouter(params: InstantiateConfig):Router {
             initMixins(Vue, this);
             Object.defineProperty(Vue.prototype, '$Router', {
                 get() {
-                    return router;
+                    const actualData = router;
+
+                    Object.defineProperty(this, '$Router', {
+                        value: actualData,
+                        writable: false,
+                        configurable: false,
+                        enumerable: false
+                    });
+
+                    return Object.seal(actualData);
                 }
             });
             Object.defineProperty(Vue.prototype, '$Route', {
