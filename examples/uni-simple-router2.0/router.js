@@ -63,7 +63,6 @@ router.beforeEach((to, from, next) => {
 	// 	next();
 	// }
 	
-	
 	next();
 	
 	// if(count==1){
