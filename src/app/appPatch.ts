@@ -48,7 +48,6 @@ export function tabIndexSelect(
         return false
     }
     const tabBarList = __uniConfig.tabBar.list;
-
     const routes:Array<totalNextRoute> = [];
     let activeIndex:number = 0;
     for (let i = 0; i < tabBarList.length; i++) {
