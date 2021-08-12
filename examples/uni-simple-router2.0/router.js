@@ -19,22 +19,15 @@ const router = createRouter({
 	applet:{
 		animationDuration:300
 	},
-	routerBeforeEach:(to, from, next) => {
-		console.log('+++++routerBeforeEach++++')
-		next();
-	},
-	routerAfterEach:(to, from) => {
-	   console.log('--------routerAfterEach----')
-	},
-	routerErrorEach:({type,msg})=>{
-		console.log({type,msg});
-		if(type!==2){
-			router.$lockStatus=false;
-		}
+	routerErrorEach:({type,level,...args})=>{
+		console.log({type,level,...args});
 		// #ifdef APP-PLUS
-			if(type===3){
+		if(type===3){
+			router.$lockStatus=false;
+			if(level==1&&args.uniActualData.from==='backbutton'){
 				runtimeQuit();
 			}
+		}
 		// #endif
 	},
 	debugger:true,
@@ -52,9 +45,6 @@ const router = createRouter({
 
 let count=0;
 router.beforeEach((to, from, next) => {
-	console.log(to)
-	console.log(from)
-	
 	
 	count++
 	// if(to.name=='index' && to.BACKTYPE=='navigateBack'){

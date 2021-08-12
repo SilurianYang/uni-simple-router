@@ -54,7 +54,7 @@
 			},
 			goBack2(){
 				uni.navigateBack({
-					delta:1,
+					delta:9,
 					success:(...arg)=>{
 						console.log(arg)
 						console.log('navigateBack-page2返回成功')

@@ -36,18 +36,20 @@
 		onTabItemTap(){
 			console.log('@@@@@@@@@@@@@-----tab1页面被点击------@@@@@@@@@@@@')
 		},
+		beforeMount(){
+			console.log('index-----beforeMount')
+		},
 		created(){
 			console.log('index-----created')
 		},
 		mounted(){
 			console.log('index-----mounted')
 		},
+		onReady(){
+			console.log('index-----onReady')	
+		},
 		onLoad(...e) {
-			console.log(this)
-			console.log(e)
 			console.log('index-----onload')	
-			console.log(this.Route)
-			console.log(this.$Route)
 		},
 		onShow() {
 			console.log('index-----onShow')

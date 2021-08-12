@@ -11,6 +11,9 @@
 				
 			}
 		},
+		beforeMount(){
+			console.log('comChild-----beforeMount')
+		},
 		created(){
 			console.log('comChild----created')
 		},

@@ -17,7 +17,6 @@ return /******/ (() => { // webpackBootstrap
   \**********************************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: module, __webpack_require__ */
-/*! CommonJS bailout: module.exports is used directly at 6:0-14 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var isarray = __webpack_require__(/*! isarray */ "./node_modules/path-to-regexp/node_modules/isarray/index.js")
@@ -456,7 +455,6 @@ function pathToRegexp (path, keys, options) {
   \*******************************************************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: module */
-/*! CommonJS bailout: module.exports is used directly at 1:0-14 */
 /***/ ((module) => {
 
 module.exports = Array.isArray || function (arr) {
@@ -472,7 +470,6 @@ module.exports = Array.isArray || function (arr) {
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -564,7 +561,6 @@ exports.buildVueRouter = buildVueRouter;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
-/*! CommonJS bailout: this is used directly at 2:17-21 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -672,7 +668,6 @@ exports.proxyH5Mount = proxyH5Mount;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -896,8 +891,8 @@ exports.indexProxyHook = {
     component: []
 };
 exports.proxyVueSortHookName = {
-    app: ['created', 'beforeMount', 'mounted', 'onLaunch', 'onShow', 'onHide', 'beforeDestroy', 'destroyed'],
-    page: ['created', 'beforeMount', 'mounted', 'onLoad', 'onReady', 'onShow', 'onResize', 'onHide', 'beforeDestroy', 'destroyed', 'onUnload'],
+    app: ['created', 'beforeMount', 'onLaunch', 'onShow', 'mounted', 'onHide', 'beforeDestroy', 'destroyed'],
+    page: ['onLoad', 'onShow', 'created', 'beforeMount', 'onReady', 'mounted', 'onResize', 'beforeDestroy', 'destroyed', 'onUnload', 'onHide'],
     component: ['created', 'beforeMount', 'mounted', 'beforeDestroy', 'destroyed']
 };
 exports.notCallProxyHook = [
@@ -1489,7 +1484,8 @@ function deepClone(source) {
     return __ob__;
 }
 exports.deepClone = deepClone;
-function lockDetectWarn(router, to, navType, next, passiveType) {
+function lockDetectWarn(router, to, navType, next, uniActualData, passiveType) {
+    if (uniActualData === void 0) { uniActualData = {}; }
     if (passiveType === 'afterHooks') {
         next();
     }
@@ -1499,7 +1495,9 @@ function lockDetectWarn(router, to, navType, next, passiveType) {
         if (router.$lockStatus) {
             router.options.routerErrorEach({
                 type: 2,
-                msg: '当前页面正在处于跳转状态，请稍后再进行跳转....'
+                msg: '当前页面正在处于跳转状态，请稍后再进行跳转....',
+                NAVTYPE: navType,
+                uniActualData: uniActualData
             }, router);
         }
         else {
@@ -1762,10 +1760,6 @@ exports.warnLock = warnLock;
   \**********************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:23-27 */
-/*! CommonJS bailout: this is used directly at 9:20-24 */
-/*! CommonJS bailout: exports is used directly at 14:40-47 */
-/*! CommonJS bailout: exports is used directly at 15:42-49 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1860,7 +1854,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2022,7 +2015,6 @@ exports.loopCallHook = loopCallHook;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2038,6 +2030,17 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createRoute = exports.forceGuardEach = exports.backOptionsBuild = exports.navjump = exports.lockNavjump = void 0;
 var base_1 = __webpack_require__(/*! ../options/base */ "./src/options/base.ts");
@@ -2052,7 +2055,7 @@ function lockNavjump(to, router, navType, forceNav, animation) {
             router.$lockStatus = true;
         }
         navjump(to, router, navType, undefined, forceNav, animation);
-    });
+    }, animation);
 }
 exports.lockNavjump = lockNavjump;
 function navjump(to, router, navType, nextCall, forceNav, animation, callHook) {
@@ -2128,8 +2131,9 @@ function navjump(to, router, navType, nextCall, forceNav, animation, callHook) {
 }
 exports.navjump = navjump;
 function backOptionsBuild(router, level, animation) {
-    var toRule = createRoute(router, level);
-    var navjumpRule = __assign(__assign({}, animation || {}), { path: toRule.path, query: toRule.query, delta: level });
+    if (animation === void 0) { animation = {}; }
+    var toRule = createRoute(router, level, undefined, __assign({ NAVTYPE: 'back' }, animation));
+    var navjumpRule = __assign(__assign({}, animation), { path: toRule.path, query: toRule.query, delta: level });
     if (utils_1.getDataType(animation) === '[object Object]') {
         var _a = animation, animationDuration = _a.animationDuration, animationType = _a.animationType;
         if (animationDuration != null) {
@@ -2156,6 +2160,9 @@ function forceGuardEach(router, navType, forceNav) {
     if (Object.keys(currentPage).length === 0) {
         router.options.routerErrorEach({
             type: 3,
+            NAVTYPE: navType,
+            uniActualData: {},
+            level: 0,
             msg: "\u4E0D\u5B58\u5728\u7684\u9875\u9762\u6808\uFF0C\u8BF7\u786E\u4FDD\u6709\u8DB3\u591F\u7684\u9875\u9762\u53EF\u7528\uFF0C\u5F53\u524D level:0"
         }, router);
     }
@@ -2166,8 +2173,9 @@ function forceGuardEach(router, navType, forceNav) {
     }, router, navType, forceNav);
 }
 exports.forceGuardEach = forceGuardEach;
-function createRoute(router, level, orignRule) {
+function createRoute(router, level, orignRule, uniActualData) {
     if (level === void 0) { level = 0; }
+    if (uniActualData === void 0) { uniActualData = {}; }
     var route = {
         name: '',
         meta: {},
@@ -2206,11 +2214,16 @@ function createRoute(router, level, orignRule) {
         else {
             var page = utils_1.getUniCachePage(level);
             if (Object.keys(page).length === 0) {
+                var _NAVTYPE = uniActualData.NAVTYPE, _args = __rest(uniActualData, ["NAVTYPE"]);
+                var errorMsg = "\u4E0D\u5B58\u5728\u7684\u9875\u9762\u6808\uFF0C\u8BF7\u786E\u4FDD\u6709\u8DB3\u591F\u7684\u9875\u9762\u53EF\u7528\uFF0C\u5F53\u524D level:" + level;
                 router.options.routerErrorEach({
                     type: 3,
-                    msg: "\u4E0D\u5B58\u5728\u7684\u9875\u9762\u6808\uFF0C\u8BF7\u786E\u4FDD\u6709\u8DB3\u591F\u7684\u9875\u9762\u53EF\u7528\uFF0C\u5F53\u524D level:" + level
+                    msg: errorMsg,
+                    NAVTYPE: _NAVTYPE,
+                    level: level,
+                    uniActualData: _args
                 }, router);
-                throw new Error("\u4E0D\u5B58\u5728\u7684\u9875\u9762\u6808\uFF0C\u8BF7\u786E\u4FDD\u6709\u8DB3\u591F\u7684\u9875\u9762\u53EF\u7528\uFF0C\u5F53\u524D level:" + level);
+                throw new Error(errorMsg);
             }
             // Fixes: https://github.com/SilurianYang/uni-simple-router/issues/196
             var pageOptions = page.options || {};
@@ -2292,7 +2305,6 @@ exports.proxyPageHook = proxyPageHook;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
