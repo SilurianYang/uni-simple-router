@@ -44,7 +44,7 @@ export function lockNavjump(
             router.$lockStatus = true;
         }
         navjump(to as totalNextRoute, router, navType, undefined, forceNav, animation);
-    });
+    }, animation);
 }
 export function navjump(
     to:string|totalNextRoute,
@@ -130,11 +130,11 @@ export function navjump(
 export function backOptionsBuild(
     router:Router,
     level:number,
-    animation?:uniBackApiRule|uniBackRule,
+    animation:uniBackApiRule|uniBackRule|undefined = {},
 ):totalNextRoute {
-    const toRule = createRoute(router, level);
+    const toRule = createRoute(router, level, undefined, {NAVTYPE: 'back', ...animation});
     const navjumpRule:totalNextRoute = {
-        ...animation || {},
+        ...animation,
         path: toRule.path,
         query: toRule.query,
         delta: level
@@ -168,6 +168,9 @@ export function forceGuardEach(
     if (Object.keys(currentPage).length === 0) {
         (router.options.routerErrorEach as (error: navErrorRule, router:Router) => void)({
             type: 3,
+            NAVTYPE: navType,
+            uniActualData: {},
+            level: 0,
             msg: `不存在的页面栈，请确保有足够的页面可用，当前 level:0`
         }, router);
     }
@@ -182,6 +185,7 @@ export function createRoute(
     router:Router,
     level:number|undefined = 0,
     orignRule?:totalNextRoute,
+    uniActualData:objectAny|undefined = {},
 ):routeRule|never {
     const route:routeRule = {
         name: '',
@@ -219,11 +223,16 @@ export function createRoute(
         } else {
             const page = getUniCachePage<objectAny>(level);
             if (Object.keys(page).length === 0) {
+                const {NAVTYPE: _NAVTYPE, ..._args} = uniActualData;
+                const errorMsg:string = `不存在的页面栈，请确保有足够的页面可用，当前 level:${level}`;
                 (router.options.routerErrorEach as (error: navErrorRule, router:Router) => void)({
                     type: 3,
-                    msg: `不存在的页面栈，请确保有足够的页面可用，当前 level:${level}`
+                    msg: errorMsg,
+                    NAVTYPE: _NAVTYPE,
+                    level,
+                    uniActualData: _args
                 }, router);
-                throw new Error(`不存在的页面栈，请确保有足够的页面可用，当前 level:${level}`)
+                throw new Error(errorMsg);
             }
             // Fixes: https://github.com/SilurianYang/uni-simple-router/issues/196
             const pageOptions:objectAny = (page as objectAny).options || {};

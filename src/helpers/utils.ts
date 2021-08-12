@@ -1,5 +1,5 @@
 import {appVueHookConfig, H5Config, pageVueHookConfig, InstantiateConfig, appletsVueHookConfig, baseAppHookConfig} from '../options/config';
-import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, objectAny, navErrorRule, hookObjectRule, notCallProxyHookRule, NAVTYPE, navRoute, pageTypeRule} from '../options/base';
+import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, objectAny, navErrorRule, hookObjectRule, notCallProxyHookRule, NAVTYPE, navRoute, pageTypeRule, uniBackApiRule, uniBackRule} from '../options/base';
 import {baseConfig, notCallProxyHook, proxyVueSortHookName} from '../helpers/config';
 import {ERRORHOOK} from '../public/hooks'
 import {warnLock} from '../helpers/warn'
@@ -350,6 +350,7 @@ export function lockDetectWarn(
     to:string|number|totalNextRoute|navRoute,
     navType:NAVTYPE,
     next:Function,
+    uniActualData:uniBackApiRule|uniBackRule|undefined = {},
     passiveType?:'beforeHooks'| 'afterHooks'
 ):void{
     if (passiveType === 'afterHooks') {
@@ -360,7 +361,9 @@ export function lockDetectWarn(
         if (router.$lockStatus) {
             (router.options.routerErrorEach as (error: navErrorRule, router:Router) => void)({
                 type: 2,
-                msg: '当前页面正在处于跳转状态，请稍后再进行跳转....'
+                msg: '当前页面正在处于跳转状态，请稍后再进行跳转....',
+                NAVTYPE: navType,
+                uniActualData
             }, router);
         } else {
             next();
