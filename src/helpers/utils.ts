@@ -436,9 +436,10 @@ export function callHook(
     const resetHookFun:Array<Function> = [];
     // Fixe: https://github.com/SilurianYang/uni-simple-router/issues/206
     // Fixe: https://github.com/SilurianYang/uni-simple-router/issues/224
-    const hookList = proxyVueSortHookName[key];
-    for (let i = 0; i < hookList.length; i++) {
-        const [origin] = value[hookList[i]];
+    const hookNameList = proxyVueSortHookName[key];
+    for (let i = 0; i < hookNameList.length; i++) {
+        const hookName = hookNameList[i];
+        const [origin] = value[hookName];
         if (origin && origin.hook) {
             resetHookFun.push(origin.hook(enterPath))
         }

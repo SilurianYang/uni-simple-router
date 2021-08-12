@@ -91,8 +91,8 @@ export const proxyVueSortHookName:{
     page:Array<pageVueSortHookRule>,
     component:Array<comVueSortHookRule>
 } = {
-    app: ['created', 'beforeMount', 'mounted', 'onLaunch', 'onShow', 'onHide', 'beforeDestroy', 'destroyed'],
-    page: ['created', 'beforeMount', 'mounted', 'onLoad', 'onReady', 'onShow', 'onResize', 'onHide', 'beforeDestroy', 'destroyed', 'onUnload'],
+    app: ['created', 'beforeMount', 'onLaunch', 'onShow', 'mounted', 'onHide', 'beforeDestroy', 'destroyed'],
+    page: ['onLoad', 'onShow', 'created', 'beforeMount', 'onReady', 'mounted', 'onResize', 'beforeDestroy', 'destroyed', 'onUnload', 'onHide'],
     component: ['created', 'beforeMount', 'mounted', 'beforeDestroy', 'destroyed']
 }
 export const notCallProxyHook:Array<notCallProxyHookRule> = [
