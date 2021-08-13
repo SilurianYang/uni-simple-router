@@ -470,6 +470,7 @@ module.exports = Array.isArray || function (arr) {
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -789,8 +790,6 @@ exports.getEnterPath = getEnterPath;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1573,9 +1572,10 @@ function callHook(key, value, enterPath) {
     var resetHookFun = [];
     // Fixe: https://github.com/SilurianYang/uni-simple-router/issues/206
     // Fixe: https://github.com/SilurianYang/uni-simple-router/issues/224
-    var hookList = config_1.proxyVueSortHookName[key];
-    for (var i = 0; i < hookList.length; i++) {
-        var origin_1 = value[hookList[i]][0];
+    var hookNameList = config_1.proxyVueSortHookName[key];
+    for (var i = 0; i < hookNameList.length; i++) {
+        var hookName = hookNameList[i];
+        var origin_1 = value[hookName][0];
         if (origin_1 && origin_1.hook) {
             resetHookFun.push(origin_1.hook(enterPath));
         }
@@ -1854,6 +1854,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2015,6 +2016,8 @@ exports.loopCallHook = loopCallHook;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
+/*! CommonJS bailout: this is used directly at 13:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2305,6 +2308,7 @@ exports.proxyPageHook = proxyPageHook;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
