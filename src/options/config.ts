@@ -1,4 +1,4 @@
-import {startAnimationRule, hookListRule, RoutesRule, navtoRule, navErrorRule, Router, objectAny, hookObjectRule, NAVTYPE, totalNextRoute, navRoute} from './base';
+import {startAnimationRule, hookListRule, RoutesRule, navtoRule, navErrorRule, Router, objectAny, NAVTYPE, totalNextRoute, navRoute} from './base';
 
 export type debuggerConfig=boolean|debuggerArrayConfig;
 
@@ -54,31 +54,3 @@ export interface LifeCycleConfig{
     routerErrorHooks: Array<(error:navErrorRule, router:Router)=>void>;
 }
 
-export interface baseAppHookConfig{
-    [key:string]:Array<hookObjectRule|Function>;
-    created:Array<hookObjectRule|Function>;
-    beforeMount:Array<hookObjectRule|Function>;
-    mounted:Array<hookObjectRule|Function>;
-    beforeDestroy:Array<hookObjectRule|Function>;
-    destroyed:Array<hookObjectRule|Function>;
-}
-
-export interface appVueHookConfig extends baseAppHookConfig{
-    onLaunch:Array<hookObjectRule|Function>;
-    onShow:Array<hookObjectRule|Function>;
-    onHide:Array<hookObjectRule|Function>;
-}
-export interface pageVueHookConfig extends baseAppHookConfig{
-    onShow:Array<hookObjectRule|Function>;
-    onHide:Array<hookObjectRule|Function>;
-    onLoad:Array<hookObjectRule|Function>;
-    onReady:Array<hookObjectRule|Function>;
-    onUnload:Array<hookObjectRule|Function>;
-    onResize:Array<hookObjectRule|Function>;
-}
-
-export interface appletsVueHookConfig{
-    app:appVueHookConfig;
-    page:pageVueHookConfig,
-    component:baseAppHookConfig[]
-}

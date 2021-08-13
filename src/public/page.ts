@@ -1,5 +1,6 @@
-import { getDataType, getUniCachePage, deepClone, replaceHook} from '../helpers/utils';
-import { objectAny, pageTypeRule, Router, totalNextRoute } from '../options/base';
+import { proxyHookName } from '../helpers/config';
+import { getDataType, getUniCachePage, deepClone} from '../helpers/utils';
+import { objectAny, pageTypeRule, Router, totalNextRoute, vueOptionRule } from '../options/base';
 import {createRoute} from './methods'
 import { stringifyQuery } from './query';
 
@@ -34,8 +35,60 @@ export function createFullPath(
 export function proxyPageHook(
     vueVim:any,
     router:Router,
-    proxyHookKey:'appProxyHook'|'appletsProxyHook',
-    pageType:pageTypeRule,
+    pageType:pageTypeRule
 ):void {
-    replaceHook(router, vueVim, proxyHookKey, pageType);
+    const hookDeps = router.proxyHookDeps;
+    const pageHook:vueOptionRule = vueVim.$options;
+    for (let i = 0; i < proxyHookName.length; i++) {
+        const hookName = proxyHookName[i];
+        const hookList = pageHook[hookName];
+        if (hookList) {
+            for (let k = 0; k < hookList.length; k++) {
+                const originHook = hookList[k];
+                if (originHook.toString().includes($npm_package_name)) {
+                    continue
+                }
+                const resetIndex = Object.keys(hookDeps.hooks).length + 1
+                const proxyHook = (...args:Array<any>):void => {
+                    hookDeps.resetIndex.push(resetIndex);
+                    hookDeps.options[resetIndex] = args;
+                }
+                const [resetHook] = hookList.splice(k, 1, proxyHook);
+                hookDeps.hooks[resetIndex] = {
+                    proxyHook,
+                    callHook: () :void => {
+                        const options = hookDeps.options[resetIndex];
+                        resetHook.apply(vueVim, options);
+                    },
+                    resetHook: (enterPath:string) :void => {
+                        if (router.enterPath.replace(/^\//, '') !== enterPath.replace(/^\//, '') && pageType !== 'app') {
+                            return;
+                        }
+                        hookList.splice(k, 1, resetHook)
+                    }
+                };
+            }
+        }
+    }
+}
+export function resetPageHook(
+    router:Router,
+    enterPath:string
+):void{
+    // Fixe: https://github.com/SilurianYang/uni-simple-router/issues/206
+    const pathInfo = enterPath.trim().match(/^(\/?[^\?\s]+)(\?[\s\S]*$)?$/);
+    if (pathInfo == null) {
+        throw new Error(`还原hook失败。请检查 【${enterPath}】 路径是否正确。`);
+    }
+    enterPath = pathInfo[1];
+    const proxyHookDeps = router.proxyHookDeps;
+    const resetHooksArray = proxyHookDeps.resetIndex
+    for (let i = 0; i < resetHooksArray.length; i++) {
+        const index = resetHooksArray[i];
+        const {callHook} = proxyHookDeps.hooks[index];
+        callHook();
+    }
+    for (const [, {resetHook}] of Object.entries(proxyHookDeps.hooks)) {
+        resetHook(enterPath);
+    }
 }

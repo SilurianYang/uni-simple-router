@@ -1,6 +1,6 @@
 import {err} from './warn'
-import {appletsVueHookConfig, appVueHookConfig, pageVueHookConfig, InstantiateConfig, LifeCycleConfig} from '../options/config'
-import { appVueSortHookRule, pageVueSortHookRule, notCallProxyHookRule, comVueSortHookRule } from '../options/base';
+import { InstantiateConfig, LifeCycleConfig} from '../options/config'
+import { vueHookNameRule, proxyDepsRule } from '../options/base';
 
 export const mpPlatformReg = '(^mp-weixin$)|(^mp-baidu$)|(^mp-alipay$)|(^mp-toutiao$)|(^mp-qq$)|(^mp-360$)' // 小程序下不能直接导出正则 需要重新组装成正则 不然bug一推 诡异
 
@@ -54,47 +54,25 @@ export const lifeCycle:LifeCycleConfig = {
     routerErrorHooks: []
 };
 
-export const appProxyHook:{
-    app:appVueHookConfig
-} = {
-    app: {
-        created: [],
-        beforeMount: [],
-        mounted: [],
-        onLaunch: [],
-        onShow: [],
-        onHide: [],
-        beforeDestroy: [],
-        destroyed: []
-    }
-}
-export const indexProxyHook:appletsVueHookConfig = {
-    app: appProxyHook.app,
-    page: (function(
-        appHooks:appVueHookConfig
-    ) :pageVueHookConfig {
-        // eslint-disable-next-line no-unused-vars
-        const {onLaunch, ...otherHooks} = appHooks;
-        return {
-            ...otherHooks,
-            onLoad: [],
-            onReady: [],
-            onUnload: [],
-            onResize: []
-        };
-    })(JSON.parse(JSON.stringify(appProxyHook.app))),
-    component: []
+export const proxyHookDeps:proxyDepsRule = {
+    resetIndex: [], // 还原时执行的生命周期的索引
+    hooks: {},
+    options: {}
 }
 
-export const proxyVueSortHookName:{
-    app:Array<appVueSortHookRule>,
-    page:Array<pageVueSortHookRule>,
-    component:Array<comVueSortHookRule>
-} = {
-    app: ['created', 'beforeMount', 'onLaunch', 'onShow', 'mounted', 'onHide', 'beforeDestroy', 'destroyed'],
-    page: ['onLoad', 'onShow', 'created', 'beforeMount', 'onReady', 'mounted', 'onResize', 'beforeDestroy', 'destroyed', 'onUnload', 'onHide'],
-    component: ['created', 'beforeMount', 'mounted', 'beforeDestroy', 'destroyed']
-}
-export const notCallProxyHook:Array<notCallProxyHookRule> = [
-    'onHide', 'beforeDestroy', 'destroyed', 'destroyed', 'onUnload', 'onResize'
-];
+export const proxyHookName:Array<vueHookNameRule> = [
+    'onLaunch',
+    'onShow',
+    'onHide',
+    'onError',
+    'onInit',
+    'onLoad',
+    'onReady',
+    'onUnload',
+    'onResize',
+    'created',
+    'beforeMount',
+    'mounted',
+    'beforeDestroy',
+    'destroyed'
+]

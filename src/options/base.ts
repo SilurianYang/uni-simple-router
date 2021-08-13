@@ -1,4 +1,4 @@
-import {appletsVueHookConfig, appVueHookConfig, InstantiateConfig, LifeCycleConfig} from '../options/config';
+import {InstantiateConfig, LifeCycleConfig} from '../options/config';
 
 export enum hookToggle{
     'beforeHooks'='beforeEach',
@@ -20,12 +20,20 @@ export enum rewriteMethodToggle{
     'switchTab'='pushTab',
     'navigateBack'='back',
 }
+export type proxyDepsRule={
+    resetIndex:Array<number>;
+    hooks: {
+        [key: number]:{
+            proxyHook:()=>void;
+            callHook:()=>void;
+            resetHook: (enterPath:string)=>void
+        }
+    };
+    options: {[key: number]: Array<any>;};
+};
 export type backTypeRule='backbutton'|'navigateBack'
 export type pageTypeRule='app'|'page'|'component';
-export type notCallProxyHookRule='onHide'|'beforeDestroy'|'destroyed'|'onUnload'|'onResize';
-export type appVueSortHookRule='beforeCreate'|'created'|'beforeMount'|'mounted'|'onLaunch'|'onShow'|'onHide'|'beforeDestroy'|'destroyed';
-export type pageVueSortHookRule='beforeCreate'|'created'|'beforeMount'|'mounted'|'onLoad'|'onReady'|'onShow'|'onResize'|'onHide'|'beforeDestroy'|'destroyed'|'onUnload';
-export type comVueSortHookRule= 'beforeCreate'|'created'| 'beforeMount'| 'mounted'|'beforeDestroy'| 'destroyed';
+export type vueHookNameRule='onLaunch'|'onShow'|'onHide'|'onError'|'onInit'|'onLoad'|'onReady'|'onUnload'|'onResize'|'created'|'beforeMount'|'mounted'|'beforeDestroy'|'destroyed'
 export type reNavMethodRule='navigateTo'|'redirectTo'|'reLaunch'|'switchTab';
 export type reNotNavMethodRule='navigateBack';
 export type reloadNavRule=totalNextRoute | false | undefined|string;
@@ -56,6 +64,10 @@ export type endAnimationType =
 	| 'zoom-in'
 	| 'zoom-fade-in'
 	| 'none';
+
+export type vueOptionRule = {
+    [propName in vueHookNameRule]: Array<Function> | undefined;
+};
 
 // 跳转api时，传递的跳转规则
 export interface navtoRule {
@@ -203,14 +215,11 @@ export interface Router {
     $route: object | null;
     enterPath:string;
     Vue:any;
-    appProxyHook:{
-        app:appVueHookConfig
-    };
     appMain:{
         NAVTYPE:reNavMethodRule|reNotNavMethodRule,
         path:string
     }|{};
-    appletsProxyHook:appletsVueHookConfig;
+    proxyHookDeps: proxyDepsRule;
 	routesMap: routesMapRule|{};
 	mount: Array<{app: any; el: string}>;
 	install(Vue: any): void;

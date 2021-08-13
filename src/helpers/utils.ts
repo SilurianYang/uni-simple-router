@@ -1,6 +1,6 @@
-import {appVueHookConfig, H5Config, pageVueHookConfig, InstantiateConfig, appletsVueHookConfig, baseAppHookConfig} from '../options/config';
-import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, objectAny, navErrorRule, hookObjectRule, notCallProxyHookRule, NAVTYPE, navRoute, pageTypeRule, uniBackApiRule, uniBackRule} from '../options/base';
-import {baseConfig, notCallProxyHook, proxyVueSortHookName} from '../helpers/config';
+import {H5Config, InstantiateConfig} from '../options/config';
+import {RoutesRule, routesMapRule, routesMapKeysRule, Router, totalNextRoute, objectAny, navErrorRule, NAVTYPE, navRoute, uniBackApiRule, uniBackRule} from '../options/base';
+import {baseConfig} from '../helpers/config';
 import {ERRORHOOK} from '../public/hooks'
 import {warnLock} from '../helpers/warn'
 import { createRoute, navjump } from '../public/methods';
@@ -371,112 +371,6 @@ export function lockDetectWarn(
     }
 }
 
-export function replaceHook(
-    router:Router,
-    vueVim:any,
-    proxyHookKey:'appProxyHook'|'appletsProxyHook',
-    pageType:pageTypeRule,
-):void{
-    const vueOptions:appVueHookConfig|pageVueHookConfig = vueVim.$options;
-    const proxyHook = router[proxyHookKey][(pageType as 'app')];
-    let proxyHookChild:baseAppHookConfig|objectAny = {};
-    if (getDataType(proxyHook) === '[object Array]') {
-        proxyHookChild = {
-            beforeCreate: [],
-            created: [],
-            beforeMount: [],
-            mounted: [],
-            beforeDestroy: [],
-            destroyed: []
-        }
-    }
-    if (proxyHook != null) {
-        const proxyName = proxyVueSortHookName[pageType];
-        for (let i = 0; i < proxyName.length; i++) {
-            const keyName = proxyName[i];
-            const originHook = vueOptions[keyName] as Array<Function>|undefined;
-            if (getDataType<Array<Function>|undefined>(originHook) === '[object Array]') {
-                if ((originHook as Array<Function>).length === 1 && (originHook as Array<Function>).toString().includes($npm_package_name)) {
-                    continue;
-                }
-                const proxyInfo:hookObjectRule = {
-                    options: [],
-                    hook: Function
-                };
-                const hook = (originHook as Array<Function>).splice((originHook as Array<Function>).length - 1, 1, (...options:Array<any>) => (proxyInfo.options = options))[0]
-                proxyInfo.hook = function resetHook(enterPath:string):Function {
-                    if (router.enterPath.replace(/^\//, '') !== enterPath.replace(/^\//, '') && pageType !== 'app') {
-                        return () => {};
-                    }
-                    if (!notCallProxyHook.includes(keyName as notCallProxyHookRule)) {
-                        hook.apply(vueVim, proxyInfo.options)
-                    }
-                    return () => {
-                        (originHook as Array<Function>).splice((originHook as Array<Function>).length - 1, 1, hook);
-                    };
-                }
-                if (Object.keys(proxyHookChild).length > 0) {
-                    proxyHookChild[(keyName as string)] = [proxyInfo];
-                } else {
-                    proxyHook[keyName] = [proxyInfo]
-                }
-            }
-        }
-        if (Object.keys(proxyHookChild).length > 0) {
-            // @ts-ignore
-            (proxyHook as appletsVueHookConfig['component']).push(proxyHookChild);
-        }
-    }
-}
-export function callHook(
-    key:pageTypeRule,
-    value:objectAny,
-    enterPath:string
-):Array<Function> {
-    const resetHookFun:Array<Function> = [];
-    // Fixe: https://github.com/SilurianYang/uni-simple-router/issues/206
-    // Fixe: https://github.com/SilurianYang/uni-simple-router/issues/224
-    const hookNameList = proxyVueSortHookName[key];
-    for (let i = 0; i < hookNameList.length; i++) {
-        const hookName = hookNameList[i];
-        const [origin] = value[hookName];
-        if (origin && origin.hook) {
-            resetHookFun.push(origin.hook(enterPath))
-        }
-    }
-    return resetHookFun;
-}
-export function resetPageHook(
-    router:Router,
-    enterPath:string
-):void{
-    // Fixe: https://github.com/SilurianYang/uni-simple-router/issues/206
-    const pathInfo = enterPath.trim().match(/^(\/?[^\?\s]+)(\?[\s\S]*$)?$/);
-    if (pathInfo == null) {
-        throw new Error(`还原hook失败。请检查 【${enterPath}】 路径是否正确。`);
-    }
-    enterPath = pathInfo[1];
-    let proxyHookKey:'appProxyHook'|'appletsProxyHook' = 'appletsProxyHook';
-    if (router.options.platform === 'app-plus') {
-        proxyHookKey = 'appProxyHook';
-    }
-    let resetHookFun:Array<Function> = [];
-    for (const [name, value] of Object.entries(router[proxyHookKey])) {
-        const key = name as pageTypeRule;
-        if (getDataType(value) === '[object Array]') {
-            for (let i = 0; i < value.length; i++) {
-                resetHookFun = resetHookFun.concat(callHook(key, value[i], enterPath));
-            }
-        } else {
-            resetHookFun = resetHookFun.concat(callHook(key, value, enterPath));
-        }
-    }
-    setTimeout(() => {
-        for (let i = 0; i < resetHookFun.length; i++) {
-            resetHookFun[i]();
-        }
-    }, 500)
-}
 export function assertParentChild(
     parentPath:string,
     vueVim:any,

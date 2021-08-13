@@ -1,7 +1,8 @@
 import { originMixins, reNavMethodRule, reNotNavMethodRule, Router, startAnimationRule, uniNavApiRule } from '../options/base';
 import { stringifyQuery } from './query';
-import {notDeepClearNull, resetPageHook, timeOut} from '../helpers/utils'
+import {notDeepClearNull, timeOut} from '../helpers/utils'
 import { mpPlatformReg } from '../helpers/config';
+import { resetPageHook } from './page';
 
 let routerNavCount:number = 0;
 let lastNavType:reNavMethodRule|reNotNavMethodRule = 'reLaunch'

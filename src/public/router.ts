@@ -1,6 +1,6 @@
 import {PromiseResolve, Router, uniBackApiRule, uniBackRule} from '../options/base';
 import {InstantiateConfig, LifeCycleConfig} from '../options/config';
-import {appProxyHook, indexProxyHook, lifeCycle} from '../helpers/config';
+import { lifeCycle, proxyHookDeps} from '../helpers/config';
 import {assertNewOptions, def, getDataType} from '../helpers/utils';
 import {registerRouterHooks, registerEachHooks} from '../helpers/lifeCycle';
 import {initMixins} from '../helpers/mixins'
@@ -16,8 +16,7 @@ function createRouter(params: InstantiateConfig):Router {
         options,
         mount: [],
         Vue: null,
-        appProxyHook: appProxyHook,
-        appletsProxyHook: indexProxyHook,
+        proxyHookDeps: proxyHookDeps,
         appMain: {},
         enterPath: '',
         $route: null,
