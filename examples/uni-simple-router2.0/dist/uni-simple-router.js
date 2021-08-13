@@ -669,6 +669,7 @@ exports.proxyH5Mount = proxyH5Mount;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
+/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -788,36 +789,21 @@ exports.getEnterPath = getEnterPath;
 /*!*******************************!*\
   !*** ./src/helpers/config.ts ***!
   \*******************************/
-/*! unknown exports (runtime-defined) */
-/*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/*! flagged exports */
+/*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
+/*! export baseConfig [provided] [no usage info] [missing usage info prevents renaming] */
+/*! export lifeCycle [provided] [no usage info] [missing usage info prevents renaming] */
+/*! export mpPlatformReg [provided] [no usage info] [missing usage info prevents renaming] */
+/*! export proxyHookDeps [provided] [no usage info] [missing usage info prevents renaming] */
+/*! export proxyHookName [provided] [no usage info] [missing usage info prevents renaming] */
+/*! other exports [not provided] [no usage info] */
+/*! runtime requirements: __webpack_exports__, __webpack_require__ */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.notCallProxyHook = exports.proxyVueSortHookName = exports.indexProxyHook = exports.appProxyHook = exports.lifeCycle = exports.baseConfig = exports.mpPlatformReg = void 0;
+exports.proxyHookName = exports.proxyHookDeps = exports.lifeCycle = exports.baseConfig = exports.mpPlatformReg = void 0;
 var warn_1 = __webpack_require__(/*! ./warn */ "./src/helpers/warn.ts");
 exports.mpPlatformReg = '(^mp-weixin$)|(^mp-baidu$)|(^mp-alipay$)|(^mp-toutiao$)|(^mp-qq$)|(^mp-360$)'; // 小程序下不能直接导出正则 需要重新组装成正则 不然bug一推 诡异
 exports.baseConfig = {
@@ -868,34 +854,26 @@ exports.lifeCycle = {
     routerAfterHooks: [],
     routerErrorHooks: []
 };
-exports.appProxyHook = {
-    app: {
-        created: [],
-        beforeMount: [],
-        mounted: [],
-        onLaunch: [],
-        onShow: [],
-        onHide: [],
-        beforeDestroy: [],
-        destroyed: []
-    }
+exports.proxyHookDeps = {
+    resetIndex: [],
+    hooks: {},
+    options: {}
 };
-exports.indexProxyHook = {
-    app: exports.appProxyHook.app,
-    page: (function (appHooks) {
-        // eslint-disable-next-line no-unused-vars
-        var onLaunch = appHooks.onLaunch, otherHooks = __rest(appHooks, ["onLaunch"]);
-        return __assign(__assign({}, otherHooks), { onLoad: [], onReady: [], onUnload: [], onResize: [] });
-    })(JSON.parse(JSON.stringify(exports.appProxyHook.app))),
-    component: []
-};
-exports.proxyVueSortHookName = {
-    app: ['created', 'beforeMount', 'onLaunch', 'onShow', 'mounted', 'onHide', 'beforeDestroy', 'destroyed'],
-    page: ['onLoad', 'onShow', 'created', 'beforeMount', 'onReady', 'mounted', 'onResize', 'beforeDestroy', 'destroyed', 'onUnload', 'onHide'],
-    component: ['created', 'beforeMount', 'mounted', 'beforeDestroy', 'destroyed']
-};
-exports.notCallProxyHook = [
-    'onHide', 'beforeDestroy', 'destroyed', 'destroyed', 'onUnload', 'onResize'
+exports.proxyHookName = [
+    'onLaunch',
+    'onShow',
+    'onHide',
+    'onError',
+    'onInit',
+    'onLoad',
+    'onReady',
+    'onUnload',
+    'onResize',
+    'created',
+    'beforeMount',
+    'mounted',
+    'beforeDestroy',
+    'destroyed'
 ];
 
 
@@ -1080,39 +1058,41 @@ function getMixins(Vue, router) {
             beforeCreate: function () {
                 if (!registerRouter) {
                     registerRouter = true;
-                    page_1.proxyPageHook(this, router, 'appProxyHook', 'app');
+                    page_1.proxyPageHook(this, router, 'app');
                     appPatch_1.registerLoddingPage(router);
                 }
             }
         },
         'app-lets': {
             beforeCreate: function () {
+                // 保证这个函数不会被重写
+                var pluginMark = "UNI-SIMPLE-ROUTER";
+                utils_1.voidFun(pluginMark);
                 var pageType = this.$options.mpType;
-                if (pageType === 'component' && !onloadProxyOk) {
-                    var isProxy = utils_1.assertParentChild(appletProxy['page'], this);
-                    if (isProxy) {
-                        page_1.proxyPageHook(this, router, 'appletsProxyHook', pageType);
+                if (onloadProxyOk) {
+                    return;
+                }
+                var isProxy = true;
+                if (pageType === 'component') {
+                    isProxy = utils_1.assertParentChild(appletProxy['page'], this);
+                }
+                else {
+                    if (pageType === 'page') {
+                        appletProxy[pageType] = appletPatch_1.getEnterPath(this, router);
+                        router.enterPath = appletProxy[pageType]; // 我不确定在不同端是否都是同样的变现？可能有的为非绝对路径？
+                    }
+                    else {
+                        appletProxy[pageType] = true;
                     }
                 }
-                else if (pageType !== 'component') {
-                    if (!appletProxy[pageType]) { // 没有处理
-                        if (pageType === 'page') {
-                            appletProxy[pageType] = appletPatch_1.getEnterPath(this, router);
-                            router.enterPath = appletProxy[pageType]; // 我不确定在不同端是否都是同样的变现？可能有的为非绝对路径？
-                        }
-                        else {
-                            appletProxy[pageType] = true;
-                        }
-                        page_1.proxyPageHook(this, router, 'appletsProxyHook', pageType);
-                    }
+                if (isProxy) {
+                    page_1.proxyPageHook(this, router, pageType);
                 }
             },
             onLoad: function () {
                 // 保证这个函数不会被重写，否则必须在启动页写onLoad
-                // eslint-disable-next-line
                 var pluginMark = "UNI-SIMPLE-ROUTER";
-                if (pluginMark)
-                    utils_1.voidFun(pluginMark);
+                utils_1.voidFun(pluginMark);
                 if (!onloadProxyOk && utils_1.assertParentChild(appletProxy['page'], this)) {
                     onloadProxyOk = true;
                     methods_1.forceGuardEach(router);
@@ -1177,7 +1157,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.deepDecodeQuery = exports.resolveAbsolutePath = exports.assertParentChild = exports.resetPageHook = exports.callHook = exports.replaceHook = exports.lockDetectWarn = exports.deepClone = exports.baseClone = exports.assertDeepObject = exports.paramsToQuery = exports.forMatNextToFrom = exports.urlToJson = exports.getUniCachePage = exports.copyData = exports.getDataType = exports.routesForMapRoute = exports.notRouteTo404 = exports.getWildcardRule = exports.assertNewOptions = exports.getRoutePath = exports.notDeepClearNull = exports.mergeConfig = exports.timeOut = exports.def = exports.voidFun = void 0;
+exports.deepDecodeQuery = exports.resolveAbsolutePath = exports.assertParentChild = exports.lockDetectWarn = exports.deepClone = exports.baseClone = exports.assertDeepObject = exports.paramsToQuery = exports.forMatNextToFrom = exports.urlToJson = exports.getUniCachePage = exports.copyData = exports.getDataType = exports.routesForMapRoute = exports.notRouteTo404 = exports.getWildcardRule = exports.assertNewOptions = exports.getRoutePath = exports.notDeepClearNull = exports.mergeConfig = exports.timeOut = exports.def = exports.voidFun = void 0;
 var config_1 = __webpack_require__(/*! ../helpers/config */ "./src/helpers/config.ts");
 var hooks_1 = __webpack_require__(/*! ../public/hooks */ "./src/public/hooks.ts");
 var warn_1 = __webpack_require__(/*! ../helpers/warn */ "./src/helpers/warn.ts");
@@ -1505,115 +1485,6 @@ function lockDetectWarn(router, to, navType, next, uniActualData, passiveType) {
     }
 }
 exports.lockDetectWarn = lockDetectWarn;
-function replaceHook(router, vueVim, proxyHookKey, pageType) {
-    var vueOptions = vueVim.$options;
-    var proxyHook = router[proxyHookKey][pageType];
-    var proxyHookChild = {};
-    if (getDataType(proxyHook) === '[object Array]') {
-        proxyHookChild = {
-            beforeCreate: [],
-            created: [],
-            beforeMount: [],
-            mounted: [],
-            beforeDestroy: [],
-            destroyed: []
-        };
-    }
-    if (proxyHook != null) {
-        var proxyName = config_1.proxyVueSortHookName[pageType];
-        var _loop_1 = function (i) {
-            var keyName = proxyName[i];
-            var originHook = vueOptions[keyName];
-            if (getDataType(originHook) === '[object Array]') {
-                if (originHook.length === 1 && originHook.toString().includes("UNI-SIMPLE-ROUTER")) {
-                    return "continue";
-                }
-                var proxyInfo_1 = {
-                    options: [],
-                    hook: Function
-                };
-                var hook_1 = originHook.splice(originHook.length - 1, 1, function () {
-                    var options = [];
-                    for (var _i = 0; _i < arguments.length; _i++) {
-                        options[_i] = arguments[_i];
-                    }
-                    return (proxyInfo_1.options = options);
-                })[0];
-                proxyInfo_1.hook = function resetHook(enterPath) {
-                    if (router.enterPath.replace(/^\//, '') !== enterPath.replace(/^\//, '') && pageType !== 'app') {
-                        return function () { };
-                    }
-                    if (!config_1.notCallProxyHook.includes(keyName)) {
-                        hook_1.apply(vueVim, proxyInfo_1.options);
-                    }
-                    return function () {
-                        originHook.splice(originHook.length - 1, 1, hook_1);
-                    };
-                };
-                if (Object.keys(proxyHookChild).length > 0) {
-                    proxyHookChild[keyName] = [proxyInfo_1];
-                }
-                else {
-                    proxyHook[keyName] = [proxyInfo_1];
-                }
-            }
-        };
-        for (var i = 0; i < proxyName.length; i++) {
-            _loop_1(i);
-        }
-        if (Object.keys(proxyHookChild).length > 0) {
-            // @ts-ignore
-            proxyHook.push(proxyHookChild);
-        }
-    }
-}
-exports.replaceHook = replaceHook;
-function callHook(key, value, enterPath) {
-    var resetHookFun = [];
-    // Fixe: https://github.com/SilurianYang/uni-simple-router/issues/206
-    // Fixe: https://github.com/SilurianYang/uni-simple-router/issues/224
-    var hookNameList = config_1.proxyVueSortHookName[key];
-    for (var i = 0; i < hookNameList.length; i++) {
-        var hookName = hookNameList[i];
-        var origin_1 = value[hookName][0];
-        if (origin_1 && origin_1.hook) {
-            resetHookFun.push(origin_1.hook(enterPath));
-        }
-    }
-    return resetHookFun;
-}
-exports.callHook = callHook;
-function resetPageHook(router, enterPath) {
-    // Fixe: https://github.com/SilurianYang/uni-simple-router/issues/206
-    var pathInfo = enterPath.trim().match(/^(\/?[^\?\s]+)(\?[\s\S]*$)?$/);
-    if (pathInfo == null) {
-        throw new Error("\u8FD8\u539Fhook\u5931\u8D25\u3002\u8BF7\u68C0\u67E5 \u3010" + enterPath + "\u3011 \u8DEF\u5F84\u662F\u5426\u6B63\u786E\u3002");
-    }
-    enterPath = pathInfo[1];
-    var proxyHookKey = 'appletsProxyHook';
-    if (router.options.platform === 'app-plus') {
-        proxyHookKey = 'appProxyHook';
-    }
-    var resetHookFun = [];
-    for (var _i = 0, _a = Object.entries(router[proxyHookKey]); _i < _a.length; _i++) {
-        var _b = _a[_i], name_2 = _b[0], value = _b[1];
-        var key = name_2;
-        if (getDataType(value) === '[object Array]') {
-            for (var i = 0; i < value.length; i++) {
-                resetHookFun = resetHookFun.concat(callHook(key, value[i], enterPath));
-            }
-        }
-        else {
-            resetHookFun = resetHookFun.concat(callHook(key, value, enterPath));
-        }
-    }
-    setTimeout(function () {
-        for (var i = 0; i < resetHookFun.length; i++) {
-            resetHookFun[i]();
-        }
-    }, 500);
-}
-exports.resetPageHook = resetPageHook;
 function assertParentChild(parentPath, vueVim) {
     while (vueVim.$parent != null) {
         var mpPage = vueVim.$parent.$mp;
@@ -1760,6 +1631,10 @@ exports.warnLock = warnLock;
   \**********************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+/*! CommonJS bailout: this is used directly at 2:23-27 */
+/*! CommonJS bailout: this is used directly at 9:20-24 */
+/*! CommonJS bailout: exports is used directly at 14:40-47 */
+/*! CommonJS bailout: exports is used directly at 15:42-49 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1854,7 +1729,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2016,8 +1890,6 @@ exports.loopCallHook = loopCallHook;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2260,6 +2132,7 @@ exports.createRoute = createRoute;
 /*! export createFullPath [provided] [no usage info] [missing usage info prevents renaming] */
 /*! export createToFrom [provided] [no usage info] [missing usage info prevents renaming] */
 /*! export proxyPageHook [provided] [no usage info] [missing usage info prevents renaming] */
+/*! export resetPageHook [provided] [no usage info] [missing usage info prevents renaming] */
 /*! other exports [not provided] [no usage info] */
 /*! runtime requirements: __webpack_exports__, __webpack_require__ */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
@@ -2267,7 +2140,8 @@ exports.createRoute = createRoute;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.proxyPageHook = exports.createFullPath = exports.createToFrom = void 0;
+exports.resetPageHook = exports.proxyPageHook = exports.createFullPath = exports.createToFrom = void 0;
+var config_1 = __webpack_require__(/*! ../helpers/config */ "./src/helpers/config.ts");
 var utils_1 = __webpack_require__(/*! ../helpers/utils */ "./src/helpers/utils.ts");
 var methods_1 = __webpack_require__(/*! ./methods */ "./src/public/methods.ts");
 var query_1 = __webpack_require__(/*! ./query */ "./src/public/query.ts");
@@ -2294,10 +2168,72 @@ function createFullPath(to, from) {
     }
 }
 exports.createFullPath = createFullPath;
-function proxyPageHook(vueVim, router, proxyHookKey, pageType) {
-    utils_1.replaceHook(router, vueVim, proxyHookKey, pageType);
+function proxyPageHook(vueVim, router, pageType) {
+    var hookDeps = router.proxyHookDeps;
+    var pageHook = vueVim.$options;
+    var _loop_1 = function (i) {
+        var hookName = config_1.proxyHookName[i];
+        var hookList = pageHook[hookName];
+        if (hookList) {
+            var _loop_2 = function (k) {
+                var originHook = hookList[k];
+                if (originHook.toString().includes("UNI-SIMPLE-ROUTER")) {
+                    return "continue";
+                }
+                var resetIndex = Object.keys(hookDeps.hooks).length + 1;
+                var proxyHook = function () {
+                    var args = [];
+                    for (var _i = 0; _i < arguments.length; _i++) {
+                        args[_i] = arguments[_i];
+                    }
+                    hookDeps.resetIndex.push(resetIndex);
+                    hookDeps.options[resetIndex] = args;
+                };
+                var resetHook = hookList.splice(k, 1, proxyHook)[0];
+                hookDeps.hooks[resetIndex] = {
+                    proxyHook: proxyHook,
+                    callHook: function () {
+                        var options = hookDeps.options[resetIndex];
+                        resetHook.apply(vueVim, options);
+                    },
+                    resetHook: function (enterPath) {
+                        if (router.enterPath.replace(/^\//, '') !== enterPath.replace(/^\//, '') && pageType !== 'app') {
+                            return;
+                        }
+                        hookList.splice(k, 1, resetHook);
+                    }
+                };
+            };
+            for (var k = 0; k < hookList.length; k++) {
+                _loop_2(k);
+            }
+        }
+    };
+    for (var i = 0; i < config_1.proxyHookName.length; i++) {
+        _loop_1(i);
+    }
 }
 exports.proxyPageHook = proxyPageHook;
+function resetPageHook(router, enterPath) {
+    // Fixe: https://github.com/SilurianYang/uni-simple-router/issues/206
+    var pathInfo = enterPath.trim().match(/^(\/?[^\?\s]+)(\?[\s\S]*$)?$/);
+    if (pathInfo == null) {
+        throw new Error("\u8FD8\u539Fhook\u5931\u8D25\u3002\u8BF7\u68C0\u67E5 \u3010" + enterPath + "\u3011 \u8DEF\u5F84\u662F\u5426\u6B63\u786E\u3002");
+    }
+    enterPath = pathInfo[1];
+    var proxyHookDeps = router.proxyHookDeps;
+    var resetHooksArray = proxyHookDeps.resetIndex;
+    for (var i = 0; i < resetHooksArray.length; i++) {
+        var index = resetHooksArray[i];
+        var callHook = proxyHookDeps.hooks[index].callHook;
+        callHook();
+    }
+    for (var _i = 0, _a = Object.entries(proxyHookDeps.hooks); _i < _a.length; _i++) {
+        var _b = _a[_i], resetHook = _b[1].resetHook;
+        resetHook(enterPath);
+    }
+}
+exports.resetPageHook = resetPageHook;
 
 
 /***/ }),
@@ -2308,7 +2244,6 @@ exports.proxyPageHook = proxyPageHook;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2684,8 +2619,7 @@ function createRouter(params) {
         options: options,
         mount: [],
         Vue: null,
-        appProxyHook: config_1.appProxyHook,
-        appletsProxyHook: config_1.indexProxyHook,
+        proxyHookDeps: config_1.proxyHookDeps,
         appMain: {},
         enterPath: '',
         $route: null,
@@ -2800,10 +2734,6 @@ exports.RouterMount = RouterMount;
   \*********************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:17-21 */
-/*! CommonJS bailout: this is used directly at 22:19-23 */
-/*! CommonJS bailout: this is used directly at 49:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2871,13 +2801,14 @@ exports.formatOriginURLQuery = exports.uniOriginJump = void 0;
 var query_1 = __webpack_require__(/*! ./query */ "./src/public/query.ts");
 var utils_1 = __webpack_require__(/*! ../helpers/utils */ "./src/helpers/utils.ts");
 var config_1 = __webpack_require__(/*! ../helpers/config */ "./src/helpers/config.ts");
+var page_1 = __webpack_require__(/*! ./page */ "./src/public/page.ts");
 var routerNavCount = 0;
 var lastNavType = 'reLaunch';
 function uniOriginJump(router, originMethod, funName, options, callOkCb, forceNav) {
     var _a = formatOriginURLQuery(router, options, funName), complete = _a.complete, originRule = __rest(_a, ["complete"]);
     var platform = router.options.platform.trim();
     if (routerNavCount === 0 && platform !== 'h5') { // 还原app.vue下已经重写后的生命周期
-        utils_1.resetPageHook(router, originRule.url);
+        page_1.resetPageHook(router, originRule.url);
     }
     if (forceNav != null && forceNav === false) {
         if (routerNavCount === 0) {
