@@ -25,8 +25,8 @@ export type proxyDepsRule={
     hooks: {
         [key: number]:{
             proxyHook:()=>void;
-            callHook:()=>void;
-            resetHook: (enterPath:string)=>void
+            callHook:(enterPath:string)=>void;
+            resetHook: ()=>void
         }
     };
     options: {[key: number]: Array<any>;};

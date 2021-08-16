@@ -1,6 +1,7 @@
 import {startAnimationRule, hookListRule, RoutesRule, navtoRule, navErrorRule, Router, objectAny, NAVTYPE, totalNextRoute, navRoute} from './base';
 
 export type debuggerConfig=boolean|debuggerArrayConfig;
+export type platformRule='h5'|'app-plus'|'app-lets'|'mp-weixin'|'mp-baidu'|'mp-alipay'|'mp-toutiao'|'mp-qq'|'mp-360';
 
 export interface H5Config {
 	paramsToQuery?: boolean; // h5端上通过params传参时规则是vue-router 刷新会丢失 开启此开关将变成?连接的方式
@@ -33,7 +34,7 @@ export interface debuggerArrayConfig{
 export interface InstantiateConfig {
     [key:string]:any;
     keepUniOriginNav?:boolean; // 重写uni-app的跳转方法；关闭后使用uni-app的原始方法跳转和插件api跳转等同
-    platform:'h5'|'app-plus'|'app-lets'|'mp-weixin'|'mp-baidu'|'mp-alipay'|'mp-toutiao'|'mp-qq'|'mp-360'; // 当前运行平台
+    platform:platformRule; // 当前运行平台
     h5?: H5Config;
 	APP?: AppConfig;
     applet?:appletConfig;

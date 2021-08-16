@@ -11,6 +11,7 @@ import { mpPlatformReg } from './config';
 
 let registerRouter:boolean = false;
 let onloadProxyOk:boolean = false;
+
 const appletProxy:{
     app:boolean;
     page:string;
@@ -63,12 +64,13 @@ export function getMixins(Vue:any, router: Router):{
                 const pluginMark = $npm_package_name;
                 voidFun(pluginMark);
 
+                let isProxy:boolean = true;
                 const pageType:pageTypeRule = this.$options.mpType;
 
                 if (onloadProxyOk) {
                     return
                 }
-                let isProxy:boolean = true;
+
                 if (pageType === 'component') {
                     isProxy = assertParentChild(appletProxy['page'], this);
                 } else {

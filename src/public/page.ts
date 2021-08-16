@@ -56,14 +56,14 @@ export function proxyPageHook(
                 const [resetHook] = hookList.splice(k, 1, proxyHook);
                 hookDeps.hooks[resetIndex] = {
                     proxyHook,
-                    callHook: () :void => {
-                        const options = hookDeps.options[resetIndex];
-                        resetHook.apply(vueVim, options);
-                    },
-                    resetHook: (enterPath:string) :void => {
+                    callHook: (enterPath:string) :void => {
                         if (router.enterPath.replace(/^\//, '') !== enterPath.replace(/^\//, '') && pageType !== 'app') {
                             return;
                         }
+                        const options = hookDeps.options[resetIndex];
+                        resetHook.apply(vueVim, options);
+                    },
+                    resetHook: () :void => {
                         hookList.splice(k, 1, resetHook)
                     }
                 };
@@ -71,9 +71,10 @@ export function proxyPageHook(
         }
     }
 }
-export function resetPageHook(
+export function resetAndCallPageHook(
     router:Router,
-    enterPath:string
+    enterPath:string,
+    reset:boolean|undefined = true
 ):void{
     // Fixe: https://github.com/SilurianYang/uni-simple-router/issues/206
     const pathInfo = enterPath.trim().match(/^(\/?[^\?\s]+)(\?[\s\S]*$)?$/);
@@ -86,9 +87,17 @@ export function resetPageHook(
     for (let i = 0; i < resetHooksArray.length; i++) {
         const index = resetHooksArray[i];
         const {callHook} = proxyHookDeps.hooks[index];
-        callHook();
+        callHook(enterPath);
     }
+    if (reset) {
+        resetPageHook(router);
+    }
+}
+export function resetPageHook(
+    router:Router
+) {
+    const proxyHookDeps = router.proxyHookDeps;
     for (const [, {resetHook}] of Object.entries(proxyHookDeps.hooks)) {
-        resetHook(enterPath);
+        resetHook();
     }
 }
