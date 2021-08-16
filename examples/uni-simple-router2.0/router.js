@@ -21,14 +21,17 @@ const router = createRouter({
 	},
 	routerErrorEach:({type,level,...args})=>{
 		console.log({type,level,...args});
-		// #ifdef APP-PLUS
 		if(type===3){
 			router.$lockStatus=false;
+			// #ifdef APP-PLUS
 			if(level==1&&args.uniActualData.from==='backbutton'){
 				runtimeQuit();
 			}
+			// #endif
+		}else if(type===0){
+			router.$lockStatus=false;
 		}
-		// #endif
+		
 	},
 	debugger:true,
 	routes: [
@@ -57,7 +60,7 @@ router.beforeEach((to, from, next) => {
 	
 	// if(count==1){
 	// 	next({
-	// 		path:'/pages/index/index',
+	// 		path:'/pages/login/login',
 	// 		NAVTYPE:'replaceAll'
 	// 	})
 	// }else{

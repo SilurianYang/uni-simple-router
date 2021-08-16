@@ -470,7 +470,6 @@ module.exports = Array.isArray || function (arr) {
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -669,7 +668,6 @@ exports.proxyH5Mount = proxyH5Mount;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -1068,11 +1066,11 @@ function getMixins(Vue, router) {
                 // 保证这个函数不会被重写
                 var pluginMark = "UNI-SIMPLE-ROUTER";
                 utils_1.voidFun(pluginMark);
+                var isProxy = true;
                 var pageType = this.$options.mpType;
                 if (onloadProxyOk) {
                     return;
                 }
-                var isProxy = true;
                 if (pageType === 'component') {
                     isProxy = utils_1.assertParentChild(appletProxy['page'], this);
                 }
@@ -1120,9 +1118,6 @@ exports.initMixins = initMixins;
   \******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:14-18 */
-/*! CommonJS bailout: this is used directly at 24:22-26 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1631,10 +1626,6 @@ exports.warnLock = warnLock;
   \**********************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:23-27 */
-/*! CommonJS bailout: this is used directly at 9:20-24 */
-/*! CommonJS bailout: exports is used directly at 14:40-47 */
-/*! CommonJS bailout: exports is used directly at 15:42-49 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2132,6 +2123,7 @@ exports.createRoute = createRoute;
 /*! export createFullPath [provided] [no usage info] [missing usage info prevents renaming] */
 /*! export createToFrom [provided] [no usage info] [missing usage info prevents renaming] */
 /*! export proxyPageHook [provided] [no usage info] [missing usage info prevents renaming] */
+/*! export resetAndCallPageHook [provided] [no usage info] [missing usage info prevents renaming] */
 /*! export resetPageHook [provided] [no usage info] [missing usage info prevents renaming] */
 /*! other exports [not provided] [no usage info] */
 /*! runtime requirements: __webpack_exports__, __webpack_require__ */
@@ -2140,7 +2132,7 @@ exports.createRoute = createRoute;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.resetPageHook = exports.proxyPageHook = exports.createFullPath = exports.createToFrom = void 0;
+exports.resetPageHook = exports.resetAndCallPageHook = exports.proxyPageHook = exports.createFullPath = exports.createToFrom = void 0;
 var config_1 = __webpack_require__(/*! ../helpers/config */ "./src/helpers/config.ts");
 var utils_1 = __webpack_require__(/*! ../helpers/utils */ "./src/helpers/utils.ts");
 var methods_1 = __webpack_require__(/*! ./methods */ "./src/public/methods.ts");
@@ -2192,14 +2184,14 @@ function proxyPageHook(vueVim, router, pageType) {
                 var resetHook = hookList.splice(k, 1, proxyHook)[0];
                 hookDeps.hooks[resetIndex] = {
                     proxyHook: proxyHook,
-                    callHook: function () {
-                        var options = hookDeps.options[resetIndex];
-                        resetHook.apply(vueVim, options);
-                    },
-                    resetHook: function (enterPath) {
+                    callHook: function (enterPath) {
                         if (router.enterPath.replace(/^\//, '') !== enterPath.replace(/^\//, '') && pageType !== 'app') {
                             return;
                         }
+                        var options = hookDeps.options[resetIndex];
+                        resetHook.apply(vueVim, options);
+                    },
+                    resetHook: function () {
                         hookList.splice(k, 1, resetHook);
                     }
                 };
@@ -2214,7 +2206,8 @@ function proxyPageHook(vueVim, router, pageType) {
     }
 }
 exports.proxyPageHook = proxyPageHook;
-function resetPageHook(router, enterPath) {
+function resetAndCallPageHook(router, enterPath, reset) {
+    if (reset === void 0) { reset = true; }
     // Fixe: https://github.com/SilurianYang/uni-simple-router/issues/206
     var pathInfo = enterPath.trim().match(/^(\/?[^\?\s]+)(\?[\s\S]*$)?$/);
     if (pathInfo == null) {
@@ -2226,11 +2219,18 @@ function resetPageHook(router, enterPath) {
     for (var i = 0; i < resetHooksArray.length; i++) {
         var index = resetHooksArray[i];
         var callHook = proxyHookDeps.hooks[index].callHook;
-        callHook();
+        callHook(enterPath);
     }
+    if (reset) {
+        resetPageHook(router);
+    }
+}
+exports.resetAndCallPageHook = resetAndCallPageHook;
+function resetPageHook(router) {
+    var proxyHookDeps = router.proxyHookDeps;
     for (var _i = 0, _a = Object.entries(proxyHookDeps.hooks); _i < _a.length; _i++) {
         var _b = _a[_i], resetHook = _b[1].resetHook;
-        resetHook(enterPath);
+        resetHook();
     }
 }
 exports.resetPageHook = resetPageHook;
@@ -2806,16 +2806,14 @@ var routerNavCount = 0;
 var lastNavType = 'reLaunch';
 function uniOriginJump(router, originMethod, funName, options, callOkCb, forceNav) {
     var _a = formatOriginURLQuery(router, options, funName), complete = _a.complete, originRule = __rest(_a, ["complete"]);
-    var platform = router.options.platform.trim();
-    if (routerNavCount === 0 && platform !== 'h5') { // 还原app.vue下已经重写后的生命周期
-        page_1.resetPageHook(router, originRule.url);
-    }
+    var platform = router.options.platform;
     if (forceNav != null && forceNav === false) {
         if (routerNavCount === 0) {
             routerNavCount++;
-            // 【Fixe】  https://github.com/SilurianYang/uni-simple-router/issues/254
-            // 在小程序端  next 直接放行会执行这个
             if (platform !== 'h5') {
+                page_1.resetAndCallPageHook(router, originRule.url); // 还原及执行app.vue及首页下已经重写后的生命周期
+                // 【Fixe】  https://github.com/SilurianYang/uni-simple-router/issues/254
+                // 在小程序端  next 直接放行会执行这个
                 router.Vue.prototype.$AppReady = true;
             }
         }
@@ -2823,6 +2821,18 @@ function uniOriginJump(router, originMethod, funName, options, callOkCb, forceNa
         callOkCb && callOkCb.apply(null, { msg: 'forceGuardEach强制触发并且不执行跳转' });
     }
     else {
+        if (routerNavCount === 0) {
+            if (platform === 'app-plus') {
+                page_1.resetAndCallPageHook(router, originRule.url); // 还原及执行app.vue下已经重写后的生命周期
+            }
+            else {
+                if (new RegExp(config_1.mpPlatformReg, 'g').test(platform)) {
+                    // 其他就是在小程序下，首次启动发生跳转会走这里
+                    // 我们先将app.vue的生命周期执行
+                    page_1.resetAndCallPageHook(router, originRule.url, false);
+                }
+            }
+        }
         originMethod(__assign(__assign({}, originRule), { from: options.BACKTYPE, complete: function () {
                 var _a, _b, _c, _d;
                 var args = [];
@@ -2836,16 +2846,19 @@ function uniOriginJump(router, originMethod, funName, options, callOkCb, forceNa
                             case 0:
                                 if (routerNavCount === 0) {
                                     routerNavCount++;
-                                    // 【Fixe】  https://github.com/SilurianYang/uni-simple-router/issues/254
-                                    // 在小程序端 第一次 next 做跳转  会触发这个 、在app端首次必定会触发这个
                                     if (platform !== 'h5') {
+                                        if (new RegExp(config_1.mpPlatformReg, 'g').test(platform)) { // 跳转完成后小程序下还原生命周期
+                                            page_1.resetPageHook(router);
+                                        }
+                                        // 【Fixe】  https://github.com/SilurianYang/uni-simple-router/issues/254
+                                        // 在小程序端 第一次 next 做跳转  会触发这个 、在app端首次必定会触发这个
                                         router.Vue.prototype.$AppReady = true;
-                                    }
-                                    if (platform === 'app-plus') {
-                                        waitPage = plus.nativeObj.View.getViewById('router-loadding');
-                                        waitPage && waitPage.close();
-                                        launchedHook = (_a = router.options.APP) === null || _a === void 0 ? void 0 : _a.launchedHook;
-                                        launchedHook && launchedHook();
+                                        if (platform === 'app-plus') {
+                                            waitPage = plus.nativeObj.View.getViewById('router-loadding');
+                                            waitPage && waitPage.close();
+                                            launchedHook = (_a = router.options.APP) === null || _a === void 0 ? void 0 : _a.launchedHook;
+                                            launchedHook && launchedHook();
+                                        }
                                     }
                                 }
                                 time = 0;

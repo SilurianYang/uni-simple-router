@@ -48,7 +48,7 @@
 		onReady(){
 			console.log('index-----onReady')	
 		},
-		onLoad(...e) {
+		onLoad(e) {
 			console.log('index-----onload')	
 		},
 		onShow() {

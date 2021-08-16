@@ -26,7 +26,7 @@
 			console.log('index-child----mounted')
 		},
 		onLoad() {
-			console.log('index-child-----onload')
+			console.log('index-child-----onload');
 		},
 		onShow() {
 			console.log('index-child-----onShow');

@@ -14,12 +14,10 @@
 		},
 		onLoad() {
 			console.log('login-----onload')
-			console.log(this.$route)
 			console.log(this.$Route)
 		},
 		onShow() {
 			console.log('login-----onShow')
-			uni.hideTabBar()
 		},
 		methods: {
 			gotoPage(){
@@ -30,7 +28,10 @@
 					},
 					fail:err=>{
 						console.log(err)
-					}
+					},
+					complete:()=>{
+						console.log('跳转结束');
+					},
 				})
 			}
 		}
