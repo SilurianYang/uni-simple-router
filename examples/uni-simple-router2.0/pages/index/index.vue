@@ -49,6 +49,7 @@
 			console.log('index-----onReady')	
 		},
 		onLoad(e) {
+			console.log(e)
 			console.log('index-----onload')	
 		},
 		onShow() {
@@ -91,13 +92,18 @@
 				this.$Router.push({
 					path:'/beforeRouteLeave',
 					query:{
-						status:true,
-						list:[
-							{
-								id:1,
-								name:333
-							},
-						]
+						targetyutk:0,
+						result:'你好',
+						jumpWay:'0',
+						测试:'666'
+						// status:true,
+						// list:[
+						// 	{
+						// 		id:1,
+						// 		name:333
+						// 	},
+						// ]
+						
 					}
 				})
 			},

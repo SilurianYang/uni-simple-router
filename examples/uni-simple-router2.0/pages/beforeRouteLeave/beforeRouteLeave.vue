@@ -29,7 +29,8 @@
 				next();
 			}
 		},
-		onLoad(){
+		onLoad(options){
+			console.log(options)
 			console.log(this.$Route)
 		},
 		methods: {

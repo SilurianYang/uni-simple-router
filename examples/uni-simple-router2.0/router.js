@@ -33,13 +33,19 @@ const router = createRouter({
 		}
 		
 	},
+	resolveQuery(options){
+		console.log(options)
+		return options;
+		return {
+			info:111
+		}
+	},
 	debugger:true,
 	routes: [
 		...ROUTES,
 		{
 		  path: '*',
 		  redirect:(...args)=>{
-			  console.log(args)
 			  return {name:'404'}
 		  }
 		},

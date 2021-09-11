@@ -826,9 +826,17 @@ exports.baseConfig = {
     applet: {
         animationDuration: 300
     },
+    beforeProxyHooks: {
+        onLoad: function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+        }
+    },
     platform: 'h5',
     keepUniOriginNav: false,
-    debugger: false,
+    debugger: true,
     routerBeforeEach: function (to, from, next) { next(); },
     routerAfterEach: function (to, from) { },
     routerErrorEach: function (error, router) { router.$lockStatus = false; warn_1.err(error, router, true); },
@@ -1021,6 +1029,7 @@ var methods_1 = __webpack_require__(/*! ../public/methods */ "./src/public/metho
 var utils_1 = __webpack_require__(/*! ./utils */ "./src/helpers/utils.ts");
 var appletPatch_1 = __webpack_require__(/*! ../applets/appletPatch */ "./src/applets/appletPatch.ts");
 var config_1 = __webpack_require__(/*! ./config */ "./src/helpers/config.ts");
+var beforeProxyHook_1 = __webpack_require__(/*! ../public/beforeProxyHook */ "./src/public/beforeProxyHook.ts");
 var registerRouter = false;
 var onloadProxyOk = false;
 var appletProxy = {
@@ -1036,6 +1045,7 @@ function getMixins(Vue, router) {
         h5: {
             beforeCreate: function () {
                 var _a;
+                beforeProxyHook_1.beforeProxyHook(this, router);
                 if (this.$options.router) {
                     router.$route = this.$options.router; // 挂载vue-router到路由对象下
                     var vueRouteMap = [];
@@ -1054,6 +1064,7 @@ function getMixins(Vue, router) {
         },
         'app-plus': {
             beforeCreate: function () {
+                beforeProxyHook_1.beforeProxyHook(this, router);
                 if (!registerRouter) {
                     registerRouter = true;
                     page_1.proxyPageHook(this, router, 'app');
@@ -1063,6 +1074,9 @@ function getMixins(Vue, router) {
         },
         'app-lets': {
             beforeCreate: function () {
+                console.log(this);
+                debugger;
+                beforeProxyHook_1.beforeProxyHook(this, router);
                 // 保证这个函数不会被重写
                 var pluginMark = "UNI-SIMPLE-ROUTER";
                 utils_1.voidFun(pluginMark);
@@ -1710,6 +1724,56 @@ var rewriteMethodToggle;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+
+/***/ }),
+
+/***/ "./src/public/beforeProxyHook.ts":
+/*!***************************************!*\
+  !*** ./src/public/beforeProxyHook.ts ***!
+  \***************************************/
+/*! flagged exports */
+/*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
+/*! export beforeProxyHook [provided] [no usage info] [missing usage info prevents renaming] */
+/*! other exports [not provided] [no usage info] */
+/*! runtime requirements: __webpack_exports__ */
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.beforeProxyHook = void 0;
+function beforeProxyHook(Vim, router) {
+    var hookOptions = Vim.$options;
+    var beforeProxyHooks = router.options.beforeProxyHooks;
+    if (hookOptions == null) {
+        return false;
+    }
+    if (beforeProxyHooks == null) {
+        return false;
+    }
+    var keyArray = Object.keys(beforeProxyHooks);
+    for (var i = 0; i < keyArray.length; i++) {
+        var key = keyArray[i];
+        var hooksArray = hookOptions[key];
+        if (hooksArray) {
+            for (var j = 0; j < hooksArray.length; j++) {
+                var hookFun = hooksArray[j];
+                if (hookFun.toString().includes("UNI-SIMPLE-ROUTER")) {
+                    continue;
+                }
+                hooksArray.splice(j, 1, function () {
+                    var args = [];
+                    for (var _i = 0; _i < arguments.length; _i++) {
+                        args[_i] = arguments[_i];
+                    }
+                });
+            }
+        }
+    }
+    return true;
+}
+exports.beforeProxyHook = beforeProxyHook;
 
 
 /***/ }),
@@ -2587,7 +2651,6 @@ function callRouterMethod(option, funName, router) {
   \******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
