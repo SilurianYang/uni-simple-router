@@ -26,9 +26,14 @@ export const baseConfig:InstantiateConfig = {
     applet: {
         animationDuration: 300
     },
+    beforeProxyHooks: {
+        onLoad: (...args) => {
+
+        }
+    },
     platform: 'h5',
     keepUniOriginNav: false,
-    debugger: false,
+    debugger: true,
     routerBeforeEach: (to, from, next) => { next() },
     routerAfterEach: (to, from) => {},
     routerErrorEach: (error, router) => { router.$lockStatus = false; err(error, router, true); },

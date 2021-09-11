@@ -25,6 +25,17 @@ export interface appletConfig {
     animationDuration?:number; // 页面切换时间，有助于路由锁精准解锁
 }
 
+export interface proxyHooksConfig{
+    onLaunch?:()=>void;
+    onShow?:()=>void;
+    onHide?:()=>void;
+    onInit?:()=>void;
+    onLoad?:()=>void;
+    onReady?:()=>void;
+    onUnload?:()=>void;
+    onResize?:()=>void;
+}
+
 export interface debuggerArrayConfig{
     error?:boolean;
     warn?:boolean;
@@ -38,6 +49,7 @@ export interface InstantiateConfig {
     h5?: H5Config;
 	APP?: AppConfig;
     applet?:appletConfig;
+    beforeProxyHooks?:proxyHooksConfig;
 	debugger?: debuggerConfig; // 是否处于开发阶段 设置为true则打印日志
 	routerBeforeEach?: (to:navtoRule, from:navtoRule, next:(rule?: navtoRule|false)=>void) => void; // router 前置路由函数 每次触发跳转前先会触发此函数
 	routerAfterEach?: (to:navtoRule, from:navtoRule, next?: Function) => void; // router 后置路由函数 每次触发跳转后会触发此函数

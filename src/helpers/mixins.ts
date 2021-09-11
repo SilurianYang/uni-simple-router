@@ -8,6 +8,7 @@ import { forceGuardEach } from '../public/methods';
 import { assertParentChild, voidFun } from './utils';
 import { getEnterPath } from '../applets/appletPatch';
 import { mpPlatformReg } from './config';
+import {beforeProxyHook} from '../public/beforeProxyHook'
 
 let registerRouter:boolean = false;
 let onloadProxyOk:boolean = false;
@@ -34,6 +35,7 @@ export function getMixins(Vue:any, router: Router):{
     const toggleHooks = {
         h5: {
             beforeCreate(this: any): void {
+                beforeProxyHook(this, router);
                 if (this.$options.router) {
                     router.$route = this.$options.router; // 挂载vue-router到路由对象下
                     let vueRouteMap:RoutesRule[]|RoutesRule = [];
@@ -51,6 +53,7 @@ export function getMixins(Vue:any, router: Router):{
         },
         'app-plus': {
             beforeCreate(this: any): void {
+                beforeProxyHook(this, router);
                 if (!registerRouter) {
                     registerRouter = true;
                     proxyPageHook(this, router, 'app');
@@ -60,6 +63,10 @@ export function getMixins(Vue:any, router: Router):{
         },
         'app-lets': {
             beforeCreate(this: any): void {
+                console.log(this)
+                debugger;
+                beforeProxyHook(this, router);
+
                 // 保证这个函数不会被重写
                 const pluginMark = $npm_package_name;
                 voidFun(pluginMark);
