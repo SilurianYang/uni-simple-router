@@ -33,14 +33,27 @@ const router = createRouter({
 		}
 		
 	},
-	resolveQuery(options){
-		console.log(options)
-		return options;
-		return {
-			info:111
-		}
-	},
-	debugger:true,
+	    beforeProxyHooks: {
+			// onLaunch:(options)=>{
+			// 	return new Promise((resolve)=>{
+			// 		console.log(this)
+			// 		setTimeout(()=>{
+			// 			return resolve([{
+			// 				name:666
+			// 			}])
+			// 		},3000)
+			// 	})
+			// },
+	   //      onLoad: function(options, router) {
+	   //          console.log(options);
+				// console.log(this)
+				// return [
+				// 	{name:111}
+				// ]
+	   //      },
+			
+	    },
+	debugger:false,
 	routes: [
 		...ROUTES,
 		{
