@@ -25,15 +25,23 @@ export interface appletConfig {
     animationDuration?:number; // 页面切换时间，有助于路由锁精准解锁
 }
 
+type hookRule=(args:Array<any>, next:(args:Array<any>)=>void, router:Router)=>void;
 export interface proxyHooksConfig{
-    onLaunch?:()=>void;
-    onShow?:()=>void;
-    onHide?:()=>void;
-    onInit?:()=>void;
-    onLoad?:()=>void;
-    onReady?:()=>void;
-    onUnload?:()=>void;
-    onResize?:()=>void;
+    onLaunch?:hookRule;
+    onShow?:hookRule;
+    onHide?:hookRule;
+    onError?:hookRule;
+    onInit?:hookRule;
+    onLoad?:hookRule;
+    onReady?:hookRule;
+    onUnload?:hookRule;
+    onResize?:hookRule;
+    destroyed?:hookRule;
+    created?:hookRule;
+    beforeCreate?:hookRule;
+    beforeMount?:hookRule;
+    mounted?:hookRule;
+    beforeDestroy?:hookRule;
 }
 
 export interface debuggerArrayConfig{

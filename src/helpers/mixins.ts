@@ -63,8 +63,6 @@ export function getMixins(Vue:any, router: Router):{
         },
         'app-lets': {
             beforeCreate(this: any): void {
-                console.log(this)
-                debugger;
                 beforeProxyHook(this, router);
 
                 // 保证这个函数不会被重写
