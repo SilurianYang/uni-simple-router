@@ -60,6 +60,8 @@ export declare interface hookObjectRule {
     hook: Function;
 }
 
+declare type hookRule = (args: Array<any>, next: (args: Array<any>) => void, router: Router) => void;
+
 export declare enum hookToggle {
     'beforeHooks' = "beforeEach",
     'afterHooks' = "afterEach",
@@ -73,6 +75,7 @@ export declare interface InstantiateConfig {
     h5?: H5Config;
     APP?: AppConfig;
     applet?: appletConfig;
+    beforeProxyHooks?: proxyHooksConfig;
     debugger?: debuggerConfig;
     routerBeforeEach?: (to: navtoRule, from: navtoRule, next: (rule?: navtoRule | false) => void) => void;
     routerAfterEach?: (to: navtoRule, from: navtoRule, next?: Function) => void;
@@ -160,6 +163,24 @@ export declare type proxyDepsRule = {
 };
 
 export declare type proxyHookName = 'beforeHooks' | 'afterHooks';
+
+export declare interface proxyHooksConfig {
+    onLaunch?: hookRule;
+    onShow?: hookRule;
+    onHide?: hookRule;
+    onError?: hookRule;
+    onInit?: hookRule;
+    onLoad?: hookRule;
+    onReady?: hookRule;
+    onUnload?: hookRule;
+    onResize?: hookRule;
+    destroyed?: hookRule;
+    created?: hookRule;
+    beforeCreate?: hookRule;
+    beforeMount?: hookRule;
+    mounted?: hookRule;
+    beforeDestroy?: hookRule;
+}
 
 export declare type reloadNavRule = totalNextRoute | false | undefined | string;
 
