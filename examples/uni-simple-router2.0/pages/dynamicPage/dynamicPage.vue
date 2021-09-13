@@ -13,6 +13,12 @@
 				
 			}
 		},
+		onLoad(){
+			console.log('-----dynamicPage----onLoad')
+		},
+		onShow(){
+			console.log('-----dynamicPage----onShow')
+		},
 		methods: {
 			
 		}

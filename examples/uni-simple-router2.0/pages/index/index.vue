@@ -83,7 +83,17 @@
 			gotoPage1(url='/pages/page4/page4'){
 				uni.navigateTo({
 					url:`${url}?msg=的挥洒U盾好撒第三大厦发的撒321312*（￥#4`,
-					success:()=>{
+					events:{
+						    acceptDataFromOpenedPage: function(data) {
+						      console.log(data)
+						    },
+						    someEvent: function(data) {
+						      console.log(data)
+						    }
+					},
+					success:(res)=>{
+						console.log(res);
+						res.eventChannel.emit('acceptDataFromOpenerPage', { data: 'test' })
 						console.log('跳转成功')
 					},
 				})
