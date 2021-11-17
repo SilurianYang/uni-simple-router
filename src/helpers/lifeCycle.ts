@@ -3,7 +3,7 @@ import { LifeCycleConfig, InstantiateConfig} from '../options/config';
 import {onTriggerEachHook} from '../public/hooks'
 
 export function registerHook(list:Array<Function>, fn:Function):void {
-    list[0] = fn;
+    list.push(fn);
 }
 
 export function registerRouterHooks<T extends LifeCycleConfig>(cycleHooks:T, options:InstantiateConfig):T {
