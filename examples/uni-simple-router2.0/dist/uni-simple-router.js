@@ -17,7 +17,6 @@ return /******/ (() => { // webpackBootstrap
   \**********************************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: module, __webpack_require__ */
-/*! CommonJS bailout: module.exports is used directly at 6:0-14 */
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var isarray = __webpack_require__(/*! isarray */ "./node_modules/path-to-regexp/node_modules/isarray/index.js")
@@ -456,7 +455,6 @@ function pathToRegexp (path, keys, options) {
   \*******************************************************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: module */
-/*! CommonJS bailout: module.exports is used directly at 1:0-14 */
 /***/ ((module) => {
 
 module.exports = Array.isArray || function (arr) {
@@ -472,7 +470,6 @@ module.exports = Array.isArray || function (arr) {
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -558,13 +555,40 @@ exports.buildVueRouter = buildVueRouter;
 
 /***/ }),
 
+/***/ "./src/H5/patch.ts":
+/*!*************************!*\
+  !*** ./src/H5/patch.ts ***!
+  \*************************/
+/*! flagged exports */
+/*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
+/*! export addKeepAliveInclude [provided] [no usage info] [missing usage info prevents renaming] */
+/*! other exports [not provided] [no usage info] */
+/*! runtime requirements: __webpack_exports__ */
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.addKeepAliveInclude = void 0;
+exports.addKeepAliveInclude = function (router) {
+    // 【Fixe】 https://github.com/SilurianYang/uni-simple-router/issues/316  2021年12月10日14:30:13
+    var app = getApp();
+    var keepAliveInclude = app.keepAliveInclude;
+    if (router.runId === 0 && keepAliveInclude.length === 0) {
+        var cacheId = app.$route.meta.name + '-' + app.$route.params.__id__;
+        app.keepAliveInclude.push(cacheId);
+    }
+};
+
+
+/***/ }),
+
 /***/ "./src/H5/proxyHook.ts":
 /*!*****************************!*\
   !*** ./src/H5/proxyHook.ts ***!
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
-/*! CommonJS bailout: this is used directly at 2:17-21 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -672,7 +696,6 @@ exports.proxyH5Mount = proxyH5Mount;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -1134,9 +1157,6 @@ exports.initMixins = initMixins;
   \******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:14-18 */
-/*! CommonJS bailout: this is used directly at 24:22-26 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1645,10 +1665,6 @@ exports.warnLock = warnLock;
   \**********************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:23-27 */
-/*! CommonJS bailout: this is used directly at 9:20-24 */
-/*! CommonJS bailout: exports is used directly at 14:40-47 */
-/*! CommonJS bailout: exports is used directly at 15:42-49 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1816,7 +1832,6 @@ exports.beforeProxyHook = beforeProxyHook;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1837,6 +1852,7 @@ exports.loopCallHook = exports.transitionTo = exports.onTriggerEachHook = export
 var utils_1 = __webpack_require__(/*! ../helpers/utils */ "./src/helpers/utils.ts");
 var methods_1 = __webpack_require__(/*! ./methods */ "./src/public/methods.ts");
 var proxyHook_1 = __webpack_require__(/*! ../H5/proxyHook */ "./src/H5/proxyHook.ts");
+var patch_1 = __webpack_require__(/*! ../H5/patch */ "./src/H5/patch.ts");
 var appPatch_1 = __webpack_require__(/*! ../app/appPatch */ "./src/app/appPatch.ts");
 exports.ERRORHOOK = [
     function (error, router) { return router.lifeCycle.routerErrorHooks[0](error, router); }
@@ -1851,7 +1867,10 @@ exports.HOOKLIST = [
         router.$lockStatus = false;
         if (router.options.platform === 'h5') {
             proxyHook_1.proxyH5Mount(router);
+            // 【Fixe】 https://github.com/SilurianYang/uni-simple-router/issues/316  2021年12月10日14:30:13
+            patch_1.addKeepAliveInclude(router);
         }
+        router.runId++;
         return callHook(router.lifeCycle.routerAfterHooks[0], to, from, router, next, false);
     }
 ];
@@ -1978,8 +1997,6 @@ exports.loopCallHook = loopCallHook;
   \*******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2343,7 +2360,6 @@ exports.resetPageHook = resetPageHook;
   \*****************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2610,7 +2626,7 @@ function callRouterMethod(option, funName, router) {
         }
     }
     if (funName === 'reLaunch' && JSON.stringify(option) === '{"url":"/"}') {
-        warn_1.warn("uni-app \u539F\u751F\u65B9\u6CD5\uFF1AreLaunch({url:'/'}) \u9ED8\u8BA4\u88AB\u91CD\u5199\u5566\uFF01\u4F60\u53EF\u4EE5\u4F7F\u7528 this.$Router.replaceAll() \u6216\u8005 uni.reLaunch({url:'/?xxx=xxx'})", router, true);
+        warn_1.warn("uni-app \u539F\u751F\u65B9\u6CD5\uFF1AreLaunch({url:'/'}) \u9ED8\u8BA4\u88AB\u91CD\u5199\u5566\uFF01\u4F60\u53EF\u4EE5\u4F7F\u7528 this.$Router.replaceAll() \u6216\u8005 uni.reLaunch({url:'/?xxx=xxx'})", router);
         funName = 'navigateBack';
         option = {
             from: 'backbutton'
@@ -2638,10 +2654,10 @@ function callRouterMethod(option, funName, router) {
             var route = utils_1.routesForMapRoute(router, path, ['pathMap', 'finallyPathList']);
             var finallyPath = utils_1.getRoutePath(route, router).finallyPath;
             if (utils_1.getDataType(finallyPath) === '[object Array]') {
-                warn_1.warn("uni-app \u539F\u751F\u65B9\u6CD5\u8DF3\u8F6C\u8DEF\u5F84\u4E3A\uFF1A" + path + "\u3002\u6B64\u8DEF\u4E3A\u662Ftab\u9875\u9762\u65F6\uFF0C\u4E0D\u5141\u8BB8\u8BBE\u7F6E alias \u4E3A\u6570\u7EC4\u7684\u60C5\u51B5\uFF0C\u5E76\u4E14\u4E0D\u80FD\u4E3A\u52A8\u6001\u8DEF\u7531\uFF01\u5F53\u7136\u4F60\u53EF\u4EE5\u901A\u8FC7\u901A\u914D\u7B26*\u89E3\u51B3\uFF01", router, true);
+                warn_1.warn("uni-app \u539F\u751F\u65B9\u6CD5\u8DF3\u8F6C\u8DEF\u5F84\u4E3A\uFF1A" + path + "\u3002\u6B64\u8DEF\u4E3A\u662Ftab\u9875\u9762\u65F6\uFF0C\u4E0D\u5141\u8BB8\u8BBE\u7F6E alias \u4E3A\u6570\u7EC4\u7684\u60C5\u51B5\uFF0C\u5E76\u4E14\u4E0D\u80FD\u4E3A\u52A8\u6001\u8DEF\u7531\uFF01\u5F53\u7136\u4F60\u53EF\u4EE5\u901A\u8FC7\u901A\u914D\u7B26*\u89E3\u51B3\uFF01", router);
             }
             if (finallyPath === '*') {
-                warn_1.warn("uni-app \u539F\u751F\u65B9\u6CD5\u8DF3\u8F6C\u8DEF\u5F84\u4E3A\uFF1A" + path + "\u3002\u5728\u8DEF\u7531\u8868\u4E2D\u627E\u4E0D\u5230\u76F8\u5173\u8DEF\u7531\u8868\uFF01\u5F53\u7136\u4F60\u53EF\u4EE5\u901A\u8FC7\u901A\u914D\u7B26*\u89E3\u51B3\uFF01", router, true);
+                warn_1.warn("uni-app \u539F\u751F\u65B9\u6CD5\u8DF3\u8F6C\u8DEF\u5F84\u4E3A\uFF1A" + path + "\u3002\u5728\u8DEF\u7531\u8868\u4E2D\u627E\u4E0D\u5230\u76F8\u5173\u8DEF\u7531\u8868\uFF01\u5F53\u7136\u4F60\u53EF\u4EE5\u901A\u8FC7\u901A\u914D\u7B26*\u89E3\u51B3\uFF01", router);
             }
             // Fixe h5 端无法触发 onTabItemTap hook  2021年6月3日17:26:47
             if (router.options.platform === 'h5') {
@@ -2718,6 +2734,7 @@ function createRouter(params) {
     var router = {
         options: options,
         mount: [],
+        runId: 0,
         Vue: null,
         proxyHookDeps: config_1.proxyHookDeps,
         appMain: {},
@@ -2834,10 +2851,6 @@ exports.RouterMount = RouterMount;
   \*********************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
-/*! CommonJS bailout: this is used directly at 13:17-21 */
-/*! CommonJS bailout: this is used directly at 22:19-23 */
-/*! CommonJS bailout: this is used directly at 49:14-18 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";

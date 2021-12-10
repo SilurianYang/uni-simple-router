@@ -67,7 +67,6 @@ const router = createRouter({
 console.log(router)
 let count=0;
 router.beforeEach((to, from, next) => {
-	
 	count++
 	// if(to.name=='index' && to.BACKTYPE=='navigateBack'){
 	// 	next(false);
