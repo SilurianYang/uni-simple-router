@@ -18,6 +18,7 @@ import {
 } from '../helpers/utils'
 import { navjump } from './methods';
 import { proxyH5Mount } from '../H5/proxyHook';
+import { addKeepAliveInclude } from '../H5/patch';
 import { tabIndexSelect } from '../app/appPatch';
 
 export const ERRORHOOK:Array<(error:navErrorRule, router:Router)=>void> = [
@@ -33,7 +34,10 @@ export const HOOKLIST: hookListRule = [
         router.$lockStatus = false;
         if (router.options.platform === 'h5') {
             proxyH5Mount(router);
+            // 【Fixe】 https://github.com/SilurianYang/uni-simple-router/issues/316  2021年12月10日14:30:13
+            addKeepAliveInclude(router);
         }
+        router.runId++;
         return callHook(router.lifeCycle.routerAfterHooks[0], to, from, router, next, false)
     }
 ];

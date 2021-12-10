@@ -82,8 +82,7 @@ function callRouterMethod(
     if (funName === 'reLaunch' && JSON.stringify(option) === '{"url":"/"}') {
         warn(
             `uni-app 原生方法：reLaunch({url:'/'}) 默认被重写啦！你可以使用 this.$Router.replaceAll() 或者 uni.reLaunch({url:'/?xxx=xxx'})`,
-            router,
-            true
+            router
         );
         funName = 'navigateBack';
         option = {
@@ -113,15 +112,13 @@ function callRouterMethod(
             if (getDataType<string | string[]>(finallyPath) === '[object Array]') {
                 warn(
                     `uni-app 原生方法跳转路径为：${path}。此路为是tab页面时，不允许设置 alias 为数组的情况，并且不能为动态路由！当然你可以通过通配符*解决！`,
-                    router,
-                    true
+                    router
                 );
             }
             if ((finallyPath as string) === '*') {
                 warn(
                     `uni-app 原生方法跳转路径为：${path}。在路由表中找不到相关路由表！当然你可以通过通配符*解决！`,
-                    router,
-                    true
+                    router
                 );
             }
             // Fixe h5 端无法触发 onTabItemTap hook  2021年6月3日17:26:47

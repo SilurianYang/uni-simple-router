@@ -208,12 +208,12 @@ export interface RoutesRule {
 }
 
 export interface Router {
-    [key:string]:any;
 	readonly lifeCycle: LifeCycleConfig;
     readonly options: InstantiateConfig;
     $lockStatus:boolean;
     $route: object | null;
     enterPath:string;
+    runId:number;
     Vue:any;
     appMain:{
         NAVTYPE:reNavMethodRule|reNotNavMethodRule,

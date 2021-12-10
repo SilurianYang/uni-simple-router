@@ -407,7 +407,7 @@ export function resolveAbsolutePath(
     }
     const query:string = paramsArray[2] || '';
     if (/^\.\/[^\.]+/.test(trimPath)) { // 当前路径下
-        const navPath:string = router.currentRoute.path + path;
+        const navPath:string = (router as unknown as {currentRoute:{path:string}}).currentRoute.path + path;
         return navPath.replace(/[^\/]+\.\//, '');
     }
     const relative = paramsArray[1].replace(/\//g, `\\/`).replace(/\.\./g, `[^\\/]+`).replace(/\./g, '\\.');

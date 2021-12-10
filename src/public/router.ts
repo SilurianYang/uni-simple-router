@@ -10,11 +10,14 @@ import {rewriteMethod} from '../public/rewrite'
 let AppReadyResolve:PromiseResolve = () => {};
 const AppReady:Promise<void> = new Promise(resolve => (AppReadyResolve = resolve));
 
-function createRouter(params: InstantiateConfig):Router {
+function createRouter(
+    params: InstantiateConfig
+):Router {
     const options = assertNewOptions<InstantiateConfig>(params);
     const router:Router = {
         options,
         mount: [],
+        runId: 0,
         Vue: null,
         proxyHookDeps: proxyHookDeps,
         appMain: {},
@@ -106,7 +109,11 @@ function createRouter(params: InstantiateConfig):Router {
     return router;
 }
 
-function RouterMount(Vim:any, router:Router, el:string | undefined = '#app') :void|never {
+function RouterMount(
+    Vim:any,
+    router:Router,
+    el:string | undefined = '#app'
+) :void|never {
     if (getDataType<Array<any>>(router.mount) === '[object Array]') {
         router.mount.push({
             app: Vim,
