@@ -30,7 +30,7 @@ module.exports = {
 				force: true,
 				from: resolve(__dirname, '../src/component'),
 				to: resolve(__dirname, '../dist'),
-			},
+			}
 		]),
         new webpack.DefinePlugin({
             $npm_package_name: webpack.DefinePlugin.runtimeValue(() => {
