@@ -1,4 +1,4 @@
-import { objectAny, Router, totalNextRoute } from '../options/base';
+import { navtoRule, objectAny, Router, totalNextRoute } from '../options/base';
 import { AppConfig } from '../options/config';
 
 let quitBefore:number|null = null;
@@ -38,6 +38,35 @@ export function runtimeQuit(
             plus.runtime.quit();
         }
     }
+}
+
+export function HomeNvueSwitchTab(
+    router:Router,
+    to:navtoRule,
+    oldMethod:Function
+):Promise<Boolean> {
+    return new Promise((
+        resolve:(value:boolean)=>void
+    ) => {
+        if (router.runId !== 0) {
+            return resolve(false)
+        }
+        if (!(__uniConfig.tabBar && Array.isArray(__uniConfig.tabBar.list))) {
+            return resolve(false)
+        }
+        const tabBarList = __uniConfig.tabBar.list;
+        for (let i = 0; i < tabBarList.length; i++) {
+            const route:totalNextRoute = tabBarList[i];
+            if ('/' + route.pagePath === to.path) {
+                oldMethod({
+                    url: __uniConfig.entryPagePath,
+                    complete: () => resolve(true)
+                });
+                return;
+            }
+        }
+        return resolve(false)
+    })
 }
 
 export function tabIndexSelect(

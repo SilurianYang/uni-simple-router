@@ -27,6 +27,7 @@ import {
 } from '../helpers/warn'
 
 import {uniOriginJump} from './uniOrigin'
+import { HomeNvueSwitchTab } from '../app/appPatch';
 
 const rewrite: Array<reNavMethodRule|reNotNavMethodRule> = [
     'navigateTo',
@@ -35,6 +36,19 @@ const rewrite: Array<reNavMethodRule|reNotNavMethodRule> = [
     'switchTab',
     'navigateBack'
 ];
+const cacheOldMethod:{
+    navigateTo:Function;
+    redirectTo:Function;
+    reLaunch:Function;
+    switchTab:Function;
+    navigateBack:Function;
+} = {
+    navigateTo: () => {},
+    redirectTo: () => {},
+    reLaunch: () => {},
+    switchTab: () => {},
+    navigateBack: () => {}
+}
 
 export function rewriteMethod(
     router:Router
@@ -42,13 +56,17 @@ export function rewriteMethod(
     if (router.options.keepUniOriginNav === false) {
         rewrite.forEach(name => {
             const oldMethod: Function = uni[name];
-            uni[name] = function(
+            cacheOldMethod[name] = oldMethod;
+            uni[name] = async function(
                 params:originMixins|{from:string}|navtoRule,
                 originCall:boolean = false,
                 callOkCb?:Function,
                 forceNav?:boolean
-            ):void {
+            ):Promise<void> {
                 if (originCall) {
+                    if (router.options.platform === 'app-plus') {
+                        await HomeNvueSwitchTab(router, (params as navtoRule), cacheOldMethod['reLaunch']);
+                    }
                     uniOriginJump(router, oldMethod, name, params as originMixins, callOkCb, forceNav)
                 } else {
                     if (router.options.platform === 'app-plus') {
