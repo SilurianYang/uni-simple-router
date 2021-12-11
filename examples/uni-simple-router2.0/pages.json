@@ -1,5 +1,18 @@
 {
-	"pages": [{
+	"pages": [
+			// #ifdef APP-PLUS
+			{
+			    "path" : "pages/empty/empty",
+				"name":"empty",
+			    "style" :                                                                                    
+			    {
+			        "navigationBarTitleText": "",
+			        "enablePullDownRefresh": false
+			    }
+			    
+			},
+			// #endif
+		{
 			"path": "pages/index/index",
 			"name": "index",
 			"aliasPath": "/"
@@ -159,7 +172,7 @@
 
 		}
 
-	],
+    ],
 	"tabBar": {
 		"list": [{
 			"pagePath": "pages/index/index",

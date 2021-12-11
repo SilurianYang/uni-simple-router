@@ -9,15 +9,6 @@
 		</router-link1>
 		<h1>----------分割线--------</h1>
 		<router-link1
-			v-for="(item,index) in navlist"
-			:key="index"
-			:to="`{name:${item.name},params:${JSON.stringify(item.params)}}`" 
-		>
-		  <button type="primary">去{{item.name}}字符串拼接</button>
-		</router-link1>
-		
-		<h1>----------分割线--------</h1>
-		<router-link1
 			to="{name:'guard',params:{id:'1'}}" 
 		>
 		  <button type="primary">纯name跳转字符串</button>
@@ -42,7 +33,7 @@
 		
 		
 		<router-link1 to="{name:'relativePath2',params:{tags:'1599,1624',on_sale:true,orderby:'rand'}}" >
-		  <button type="default">bug参数跳转测试,会跳404</button>
+		  <button type="default">bug参数跳转测试issues(#227)</button>
 		</router-link1>
 		
 		

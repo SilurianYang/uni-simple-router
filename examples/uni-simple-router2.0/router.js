@@ -74,6 +74,14 @@ router.beforeEach((to, from, next) => {
 	// 	next();
 	// }
 	
+	
+	if(count===1&&to.name=='empty'){
+		return next({
+			name:'nvue1',
+			NAVTYPE:'replaceAll'
+		})
+	}
+	
 	next();
 	
 	// if(count==1){

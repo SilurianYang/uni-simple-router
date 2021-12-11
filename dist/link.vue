@@ -36,17 +36,23 @@ export default {
     methods: {
         formatNav(text) {
             if (text != null && text.constructor === String) {
-                text = text.replace(/\'/g, '');
-                text = text.replace(/(\w+)(?=:)/g, function (val) {
-                    return `"${val}"`;
+                const keyArray = [];
+                text = text.replace(/((\w+)|('\s*(\w+)\s*')|("\s*(\w+)\s*"))\s*(?=:)/g, function (val) {
+                    const key = `"${val.trim().replace(/"|'/g, '')}"`;
+                    keyArray.push(key);
+                    return key
                 });
-                text = text.replace(/:\s*([^,{}\s"]+)/g, function (val) {
-                    const arr = val.split(':');
-                    return `:"${arr[1].trim()}"`;
-                });
+                const removeReg=/('|")/g;
+                for (let i = 0; i < keyArray.length; i++) {
+                    const key = keyArray[i];
+                    text=text.replace(new RegExp(`${key}\\s*:\\s*('[^']+')`, 'g'),(...args)=>{
+                        const $1=args[1];
+                        return `${key}:"${$1.replace(removeReg,'')}"`
+                    })
+                }
                 try {
-                    text = JSON.parse(text);
-                } catch (e) {}
+                    text=JSON.parse(text);
+                } catch (error) {}
             }
             if (this.append) {
                 let pathArr = this.$Route.path.split('/');
