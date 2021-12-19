@@ -7,7 +7,7 @@ let TABBAR:objectAny|null = null;
 export function registerLoddingPage(
     router:Router,
 ):void{
-    if (router.options.registerLoadingPage) {
+    if (router.options.APP?.registerLoadingPage) {
         const { loadingPageHook, loadingPageStyle } = router.options.APP as AppConfig;	// 获取app所有配置
         const view = new plus.nativeObj.View('router-loadding', {
             top: '0px',

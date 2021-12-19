@@ -4,6 +4,14 @@ import {
 	runtimeQuit
 } from './dist/uni-simple-router.js';
 
+
+let pageHookAnimationEnd=null;
+const pageHookAnimation=new Promise(resolve=>pageHookAnimationEnd=resolve);
+
+// #ifndef APP-PLUS
+	pageHookAnimationEnd();
+// #endif
+
 let first = null;
 const router = createRouter({
 	platform: process.env.VUE_APP_PLATFORM,  
@@ -12,9 +20,27 @@ const router = createRouter({
 			animationType:'slide-in-top',
 			animationDuration:300
 		},
-		loadingPageHook:(view)=>{
-			view.hide()
-		}
+		registerLoadingPage:true,
+		loadingPageStyle:()=>JSON.parse('{"backgroundColor":"#FFCCCC"}'),   
+		loadingPageHook:async (view)=>{
+			console.log('------------loadingPageHook--------------')
+			view.show();
+			const [,{screenWidth}]=await uni.getSystemInfo();
+			            view.drawBitmap('/static/wait3.gif', {}, {
+			                top: 'auto',
+			                left: 'auto',
+			                width:  screenWidth+'px',
+			                height: 'auto'
+			            });
+						plus.navigator.closeSplashscreen();
+						setTimeout(()=>{
+							pageHookAnimationEnd();
+						},3500)
+		},
+		        launchedHook:()=>{
+					plus.navigator.closeSplashscreen();
+		            console.log('APP加载完成啦')
+		        }
 	},
 	applet:{
 		animationDuration:300
@@ -34,23 +60,21 @@ const router = createRouter({
 		
 	},
 	    beforeProxyHooks: {
-			// onLaunch:(options)=>{
-			// 	return new Promise((resolve)=>{
-			// 		console.log(this)
-			// 		setTimeout(()=>{
-			// 			return resolve([{
-			// 				name:666
-			// 			}])
-			// 		},3000)
-			// 	})
-			// },
-	   //      onLoad: function(options, router) {
-	   //          console.log(options);
-				// console.log(this)
-				// return [
-				// 	{name:111}
-				// ]
-	   //      },
+			onLaunch(options,next){
+					console.log(this)
+					setTimeout(()=>{
+						return next([{
+							name:666
+						}])
+					},3000)
+			},
+	        onLoad: function(options, next,router) {
+	            console.log(options);
+				console.log(this)
+				next([
+					{name:111}
+				])
+	        },
 			
 	    },
 	debugger:false,
@@ -66,7 +90,7 @@ const router = createRouter({
 });
 console.log(router)
 let count=0;
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
 	count++
 	// if(to.name=='index' && to.BACKTYPE=='navigateBack'){
 	// 	next(false);
@@ -74,6 +98,7 @@ router.beforeEach((to, from, next) => {
 	// 	next();
 	// }
 	
+<<<<<<< HEAD
 	
 	if(count===1&&to.name=='empty'){
 		return next({
@@ -82,6 +107,9 @@ router.beforeEach((to, from, next) => {
 		})
 	}
 	
+=======
+	await pageHookAnimation;
+>>>>>>> dev2.0.8
 	next();
 	
 	// if(count==1){

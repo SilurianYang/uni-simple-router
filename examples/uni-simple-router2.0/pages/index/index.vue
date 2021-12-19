@@ -4,21 +4,24 @@
 		<view class="text-area">
 			<text class="title">{{title}}</text>
 		</view>
-		<div>
+<!-- 		<div>
 			<childComponent></childComponent>
 		</div>
 		<button type="default" @click="gotoPage">点我去page2</button>
 		<button type="primary" @click="gotoPage1('../page4/page4')">传递中文</button>
-		<button type="warn" @click="gotoPage1('/pages/builtIn/builtIn')">点我去获取内置地址</button>
+		<button type="warn" @click="gotoPage1('/pages/builtIn/builtIn')">点我去获取内置地址</button> -->
+		
 		<!-- #ifdef MP-WEIXIN -->
 		<button type="default" @click="forceEach">微信小程序看到我，强制触发</button>
 		<!-- #endif -->
 		
-		
+<!-- 		
 		<button type="primary" @click="$Router.push({name:'nvue1'})">去nvue1测试页</button>
 		
 		<button type="primary" @click="gotoTabPage">去tab2测试页面</button>
-		<button type="default" @click="gotoPage2">深度传参</button>
+		<button type="default" @click="gotoPage2">深度传参</button> -->
+		
+		
 	</view>
 </template>
 

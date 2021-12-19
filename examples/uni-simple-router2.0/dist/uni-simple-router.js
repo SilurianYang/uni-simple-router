@@ -566,20 +566,39 @@ exports.buildVueRouter = buildVueRouter;
 /*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
 /*! export addKeepAliveInclude [provided] [no usage info] [missing usage info prevents renaming] */
 /*! other exports [not provided] [no usage info] */
-/*! runtime requirements: __webpack_exports__ */
-/***/ ((__unused_webpack_module, exports) => {
+/*! runtime requirements: __webpack_exports__, __webpack_require__ */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.addKeepAliveInclude = void 0;
+var utils_1 = __webpack_require__(/*! ../helpers/utils */ "./src/helpers/utils.ts");
+var _a = ['', ''], dynamicCacheName = _a[0], __id__ = _a[1];
 exports.addKeepAliveInclude = function (router) {
     // 【Fixe】 https://github.com/SilurianYang/uni-simple-router/issues/316  2021年12月10日14:30:13
     var app = getApp();
     var keepAliveInclude = app.keepAliveInclude;
     if (router.runId === 0 && keepAliveInclude.length === 0) {
-        var cacheId = app.$route.meta.name + '-' + app.$route.params.__id__;
+        __id__ = app.$route.params.__id__;
+        dynamicCacheName = app.$route.meta.name;
+        var cacheId = dynamicCacheName + '-' + __id__;
         app.keepAliveInclude.push(cacheId);
+    }
+    else {
+        if (dynamicCacheName !== '') {
+            var arrayCacheId = app.keepAliveInclude;
+            for (var i = 0; i < arrayCacheId.length; i++) {
+                var cacheId = arrayCacheId[i];
+                var cacheIdReg = new RegExp(dynamicCacheName + "-(\\d+)$");
+                var firstCacheId = dynamicCacheName + "-" + __id__;
+                if (cacheIdReg.test(cacheId) && cacheId !== firstCacheId) {
+                    utils_1.removeSimpleValue(arrayCacheId, firstCacheId);
+                    dynamicCacheName = '';
+                    break;
+                }
+            }
+        }
     }
 };
 
@@ -721,8 +740,9 @@ exports.tabIndexSelect = exports.runtimeQuit = exports.registerLoddingPage = voi
 var quitBefore = null;
 var TABBAR = null;
 function registerLoddingPage(router) {
-    if (router.options.registerLoadingPage) {
-        var _a = router.options.APP, loadingPageHook = _a.loadingPageHook, loadingPageStyle = _a.loadingPageStyle; // 获取app所有配置
+    var _a;
+    if ((_a = router.options.APP) === null || _a === void 0 ? void 0 : _a.registerLoadingPage) {
+        var _b = router.options.APP, loadingPageHook = _b.loadingPageHook, loadingPageStyle = _b.loadingPageStyle; // 获取app所有配置
         var view = new plus.nativeObj.View('router-loadding', __assign({ top: '0px', left: '0px', height: '100%', width: '100%' }, loadingPageStyle()));
         loadingPageHook(view); // 触发等待页面生命周期
     }
@@ -1199,7 +1219,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.deepDecodeQuery = exports.resolveAbsolutePath = exports.assertParentChild = exports.lockDetectWarn = exports.deepClone = exports.baseClone = exports.assertDeepObject = exports.paramsToQuery = exports.forMatNextToFrom = exports.urlToJson = exports.getUniCachePage = exports.copyData = exports.getDataType = exports.routesForMapRoute = exports.notRouteTo404 = exports.getWildcardRule = exports.assertNewOptions = exports.getRoutePath = exports.notDeepClearNull = exports.mergeConfig = exports.timeOut = exports.def = exports.voidFun = void 0;
+exports.deepDecodeQuery = exports.resolveAbsolutePath = exports.assertParentChild = exports.lockDetectWarn = exports.deepClone = exports.baseClone = exports.assertDeepObject = exports.paramsToQuery = exports.forMatNextToFrom = exports.urlToJson = exports.getUniCachePage = exports.removeSimpleValue = exports.copyData = exports.getDataType = exports.routesForMapRoute = exports.notRouteTo404 = exports.getWildcardRule = exports.assertNewOptions = exports.getRoutePath = exports.notDeepClearNull = exports.mergeConfig = exports.timeOut = exports.def = exports.voidFun = void 0;
 var config_1 = __webpack_require__(/*! ../helpers/config */ "./src/helpers/config.ts");
 var hooks_1 = __webpack_require__(/*! ../public/hooks */ "./src/public/hooks.ts");
 var warn_1 = __webpack_require__(/*! ../helpers/warn */ "./src/helpers/warn.ts");
@@ -1379,6 +1399,17 @@ function copyData(object) {
     return JSON.parse(JSON.stringify(object));
 }
 exports.copyData = copyData;
+function removeSimpleValue(array, value) {
+    for (var i = 0; i < array.length; i++) {
+        var it_1 = array[i];
+        if (it_1 === value) {
+            array.splice(i, 1);
+            return true;
+        }
+    }
+    return false;
+}
+exports.removeSimpleValue = removeSimpleValue;
 function getUniCachePage(pageIndex) {
     var pages = getCurrentPages();
     if (pageIndex == null) {
@@ -1575,30 +1606,30 @@ function deepDecodeQuery(query) {
     var keys = Object.keys(query);
     for (var i = 0; i < keys.length; i++) {
         var key = keys[i];
-        var it_1 = query[key];
-        if (typeof it_1 === 'string') {
+        var it_2 = query[key];
+        if (typeof it_2 === 'string') {
             try {
-                var json = JSON.parse(decodeURIComponent(it_1));
+                var json = JSON.parse(decodeURIComponent(it_2));
                 if (typeof json !== 'object') {
-                    json = it_1;
+                    json = it_2;
                 }
                 formatQuery[key] = json;
             }
             catch (error) {
                 try {
-                    formatQuery[key] = decodeURIComponent(it_1);
+                    formatQuery[key] = decodeURIComponent(it_2);
                 }
                 catch (error) {
-                    formatQuery[key] = it_1;
+                    formatQuery[key] = it_2;
                 }
             }
         }
-        else if (typeof it_1 === 'object') {
-            var childQuery = deepDecodeQuery(it_1);
+        else if (typeof it_2 === 'object') {
+            var childQuery = deepDecodeQuery(it_2);
             formatQuery[key] = childQuery;
         }
         else {
-            formatQuery[key] = it_1;
+            formatQuery[key] = it_2;
         }
     }
     return formatQuery;
@@ -1700,6 +1731,10 @@ Object.defineProperty(exports, "runtimeQuit", ({ enumerable: true, get: function
 var router_1 = __webpack_require__(/*! ./public/router */ "./src/public/router.ts");
 Object.defineProperty(exports, "RouterMount", ({ enumerable: true, get: function () { return router_1.RouterMount; } }));
 Object.defineProperty(exports, "createRouter", ({ enumerable: true, get: function () { return router_1.createRouter; } }));
+var version = "2.0.8-BETA.1";
+if (/[A-Z]/g.test(version)) {
+    console.warn("\u3010" + "UNI-SIMPLE-ROUTER".toLocaleLowerCase() + " \u63D0\u793A\u3011\uFF1A\u5F53\u524D\u7248\u672C " + version.toLocaleLowerCase() + " \u6B64\u7248\u672C\u4E3A\u6D4B\u8BD5\u7248\u3002\u6709BUG\u8BF7\u9000\u56DE\u6B63\u5F0F\u7248\uFF0C\u7EBF\u4E0A\u6B63\u5F0F\u7248\u672C\uFF1A" + "2.0.7");
+}
 
 
 /***/ }),
@@ -1802,21 +1837,21 @@ function beforeProxyHook(Vim, router) {
                 if (hookFun.toString().includes("UNI-SIMPLE-ROUTER")) {
                     return "continue";
                 }
-                var oldHook = hooksArray.splice(j, 1, function () {
+                var oldHook = hooksArray.splice(j, 1, function myReplace() {
+                    var _this = this;
                     var args = [];
                     for (var _i = 0; _i < arguments.length; _i++) {
                         args[_i] = arguments[_i];
                     }
-                    // 保证这个函数不再重写
-                    var pluginMark = "UNI-SIMPLE-ROUTER";
-                    utils_1.voidFun(pluginMark);
+                    var pluginMarkId = "UNI-SIMPLE-ROUTER";
+                    utils_1.voidFun(pluginMarkId);
                     if (beforeProxyFun_1) {
-                        beforeProxyFun_1.call(Vim, args, function (options) {
-                            oldHook.apply(Vim, options);
+                        beforeProxyFun_1.call(this, args, function (options) {
+                            oldHook.apply(_this, options);
                         }, router);
                     }
                     else {
-                        oldHook.apply(Vim, args);
+                        oldHook.apply(this, args);
                     }
                 })[0];
             };
@@ -2719,7 +2754,6 @@ function callRouterMethod(option, funName, router) {
   \******************************/
 /*! unknown exports (runtime-defined) */
 /*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
-/*! CommonJS bailout: this is used directly at 2:16-20 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
