@@ -12,6 +12,7 @@
     "copy-webpack-plugin": "^5.1.2",
     "jest-cli": "^26.6.3",
     "lodash.merge": "^4.6.2",
+    "node-cmd": "^5.0.0",
     "path-to-regexp": "^1.8.0",
     "ts-loader": "^8.0.5",
     "typescript": "^4.0.3",
@@ -39,7 +40,7 @@
     "lintFix": "eslint --ext .js,.ts src --fix",
     "test": "jest test/query-toggle.spec.ts",
     "publish": "node ./publish/index.js",
-    "build":"node ./publish/build.js"
+    "build": "node ./publish/build.js"
   },
   "repository": {
     "type": "git",

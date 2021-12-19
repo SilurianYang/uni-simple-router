@@ -12,7 +12,9 @@ module.exports = {
         getApp: true,
         __uniConfig: true,
         __uniRoutes: true,
-        $npm_package_name: true
+        $npm_package_name: true,
+        $npm_package_version: true,
+        $npm_package_last_version: true
     },
     parser: '@typescript-eslint/parser',
     extends: ['eslint:recommended'],
