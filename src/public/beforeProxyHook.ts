@@ -25,19 +25,18 @@ export function beforeProxyHook(
                 if (hookFun.toString().includes($npm_package_name)) {
                     continue
                 }
-                const [oldHook] = hooksArray.splice(j, 1, (...args:Array<any>) => {
-                    // 保证这个函数不再重写
-                    const pluginMark = $npm_package_name;
-                    voidFun(pluginMark);
+                const [oldHook] = hooksArray.splice(j, 1, function myReplace(this: any, ...args:Array<any>) {
+                    const pluginMarkId = $npm_package_name;
+                    voidFun(pluginMarkId);
 
                     if (beforeProxyFun) {
-                        beforeProxyFun.call(Vim, args, (options) => {
-                            oldHook.apply(Vim, options)
+                        beforeProxyFun.call(this, args, (options) => {
+                            oldHook.apply(this, options)
                         }, router);
                     } else {
-                        oldHook.apply(Vim, args)
+                        oldHook.apply(this, args)
                     }
-                })
+                });
             }
         } else {
             warn(`beforeProxyHooks ===> 当前组件不适合${key}，或者 hook: ${key} 不存在，已为你规避处理，可以忽略。`, router)

@@ -204,6 +204,20 @@ export function copyData<T>(object:T): T {
     return JSON.parse(JSON.stringify(object))
 }
 
+export function removeSimpleValue(
+    array:Array<string|number>,
+    value:string
+):Boolean {
+    for (let i = 0; i < array.length; i++) {
+        const it = array[i];
+        if (it === value) {
+            array.splice(i, 1);
+            return true
+        }
+    }
+    return false
+}
+
 export function getUniCachePage<T extends objectAny>(pageIndex?:number):T|[] {
     const pages:T = getCurrentPages();
     if (pageIndex == null) {
