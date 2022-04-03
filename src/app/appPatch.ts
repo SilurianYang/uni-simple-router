@@ -54,18 +54,12 @@ export function HomeNvueSwitchTab(
         if (!(__uniConfig.tabBar && Array.isArray(__uniConfig.tabBar.list))) {
             return resolve(false)
         }
-        const tabBarList = __uniConfig.tabBar.list;
-        for (let i = 0; i < tabBarList.length; i++) {
-            const route:totalNextRoute = tabBarList[i];
-            if ('/' + route.pagePath === to.path) {
-                oldMethod({
-                    url: __uniConfig.entryPagePath,
-                    complete: () => resolve(true)
-                });
-                return;
-            }
-        }
-        return resolve(false)
+        // Fixe https://github.com/SilurianYang/uni-simple-router/issues/373 2022-4-3 19:40:59
+        oldMethod({
+            url: __uniConfig.entryPagePath,
+            animationDuration:0,
+            complete: () => resolve(true)
+        });
     })
 }
 

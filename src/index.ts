@@ -1,5 +1,6 @@
 export * from './options/base'
 export * from './options/config'
+export * from './helpers/utils'
 
 export {
     runtimeQuit

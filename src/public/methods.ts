@@ -64,6 +64,11 @@ export function navjump(
             level = +to;
         } else {
             level = to.delta || 1;
+            // 主要剥离事件函数
+            animation = {
+                ...animation || {},
+                ...(to as uniBackApiRule)
+            }
         }
         if (router.options.platform === 'h5') {
             (router.$route as any).go(-level);
