@@ -1,17 +1,17 @@
 {
 	"pages": [
-			// #ifdef APP-PLUS
-			{
-			    "path" : "pages/empty/empty",
-				"name":"empty",
-			    "style" :                                                                                    
-			    {
-			        "navigationBarTitleText": "",
-			        "enablePullDownRefresh": false
-			    }
+			// // #ifdef APP-PLUS
+			// {
+			//     "path" : "pages/empty/empty",
+			// 	"name":"empty",
+			//     "style" :                                                                                    
+			//     {
+			//         "navigationBarTitleText": "",
+			//         "enablePullDownRefresh": false
+			//     }
 			    
-			},
-			// #endif
+			// },
+			// // #endif
 		{
 			"path": "pages/index/index",
 			"name": "index",

@@ -64,7 +64,7 @@ const router = createRouter({
 					console.log(this)
 					setTimeout(()=>{
 						return next([{
-							name:666
+							...options
 						}])
 					},3000)
 			},
@@ -98,18 +98,7 @@ router.beforeEach(async (to, from, next) => {
 	// 	next();
 	// }
 	
-<<<<<<< HEAD
-	
-	if(count===1&&to.name=='empty'){
-		return next({
-			name:'nvue1',
-			NAVTYPE:'replaceAll'
-		})
-	}
-	
-=======
 	await pageHookAnimation;
->>>>>>> dev2.0.8
 	next();
 	
 	// if(count==1){

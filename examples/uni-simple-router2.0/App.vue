@@ -9,9 +9,10 @@
 		mounted(){
 			console.log('appvue----mounted')
 		},
-		onLaunch: function() {
+		onLaunch: function(...options) {
 			console.log(this)
-			console.log('App Launch')
+			console.log('App Launch');
+			console.log(options)
 		},
 		onShow: function() {
 			console.log('App Show')
