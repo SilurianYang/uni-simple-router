@@ -1,4 +1,7 @@
 /node_modules
+/bugWork/*/node_modules
+/bugWork/*/dist
+/bugWork/*/unpackage
 /examples/*/node_modules
 /examples/*/unpackage
 /examples/*/uni-simple-router.js.map
