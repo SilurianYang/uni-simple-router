@@ -3,7 +3,7 @@ const {resolve} = require('path');
 const common = require('./webpack.common.js');
 const CopyPlugin = require('copy-webpack-plugin');
 
-const output = resolve(__dirname, '../examples/uni-simple-router2.0/dist');
+const output = resolve(__dirname, '../bugWork/test/dist');
 
 module.exports = merge(common, {
 	mode: 'development',
