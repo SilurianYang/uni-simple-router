@@ -26,8 +26,6 @@ export function beforeProxyHook(
                     continue
                 }
                 const [oldHook] = hooksArray.splice(j, 1, function myReplace(this: any, ...args:Array<any>) {
-                    const pluginMarkId = $npm_package_name;
-                    voidFun(pluginMarkId);
 
                     if (beforeProxyFun) {
                         beforeProxyFun.call(this, args, (options) => {
@@ -36,6 +34,7 @@ export function beforeProxyHook(
                     } else {
                         oldHook.apply(this, args)
                     }
+
                 });
             }
         } else {
