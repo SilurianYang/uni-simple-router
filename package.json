@@ -9,7 +9,7 @@
     "@types/node": "^14.14.2",
     "@types/webpack": "^4.41.23",
     "@types/webpack-env": "^1.15.3",
-    "copy-webpack-plugin": "^5.1.2",
+    "copy-webpack-plugin": "^11.0.0",
     "jest-cli": "^26.6.3",
     "lodash.merge": "^4.6.2",
     "node-cmd": "^5.0.0",
