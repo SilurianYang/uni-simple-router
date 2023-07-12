@@ -2,6 +2,10 @@
 
 > 一个更为简洁的[Vue-router](https://router.vuejs.org/zh/)，专为 [uni-app](https://uniapp.dcloud.io/) 量身打造
 
+## V3 版本
+
+如果你正在使用 `vue3` + `vite` 请参考 [uni-simple-router v3 路由、拦截、最优雅的解决方案重磅来袭](https://v3.hhyang.cn/blog/function-preview.html)，或者查看 [官方文档](https://v3.hhyang.cn/)
+
 ## 介绍
 
 `uni-simple-router` 是专为 [uni-app](https://uniapp.dcloud.io/) 打造的路由器。它与 [uni-app](https://uniapp.dcloud.io/) 核心深度集成，使使用 [uni-app](https://uniapp.dcloud.io/) 轻松构建单页应用程序变得轻而易举。功能包括：
@@ -40,10 +44,3 @@
 
 <a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=0f4d7f38e5d15dd49bf7c3032c80ed3f54ecfa3dd800053d6ae145c869f9eb47"><img border="0" src="http://pub.idqqimg.com/wpa/images/group.png" alt="uni-app  插件" title="uni-app  插件"></a>
 
-
-## 成品预览
-
-<div style="display: -webkit-box;display: flex; flex-direction: column;align-items: center;">
-    <p style="color: #3eaf7c;font-size:18px">uni-simple-router@2.0+ts+uni-app</p>
-    <img src="https://hhyang.cn/images/ad1.jpg" width="200" height="200">
-</div>
