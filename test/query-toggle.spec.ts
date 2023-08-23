@@ -49,6 +49,17 @@ it('单个普通参数',()=>{
     expect(JSON.stringify(result)).toEqual(JSON.stringify(query));
 })
 
+it('单个普通参数2',()=>{
+    const query={
+        name:'wyb',
+        ages:22,
+        open:true
+    }
+    const result = deepDecodeQuery(query);
+
+    expect(JSON.stringify(result)).toEqual(JSON.stringify(query));
+})
+
 it('深度参数加混乱',()=>{
     const query={
         list:[
