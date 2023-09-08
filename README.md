@@ -4,11 +4,11 @@
 
 ## V3 版本
 
-如果你正在使用 `vue3` + `vite` 请参考 [uni-simple-router v3 路由、拦截、最优雅的解决方案重磅来袭](https://v3.hhyang.cn/blog/function-preview.html)，或者查看 [官方文档](https://v3.hhyang.cn/)
+如果你正在使用 `vue3` + `vite` 请参考 [uni-simple-router v3 路由、拦截、最优雅的解决方案重磅来袭](https://www.hhyang.cn/blog/function-preview.html)，或者查看 [官方文档](https://www.hhyang.cn/)
 
 ## 介绍
 
-`uni-simple-router` 是专为 [uni-app](https://uniapp.dcloud.io/) 打造的路由器。它与 [uni-app](https://uniapp.dcloud.io/) 核心深度集成，使使用 [uni-app](https://uniapp.dcloud.io/) 轻松构建单页应用程序变得轻而易举。功能包括：
+`uni-simple-router` 是专为 [uni-app](https://uniapp.dcloud.io/) 打造的路由器。它与 [uni-app](https://uniapp.dcloud.io/) 核心深度集成，让 [uni-app](https://uniapp.dcloud.io/) 构建单页应用程序变得轻而易举。功能包括：
 
 * `H5端` 能完全使用 `vue-router` 进行开发。
 
@@ -25,13 +25,13 @@
 * 通配小程序端、APP端、H5端。
 
 
-开始使用 [查看文档](http://hhyang.cn)，或 [使用示例](https://github.com/SilurianYang/uni-simple-router/tree/master/examples)（请参见下面的示例）。
+开始使用 [查看文档](https://v2.hhyang.cn/v2/)，或 [使用示例](https://github.com/SilurianYang/uni-simple-router/tree/master/examples)（请参见下面的示例）。
 
 ## 问题
 在提交问题的之前，请确保阅读 [“问题报告清单”](https://github.com/SilurianYang/uni-simple-router/issues/new?assignees=&labels=&template=bug_report.md&title=) 。不符合准则的问题可能会立即被解决。
 
 ## 贡献
-提出拉取请求之前，请务必先阅读 [查看文档](http://hhyang.cn)（请参见下面的示例）。。
+提出拉取请求之前，请务必先阅读 [查看文档](https://v2.hhyang.cn/v2/)（请参见下面的示例）。。
 
 ## 变更日志
 [发行说明](https://github.com/SilurianYang/uni-simple-router/releases) 中记录了每个发行版的详细信息更改。
