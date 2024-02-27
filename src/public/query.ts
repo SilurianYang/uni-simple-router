@@ -155,7 +155,7 @@ export function parseQuery(
                 }
             }
             if (typeof deepQuery === 'object') {
-                return deepDecodeQuery(deepQuery);
+                return deepDecodeQuery(deepQuery || {});
             }
         }
     }

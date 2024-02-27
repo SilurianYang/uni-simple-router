@@ -456,7 +456,7 @@ export function deepDecodeQuery(
                 }
             }
         } else if (typeof it === 'object') {
-            const childQuery = deepDecodeQuery(it);
+            const childQuery = deepDecodeQuery(it || {});
             formatQuery[key] = childQuery
         } else {
             formatQuery[key] = it
